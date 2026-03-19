@@ -11,7 +11,7 @@ import { Footer } from './components/Footer';
 import { Portfolio } from './components/Portfolio';
 import { InquiryForm } from './components/InquiryForm';
 import { PRODUCTS, CATEGORIES, Product, Quotation, ORDER_STEPS, PORTFOLIO_ITEMS } from './types';
-import { FileUp, Send, CheckCircle2, MessageSquare, ArrowRight } from 'lucide-react';
+import { FileUp, Send, CheckCircle2, MessageSquare, ArrowRight, Box, Search } from 'lucide-react';
 
 type View = 'home' | 'detail' | 'category' | 'guide' | 'inquiry' | 'quotation_doc' | 'custom_inquiry' | 'portfolio';
 
@@ -22,6 +22,8 @@ function App() {
   const [showInquiry, setShowInquiry] = useState(false);
   const [inquiryQuotation, setInquiryQuotation] = useState<Quotation | undefined>(undefined);
   const [activeCategory, setActiveCategory] = useState<string>('all');
+  const [activeSubCategory, setActiveSubCategory] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -43,6 +45,18 @@ function App() {
 
   const handleCategorySelect = (id: string) => {
     setActiveCategory(id);
+    setActiveSubCategory('all');
+    setSearchQuery('');
+    setView('home');
+    const element = document.getElementById('products');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleTagClick = (tag: string) => {
+    setSearchQuery(tag);
+    setActiveCategory('all');
     setView('home');
     const element = document.getElementById('products');
     if (element) {
@@ -67,9 +81,16 @@ function App() {
     window.scrollTo(0, 0);
   };
 
-  const filteredProducts = activeCategory === 'all' 
-    ? PRODUCTS 
-    : PRODUCTS.filter(p => p.category === activeCategory);
+  const filteredProducts = PRODUCTS.filter(p => {
+    const matchesCategory = activeCategory === 'all' || p.category === activeCategory;
+    const matchesSubCategory = activeSubCategory === 'all' || p.subCategory === activeSubCategory;
+    const matchesSearch = !searchQuery || 
+      p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      p.subCategory.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.tagline.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.badges?.some(b => b.toLowerCase().includes(searchQuery.toLowerCase()));
+    return matchesCategory && matchesSubCategory && matchesSearch;
+  });
 
   return (
     <div className="min-h-screen bg-white font-sans text-zinc-900 selection:bg-emerald-100 selection:text-emerald-900">
@@ -89,12 +110,60 @@ function App() {
           >
             <Hero onExplore={() => handleCategorySelect('all')} />
             
+            {/* Hero Info Block */}
+            <section className="relative z-10 -mt-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-8 rounded-[40px] bg-white shadow-2xl shadow-zinc-900/5 border border-zinc-100">
+                {[
+                  { label: '최소수량', value: '1개부터 제작 가능', icon: CheckCircle2 },
+                  { label: '제작품목', value: '스티커 / 지류 / 굿즈', icon: Box },
+                  { label: '진행방식', value: '견적 → 파일 → 제작', icon: ArrowRight },
+                  { label: '문의방식', value: '1:1 맞춤상담 가능', icon: MessageSquare },
+                ].map((item, i) => (
+                  <div key={i} className={`flex items-center gap-4 ${i !== 3 ? 'md:border-r border-zinc-100' : ''} px-4`}>
+                    <div className="w-10 h-10 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0">
+                      <item.icon size={20} strokeWidth={2.5} />
+                    </div>
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">{item.label}</span>
+                      <span className="text-sm font-bold text-zinc-900">{item.value}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+            
             <CategorySection 
               onSelectCategory={handleCategorySelect} 
               activeCategory={activeCategory} 
             />
 
-            {/* Order Process Section */}
+            {/* Quick Find Tags */}
+            <section className="py-12 bg-zinc-50 border-b border-zinc-200">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex flex-col md:flex-row items-center gap-6">
+                  <span className="text-sm font-black text-zinc-900 whitespace-nowrap">빠른 상품 찾기</span>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      '1개부터 가능', '소량 테스트', '방수 스티커', '아크릴 굿즈', '패키지 제작', '파일업로드 가능', '당일 출고 가능'
+                    ].map((tag) => (
+                      <button 
+                        key={tag}
+                        onClick={() => handleTagClick(tag)}
+                        className={`px-4 py-2 rounded-xl border text-xs font-bold transition-all shadow-sm ${
+                          searchQuery === tag 
+                            ? 'bg-emerald-600 border-emerald-600 text-white' 
+                            : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-500 hover:text-emerald-600'
+                        }`}
+                      >
+                        #{tag}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </section>
+
+             {/* Order Process Section */}
             <section className="py-24 bg-white">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
@@ -117,33 +186,121 @@ function App() {
 
             <section id="products" className="py-24 bg-zinc-50">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-                  <div>
-                    <h2 className="text-4xl font-black text-zinc-900 mb-4 tracking-tight">
-                      {activeCategory === 'all' ? '전체 상품' : CATEGORIES.find(c => c.id === activeCategory)?.name}
-                    </h2>
-                    <p className="text-zinc-500 font-medium">
-                      {activeCategory === 'all' 
-                        ? '완두프린트의 모든 제작 상품을 한눈에 확인하세요.' 
-                        : `${CATEGORIES.find(c => c.id === activeCategory)?.description}`}
-                    </p>
+                <div className="flex flex-col mb-12 gap-8">
+                  {/* Section Title & Search */}
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div>
+                      <h2 className="text-4xl font-black text-zinc-900 mb-2 tracking-tight">제품 탐색</h2>
+                      <p className="text-zinc-500 font-medium">원하시는 카테고리와 세부 옵션을 선택해 보세요.</p>
+                    </div>
+                    <div className="relative w-full md:w-80">
+                      <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
+                      <input 
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="상품명, 태그 검색..."
+                        className="w-full pl-12 pr-4 py-3 bg-white border border-zinc-200 rounded-2xl text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all outline-none shadow-sm"
+                      />
+                    </div>
                   </div>
-                  <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 no-scrollbar">
+
+                  {/* Main Category Tabs */}
+                  <div className="flex items-center gap-1 border-b border-zinc-200 overflow-x-auto no-scrollbar">
                     {['all', ...CATEGORIES.map(c => c.id)].map((id) => (
                       <button
                         key={id}
-                        onClick={() => setActiveCategory(id)}
-                        className={`px-6 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all border ${
+                        onClick={() => handleCategorySelect(id)}
+                        className={`px-8 py-4 text-sm font-bold whitespace-nowrap transition-all relative ${
                           activeCategory === id
-                            ? 'bg-zinc-900 border-zinc-900 text-white shadow-lg shadow-zinc-900/10'
-                            : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200 hover:text-emerald-600'
+                            ? 'text-emerald-600'
+                            : 'text-zinc-400 hover:text-zinc-600'
                         }`}
                       >
                         {id === 'all' ? '전체' : CATEGORIES.find(c => c.id === id)?.name}
+                        {activeCategory === id && (
+                          <motion.div 
+                            layoutId="activeCategoryTab"
+                            className="absolute bottom-0 left-0 right-0 h-1 bg-emerald-600 rounded-t-full"
+                          />
+                        )}
                       </button>
                     ))}
                   </div>
+
+                  {/* Sub-category Sub-tabs */}
+                  <AnimatePresence mode="wait">
+                    {activeCategory !== 'all' && (
+                      <motion.div 
+                        key={activeCategory}
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="flex flex-wrap items-center gap-2 py-2"
+                      >
+                        <button
+                          onClick={() => setActiveSubCategory('all')}
+                          className={`px-5 py-2 rounded-full text-xs font-bold transition-all border ${
+                            activeSubCategory === 'all'
+                              ? 'bg-emerald-600 border-emerald-600 text-white shadow-md shadow-emerald-200'
+                              : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200 hover:text-emerald-600'
+                          }`}
+                        >
+                          전체보기
+                        </button>
+                        {CATEGORIES.find(c => c.id === activeCategory)?.subCategories.map((sub) => (
+                          <button
+                            key={sub}
+                            onClick={() => setActiveSubCategory(sub)}
+                            className={`px-5 py-2 rounded-full text-xs font-bold transition-all border ${
+                              activeSubCategory === sub
+                                ? 'bg-emerald-600 border-emerald-600 text-white shadow-md shadow-emerald-200'
+                                : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200 hover:text-emerald-600'
+                          }`}
+                        >
+                          {sub}
+                        </button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
+
+                {/* Popular/Recommended Section (Moved inside products for better context) */}
+                {activeCategory === 'all' && !searchQuery && (
+                  <div className="mb-12 p-8 rounded-[32px] bg-white border border-zinc-100 shadow-sm">
+                    <div className="flex flex-col md:flex-row gap-8">
+                      <div className="flex-1">
+                        <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-3 block">처음 주문한다면</span>
+                        <div className="flex flex-wrap gap-4">
+                          {['방수 스티커', '아크릴 키링', '엽서', '일반 명함'].map(item => (
+                            <button 
+                              key={item} 
+                              onClick={() => handleTagClick(item)}
+                              className="text-sm font-bold text-zinc-900 hover:text-emerald-600 transition-colors"
+                            >
+                              {item}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="flex-1 border-t md:border-t-0 md:border-l border-zinc-100 pt-6 md:pt-0 md:pl-8">
+                        <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-3 block">추천 테마</span>
+                        <div className="flex flex-wrap gap-6">
+                          {['소량 제작', '패키지 제작', '굿즈 필수'].map(item => (
+                            <button 
+                              key={item} 
+                              onClick={() => handleTagClick(item)}
+                              className="text-sm font-bold text-zinc-50 hover:text-zinc-900 transition-colors"
+                            >
+                              {item}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                   {filteredProducts.map((product) => (
