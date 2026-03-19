@@ -152,6 +152,28 @@ export const Navbar = ({
                       </button>
                     );
                   } else {
+                    const isSingleItem = sub.items.length === 1;
+                    const isActive = sub.items.includes(activeSubCategory) && activeCategory === activeDisplayCategory;
+                    
+                    if (isSingleItem) {
+                      return (
+                        <button
+                          key={sub.groupName}
+                          onClick={() => {
+                            onCategorySelect(activeDisplayCategory);
+                            onSubCategorySelect(sub.items[0]);
+                          }}
+                          className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap border-l border-zinc-100 ml-2 first:ml-0 first:border-0 ${
+                            isActive
+                              ? 'bg-emerald-600 text-white shadow-md shadow-emerald-100'
+                              : 'text-zinc-500 hover:bg-zinc-100'
+                          }`}
+                        >
+                          {sub.groupName}
+                        </button>
+                      );
+                    }
+
                     return (
                       <div key={sub.groupName} className="flex items-center gap-2 border-l border-zinc-200 pl-4 ml-2 first:border-0 first:pl-0 first:ml-0">
                         <span className="text-[9px] font-black text-zinc-400 uppercase tracking-tighter whitespace-nowrap">{sub.groupName}</span>
@@ -202,7 +224,7 @@ export const Navbar = ({
                     >
                       {cat.name}
                     </button>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-col gap-4">
                       {cat.subCategories.map((sub, i) => {
                         if (typeof sub === 'string') {
                           return (
@@ -213,25 +235,48 @@ export const Navbar = ({
                                 onSubCategorySelect(sub);
                                 setIsMenuOpen(false);
                               }}
-                              className={`px-3 py-1.5 rounded-lg text-xs font-bold ${activeSubCategory === sub && activeCategory === cat.id ? 'bg-emerald-600 text-white' : 'bg-zinc-100 text-zinc-500'}`}
+                              className={`px-3 py-2 rounded-xl text-sm font-bold w-fit ${activeSubCategory === sub && activeCategory === cat.id ? 'bg-emerald-600 text-white' : 'bg-zinc-100 text-zinc-500'}`}
                             >
                               {sub}
                             </button>
                           );
                         } else {
-                          return sub.items.map((item, j) => (
-                            <button 
-                              key={`${i}-${j}`}
-                              onClick={() => {
-                                onCategorySelect(cat.id);
-                                onSubCategorySelect(item);
-                                setIsMenuOpen(false);
-                              }}
-                              className={`px-3 py-1.5 rounded-lg text-xs font-bold ${activeSubCategory === item && activeCategory === cat.id ? 'bg-emerald-600 text-white' : 'bg-zinc-100 text-zinc-500'}`}
-                            >
-                              {item}
-                            </button>
-                          ));
+                          const isSingleItem = sub.items.length === 1;
+                          if (isSingleItem) {
+                            return (
+                              <button 
+                                key={i}
+                                onClick={() => {
+                                  onCategorySelect(cat.id);
+                                  onSubCategorySelect(sub.items[0]);
+                                  setIsMenuOpen(false);
+                                }}
+                                className={`px-3 py-2 rounded-xl text-sm font-bold w-fit ${sub.items.includes(activeSubCategory) && activeCategory === cat.id ? 'bg-emerald-600 text-white' : 'bg-zinc-100 text-zinc-500'}`}
+                              >
+                                {sub.groupName}
+                              </button>
+                            );
+                          }
+                          return (
+                            <div key={i} className="space-y-2">
+                              <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest block">{sub.groupName}</span>
+                              <div className="flex flex-wrap gap-2">
+                                {sub.items.map((item, j) => (
+                                  <button 
+                                    key={`${i}-${j}`}
+                                    onClick={() => {
+                                      onCategorySelect(cat.id);
+                                      onSubCategorySelect(item);
+                                      setIsMenuOpen(false);
+                                    }}
+                                    className={`px-3 py-1.5 rounded-lg text-xs font-bold ${activeSubCategory === item && activeCategory === cat.id ? 'bg-emerald-600 text-white' : 'bg-zinc-100 text-zinc-500'}`}
+                                  >
+                                    {item}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          );
                         }
                       })}
                     </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Calculator, Clock, CheckCircle2, ShoppingCart, FileText, FileUp } from 'lucide-react';
-import { Product, Quotation } from '../types';
+import { Product, Quotation, PAPER_MATERIALS } from '../types';
 
 interface QuotationCalculatorProps {
   product: Product;
@@ -124,71 +124,145 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
         </div>
 
         {/* Options */}
-        {product.options.map((option) => (
-          <div key={option.name} className="space-y-4">
-            <label className="text-xs font-black text-zinc-900 uppercase tracking-widest block">
-              {option.name}
-            </label>
-            {option.type === 'text' ? (
-              <input
-                type="text"
-                value={selectedOptions[option.name]}
-                onChange={(e) => handleOptionChange(option.name, e.target.value)}
-                placeholder={option.placeholder || `${option.name}을 입력해주세요.`}
-                className="w-full px-6 py-4 rounded-2xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none font-bold text-sm transition-colors"
-              />
-            ) : (
-              <div className="grid grid-cols-2 gap-3">
-                {option.values?.map((val) => (
-                  <button
-                    key={val.label}
-                    onClick={() => handleOptionChange(option.name, val.label)}
-                    className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden ${
-                      selectedOptions[option.name] === val.label
-                        ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/20'
-                        : 'bg-white border-zinc-200 text-zinc-600 hover:border-emerald-200'
-                    }`}
-                  >
-                    <span className="relative z-10">{val.label}</span>
-                    {val.priceModifier !== undefined && val.priceModifier !== 0 && (
-                      <span className={`block text-[10px] mt-1 opacity-70 ${selectedOptions[option.name] === val.label ? 'text-white' : 'text-zinc-400'}`}>
-                        {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
-                      </span>
-                    )}
-                  </button>
-                ))}
-              </div>
-            )}
-            {(option.name === '사이즈' || option.name === '규격(mm)' || option.name === '작업 사이즈') && selectedOptions[option.name] === '직접입력' && (
-              <motion.div 
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                className="grid grid-cols-2 gap-4 pt-2"
-              >
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">가로 (mm)</label>
-                  <input 
-                    type="number" 
-                    value={customSize.width}
-                    onChange={(e) => setCustomSize(prev => ({ ...prev, width: e.target.value }))}
-                    placeholder="50"
-                    className="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none text-sm font-bold"
-                  />
+        {product.options.map((option) => {
+          const isMaterialOption = option.name.includes('재질') || option.name.includes('용지');
+          
+          return (
+            <div key={option.name} className="space-y-4">
+              <label className="text-xs font-black text-zinc-900 uppercase tracking-widest block">
+                {option.name}
+              </label>
+              {option.type === 'text' ? (
+                <input
+                  type="text"
+                  value={selectedOptions[option.name]}
+                  onChange={(e) => handleOptionChange(option.name, e.target.value)}
+                  placeholder={option.placeholder || `${option.name}을 입력해주세요.`}
+                  className="w-full px-6 py-4 rounded-2xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none font-bold text-sm transition-colors"
+                />
+              ) : isMaterialOption && option.values ? (
+                <div className="space-y-6">
+                  {['종이류', '방수/합성지', '투명', '프리미엄/특수'].map(group => {
+                    const groupValues = option.values?.filter(val => {
+                      const material = PAPER_MATERIALS.find(m => m.name === val.label);
+                      return material ? material.group === group : false;
+                    });
+
+                    if (!groupValues || groupValues.length === 0) return null;
+
+                    return (
+                      <div key={group} className="space-y-3">
+                        <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest block">{group}</span>
+                        <div className="grid grid-cols-2 gap-3">
+                          {groupValues.map((val) => (
+                            <button
+                              key={val.label}
+                              onClick={() => handleOptionChange(option.name, val.label)}
+                              className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden ${
+                                selectedOptions[option.name] === val.label
+                                  ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/20'
+                                  : 'bg-white border-zinc-200 text-zinc-600 hover:border-emerald-200'
+                              }`}
+                            >
+                              <span className="relative z-10">{val.label}</span>
+                              {val.priceModifier !== undefined && val.priceModifier !== 0 && (
+                                <span className={`block text-[10px] mt-1 opacity-70 ${selectedOptions[option.name] === val.label ? 'text-white' : 'text-zinc-400'}`}>
+                                  {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
+                                </span>
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {/* Handle items that didn't match any group */}
+                  {(() => {
+                    const otherValues = option.values?.filter(val => {
+                      const material = PAPER_MATERIALS.find(m => m.name === val.label);
+                      return !material;
+                    });
+                    if (!otherValues || otherValues.length === 0) return null;
+                    return (
+                      <div className="space-y-3">
+                        <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest block">기타</span>
+                        <div className="grid grid-cols-2 gap-3">
+                          {otherValues.map((val) => (
+                            <button
+                              key={val.label}
+                              onClick={() => handleOptionChange(option.name, val.label)}
+                              className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden ${
+                                selectedOptions[option.name] === val.label
+                                  ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/20'
+                                  : 'bg-white border-zinc-200 text-zinc-600 hover:border-emerald-200'
+                              }`}
+                            >
+                              <span className="relative z-10">{val.label}</span>
+                              {val.priceModifier !== undefined && val.priceModifier !== 0 && (
+                                <span className={`block text-[10px] mt-1 opacity-70 ${selectedOptions[option.name] === val.label ? 'text-white' : 'text-zinc-400'}`}>
+                                  {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
+                                </span>
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">세로 (mm)</label>
-                  <input 
-                    type="number" 
-                    value={customSize.height}
-                    onChange={(e) => setCustomSize(prev => ({ ...prev, height: e.target.value }))}
-                    placeholder="50"
-                    className="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none text-sm font-bold"
-                  />
+              ) : (
+                <div className="grid grid-cols-2 gap-3">
+                  {option.values?.map((val) => (
+                    <button
+                      key={val.label}
+                      onClick={() => handleOptionChange(option.name, val.label)}
+                      className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden ${
+                        selectedOptions[option.name] === val.label
+                          ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/20'
+                          : 'bg-white border-zinc-200 text-zinc-600 hover:border-emerald-200'
+                      }`}
+                    >
+                      <span className="relative z-10">{val.label}</span>
+                      {val.priceModifier !== undefined && val.priceModifier !== 0 && (
+                        <span className={`block text-[10px] mt-1 opacity-70 ${selectedOptions[option.name] === val.label ? 'text-white' : 'text-zinc-400'}`}>
+                          {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
+                        </span>
+                      )}
+                    </button>
+                  ))}
                 </div>
-              </motion.div>
-            )}
-          </div>
-        ))}
+              )}
+              {(option.name === '사이즈' || option.name === '규격(mm)' || option.name === '작업 사이즈') && selectedOptions[option.name] === '직접입력' && (
+                <motion.div 
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  className="grid grid-cols-2 gap-4 pt-2"
+                >
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">가로 (mm)</label>
+                    <input 
+                      type="number" 
+                      value={customSize.width}
+                      onChange={(e) => setCustomSize(prev => ({ ...prev, width: e.target.value }))}
+                      placeholder="50"
+                      className="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none text-sm font-bold"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">세로 (mm)</label>
+                    <input 
+                      type="number" 
+                      value={customSize.height}
+                      onChange={(e) => setCustomSize(prev => ({ ...prev, height: e.target.value }))}
+                      placeholder="50"
+                      className="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none text-sm font-bold"
+                    />
+                  </div>
+                </motion.div>
+              )}
+            </div>
+          );
+        })}
 
         {/* Summary Box */}
         <div className="pt-8 border-t border-zinc-100">

@@ -51,6 +51,7 @@ export interface Category {
 
 export interface PaperMaterial {
   id: string;
+  group: '종이류' | '방수/합성지' | '투명' | '프리미엄/특수';
   name: string;
   texture: string;
   waterproof: boolean;
@@ -66,7 +67,8 @@ export interface PaperMaterial {
 export const PAPER_MATERIALS: PaperMaterial[] = [
   {
     id: 'art',
-    name: '아트지 라벨',
+    group: '종이류',
+    name: '아트지',
     texture: '광택이 있고 매끄러운 표면',
     waterproof: false,
     tearResistant: false,
@@ -79,6 +81,7 @@ export const PAPER_MATERIALS: PaperMaterial[] = [
   },
   {
     id: 'yupo',
+    group: '방수/합성지',
     name: '유포지',
     texture: '부드럽고 매끈한 플라스틱 느낌',
     waterproof: true,
@@ -92,6 +95,7 @@ export const PAPER_MATERIALS: PaperMaterial[] = [
   },
   {
     id: 'transparent-pet',
+    group: '투명',
     name: '투명 PET',
     texture: '완전 투명하고 매끄러운 필름',
     waterproof: true,
@@ -105,6 +109,7 @@ export const PAPER_MATERIALS: PaperMaterial[] = [
   },
   {
     id: 'yupo-matte-trans',
+    group: '투명',
     name: '유포매트 투명후지',
     texture: '매트하고 차분한 촉감',
     waterproof: true,
@@ -118,7 +123,8 @@ export const PAPER_MATERIALS: PaperMaterial[] = [
   },
   {
     id: 'gmund',
-    name: '그문드 라벨',
+    group: '프리미엄/특수',
+    name: '그문드',
     texture: '독특한 감촉의 프리미엄 종이 질감',
     waterproof: false,
     tearResistant: false,
@@ -130,21 +136,9 @@ export const PAPER_MATERIALS: PaperMaterial[] = [
     image: 'https://picsum.photos/seed/paper-gmund/400/300'
   },
   {
-    id: 'metallic',
-    name: '은광/금광 PET',
-    texture: '금속 느낌의 반짝이는 광택',
-    waterproof: true,
-    tearResistant: true,
-    transparent: false,
-    whiteInkRecommended: true,
-    coatingAvailable: true,
-    recommendedUse: '전자제품, 기계 명판, 고급 보증 스티커',
-    precautions: '금속 광택이 뛰어나며 내구성이 매우 강함.',
-    image: 'https://picsum.photos/seed/paper-metal/400/300'
-  },
-  {
     id: 'hologram',
-    name: '홀로그램 용지',
+    group: '프리미엄/특수',
+    name: '홀로그램',
     texture: '빛에 따라 무지개빛으로 변하는 표면',
     waterproof: true,
     tearResistant: true,
@@ -154,6 +148,34 @@ export const PAPER_MATERIALS: PaperMaterial[] = [
     recommendedUse: '아이돌 굿즈, 이벤트 스티커, 포인트 라벨',
     precautions: '화려한 시각적 효과가 특징. 화이트 인쇄로 부분 효과 가능.',
     image: 'https://picsum.photos/seed/paper-holo/400/300'
+  },
+  {
+    id: 'gold-pet',
+    group: '프리미엄/특수',
+    name: '금광 PET',
+    texture: '금색 금속 느낌의 반짝이는 광택',
+    waterproof: true,
+    tearResistant: true,
+    transparent: false,
+    whiteInkRecommended: true,
+    coatingAvailable: true,
+    recommendedUse: '전자제품, 기계 명판, 고급 보증 스티커',
+    precautions: '금속 광택이 뛰어나며 내구성이 매우 강함.',
+    image: 'https://picsum.photos/seed/paper-gold/400/300'
+  },
+  {
+    id: 'silver-pet',
+    group: '프리미엄/특수',
+    name: '은광 PET',
+    texture: '은색 금속 느낌의 반짝이는 광택',
+    waterproof: true,
+    tearResistant: true,
+    transparent: false,
+    whiteInkRecommended: true,
+    coatingAvailable: true,
+    recommendedUse: '전자제품, 기계 명판, 고급 보증 스티커',
+    precautions: '금속 광택이 뛰어나며 내구성이 매우 강함.',
+    image: 'https://picsum.photos/seed/paper-silver/400/300'
   }
 ];
 
@@ -178,14 +200,22 @@ export const CATEGORIES: Category[] = [
     subCategories: [
       {
         groupName: '모양별 스티커',
-        items: ['자유형', '사각반칼', '원형', '타원형', '사각라운드', '조각스티커', '다양한 모양']
+        items: ['사각 반칼', '원형', '타원형', '사각라운드', '다양한 모양']
+      },
+      {
+        groupName: '자유형 스티커',
+        items: ['자유형 스티커']
+      },
+      {
+        groupName: '조각 스티커',
+        items: ['조각 스티커']
       },
       {
         groupName: '용도별 스티커',
         items: ['리무버블', '옥외용', '냉장·냉동', '카드스티커', '스크래치', '자석스티커']
       },
       {
-        groupName: '프리미엄/특수가공',
+        groupName: '프리미엄/특수 스티커',
         items: ['투명', '홀로그램', '그문드 라벨', '메탈', 'UV', 'DTF', '에폭시']
       }
     ]
