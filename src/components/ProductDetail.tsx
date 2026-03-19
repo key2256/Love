@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { ChevronLeft, ShoppingCart, FileUp, CheckCircle2, Clock, Truck, AlertTriangle, HelpCircle, ArrowRight } from 'lucide-react';
-import { Product, Quotation, PRODUCTS } from '../types';
+import { Product, Quotation, PRODUCTS, CATEGORIES } from '../types';
 import { QuotationCalculator } from './QuotationCalculator';
 
 interface ProductDetailProps {
@@ -61,7 +61,10 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, o
             <div className="mb-8">
               <div className="flex items-center gap-2 mb-3">
                 <span className="px-3 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-widest rounded-full border border-emerald-100">
-                  {product.category}
+                  {CATEGORIES.find(c => c.id === product.category)?.name}
+                </span>
+                <span className="px-3 py-1 bg-zinc-100 text-zinc-500 text-[10px] font-black uppercase tracking-widest rounded-full border border-zinc-200">
+                  {product.subCategory}
                 </span>
                 {product.isNew && (
                   <span className="px-3 py-1 bg-zinc-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full">
@@ -93,10 +96,49 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, o
             </div>
 
             {activeTab === 'calc' ? (
-              <QuotationCalculator 
-                product={product} 
-                onGenerateQuotation={onQuotationGenerated} 
-              />
+              <div className="space-y-8">
+                <QuotationCalculator 
+                  product={product} 
+                  onGenerateQuotation={onQuotationGenerated} 
+                />
+                
+                {/* Production Guides */}
+                <div className="p-8 rounded-[32px] bg-zinc-50 border border-zinc-100">
+                  <h3 className="text-xs font-black text-zinc-900 uppercase tracking-widest mb-6">제작 가이드</h3>
+                  <div className="grid grid-cols-1 gap-3">
+                    {[
+                      '후가공 가이드/인쇄',
+                      '후가공 가이드/코팅',
+                      '후가공 가이드/타공',
+                      '후가공 가이드/귀돌이',
+                      '후가공 가이드/매직잉크'
+                    ].map((guide) => (
+                      <button key={guide} className="flex items-center justify-between p-4 rounded-xl bg-white border border-zinc-100 text-sm font-bold text-zinc-600 hover:border-emerald-500 hover:text-emerald-600 transition-all group">
+                        <span>{guide}</span>
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                {/* Shipping Info */}
+                <div className="p-8 rounded-[32px] bg-zinc-50 border border-zinc-100">
+                  <h3 className="text-xs font-black text-zinc-900 uppercase tracking-widest mb-6">배송 정보</h3>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-4 rounded-xl bg-white border border-zinc-100">
+                      <span className="text-sm font-bold text-zinc-600">배송비</span>
+                      <span className="text-sm font-black text-zinc-900">택배 3,000원 (50,000원 이상 무료)</span>
+                    </div>
+                    <div className="flex items-center justify-between p-4 rounded-xl bg-white border border-zinc-100">
+                      <span className="text-sm font-bold text-zinc-600">수령방법</span>
+                      <div className="flex gap-2">
+                        <span className="px-3 py-1 rounded-full bg-zinc-100 text-[10px] font-black text-zinc-600">택배</span>
+                        <span className="px-3 py-1 rounded-full bg-zinc-100 text-[10px] font-black text-zinc-600">방문수령</span>
+                        <span className="px-3 py-1 rounded-full bg-zinc-100 text-[10px] font-black text-zinc-600">퀵배송</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             ) : (
               <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="grid grid-cols-2 gap-4">
@@ -114,11 +156,10 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, o
                 <div className="p-8 rounded-[32px] bg-emerald-50 border border-emerald-100">
                   <h3 className="font-bold text-emerald-900 mb-4 flex items-center gap-2">
                     <HelpCircle className="w-5 h-5" />
-                    제작 팁
+                    전문가 추천
                   </h3>
                   <p className="text-sm text-emerald-800/70 leading-relaxed">
-                    {product.name} 제작 시 가장 많이 선택하시는 옵션은 '무광 코팅'입니다. 
-                    고급스러운 질감을 원하신다면 무광을, 선명한 색감을 원하신다면 유광을 추천드려요.
+                    {product.recommendation || `${product.name} 제작 시 가장 많이 선택하시는 옵션은 '무광 코팅'입니다. 고급스러운 질감을 원하신다면 무광을, 선명한 색감을 원하신다면 유광을 추천드려요.`}
                   </p>
                 </div>
               </div>
@@ -127,12 +168,32 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, o
         </div>
 
         {/* Comparison Section */}
+        {product.comparison && (
+          <section className="py-24 border-t border-zinc-100">
+            <div className="flex items-end justify-between mb-12">
+              <div>
+                <h2 className="text-3xl font-black mb-4">{product.comparison.title}</h2>
+                <p className="text-zinc-500">용도에 맞는 최적의 상품을 선택해 보세요.</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {product.comparison.items.map((item, i) => (
+                <div key={i} className="p-8 rounded-3xl bg-zinc-50 border border-zinc-100 text-center">
+                  <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-4">{item.label}</p>
+                  <p className="text-lg font-black text-zinc-900">{item.value}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Similar Products Section */}
         {similarProducts.length > 0 && (
           <section className="py-24 border-t border-zinc-100">
             <div className="flex items-end justify-between mb-12">
               <div>
-                <h2 className="text-3xl font-black mb-4">비슷한 상품 비교</h2>
-                <p className="text-zinc-500">용도에 맞는 최적의 상품을 선택해 보세요.</p>
+                <h2 className="text-3xl font-black mb-4">함께 보면 좋은 상품</h2>
+                <p className="text-zinc-500">다른 카테고리의 인기 상품들도 확인해 보세요.</p>
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -276,10 +337,18 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, o
                 제작 시 유의사항 (필독)
               </h3>
               <ul className="space-y-4 text-sm text-amber-800/80 leading-relaxed list-disc pl-5">
-                <li>모니터(RGB)와 실제 인쇄물(CMYK)은 색상 차이가 발생할 수 있습니다.</li>
-                <li>공정 특성상 사방 1~2mm 내외의 재단 오차가 발생할 수 있습니다.</li>
-                <li>합판 인쇄 특성상 동일 데이터라도 재주문 시 색상 차이가 있을 수 있습니다.</li>
-                <li>파일 오류로 인한 오탈자 및 디자인 실수는 교환/환불 사유가 되지 않습니다.</li>
+                {product.warnings && product.warnings.length > 0 ? (
+                  product.warnings.map((warning, i) => (
+                    <li key={i}>{warning}</li>
+                  ))
+                ) : (
+                  <>
+                    <li>모니터(RGB)와 실제 인쇄물(CMYK)은 색상 차이가 발생할 수 있습니다.</li>
+                    <li>공정 특성상 사방 1~2mm 내외의 재단 오차가 발생할 수 있습니다.</li>
+                    <li>합판 인쇄 특성상 동일 데이터라도 재주문 시 색상 차이가 있을 수 있습니다.</li>
+                    <li>파일 오류로 인한 오탈자 및 디자인 실수는 교환/환불 사유가 되지 않습니다.</li>
+                  </>
+                )}
               </ul>
             </div>
             <div className="p-10 rounded-3xl bg-zinc-50 border border-zinc-100">

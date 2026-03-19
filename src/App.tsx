@@ -8,15 +8,19 @@ import { TrustSection } from './components/TrustSection';
 import { ProductDetail } from './components/ProductDetail';
 import { QuotationDocument } from './components/QuotationDocument';
 import { Footer } from './components/Footer';
-import { PRODUCTS, CATEGORIES, Product, Quotation, ORDER_STEPS } from './types';
-import { FileUp, Send, CheckCircle2, MessageSquare } from 'lucide-react';
+import { Portfolio } from './components/Portfolio';
+import { InquiryForm } from './components/InquiryForm';
+import { PRODUCTS, CATEGORIES, Product, Quotation, ORDER_STEPS, PORTFOLIO_ITEMS } from './types';
+import { FileUp, Send, CheckCircle2, MessageSquare, ArrowRight } from 'lucide-react';
 
-type View = 'home' | 'detail' | 'category' | 'guide' | 'inquiry' | 'quotation_doc' | 'custom_inquiry';
+type View = 'home' | 'detail' | 'category' | 'guide' | 'inquiry' | 'quotation_doc' | 'custom_inquiry' | 'portfolio';
 
 function App() {
   const [view, setView] = useState<View>('home');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [currentQuotation, setCurrentQuotation] = useState<Quotation | null>(null);
+  const [showInquiry, setShowInquiry] = useState(false);
+  const [inquiryQuotation, setInquiryQuotation] = useState<Quotation | undefined>(undefined);
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -50,6 +54,11 @@ function App() {
     setCurrentQuotation(quotation);
     setView('quotation_doc');
     window.scrollTo(0, 0);
+  };
+
+  const handleInquiry = (quotation?: Quotation) => {
+    setInquiryQuotation(quotation);
+    setShowInquiry(true);
   };
 
   const handleInquiryFromQuotation = (quotation: Quotation) => {
@@ -158,32 +167,33 @@ function App() {
                     <h2 className="text-4xl font-black mb-4 tracking-tight">제작 사례</h2>
                     <p className="text-zinc-500">완두프린트와 함께한 다양한 프로젝트를 확인하세요.</p>
                   </div>
-                  <button className="px-8 py-3 rounded-2xl bg-zinc-900 text-white font-bold text-sm hover:bg-zinc-800 transition-all">
+                  <button 
+                    onClick={() => setView('portfolio')}
+                    className="px-8 py-3 rounded-2xl bg-zinc-900 text-white font-bold text-sm hover:bg-zinc-800 transition-all"
+                  >
                     전체 사례 보기
                   </button>
                 </div>
                 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                  {[
-                    { title: "브랜드 패키지", cat: "패키지", img: "https://picsum.photos/seed/pkg1/800/1000" },
-                    { title: "카페 굿즈 세트", cat: "굿즈", img: "https://picsum.photos/seed/goods1/800/1000" },
-                    { title: "전시회 도록", cat: "지류", img: "https://picsum.photos/seed/print1/800/1000" },
-                    { title: "캐릭터 스티커", cat: "스티커", img: "https://picsum.photos/seed/stk1/800/1000" },
-                  ].map((item, i) => (
+                  {PORTFOLIO_ITEMS.slice(0, 4).map((item, i) => (
                     <motion.div 
                       key={i}
                       whileHover={{ y: -10 }}
+                      onClick={() => setView('portfolio')}
                       className="group cursor-pointer"
                     >
                       <div className="aspect-[3/4] rounded-[32px] overflow-hidden mb-6 bg-zinc-100 border border-zinc-100">
                         <img 
-                          src={item.img} 
+                          src={item.image} 
                           alt={item.title} 
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                           referrerPolicy="no-referrer"
                         />
                       </div>
-                      <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-2 block">{item.cat}</span>
+                      <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-2 block">
+                        {CATEGORIES.find(c => c.id === item.category)?.name}
+                      </span>
                       <h3 className="font-bold text-zinc-900">{item.title}</h3>
                     </motion.div>
                   ))}
@@ -218,7 +228,7 @@ function App() {
             <QuotationDocument 
               quotation={currentQuotation}
               onBack={() => setView('detail')}
-              onInquiry={handleInquiryFromQuotation}
+              onInquiry={handleInquiry}
             />
           </motion.div>
         )}
@@ -266,161 +276,28 @@ function App() {
           </motion.div>
         )}
 
-        {view === 'inquiry' && (
+        {view === 'portfolio' && (
           <motion.div
-            key="inquiry"
+            key="portfolio"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="pt-32 pb-24 max-w-2xl mx-auto px-4"
           >
-            <div className="flex items-center justify-between mb-8">
-              <h1 className="text-4xl font-black">견적 문의</h1>
-              {currentQuotation && (
-                <div className="px-4 py-2 bg-emerald-50 text-emerald-700 rounded-xl text-xs font-bold border border-emerald-100">
-                  견적번호: {currentQuotation.id}
-                </div>
-              )}
-            </div>
-            
-            <form className="space-y-8">
-              <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-zinc-700">성함/업체명</label>
-                  <input type="text" className="w-full px-4 py-4 rounded-2xl border border-zinc-200 focus:border-emerald-500 outline-none transition-colors bg-zinc-50/50" placeholder="홍길동" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-zinc-700">연락처</label>
-                  <input type="text" className="w-full px-4 py-4 rounded-2xl border border-zinc-200 focus:border-emerald-500 outline-none transition-colors bg-zinc-50/50" placeholder="010-0000-0000" />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-zinc-700">문의 상품</label>
-                <select 
-                  defaultValue={currentQuotation?.productName || "스티커"}
-                  className="w-full px-4 py-4 rounded-2xl border border-zinc-200 focus:border-emerald-500 outline-none transition-colors bg-white"
-                >
-                  {PRODUCTS.map(p => <option key={p.id}>{p.name}</option>)}
-                  <option>기타/커스텀</option>
-                </select>
-              </div>
-
-              {currentQuotation && (
-                <div className="p-6 rounded-2xl bg-zinc-50 border border-zinc-100 space-y-4">
-                  <h3 className="text-xs font-black text-zinc-400 uppercase tracking-widest">선택된 견적 옵션</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    {Object.entries(currentQuotation.options).map(([key, val]) => (
-                      <div key={key} className="flex justify-between text-sm">
-                        <span className="text-zinc-400">{key}</span>
-                        <span className="font-bold text-zinc-900">{val}</span>
-                      </div>
-                    ))}
-                    <div className="flex justify-between text-sm border-t border-zinc-200 pt-2 col-span-2">
-                      <span className="text-zinc-400">수량</span>
-                      <span className="font-bold text-emerald-600">{currentQuotation.quantity.toLocaleString()}개</span>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              <div className="space-y-4">
-                <label className="text-sm font-bold text-zinc-700">파일 업로드</label>
-                <div className="p-12 border-2 border-dashed border-zinc-200 rounded-[32px] flex flex-col items-center justify-center gap-4 hover:border-emerald-500 hover:bg-emerald-50/30 transition-all cursor-pointer group">
-                  <div className="w-16 h-16 rounded-2xl bg-zinc-100 flex items-center justify-center group-hover:bg-emerald-100 transition-colors">
-                    <FileUp className="w-8 h-8 text-zinc-400 group-hover:text-emerald-600" />
-                  </div>
-                  <div className="text-center">
-                    <p className="font-bold text-zinc-900">클릭하거나 파일을 드래그하여 업로드</p>
-                    <p className="text-xs text-zinc-400 mt-1">AI, PDF, PSD, 고해상도 JPG (최대 50MB)</p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" className="w-4 h-4 rounded border-zinc-300 text-emerald-600 focus:ring-emerald-500" />
-                    <span className="text-xs text-zinc-500 font-medium">파일 추후 전달 예정</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" className="w-4 h-4 rounded border-zinc-300 text-emerald-600 focus:ring-emerald-500" />
-                    <span className="text-xs text-zinc-500 font-medium">참고 이미지만 첨부</span>
-                  </label>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-zinc-700">추가 요청사항</label>
-                <textarea rows={5} className="w-full px-4 py-4 rounded-2xl border border-zinc-200 focus:border-emerald-500 outline-none transition-colors bg-zinc-50/50" placeholder="제작 시 특별히 신경 써야 할 부분이나 궁금한 점을 적어주세요."></textarea>
-              </div>
-
-              <button type="button" className="w-full py-5 bg-emerald-600 text-white font-black rounded-2xl hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-600/20 active:scale-[0.98] flex items-center justify-center gap-3">
-                <Send className="w-5 h-5" />
-                <span>문의 및 파일 접수하기</span>
-              </button>
-            </form>
-          </motion.div>
-        )}
-
-        {view === 'custom_inquiry' && (
-          <motion.div
-            key="custom_inquiry"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="pt-32 pb-24 max-w-4xl mx-auto px-4"
-          >
-            <div className="text-center mb-16">
-              <h1 className="text-5xl font-black mb-6 tracking-tight">맞춤 제작 문의</h1>
-              <p className="text-lg text-zinc-500 max-w-2xl mx-auto">
-                규격 외 제작, 대량 주문, 복합 패키지 등 정형화된 상품으로 해결되지 않는 특별한 프로젝트를 위한 상담 창구입니다.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-              {[
-                { icon: <CheckCircle2 />, title: "규격 외 제작", desc: "특수 사이즈 및 형태" },
-                { icon: <MessageSquare />, title: "대량 주문", desc: "B2B 및 대량 생산 단가" },
-                { icon: <FileUp />, title: "복합 프로젝트", desc: "여러 상품 세트 구성" }
-              ].map((item, i) => (
-                <div key={i} className="p-8 rounded-[32px] bg-zinc-50 border border-zinc-100 text-center">
-                  <div className="w-12 h-12 rounded-2xl bg-white text-emerald-600 flex items-center justify-center mx-auto mb-6 shadow-sm">
-                    {item.icon}
-                  </div>
-                  <h3 className="font-bold text-zinc-900 mb-2">{item.title}</h3>
-                  <p className="text-xs text-zinc-500">{item.desc}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="bg-white rounded-[40px] border border-zinc-100 shadow-2xl shadow-zinc-200/50 p-12">
-              <form className="space-y-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-zinc-700">업체명/성함</label>
-                    <input type="text" className="w-full px-6 py-4 rounded-2xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none transition-all" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-zinc-700">이메일</label>
-                    <input type="email" className="w-full px-6 py-4 rounded-2xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none transition-all" />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-zinc-700">문의 제목</label>
-                  <input type="text" className="w-full px-6 py-4 rounded-2xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none transition-all" placeholder="예: 굿즈 패키지 대량 제작 문의" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-zinc-700">상세 내용</label>
-                  <textarea rows={8} className="w-full px-6 py-4 rounded-2xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none transition-all" placeholder="제작하고자 하는 상품의 종류, 수량, 희망 납기일 등을 상세히 적어주세요."></textarea>
-                </div>
-                <button className="w-full py-6 bg-zinc-900 text-white font-black rounded-2xl hover:bg-zinc-800 transition-all shadow-xl shadow-zinc-900/20">
-                  맞춤 제작 상담 신청하기
-                </button>
-              </form>
-            </div>
+            <Portfolio />
           </motion.div>
         )}
       </AnimatePresence>
 
       <Footer />
+
+      <AnimatePresence>
+        {showInquiry && (
+          <InquiryForm 
+            quotation={inquiryQuotation} 
+            onClose={() => setShowInquiry(false)} 
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

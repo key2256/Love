@@ -136,12 +136,19 @@ export const QuotationDocument: React.FC<QuotationDocumentProps> = ({ quotation,
               <div className="p-8 rounded-3xl bg-zinc-50 border border-zinc-100 space-y-4">
                 <div className="flex items-center gap-2 text-zinc-900 font-bold">
                   <Clock className="w-4 h-4 text-emerald-600" />
-                  <span>예상 제작기간</span>
+                  <span>예상 제작 및 수령</span>
                 </div>
-                <p className="text-sm text-zinc-500 leading-relaxed">
-                  본 견적의 예상 제작기간은 <span className="font-bold text-zinc-900">{quotation.leadTime}</span>입니다. 
-                  파일 검수 및 결제 완료 시점부터 제작이 시작됩니다.
-                </p>
+                <div className="space-y-2">
+                  <p className="text-sm text-zinc-500 leading-relaxed">
+                    예상 제작기간: <span className="font-bold text-zinc-900">{quotation.leadTime}</span>
+                  </p>
+                  <p className="text-sm text-zinc-500 leading-relaxed">
+                    예상 수령일: <span className="font-bold text-emerald-600">{quotation.estimatedDeliveryDate}</span>
+                  </p>
+                  <p className="text-[11px] text-zinc-400 leading-relaxed">
+                    * 파일 검수 및 결제 완료 시점부터 제작이 시작됩니다.
+                  </p>
+                </div>
               </div>
               <div className="p-8 rounded-3xl bg-zinc-50 border border-zinc-100 space-y-4">
                 <div className="flex items-center gap-2 text-zinc-900 font-bold">

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Calculator, Clock, CheckCircle2, ShoppingCart, FileText } from 'lucide-react';
+import { Calculator, Clock, CheckCircle2, ShoppingCart, FileText, FileUp } from 'lucide-react';
 import { Product, Quotation } from '../types';
 
 interface QuotationCalculatorProps {
@@ -13,26 +13,50 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>(() => {
     const initial: Record<string, string> = {};
     product.options.forEach(opt => {
-      initial[opt.name] = opt.values[0].label;
+      if (opt.type === 'text') {
+        initial[opt.name] = '';
+      } else if (opt.values && opt.values.length > 0) {
+        initial[opt.name] = opt.values[0].label;
+      } else {
+        initial[opt.name] = '';
+      }
     });
     return initial;
   });
   const [totalPrice, setTotalPrice] = useState(0);
   const [unitPrice, setUnitPrice] = useState(0);
+  const [discountRate, setDiscountRate] = useState(0);
+  const [estimatedDeliveryDate, setEstimatedDeliveryDate] = useState('');
   const [customSize, setCustomSize] = useState({ width: '', height: '' });
 
   useEffect(() => {
     let pricePerUnit = product.basePrice;
     
     product.options.forEach(opt => {
-      const selectedValue = opt.values.find(v => v.label === selectedOptions[opt.name]);
-      if (selectedValue?.priceModifier) {
-        pricePerUnit += selectedValue.priceModifier;
+      if (opt.values) {
+        const selectedValue = opt.values.find(v => v.label === selectedOptions[opt.name]);
+        if (selectedValue?.priceModifier) {
+          pricePerUnit += selectedValue.priceModifier;
+        }
       }
     });
 
-    setUnitPrice(pricePerUnit);
-    setTotalPrice(pricePerUnit * quantity);
+    // Quantity-based discount logic
+    let currentDiscount = 0;
+    if (quantity >= 1000) currentDiscount = 0.15;
+    else if (quantity >= 500) currentDiscount = 0.10;
+    else if (quantity >= 100) currentDiscount = 0.05;
+    
+    setDiscountRate(currentDiscount);
+    const discountedUnitPrice = Math.round(pricePerUnit * (1 - currentDiscount));
+    setUnitPrice(discountedUnitPrice);
+    setTotalPrice(discountedUnitPrice * quantity);
+
+    // Estimated delivery date calculation
+    const days = parseInt(product.leadTime.match(/\d+/)?.[0] || '3');
+    const date = new Date();
+    date.setDate(date.getDate() + days + 2); // +2 for shipping/buffer
+    setEstimatedDeliveryDate(date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }));
   }, [product, quantity, selectedOptions]);
 
   const handleOptionChange = (name: string, value: string) => {
@@ -46,12 +70,15 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
       productName: product.name,
       options: {
         ...selectedOptions,
-        ...(selectedOptions['사이즈'] === '직접입력' ? { '사이즈 상세': `${customSize.width}x${customSize.height}mm` } : {})
+        ...((selectedOptions['사이즈'] === '직접입력' || selectedOptions['규격(mm)'] === '직접입력' || selectedOptions['작업 사이즈'] === '직접입력') 
+          ? { '사이즈 상세': `${customSize.width}x${customSize.height}mm` } 
+          : {})
       },
       quantity,
       unitPrice,
       totalPrice,
       leadTime: product.leadTime,
+      estimatedDeliveryDate,
       createdAt: new Date().toISOString(),
     };
     onGenerateQuotation(quotation);
@@ -102,27 +129,37 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
             <label className="text-xs font-black text-zinc-900 uppercase tracking-widest block">
               {option.name}
             </label>
-            <div className="grid grid-cols-2 gap-3">
-              {option.values.map((val) => (
-                <button
-                  key={val.label}
-                  onClick={() => handleOptionChange(option.name, val.label)}
-                  className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden ${
-                    selectedOptions[option.name] === val.label
-                      ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/20'
-                      : 'bg-white border-zinc-200 text-zinc-600 hover:border-emerald-200'
-                  }`}
-                >
-                  <span className="relative z-10">{val.label}</span>
-                  {val.priceModifier !== undefined && val.priceModifier !== 0 && (
-                    <span className={`block text-[10px] mt-1 opacity-70 ${selectedOptions[option.name] === val.label ? 'text-white' : 'text-zinc-400'}`}>
-                      {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
-                    </span>
-                  )}
-                </button>
-              ))}
-            </div>
-            {option.name === '사이즈' && selectedOptions['사이즈'] === '직접입력' && (
+            {option.type === 'text' ? (
+              <input
+                type="text"
+                value={selectedOptions[option.name]}
+                onChange={(e) => handleOptionChange(option.name, e.target.value)}
+                placeholder={option.placeholder || `${option.name}을 입력해주세요.`}
+                className="w-full px-6 py-4 rounded-2xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none font-bold text-sm transition-colors"
+              />
+            ) : (
+              <div className="grid grid-cols-2 gap-3">
+                {option.values?.map((val) => (
+                  <button
+                    key={val.label}
+                    onClick={() => handleOptionChange(option.name, val.label)}
+                    className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden ${
+                      selectedOptions[option.name] === val.label
+                        ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/20'
+                        : 'bg-white border-zinc-200 text-zinc-600 hover:border-emerald-200'
+                    }`}
+                  >
+                    <span className="relative z-10">{val.label}</span>
+                    {val.priceModifier !== undefined && val.priceModifier !== 0 && (
+                      <span className={`block text-[10px] mt-1 opacity-70 ${selectedOptions[option.name] === val.label ? 'text-white' : 'text-zinc-400'}`}>
+                        {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
+                      </span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+            {(option.name === '사이즈' || option.name === '규격(mm)' || option.name === '작업 사이즈') && selectedOptions[option.name] === '직접입력' && (
               <motion.div 
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
@@ -171,14 +208,21 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                 <ShoppingCart className="w-4 h-4" />
                 <span className="text-xs font-medium">개당 단가</span>
               </div>
-              <span className="text-xs font-bold text-zinc-900">{unitPrice.toLocaleString()}원</span>
+              <div className="text-right">
+                <span className="text-xs font-bold text-zinc-900">{unitPrice.toLocaleString()}원</span>
+                {discountRate > 0 && (
+                  <span className="block text-[10px] text-emerald-600 font-bold">
+                    (수량 할인 {Math.round(discountRate * 100)}% 적용됨)
+                  </span>
+                )}
+              </div>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-zinc-500">
                 <Clock className="w-4 h-4" />
-                <span className="text-xs font-medium">예상 제작기간</span>
+                <span className="text-xs font-medium">예상 수령일</span>
               </div>
-              <span className="text-xs font-bold text-zinc-900">{product.leadTime}</span>
+              <span className="text-xs font-bold text-zinc-900">{estimatedDeliveryDate}</span>
             </div>
             <div className="pt-4 border-t border-zinc-200/50 flex items-end justify-between">
               <div>
@@ -190,6 +234,49 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
               <p className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-3 py-1.5 rounded-full">
                 VAT 포함
               </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Notes */}
+        {product.notes && product.notes.length > 0 && (
+          <div className="p-6 rounded-2xl bg-amber-50 border border-amber-100">
+            <h4 className="text-[10px] font-black text-amber-600 uppercase tracking-widest mb-3">제작 시 주의사항</h4>
+            <ul className="space-y-2">
+              {product.notes.map((note, i) => (
+                <li key={i} className="text-[11px] text-amber-800/80 flex gap-2">
+                  <span className="shrink-0">•</span>
+                  <span>{note}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Order Title */}
+        <div className="space-y-4">
+          <label className="text-xs font-black text-zinc-900 uppercase tracking-widest block">
+            주문제목
+          </label>
+          <input 
+            type="text" 
+            placeholder="제목을 입력해 주세요."
+            className="w-full px-6 py-4 rounded-2xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none font-bold text-sm transition-colors"
+          />
+        </div>
+
+        {/* File Upload */}
+        <div className="space-y-4">
+          <label className="text-xs font-black text-zinc-900 uppercase tracking-widest block">
+            파일 업로드
+          </label>
+          <div className="p-8 rounded-2xl border-2 border-dashed border-zinc-200 bg-zinc-50 flex flex-col items-center justify-center gap-4 group hover:border-emerald-500 transition-all cursor-pointer">
+            <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center text-zinc-400 group-hover:text-emerald-500 transition-colors">
+              <FileUp className="w-6 h-6" />
+            </div>
+            <div className="text-center">
+              <p className="text-sm font-bold text-zinc-900">파일을 드래그하거나 클릭하여 업로드</p>
+              <p className="text-[10px] text-zinc-400 mt-1">PDF ONLY (최대 50MB)</p>
             </div>
           </div>
         </div>

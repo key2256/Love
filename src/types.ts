@@ -2,6 +2,7 @@ export interface Product {
   id: string;
   name: string;
   category: string;
+  subCategory: string;
   tagline: string;
   description: string;
   image: string;
@@ -9,11 +10,15 @@ export interface Product {
   basePrice: number;
   options: {
     name: string;
-    type: 'select' | 'radio' | 'number';
-    values: { label: string; priceModifier?: number }[];
+    type: 'select' | 'radio' | 'number' | 'text';
+    values?: { label: string; priceModifier?: number }[];
+    placeholder?: string;
   }[];
   features: string[];
   leadTime: string;
+  warnings?: string[];
+  isNew?: boolean;
+  recommendation?: string;
 }
 
 export interface Quotation {
@@ -25,6 +30,7 @@ export interface Quotation {
   unitPrice: number;
   totalPrice: number;
   leadTime: string;
+  estimatedDeliveryDate: string;
   createdAt: string;
 }
 
@@ -33,6 +39,8 @@ export interface Category {
   name: string;
   icon: string;
   description: string;
+  entryPhrase: string;
+  subCategories: string[];
 }
 
 export interface FAQItem {
@@ -47,11 +55,38 @@ export interface OrderStep {
 }
 
 export const CATEGORIES: Category[] = [
-  { id: 'sticker', name: '스티커', icon: 'StickyNote', description: '소량 제작부터 다양한 재질과 후가공까지 주문할 수 있습니다.' },
-  { id: 'paper', name: '지류', icon: 'FileText', description: '감성을 담은 지류 굿즈, 고해상도 인쇄로 선명하게 제작하세요.' },
-  { id: 'package', name: '패키지', icon: 'Box', description: '브랜드의 가치를 높이는 맞춤형 패키지 솔루션.' },
-  { id: 'goods', name: '굿즈', icon: 'Gift', description: '나만의 캐릭터가 살아나는 투명하고 영롱한 아크릴 아이템.' },
-  { id: 'custom', name: '커스텀문의', icon: 'MessageSquare', description: '규격 외 제작이나 대량 주문은 별도로 상담해 드립니다.' },
+  { 
+    id: 'sticker', 
+    name: '스티커', 
+    icon: 'StickyNote', 
+    description: '원하는 모양과 재질로 소량부터 제작할 수 있는 맞춤 스티커',
+    entryPhrase: '나만의 개성을 담은 스티커 제작',
+    subCategories: ['자유형', '사각', '원형', '타원형', '사각라운드', '조각스티커', '판스티커', '투명스티커', 'UV스티커', 'DTF열전사', '네임스티커', '패키지스티커']
+  },
+  { 
+    id: 'paper', 
+    name: '카드/지류', 
+    icon: 'FileText', 
+    description: '명함, 엽서, 포토카드 등 인쇄 굿즈의 기본',
+    entryPhrase: '감성을 담은 지류 굿즈의 완성',
+    subCategories: ['일반 명함', '프리미엄 명함', '접지 명함', '디자인 템플릿 명함', '엽서', '포토카드']
+  },
+  { 
+    id: 'goods', 
+    name: '아크릴 굿즈', 
+    icon: 'Gift', 
+    description: '키링과 스탠드 중심의 커스텀 아크릴 굿즈',
+    entryPhrase: '영롱하게 빛나는 아크릴 굿즈',
+    subCategories: ['아크릴 키링', '유색 아크릴 키링', '글리터 아크릴 키링', '자개 아크릴 키링', '렌티큘러 키링', '아크릴 스탠드']
+  },
+  { 
+    id: 'custom', 
+    name: '맞춤제작', 
+    icon: 'MessageSquare', 
+    description: '규격 외 제작, 대량 발주, 조합형 굿즈는 별도 상담으로 진행',
+    entryPhrase: '특별한 프로젝트를 위한 맞춤 상담',
+    subCategories: ['규격 외 제작', '대량 제작', '조합형 굿즈', '패키지/세트 제작', '별도 상담 제작']
+  },
 ];
 
 export const ORDER_STEPS: OrderStep[] = [
@@ -65,149 +100,504 @@ export const ORDER_STEPS: OrderStep[] = [
 
 export const PRODUCTS: Product[] = [
   {
-    id: '1',
+    id: 'stk-free',
     name: '자유형 스티커',
     category: 'sticker',
-    tagline: '원하는 모양대로 자유롭게 컷팅',
-    description: '개성 있는 나만의 디자인을 칼선 그대로 살려 제작합니다. 노트북, 다이어리 어디든 찰떡궁합!',
-    image: 'https://picsum.photos/seed/sticker1/600/600',
-    minQuantity: 1,
-    basePrice: 1500,
-    features: ['소량 제작 가능', '방수 선택 가능', '자유 칼선', '개별 커팅'],
-    leadTime: '제작 2~3일 소요',
+    subCategory: '자유형',
+    tagline: '원하는 모양 그대로, 자유롭게 제작하세요.',
+    description: '칼선 제약 없이 원하는 형태 그대로 제작 가능한 스티커입니다.',
+    image: 'https://picsum.photos/seed/sticker1/800/800',
+    minQuantity: 10,
+    basePrice: 5000,
     options: [
-      { 
-        name: '용지', 
-        type: 'select',
-        values: [
-          { label: '아트지', priceModifier: 0 },
-          { label: '유포지(방수)', priceModifier: 500 },
-          { label: '투명지', priceModifier: 800 },
-          { label: '모조지', priceModifier: 200 }
-        ] 
-      },
-      { 
-        name: '코팅', 
-        type: 'select',
-        values: [
-          { label: '무광', priceModifier: 0 },
-          { label: '유광', priceModifier: 0 },
-          { label: '코팅없음', priceModifier: -100 }
-        ] 
-      },
-      { 
-        name: '사이즈', 
+      {
+        name: '작업 사이즈',
         type: 'select',
         values: [
           { label: '50x50mm 이내', priceModifier: 0 },
-          { label: '100x100mm 이내', priceModifier: 1000 },
-          { label: '직접입력', priceModifier: 2000 }
-        ] 
+          { label: '70x70mm 이내', priceModifier: 2000 },
+          { label: '100x100mm 이내', priceModifier: 5000 },
+          { label: '직접 입력', priceModifier: 0 },
+        ]
       },
+      {
+        name: '재질 선택',
+        type: 'select',
+        values: [
+          { label: '유포지', priceModifier: 0 },
+          { label: '아트지', priceModifier: -500 },
+          { label: '모조지', priceModifier: -300 },
+          { label: '투명 PET', priceModifier: 1500 },
+        ]
+      },
+      {
+        name: '표면 마감',
+        type: 'radio',
+        values: [
+          { label: '무광', priceModifier: 0 },
+          { label: '유광', priceModifier: 0 },
+          { label: '홀로그램', priceModifier: 3000 },
+        ]
+      },
+      {
+        name: '재단 방식',
+        type: 'select',
+        values: [
+          { label: '반칼', priceModifier: 0 },
+          { label: '완칼', priceModifier: 500 },
+          { label: '개별재단', priceModifier: 1000 },
+          { label: '시트형', priceModifier: 0 },
+        ]
+      }
     ],
+    features: ['자유로운 칼선', '고해상도 인쇄', '강력 접착'],
+    leadTime: '3~5 영업일',
+    warnings: [
+      '작은 글자·얇은 선·뾰족한 칼선은 제작 제한 가능',
+      '개별재단 상품은 1~2mm 오차 가능',
+      '자유형은 칼선 길이에 따라 추가비용 가능'
+    ]
   },
   {
-    id: '2',
-    name: '표준 명함',
-    category: 'paper',
-    tagline: '비즈니스의 첫인상, 깔끔한 정석',
-    description: '가장 신뢰감 있는 표준 규격과 고급 용지로 제작하는 명함입니다.',
-    image: 'https://picsum.photos/seed/card1/600/600',
-    minQuantity: 100,
-    basePrice: 5000,
-    features: ['고급지 사용', '표준 규격', '양면 인쇄', '빠른 제작'],
-    leadTime: '제작 1~2일 소요',
+    id: 'stk-uv',
+    name: 'UV 자유형 스티커',
+    category: 'sticker',
+    subCategory: 'UV스티커',
+    tagline: '매끄러운 표면 어디든, 강력한 UV 인쇄.',
+    description: '플라스틱, 유리, 금속 등 매끄러운 표면에 부착하기 적합한 고내구성 스티커입니다.',
+    image: 'https://picsum.photos/seed/uvstk/800/800',
+    minQuantity: 50,
+    basePrice: 15000,
     options: [
-      { 
-        name: '용지', 
+      {
+        name: '사이즈',
         type: 'select',
         values: [
-          { label: '반누보', priceModifier: 0 },
-          { label: '랑데뷰', priceModifier: 500 },
-          { label: '스노우 화이트', priceModifier: -500 }
-        ] 
+          { label: '30x30mm 이내', priceModifier: 0 },
+          { label: '50x50mm 이내', priceModifier: 5000 },
+        ]
       },
-      { 
-        name: '후가공', 
+      {
+        name: '화이트 인쇄',
+        type: 'radio',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '있음', priceModifier: 2000 },
+        ]
+      },
+      {
+        name: '사용 목적',
         type: 'select',
         values: [
-          { label: '귀도리(라운딩)', priceModifier: 1000 },
-          { label: '금박', priceModifier: 3000 },
-          { label: '은박', priceModifier: 3000 },
-          { label: '없음', priceModifier: 0 }
-        ] 
-      },
+          { label: '유리', priceModifier: 0 },
+          { label: '플라스틱', priceModifier: 0 },
+          { label: '아크릴', priceModifier: 0 },
+          { label: '금속', priceModifier: 0 },
+        ]
+      }
     ],
+    features: ['강력한 부착력', '생활 방수', '입체감 있는 인쇄'],
+    leadTime: '5~7 영업일',
+    warnings: [
+      '섬유류 부착 불가',
+      '작은 글씨·얇은 선은 표현 제한',
+      '오돌토돌한 표면, 오일 코팅 표면은 부착 비추천'
+    ]
   },
   {
-    id: '3',
+    id: 'goods-keyring',
     name: '아크릴 키링',
     category: 'goods',
-    tagline: '영롱함의 끝판왕, 최애 굿즈',
-    description: '투명한 아크릴 속에 내 디자인이 쏙! 견고하고 선명한 인쇄 퀄리티를 보장합니다.',
-    image: 'https://picsum.photos/seed/acrylic1/600/600',
+    subCategory: '아크릴 키링',
+    tagline: '투명하고 영롱한 나만의 캐릭터 굿즈.',
+    description: '고품질 아크릴에 배면 인쇄 방식으로 제작되어 긁힘에 강하고 선명합니다.',
+    image: 'https://picsum.photos/seed/keyring/800/800',
     minQuantity: 1,
     basePrice: 3500,
-    features: ['1개 제작 가능', '양면 인쇄', '고투명 아크릴', '다양한 부자재'],
-    leadTime: '제작 4~5일 소요',
     options: [
-      { 
-        name: '아크릴', 
+      {
+        name: '제품 종류',
         type: 'select',
         values: [
           { label: '투명', priceModifier: 0 },
-          { label: '반투명', priceModifier: 500 },
-          { label: '글리터', priceModifier: 1000 }
-        ] 
+          { label: '유색', priceModifier: 1000 },
+          { label: '글리터', priceModifier: 2000 },
+          { label: '자개', priceModifier: 3000 },
+          { label: '렌티큘러', priceModifier: 5000 },
+        ]
       },
-      { 
-        name: '부자재', 
+      {
+        name: '인쇄 방식',
+        type: 'radio',
+        values: [
+          { label: '단면', priceModifier: 0 },
+          { label: '양면', priceModifier: 2000 },
+        ]
+      },
+      {
+        name: '제작 방식',
+        type: 'radio',
+        values: [
+          { label: '일반', priceModifier: 0 },
+          { label: '라미', priceModifier: 1500 },
+        ]
+      },
+      {
+        name: '부자재 선택',
         type: 'select',
         values: [
-          { label: '군번줄(실버)', priceModifier: 0 },
-          { label: 'D링(골드)', priceModifier: 500 },
-          { label: '자물쇠형', priceModifier: 800 }
-        ] 
-      },
+          { label: '기본 고리', priceModifier: 0 },
+          { label: '카라비너', priceModifier: 500 },
+          { label: '컬러 와이어링', priceModifier: 800 },
+          { label: '구슬줄', priceModifier: 300 },
+        ]
+      }
     ],
+    features: ['고선명 UV 인쇄', '정밀 레이저 커팅', '다양한 부자재'],
+    leadTime: '5~7 영업일',
+    warnings: [
+      '화이트 인쇄 없으면 이미지가 투명하게 비침',
+      '일반 방식은 인쇄면 노출 가능',
+      '라미 방식은 내구성 높음',
+      '키링 구멍 최소 규격 필요'
+    ]
   },
   {
-    id: '4',
-    name: '커스텀 패키지 박스',
-    category: 'package',
-    tagline: '브랜드의 가치를 완성하는 마지막 조각',
-    description: '제품의 크기와 특성에 맞는 맞춤형 박스를 제작합니다. 소량 샘플 제작부터 대량 생산까지 가능합니다.',
-    image: 'https://picsum.photos/seed/box1/600/600',
-    minQuantity: 50,
-    basePrice: 12000,
-    features: ['맞춤 사이즈', '다양한 지질', '고급 인쇄', '샘플 제작 가능'],
-    leadTime: '제작 7~10일 소요',
+    id: 'paper-postcard',
+    name: '엽서',
+    category: 'paper',
+    subCategory: '엽서',
+    tagline: '소중한 마음을 담는 가장 클래식한 방법.',
+    description: '다양한 고급 수입지와 후가공으로 제작하는 고품질 엽서입니다.',
+    image: 'https://picsum.photos/seed/postcard/800/800',
+    minQuantity: 10,
+    basePrice: 8000,
     options: [
-      { 
-        name: '형태', 
+      {
+        name: '사이즈',
         type: 'select',
         values: [
-          { label: '단상자', priceModifier: 0 },
-          { label: 'G형 박스', priceModifier: 2000 },
-          { label: '싸바리 박스', priceModifier: 5000 }
-        ] 
+          { label: '100x148mm (기본)', priceModifier: 0 },
+          { label: '148x210mm (A5)', priceModifier: 3000 },
+          { label: '직접 입력', priceModifier: 0 },
+        ]
       },
-      { 
-        name: '코팅', 
+      {
+        name: '용지 선택',
         type: 'select',
         values: [
-          { label: '무광 라미네이팅', priceModifier: 0 },
-          { label: '유광 라미네이팅', priceModifier: 0 },
-          { label: 'CR 코팅', priceModifier: -500 }
-        ] 
+          { label: '스노우 250g', priceModifier: 0 },
+          { label: '랑데뷰 240g', priceModifier: 1500 },
+          { label: '아르떼 230g', priceModifier: 1500 },
+          { label: '띤또레또 250g', priceModifier: 2500 },
+        ]
       },
+      {
+        name: '인쇄 도수',
+        type: 'radio',
+        values: [
+          { label: '단면 칼라', priceModifier: 0 },
+          { label: '양면 칼라', priceModifier: 2000 },
+        ]
+      }
     ],
+    features: ['고급 수입지 사용', '선명한 색상 표현', '다양한 사이즈'],
+    leadTime: '3~4 영업일',
+    warnings: [
+      '어두운 배경색은 재단 시 터짐 현상 발생 가능',
+      '수입지는 종이 결에 따라 인쇄 느낌이 다를 수 있음'
+    ]
   },
+  {
+    id: 'bc-standard',
+    name: '일반 명함',
+    category: 'paper',
+    subCategory: '일반 명함',
+    tagline: '좋은 퀄리티로 빠르게 제작할 수 있어요.',
+    description: '가장 대중적인 90x50 규격은 물론, 원하는 규격으로도 제작이 가능해 명함 이외 다용도로 활용이 가능합니다.',
+    image: 'https://picsum.photos/seed/bc-standard/800/800',
+    minQuantity: 100,
+    basePrice: 7000,
+    options: [
+      {
+        name: '용지',
+        type: 'select',
+        values: [
+          { label: '아트지', priceModifier: 0 },
+          { label: '스노우', priceModifier: 0 },
+          { label: '얼스팩', priceModifier: 1000 },
+          { label: '반누보', priceModifier: 2000 },
+        ]
+      },
+      {
+        name: '용지/g수',
+        type: 'select',
+        values: [
+          { label: '250g', priceModifier: 0 },
+          { label: '300g', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '인쇄도수',
+        type: 'radio',
+        values: [
+          { label: '단면', priceModifier: 0 },
+          { label: '양면', priceModifier: 2000 },
+        ]
+      },
+      {
+        name: '규격(mm)',
+        type: 'select',
+        values: [
+          { label: '90x50 (표준)', priceModifier: 0 },
+          { label: '85x55 (신용카드형)', priceModifier: 0 },
+          { label: '직접입력', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '후가공',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '코팅', priceModifier: 1000 },
+          { label: '귀돌이', priceModifier: 1500 },
+          { label: '타공', priceModifier: 1000 },
+          { label: '매직잉크', priceModifier: 5000 },
+        ]
+      }
+    ],
+    features: ['1장부터 제작 가능', '다양한 용지 선택', '정밀 재단'],
+    leadTime: '1~2 영업일',
+    warnings: [
+      '재단 공정상 1~2mm 밀림 현상이 있을 수 있습니다.',
+      '모니터 해상도에 따라 실제 제품과 색상 차이가 있을 수 있습니다.',
+      '명함 케이스는 기본 제공되지 않습니다.'
+    ]
+  },
+  {
+    id: 'bc-premium',
+    name: '프리미엄 명함',
+    category: 'paper',
+    subCategory: '프리미엄 명함',
+    tagline: '특별한 가공으로 품격을 더하세요.',
+    description: '박, 형압, 엠보싱 등 다양한 후가공을 통해 차별화된 명함을 제작합니다.',
+    image: 'https://picsum.photos/seed/bc-premium/800/800',
+    minQuantity: 100,
+    basePrice: 15700,
+    options: [
+      {
+        name: '가공 종류',
+        type: 'select',
+        values: [
+          { label: '박/형압', priceModifier: 0 },
+          { label: '엠보싱<스코딕스>', priceModifier: 11800 },
+          { label: '레이저커팅', priceModifier: 13500 },
+        ]
+      },
+      {
+        name: '용지',
+        type: 'select',
+        values: [
+          { label: '고급지', priceModifier: 0 },
+          { label: '수입지', priceModifier: 2000 },
+        ]
+      }
+    ],
+    features: ['고급 후가공', '프리미엄 용지', '독특한 질감'],
+    leadTime: '4~5 영업일',
+    warnings: [
+      '후가공 공정상 제작 기간이 추가될 수 있습니다.',
+      '세밀한 문양은 표현이 제한될 수 있습니다.'
+    ]
+  },
+  {
+    id: 'bc-folded',
+    name: '접지 명함',
+    category: 'paper',
+    subCategory: '접지 명함',
+    tagline: '더 많은 정보를 담을 수 있는 접지형.',
+    description: '2단, 3단 접지로 명함 이상의 정보를 전달하기에 적합합니다.',
+    image: 'https://picsum.photos/seed/bc-folded/800/800',
+    minQuantity: 100,
+    basePrice: 14700,
+    options: [
+      {
+        name: '접지 방식',
+        type: 'radio',
+        values: [
+          { label: '2단 접지', priceModifier: 0 },
+          { label: '3단 접지', priceModifier: 5000 },
+        ]
+      }
+    ],
+    features: ['넓은 수납 공간', '다양한 레이아웃', '쿠폰/안내문 활용'],
+    leadTime: '3~4 영업일',
+    warnings: [
+      '접는 선(오시) 부분의 인쇄 터짐이 발생할 수 있습니다.',
+      '정확한 데이터 작업이 필요합니다.'
+    ]
+  },
+  {
+    id: 'bc-template',
+    name: '디자인 템플릿 명함',
+    category: 'paper',
+    subCategory: '디자인 템플릿 명함',
+    tagline: '디자인 고민 없이 빠르게 제작하세요.',
+    description: '전문 디자이너가 제작한 다양한 템플릿을 활용해 쉽고 빠르게 명함을 완성할 수 있습니다.',
+    image: 'https://picsum.photos/seed/bc-template/800/800',
+    minQuantity: 100,
+    basePrice: 9900,
+    options: [
+      {
+        name: '템플릿 선택',
+        type: 'select',
+        values: [
+          { label: '심플 비즈니스', priceModifier: 0 },
+          { label: '모던 미니멀', priceModifier: 0 },
+          { label: '크리에이티브', priceModifier: 2000 },
+          { label: '럭셔리 골드', priceModifier: 5000 },
+        ]
+      },
+      {
+        name: '용지',
+        type: 'select',
+        values: [
+          { label: '반누보 250g', priceModifier: 0 },
+          { label: '랑데뷰 240g', priceModifier: 500 },
+          { label: '스타드림 240g', priceModifier: 1500 },
+        ]
+      }
+    ],
+    features: ['다양한 디자인 템플릿', '간편한 편집', '고품질 인쇄'],
+    leadTime: '1~2 영업일',
+    warnings: [
+      '템플릿 디자인은 수정이 제한될 수 있습니다.',
+      '오타 교정은 직접 확인해 주셔야 합니다.'
+    ]
+  },
+  {
+    id: 'paper-photocard',
+    name: '포토카드',
+    category: 'paper',
+    subCategory: '포토카드',
+    tagline: '한 손에 쏙 들어오는 나만의 굿즈.',
+    description: '아이돌 굿즈, 명함, 쿠폰 등 다용도로 활용 가능한 포토카드입니다.',
+    image: 'https://picsum.photos/seed/photocard/800/800',
+    minQuantity: 24,
+    basePrice: 12000,
+    options: [
+      {
+        name: '코팅 선택',
+        type: 'select',
+        values: [
+          { label: '유광 코팅', priceModifier: 0 },
+          { label: '무광 코팅', priceModifier: 0 },
+          { label: '홀로그램 코팅', priceModifier: 5000 },
+          { label: '별무늬 코팅', priceModifier: 5000 },
+        ]
+      },
+      {
+        name: '귀도리(라운드)',
+        type: 'radio',
+        values: [
+          { label: '있음 (기본)', priceModifier: 0 },
+          { label: '없음', priceModifier: 0 },
+        ]
+      }
+    ],
+    features: ['표준 규격 55x85mm', '양면 칼라 기본', '고급 코팅 마감'],
+    leadTime: '4~5 영업일',
+    warnings: [
+      '코팅 종류에 따라 색감이 다르게 보일 수 있음',
+      '재단 공정상 1~2mm 밀림 현상 발생 가능'
+    ]
+  },
+  {
+    id: 'custom-special',
+    name: '별도 상담 제작',
+    category: 'custom',
+    subCategory: '별도 상담 제작',
+    tagline: '상상하는 모든 굿즈, 완두프린트와 상의하세요.',
+    description: '규격 외 상품이나 대량 제작, 복합적인 공정이 필요한 상품은 전문가와 상담을 통해 제작됩니다.',
+    image: 'https://picsum.photos/seed/custom/800/800',
+    minQuantity: 1,
+    basePrice: 0,
+    options: [
+      {
+        name: '문의 내용',
+        type: 'text',
+        placeholder: '제작하고 싶은 상품과 수량을 적어주세요.'
+      }
+    ],
+    features: ['1:1 전담 상담', '맞춤 견적 제안', '샘플 제작 가능'],
+    leadTime: '상담 후 결정',
+    warnings: [
+      '상담 내용에 따라 견적이 변동될 수 있습니다.',
+      '복합 공정의 경우 제작 기간이 길어질 수 있습니다.'
+    ]
+  }
 ];
 
-export const MAIN_FAQ: FAQItem[] = [
-  { question: '1개부터 제작 가능한가요?', answer: '네, 스티커와 아크릴 키링 등 대부분의 굿즈는 1개(또는 1장)부터 소량 제작이 가능합니다.' },
-  { question: '디자인 파일이 없어도 주문 가능한가요?', answer: '기본적으로 인쇄용 파일이 필요하지만, 간단한 텍스트나 이미지는 편집 서비스를 통해 도와드릴 수 있습니다. 별도 문의 부탁드립니다.' },
-  { question: '화면과 실제 인쇄 색상이 다를 수 있나요?', answer: '모니터(RGB)와 인쇄물(CMYK)의 색상 표현 방식이 달라 미세한 차이가 발생할 수 있습니다. CMYK 모드 작업을 권장합니다.' },
-  { question: '제작 기간은 얼마나 걸리나요?', answer: '상품별로 상이하며 보통 영업일 기준 2~5일 정도 소요됩니다. 후가공이 추가될 경우 기간이 늘어날 수 있습니다.' },
+export interface PortfolioItem {
+  id: string;
+  title: string;
+  category: string;
+  subCategory: string;
+  material: string;
+  finishing: string;
+  image: string;
+  description: string;
+}
+
+export const PORTFOLIO_ITEMS: PortfolioItem[] = [
+  {
+    id: 'p1',
+    title: '캐릭터 브랜드 자유형 스티커',
+    category: 'sticker',
+    subCategory: '자유형',
+    material: '유포지',
+    finishing: '무광 코팅',
+    image: 'https://picsum.photos/seed/port1/800/1000',
+    description: '귀여운 캐릭터 라인을 살린 자유형 스티커입니다. 방수가 되는 유포지에 무광 코팅을 더해 고급스럽습니다.'
+  },
+  {
+    id: 'p2',
+    title: '카페 로고 사각형 스티커',
+    category: 'sticker',
+    subCategory: '사각형',
+    material: '아트지',
+    finishing: '유광 코팅',
+    image: 'https://picsum.photos/seed/port2/800/1000',
+    description: '카페 패키지용으로 제작된 사각형 스티커입니다. 유광 코팅으로 색감이 선명하게 표현되었습니다.'
+  },
+  {
+    id: 'p3',
+    title: '전시회 작품 엽서 세트',
+    category: 'paper',
+    subCategory: '엽서',
+    material: '랑데뷰 240g',
+    finishing: '없음',
+    image: 'https://picsum.photos/seed/port3/800/1000',
+    description: '작가의 작품을 담은 엽서 세트입니다. 종이 본연의 질감을 살리기 위해 코팅 없이 제작되었습니다.'
+  },
+  {
+    id: 'p4',
+    title: '홀로그램 아크릴 키링',
+    category: 'goods',
+    subCategory: '아크릴 키링',
+    material: '홀로그램 아크릴',
+    finishing: 'D자 고리',
+    image: 'https://picsum.photos/seed/port4/800/1000',
+    description: '빛의 각도에 따라 영롱하게 빛나는 홀로그램 아크릴 키링입니다.'
+  },
+  {
+    id: 'p5',
+    title: '프리미엄 코스메틱 박스',
+    category: 'package',
+    subCategory: '박스/슬리브',
+    material: '아이보리 350g',
+    finishing: '무광 라미네이팅 + 금박',
+    image: 'https://picsum.photos/seed/port5/800/1000',
+    description: '화장품 패키지용으로 제작된 단상자입니다. 금박 후가공으로 프리미엄한 느낌을 주었습니다.'
+  }
 ];

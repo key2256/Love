@@ -57,6 +57,11 @@ export const CategorySection: React.FC<CategorySectionProps> = ({ onSelectCatego
                   <Icon size={32} strokeWidth={2.5} className={activeCategory === cat.id ? 'text-white' : 'text-emerald-600'} />
                 </div>
                 <h3 className="font-black text-xl mb-3 tracking-tight uppercase">{cat.name}</h3>
+                <p className={`text-xs font-bold mb-4 px-3 py-1 rounded-full ${
+                  activeCategory === cat.id ? 'bg-white/20 text-white' : 'bg-emerald-50 text-emerald-600'
+                }`}>
+                  {cat.entryPhrase}
+                </p>
                 <p className={`text-sm leading-relaxed font-medium ${
                   activeCategory === cat.id ? 'text-emerald-100' : 'text-zinc-400'
                 }`}>
