@@ -11,72 +11,149 @@ import { motion, AnimatePresence } from 'motion/react';
 import { CATEGORIES } from '../types';
 
 interface NavbarProps {
-  onNavigate: (view: 'home' | 'detail' | 'category' | 'guide' | 'inquiry' | 'custom_inquiry') => void;
+  onNavigate: (view: 'home' | 'detail' | 'category' | 'guide' | 'inquiry' | 'custom_inquiry' | 'portfolio') => void;
   onCategorySelect: (id: string) => void;
+  onSubCategorySelect: (sub: string) => void;
+  onLogoClick: () => void;
+  activeCategory: string;
+  activeSubCategory: string;
   isScrolled: boolean;
 }
 
-export const Navbar = ({ onNavigate, onCategorySelect, isScrolled }: NavbarProps) => {
+export const Navbar = ({ 
+  onNavigate, 
+  onCategorySelect, 
+  onSubCategorySelect,
+  onLogoClick,
+  activeCategory,
+  activeSubCategory,
+  isScrolled 
+}: NavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
+
+  const currentCategory = CATEGORIES.find(c => c.id === activeCategory);
+  const displaySubCategories = hoveredCategory 
+    ? CATEGORIES.find(c => c.id === hoveredCategory)?.subCategories 
+    : currentCategory?.subCategories;
+
+  const activeDisplayCategory = hoveredCategory || activeCategory;
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/90 backdrop-blur-md shadow-sm py-3' : 'bg-transparent py-5'}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        <div className="flex items-center gap-10">
-          <button 
-            onClick={() => onNavigate('home')}
-            className={`text-2xl font-black tracking-tighter cursor-pointer transition-colors ${isScrolled ? 'text-emerald-600' : 'text-white'}`}
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-sm' : 'bg-white/80 backdrop-blur-md'}`}>
+      {/* Main Navbar */}
+      <div className="border-b border-zinc-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 md:h-20">
+          <div className="flex items-center gap-12">
+            <button 
+              onClick={onLogoClick}
+              className="text-2xl font-black tracking-tighter cursor-pointer text-emerald-600"
+            >
+              WANDOO<span className="text-zinc-900">PRINT</span>
+            </button>
+            
+            <div className="hidden lg:flex items-center gap-8">
+              {CATEGORIES.map((cat) => (
+                <button 
+                  key={cat.id}
+                  onMouseEnter={() => setHoveredCategory(cat.id)}
+                  onMouseLeave={() => setHoveredCategory(null)}
+                  onClick={() => onCategorySelect(cat.id)}
+                  className={`text-sm font-bold transition-all relative py-2 ${
+                    activeCategory === cat.id ? 'text-emerald-600' : 'text-zinc-500 hover:text-zinc-900'
+                  }`}
+                >
+                  {cat.name}
+                  {activeCategory === cat.id && (
+                    <motion.div 
+                      layoutId="navUnderline"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-600 rounded-full"
+                    />
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <div className="hidden xl:flex items-center gap-6 mr-6 border-r border-zinc-100 pr-6">
+              <button onClick={() => onNavigate('guide')} className="text-xs font-bold text-zinc-400 hover:text-zinc-900 transition-colors">파일 가이드</button>
+              <button onClick={() => onNavigate('inquiry')} className="text-xs font-bold text-zinc-400 hover:text-zinc-900 transition-colors">견적 문의</button>
+              <button onClick={() => onNavigate('portfolio')} className="text-xs font-bold text-zinc-400 hover:text-zinc-900 transition-colors">제작 사례</button>
+            </div>
+
+            <div className="hidden sm:flex items-center bg-zinc-100 rounded-full px-4 py-1.5">
+              <Search size={16} className="text-zinc-400 mr-2" />
+              <input 
+                type="text" 
+                placeholder="검색" 
+                className="bg-transparent text-sm outline-none w-24 focus:w-40 transition-all text-zinc-900 placeholder:text-zinc-400"
+              />
+            </div>
+            <button className="p-2 rounded-full text-zinc-600 hover:bg-zinc-100 transition-colors relative">
+              <ShoppingCart size={20} />
+              <span className="absolute top-1 right-1 w-4 h-4 bg-emerald-500 text-zinc-900 text-[10px] flex items-center justify-center rounded-full font-bold">0</span>
+            </button>
+            <button className="p-2 rounded-full text-zinc-600 hover:bg-zinc-100 transition-colors">
+              <User size={20} />
+            </button>
+            <button 
+              className="lg:hidden p-2 text-zinc-600 transition-colors"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Secondary Sub-navigation Bar */}
+      <AnimatePresence>
+        {(activeCategory !== 'all' || hoveredCategory) && (
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="bg-white/95 backdrop-blur-sm border-b border-zinc-100 shadow-sm hidden lg:block"
+            onMouseEnter={() => hoveredCategory && setHoveredCategory(hoveredCategory)}
+            onMouseLeave={() => setHoveredCategory(null)}
           >
-            WANDOO<span className={isScrolled ? 'text-zinc-900' : 'text-emerald-400'}>PRINT</span>
-          </button>
-          
-          <div className="hidden lg:flex items-center gap-8">
-            <div className="relative group">
-              <button className={`text-sm font-bold flex items-center gap-1 transition-colors ${isScrolled ? 'text-zinc-900 hover:text-emerald-600' : 'text-white/80 hover:text-white'}`}>
-                카테고리 <ChevronDown size={14} />
-              </button>
-              <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-xl rounded-xl border border-zinc-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all py-2">
-                {CATEGORIES.map((cat) => (
-                  <button 
-                    key={cat.id} 
-                    onClick={() => onCategorySelect(cat.id)}
-                    className="w-full text-left px-4 py-2 text-sm text-zinc-600 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-3">
+              <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mr-4">
+                {CATEGORIES.find(c => c.id === activeDisplayCategory)?.name} 옵션
+              </span>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => onSubCategorySelect('all')}
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
+                    activeSubCategory === 'all' && activeCategory === activeDisplayCategory
+                      ? 'bg-emerald-600 text-white shadow-md shadow-emerald-100'
+                      : 'text-zinc-500 hover:bg-zinc-100'
+                  }`}
+                >
+                  전체보기
+                </button>
+                {displaySubCategories?.map((sub) => (
+                  <button
+                    key={sub}
+                    onClick={() => {
+                      onCategorySelect(activeDisplayCategory);
+                      onSubCategorySelect(sub);
+                    }}
+                    className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
+                      activeSubCategory === sub && activeCategory === activeDisplayCategory
+                        ? 'bg-emerald-600 text-white shadow-md shadow-emerald-100'
+                        : 'text-zinc-500 hover:bg-zinc-100'
+                    }`}
                   >
-                    {cat.name}
+                    {sub}
                   </button>
                 ))}
               </div>
             </div>
-            <button onClick={() => onNavigate('guide')} className={`text-sm font-bold transition-colors ${isScrolled ? 'text-zinc-900 hover:text-emerald-600' : 'text-white/80 hover:text-white'}`}>파일 가이드</button>
-            <button onClick={() => onNavigate('inquiry')} className={`text-sm font-bold transition-colors ${isScrolled ? 'text-zinc-900 hover:text-emerald-600' : 'text-white/80 hover:text-white'}`}>견적 문의</button>
-            <button onClick={() => onNavigate('custom_inquiry')} className={`text-sm font-bold transition-colors ${isScrolled ? 'text-zinc-900 hover:text-emerald-600' : 'text-white/80 hover:text-white'}`}>맞춤 제작</button>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-4">
-          <div className={`hidden sm:flex items-center rounded-full px-4 py-1.5 transition-colors ${isScrolled ? 'bg-zinc-100' : 'bg-white/10'}`}>
-            <Search size={16} className={isScrolled ? 'text-zinc-400 mr-2' : 'text-white/40 mr-2'} />
-            <input 
-              type="text" 
-              placeholder="무엇을 제작할까요?" 
-              className={`bg-transparent text-sm outline-none w-32 focus:w-48 transition-all ${isScrolled ? 'text-zinc-900 placeholder:text-zinc-400' : 'text-white placeholder:text-white/30'}`}
-            />
-          </div>
-          <button className={`p-2 rounded-full transition-colors relative ${isScrolled ? 'text-zinc-600 hover:bg-zinc-100' : 'text-white hover:bg-white/10'}`}>
-            <ShoppingCart size={20} />
-            <span className="absolute top-1 right-1 w-4 h-4 bg-emerald-500 text-zinc-900 text-[10px] flex items-center justify-center rounded-full font-bold">0</span>
-          </button>
-          <button className={`p-2 rounded-full transition-colors ${isScrolled ? 'text-zinc-600 hover:bg-zinc-100' : 'text-white hover:bg-white/10'}`}>
-            <User size={20} />
-          </button>
-          <button 
-            className={`lg:hidden p-2 transition-colors ${isScrolled ? 'text-zinc-600' : 'text-white'}`}
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-      </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Mobile Menu */}
       <AnimatePresence>

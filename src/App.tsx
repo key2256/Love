@@ -34,6 +34,14 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleLogoClick = () => {
+    setView('home');
+    setActiveCategory('all');
+    setActiveSubCategory('all');
+    setSearchQuery('');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleProductClick = (id: string) => {
     const product = PRODUCTS.find(p => p.id === id);
     if (product) {
@@ -97,6 +105,10 @@ function App() {
       <Navbar 
         onNavigate={(v) => setView(v as View)} 
         onCategorySelect={handleCategorySelect}
+        onSubCategorySelect={setActiveSubCategory}
+        onLogoClick={handleLogoClick}
+        activeCategory={activeCategory}
+        activeSubCategory={activeSubCategory}
         isScrolled={isScrolled}
       />
 
@@ -190,8 +202,15 @@ function App() {
                   {/* Section Title & Search */}
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div>
-                      <h2 className="text-4xl font-black text-zinc-900 mb-2 tracking-tight">제품 탐색</h2>
-                      <p className="text-zinc-500 font-medium">원하시는 카테고리와 세부 옵션을 선택해 보세요.</p>
+                      <h2 className="text-4xl font-black text-zinc-900 mb-2 tracking-tight">
+                        {activeCategory === 'all' ? '제품 탐색' : CATEGORIES.find(c => c.id === activeCategory)?.name}
+                        {activeSubCategory !== 'all' && <span className="text-emerald-500 ml-2">/ {activeSubCategory}</span>}
+                      </h2>
+                      <p className="text-zinc-500 font-medium">
+                        {activeCategory === 'all' 
+                          ? '완두프린트의 다양한 제작 상품을 만나보세요.' 
+                          : CATEGORIES.find(c => c.id === activeCategory)?.description}
+                      </p>
                     </div>
                     <div className="relative w-full md:w-80">
                       <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
@@ -204,66 +223,6 @@ function App() {
                       />
                     </div>
                   </div>
-
-                  {/* Main Category Tabs */}
-                  <div className="flex items-center gap-1 border-b border-zinc-200 overflow-x-auto no-scrollbar">
-                    {['all', ...CATEGORIES.map(c => c.id)].map((id) => (
-                      <button
-                        key={id}
-                        onClick={() => handleCategorySelect(id)}
-                        className={`px-8 py-4 text-sm font-bold whitespace-nowrap transition-all relative ${
-                          activeCategory === id
-                            ? 'text-emerald-600'
-                            : 'text-zinc-400 hover:text-zinc-600'
-                        }`}
-                      >
-                        {id === 'all' ? '전체' : CATEGORIES.find(c => c.id === id)?.name}
-                        {activeCategory === id && (
-                          <motion.div 
-                            layoutId="activeCategoryTab"
-                            className="absolute bottom-0 left-0 right-0 h-1 bg-emerald-600 rounded-t-full"
-                          />
-                        )}
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* Sub-category Sub-tabs */}
-                  <AnimatePresence mode="wait">
-                    {activeCategory !== 'all' && (
-                      <motion.div 
-                        key={activeCategory}
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="flex flex-wrap items-center gap-2 py-2"
-                      >
-                        <button
-                          onClick={() => setActiveSubCategory('all')}
-                          className={`px-5 py-2 rounded-full text-xs font-bold transition-all border ${
-                            activeSubCategory === 'all'
-                              ? 'bg-emerald-600 border-emerald-600 text-white shadow-md shadow-emerald-200'
-                              : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200 hover:text-emerald-600'
-                          }`}
-                        >
-                          전체보기
-                        </button>
-                        {CATEGORIES.find(c => c.id === activeCategory)?.subCategories.map((sub) => (
-                          <button
-                            key={sub}
-                            onClick={() => setActiveSubCategory(sub)}
-                            className={`px-5 py-2 rounded-full text-xs font-bold transition-all border ${
-                              activeSubCategory === sub
-                                ? 'bg-emerald-600 border-emerald-600 text-white shadow-md shadow-emerald-200'
-                                : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200 hover:text-emerald-600'
-                          }`}
-                        >
-                          {sub}
-                        </button>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
                 </div>
 
                 {/* Popular/Recommended Section (Moved inside products for better context) */}
