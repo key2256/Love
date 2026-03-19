@@ -32,24 +32,34 @@ export const Navbar = ({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const [selectedSubGroup, setSelectedSubGroup] = useState<string | null>(null);
+  const [prevCategory, setPrevCategory] = useState(activeCategory);
 
-  const currentCategory = CATEGORIES.find(c => c.id === activeCategory);
-  const displaySubCategories = hoveredCategory 
-    ? CATEGORIES.find(c => c.id === hoveredCategory)?.subCategories 
-    : currentCategory?.subCategories;
+  // Immediate state cleanup when category changes to prevent UI overlap/lag
+  if (activeCategory !== prevCategory) {
+    setPrevCategory(activeCategory);
+    setSelectedSubGroup('all');
+  }
 
-  const activeDisplayCategory = hoveredCategory || activeCategory;
+  // Determine which category to display in the secondary navigation bar
+  // Priority: activeCategory (click) > hoveredCategory (hover)
+  // If a category is selected by click, hover will not overwrite the sub-navigation display.
+  const activeDisplayCategory = activeCategory !== 'all' ? activeCategory : hoveredCategory;
   const currentDisplayCategory = CATEGORIES.find(c => c.id === activeDisplayCategory);
 
-  // Sync selectedSubGroup with activeSubCategory and activeCategory
+  // Sync selectedSubGroup with activeSubCategory
   useEffect(() => {
-    if (activeSubCategory === 'all' || activeCategory !== activeDisplayCategory) {
+    if (activeSubCategory === 'all') {
       setSelectedSubGroup('all');
-    } else {
-      const group = currentDisplayCategory?.subCategories.find(sub => {
+      return;
+    }
+
+    // Only sync if the active category matches what we are displaying
+    if (activeCategory === activeDisplayCategory && currentDisplayCategory) {
+      const group = currentDisplayCategory.subCategories.find(sub => {
         if (typeof sub === 'string') return sub === activeSubCategory;
         return sub.items.includes(activeSubCategory);
       });
+      
       if (group) {
         setSelectedSubGroup(typeof group === 'string' ? group : group.groupName);
       }
@@ -125,15 +135,16 @@ export const Navbar = ({
       </div>
 
       {/* Secondary Sub-navigation Bar */}
-      <AnimatePresence>
-        {(activeCategory !== 'all' || hoveredCategory) && (
+      <AnimatePresence mode="wait">
+        {activeDisplayCategory && activeDisplayCategory !== 'all' && (
           <motion.div 
+            key={activeDisplayCategory}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             className="bg-white/95 backdrop-blur-sm border-b border-zinc-100 shadow-sm hidden lg:block"
-            onMouseEnter={() => hoveredCategory && setHoveredCategory(hoveredCategory)}
-            onMouseLeave={() => setHoveredCategory(null)}
+            onMouseEnter={() => activeCategory === 'all' && setHoveredCategory(activeDisplayCategory)}
+            onMouseLeave={() => activeCategory === 'all' && setHoveredCategory(null)}
           >
             {/* Tier 1: Groups/Categories */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center gap-3 overflow-x-auto no-scrollbar border-b border-zinc-50/50">
