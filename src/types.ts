@@ -2135,7 +2135,7 @@ export const PRODUCTS: Product[] = [
     badges: ['굿즈필수', '라운드기본', '양면인쇄']
   },
   {
-    id: 'goods-stand',
+    id: 'goods-stand-v2',
     name: '아크릴 스탠드',
     category: 'goods',
     subCategory: '아크릴 스탠드',
@@ -2177,7 +2177,7 @@ export const PRODUCTS: Product[] = [
     badges: ['대량특화', '자동부착용', '가성비']
   },
   {
-    id: 'stk-circle',
+    id: 'stk-circle-v2',
     name: '원형 스티커',
     category: 'sticker',
     subCategory: '원형',
@@ -2201,7 +2201,7 @@ export const PRODUCTS: Product[] = [
     leadTime: '2~3일'
   },
   {
-    id: 'stk-removable',
+    id: 'stk-removable-v2',
     name: '리무버블 스티커',
     category: 'sticker',
     subCategory: '리무버블',
