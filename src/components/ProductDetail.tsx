@@ -14,10 +14,16 @@ import {
   Droplets,
   Scissors,
   Layers,
-  Sparkles
+  Sparkles,
+  RotateCcw,
+  Zap,
+  Crown,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { Product, Quotation, PRODUCTS, CATEGORIES, PAPER_MATERIALS, PaperMaterial } from '../types';
 import { QuotationCalculator } from './QuotationCalculator';
+import PaperMaterialCard from './PaperMaterialCard';
 
 interface ProductDetailProps {
   product: Product;
@@ -25,68 +31,26 @@ interface ProductDetailProps {
   onQuotationGenerated: (quotation: Quotation) => void;
 }
 
-const PaperCard: React.FC<{ paper: PaperMaterial }> = ({ paper }) => (
-  <div className="bg-white rounded-3xl border border-zinc-100 overflow-hidden shadow-sm hover:shadow-xl transition-all group flex flex-col h-full">
-    <div className="aspect-[16/10] overflow-hidden bg-zinc-100 relative">
-      <img 
-        src={paper.image} 
-        alt={paper.name} 
-        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-        referrerPolicy="no-referrer"
-      />
-      <div className="absolute top-4 left-4">
-        <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-[10px] font-black text-zinc-900 rounded-full shadow-sm border border-zinc-100">
-          {paper.group}
-        </span>
-      </div>
-    </div>
-    <div className="p-6 flex flex-col flex-1">
-      <div className="mb-4">
-        <h4 className="text-xl font-black text-zinc-900 mb-1">{paper.name}</h4>
-        <p className="text-xs text-zinc-500 font-medium">{paper.texture}</p>
-      </div>
-      
-      <div className="grid grid-cols-2 gap-2 mb-6">
-        {[
-          { label: '방수성', value: paper.waterproof, icon: Droplets },
-          { label: '찢김방지', value: paper.tearResistant, icon: Scissors },
-          { label: '투명도', value: paper.transparent, icon: Layers },
-          { label: '화이트인쇄', value: paper.whiteInkRecommended, icon: Sparkles },
-        ].map((attr) => (
-          <div key={attr.label} className={`flex items-center gap-2 px-3 py-2 rounded-xl border transition-colors ${attr.value ? 'bg-emerald-50 border-emerald-100 text-emerald-700' : 'bg-zinc-50 border-zinc-100 text-zinc-400'}`}>
-            <attr.icon size={12} className={attr.value ? 'text-emerald-600' : 'text-zinc-300'} />
-            <span className="text-[10px] font-bold">{attr.label}</span>
-          </div>
-        ))}
-      </div>
-
-      <div className="space-y-4 mt-auto">
-        <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-100">
-          <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest block mb-2">추천 용도</span>
-          <p className="text-xs text-zinc-700 leading-relaxed font-medium">{paper.recommendedUse}</p>
-        </div>
-        <div>
-          <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest block mb-2">주의사항</span>
-          <p className="text-[11px] text-zinc-500 leading-relaxed italic">
-            {paper.precautions}
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-);
-
 export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, onQuotationGenerated }) => {
   const [activeTab, setActiveTab] = useState<'calc' | 'info'>('calc');
-  const [selectedMaterialGroup, setSelectedMaterialGroup] = useState<PaperMaterial['group']>('종이류');
+  const [selectedMaterialGroup, setSelectedMaterialGroup] = useState<PaperMaterial['group']>('일반/기본 용지');
+  const [showAllMaterials, setShowAllMaterials] = useState(false);
 
   // Find similar products for comparison
   const similarProducts = PRODUCTS.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
 
   const isSticker = product.category === 'sticker';
 
-  const materialGroups: PaperMaterial['group'][] = ['종이류', '방수/합성지', '투명', '프리미엄/특수'];
+  const materialGroups: PaperMaterial['group'][] = [
+    '일반/기본 용지',
+    '방수/합성지',
+    '투명/PET',
+    '메탈/광택 특수 재질',
+    '프리미엄 라벨(GMUND)'
+  ];
+  
   const filteredMaterials = PAPER_MATERIALS.filter(m => m.group === selectedMaterialGroup);
+  const displayedMaterials = showAllMaterials ? filteredMaterials : filteredMaterials.slice(0, 8);
 
   return (
     <div className="min-h-screen bg-white pt-24 pb-20">
@@ -234,7 +198,10 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, o
               {materialGroups.map((group) => (
                 <button
                   key={group}
-                  onClick={() => setSelectedMaterialGroup(group)}
+                  onClick={() => {
+                    setSelectedMaterialGroup(group);
+                    setShowAllMaterials(false);
+                  }}
                   className={`px-8 py-4 rounded-2xl text-sm font-black transition-all border-2 ${
                     selectedMaterialGroup === group 
                       ? 'bg-zinc-900 border-zinc-900 text-white shadow-xl shadow-zinc-200 scale-105' 
@@ -248,10 +215,25 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, o
 
             {/* Tier 2: Specific Materials */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-              {filteredMaterials.map((paper) => (
-                <PaperCard key={paper.id} paper={paper} />
+              {displayedMaterials.map((paper) => (
+                <PaperMaterialCard key={paper.id} material={paper} />
               ))}
             </div>
+
+            {filteredMaterials.length > 8 && (
+              <div className="mt-12 text-center">
+                <button
+                  onClick={() => setShowAllMaterials(!showAllMaterials)}
+                  className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-zinc-100 text-zinc-900 font-black text-sm hover:bg-zinc-200 transition-all"
+                >
+                  {showAllMaterials ? (
+                    <>접기 <ChevronUp size={16} /></>
+                  ) : (
+                    <>더 많은 재질 보기 ({filteredMaterials.length - 8}개 더 있음) <ChevronDown size={16} /></>
+                  )}
+                </button>
+              </div>
+            )}
 
             <div className="mt-16 p-10 rounded-[40px] bg-zinc-50 border border-zinc-100">
               <div className="flex flex-col md:flex-row gap-12">

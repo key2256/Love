@@ -142,7 +142,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                 />
               ) : isMaterialOption && option.values ? (
                 <div className="space-y-6">
-                  {['종이류', '방수/합성지', '투명', '프리미엄/특수'].map(group => {
+                  {['일반/기본 용지', '방수/합성지', '투명/PET', '메탈/광택 특수 재질', '프리미엄 라벨(GMUND)'].map(group => {
                     const groupValues = option.values?.filter(val => {
                       const material = PAPER_MATERIALS.find(m => m.name === val.label);
                       return material ? material.group === group : false;
