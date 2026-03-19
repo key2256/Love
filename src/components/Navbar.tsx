@@ -31,6 +31,7 @@ export const Navbar = ({
 }: NavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
+  const [selectedSubGroup, setSelectedSubGroup] = useState<string | null>(null);
 
   const currentCategory = CATEGORIES.find(c => c.id === activeCategory);
   const displaySubCategories = hoveredCategory 
@@ -38,6 +39,22 @@ export const Navbar = ({
     : currentCategory?.subCategories;
 
   const activeDisplayCategory = hoveredCategory || activeCategory;
+  const currentDisplayCategory = CATEGORIES.find(c => c.id === activeDisplayCategory);
+
+  // Sync selectedSubGroup with activeSubCategory and activeCategory
+  useEffect(() => {
+    if (activeSubCategory === 'all' || activeCategory !== activeDisplayCategory) {
+      setSelectedSubGroup('all');
+    } else {
+      const group = currentDisplayCategory?.subCategories.find(sub => {
+        if (typeof sub === 'string') return sub === activeSubCategory;
+        return sub.items.includes(activeSubCategory);
+      });
+      if (group) {
+        setSelectedSubGroup(typeof group === 'string' ? group : group.groupName);
+      }
+    }
+  }, [activeCategory, activeSubCategory, activeDisplayCategory, currentDisplayCategory]);
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-sm' : 'bg-white/80 backdrop-blur-md'}`}>
@@ -118,89 +135,101 @@ export const Navbar = ({
             onMouseEnter={() => hoveredCategory && setHoveredCategory(hoveredCategory)}
             onMouseLeave={() => setHoveredCategory(null)}
           >
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-3 overflow-x-auto no-scrollbar">
-              <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mr-4 whitespace-nowrap">
-                {CATEGORIES.find(c => c.id === activeDisplayCategory)?.name} 옵션
+            {/* Tier 1: Groups/Categories */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center gap-3 overflow-x-auto no-scrollbar border-b border-zinc-50/50">
+              <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mr-4 whitespace-nowrap opacity-70">
+                {currentDisplayCategory?.name} 분류
               </span>
               <div className="flex items-center gap-1">
                 <button
-                  onClick={() => onSubCategorySelect('all')}
+                  onClick={() => {
+                    onCategorySelect(activeDisplayCategory);
+                    onSubCategorySelect('all');
+                    setSelectedSubGroup('all');
+                  }}
                   className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
-                    activeSubCategory === 'all' && activeCategory === activeDisplayCategory
+                    selectedSubGroup === 'all'
                       ? 'bg-emerald-600 text-white shadow-md shadow-emerald-100'
                       : 'text-zinc-500 hover:bg-zinc-100'
                   }`}
                 >
                   전체보기
                 </button>
-                {displaySubCategories?.map((sub, idx) => {
-                  if (typeof sub === 'string') {
-                    return (
-                      <button
-                        key={sub}
-                        onClick={() => {
+                {currentDisplayCategory?.subCategories.map((sub) => {
+                  const groupName = typeof sub === 'string' ? sub : sub.groupName;
+                  const isActive = selectedSubGroup === groupName;
+                  
+                  return (
+                    <button
+                      key={groupName}
+                      onClick={() => {
+                        setSelectedSubGroup(groupName);
+                        if (typeof sub === 'string') {
                           onCategorySelect(activeDisplayCategory);
                           onSubCategorySelect(sub);
-                        }}
-                        className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
-                          activeSubCategory === sub && activeCategory === activeDisplayCategory
-                            ? 'bg-emerald-600 text-white shadow-md shadow-emerald-100'
-                            : 'text-zinc-500 hover:bg-zinc-100'
-                        }`}
-                      >
-                        {sub}
-                      </button>
-                    );
-                  } else {
-                    const isSingleItem = sub.items.length === 1;
-                    const isActive = sub.items.includes(activeSubCategory) && activeCategory === activeDisplayCategory;
-                    
-                    if (isSingleItem) {
-                      return (
-                        <button
-                          key={sub.groupName}
-                          onClick={() => {
-                            onCategorySelect(activeDisplayCategory);
-                            onSubCategorySelect(sub.items[0]);
-                          }}
-                          className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap border-l border-zinc-100 ml-2 first:ml-0 first:border-0 ${
-                            isActive
-                              ? 'bg-emerald-600 text-white shadow-md shadow-emerald-100'
-                              : 'text-zinc-500 hover:bg-zinc-100'
-                          }`}
-                        >
-                          {sub.groupName}
-                        </button>
-                      );
-                    }
-
-                    return (
-                      <div key={sub.groupName} className="flex items-center gap-2 border-l border-zinc-200 pl-4 ml-2 first:border-0 first:pl-0 first:ml-0">
-                        <span className="text-[9px] font-black text-zinc-400 uppercase tracking-tighter whitespace-nowrap">{sub.groupName}</span>
-                        <div className="flex items-center gap-1">
-                          {sub.items.map(item => (
-                            <button
-                              key={item}
-                              onClick={() => {
-                                onCategorySelect(activeDisplayCategory);
-                                onSubCategorySelect(item);
-                              }}
-                              className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
-                                activeSubCategory === item && activeCategory === activeDisplayCategory
-                                  ? 'bg-emerald-600 text-white shadow-md shadow-emerald-100'
-                                  : 'text-zinc-500 hover:bg-zinc-100'
-                              }`}
-                            >
-                              {item}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    );
-                  }
+                        } else if (sub.items.length === 1) {
+                          onCategorySelect(activeDisplayCategory);
+                          onSubCategorySelect(sub.items[0]);
+                        }
+                      }}
+                      className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
+                        isActive
+                          ? 'bg-emerald-600 text-white shadow-md shadow-emerald-100'
+                          : 'text-zinc-500 hover:bg-zinc-100'
+                      }`}
+                    >
+                      {groupName}
+                    </button>
+                  );
                 })}
               </div>
             </div>
+
+            {/* Tier 2: Sub-items */}
+            <AnimatePresence mode="wait">
+              {selectedSubGroup && selectedSubGroup !== 'all' && (() => {
+                const group = currentDisplayCategory?.subCategories.find(sub => 
+                  (typeof sub !== 'string' && sub.groupName === selectedSubGroup)
+                );
+                
+                if (!group || typeof group === 'string' || group.items.length <= 1) return null;
+
+                return (
+                  <motion.div
+                    key={selectedSubGroup}
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="bg-zinc-50/30 overflow-hidden"
+                  >
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex items-center gap-3 overflow-x-auto no-scrollbar">
+                      <span className="text-[9px] font-black text-zinc-400 uppercase tracking-tighter mr-4 whitespace-nowrap pl-12">
+                        상세 선택
+                      </span>
+                      <div className="flex items-center gap-1">
+                        {group.items.map(item => (
+                          <button
+                            key={item}
+                            onClick={() => {
+                              onCategorySelect(activeDisplayCategory);
+                              onSubCategorySelect(item);
+                            }}
+                            className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
+                              activeSubCategory === item && activeCategory === activeDisplayCategory
+                                ? 'bg-zinc-900 text-white shadow-md shadow-zinc-200'
+                                : 'text-zinc-500 hover:bg-zinc-100'
+                            }`}
+                          >
+                            {item}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })()}
+            </AnimatePresence>
           </motion.div>
         )}
       </AnimatePresence>
