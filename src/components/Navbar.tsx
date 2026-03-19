@@ -118,14 +118,14 @@ export const Navbar = ({
             onMouseEnter={() => hoveredCategory && setHoveredCategory(hoveredCategory)}
             onMouseLeave={() => setHoveredCategory(null)}
           >
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-3">
-              <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mr-4">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-3 overflow-x-auto no-scrollbar">
+              <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mr-4 whitespace-nowrap">
                 {CATEGORIES.find(c => c.id === activeDisplayCategory)?.name} 옵션
               </span>
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => onSubCategorySelect('all')}
-                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
                     activeSubCategory === 'all' && activeCategory === activeDisplayCategory
                       ? 'bg-emerald-600 text-white shadow-md shadow-emerald-100'
                       : 'text-zinc-500 hover:bg-zinc-100'
@@ -133,22 +133,50 @@ export const Navbar = ({
                 >
                   전체보기
                 </button>
-                {displaySubCategories?.map((sub) => (
-                  <button
-                    key={sub}
-                    onClick={() => {
-                      onCategorySelect(activeDisplayCategory);
-                      onSubCategorySelect(sub);
-                    }}
-                    className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
-                      activeSubCategory === sub && activeCategory === activeDisplayCategory
-                        ? 'bg-emerald-600 text-white shadow-md shadow-emerald-100'
-                        : 'text-zinc-500 hover:bg-zinc-100'
-                    }`}
-                  >
-                    {sub}
-                  </button>
-                ))}
+                {displaySubCategories?.map((sub, idx) => {
+                  if (typeof sub === 'string') {
+                    return (
+                      <button
+                        key={sub}
+                        onClick={() => {
+                          onCategorySelect(activeDisplayCategory);
+                          onSubCategorySelect(sub);
+                        }}
+                        className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
+                          activeSubCategory === sub && activeCategory === activeDisplayCategory
+                            ? 'bg-emerald-600 text-white shadow-md shadow-emerald-100'
+                            : 'text-zinc-500 hover:bg-zinc-100'
+                        }`}
+                      >
+                        {sub}
+                      </button>
+                    );
+                  } else {
+                    return (
+                      <div key={sub.groupName} className="flex items-center gap-2 border-l border-zinc-200 pl-4 ml-2 first:border-0 first:pl-0 first:ml-0">
+                        <span className="text-[9px] font-black text-zinc-400 uppercase tracking-tighter whitespace-nowrap">{sub.groupName}</span>
+                        <div className="flex items-center gap-1">
+                          {sub.items.map(item => (
+                            <button
+                              key={item}
+                              onClick={() => {
+                                onCategorySelect(activeDisplayCategory);
+                                onSubCategorySelect(item);
+                              }}
+                              className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
+                                activeSubCategory === item && activeCategory === activeDisplayCategory
+                                  ? 'bg-emerald-600 text-white shadow-md shadow-emerald-100'
+                                  : 'text-zinc-500 hover:bg-zinc-100'
+                              }`}
+                            >
+                              {item}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  }
+                })}
               </div>
             </div>
           </motion.div>
@@ -162,21 +190,52 @@ export const Navbar = ({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden absolute top-full left-0 right-0 bg-white border-t border-zinc-100 shadow-xl overflow-hidden"
+            className="lg:hidden absolute top-full left-0 right-0 bg-white border-t border-zinc-100 shadow-xl overflow-y-auto max-h-[80vh]"
           >
-            <div className="p-6 flex flex-col gap-6">
-              <div className="grid grid-cols-2 gap-4">
+            <div className="p-6 flex flex-col gap-8">
+              <div className="flex flex-col gap-6">
                 {CATEGORIES.map((cat) => (
-                  <button 
-                    key={cat.id} 
-                    className="text-left py-3 px-4 bg-zinc-50 rounded-xl text-sm font-bold text-zinc-900"
-                    onClick={() => {
-                      onCategorySelect(cat.id);
-                      setIsMenuOpen(false);
-                    }}
-                  >
-                    {cat.name}
-                  </button>
+                  <div key={cat.id} className="space-y-3">
+                    <button 
+                      className={`text-lg font-black tracking-tight ${activeCategory === cat.id ? 'text-emerald-600' : 'text-zinc-900'}`}
+                      onClick={() => onCategorySelect(cat.id)}
+                    >
+                      {cat.name}
+                    </button>
+                    <div className="flex flex-wrap gap-2">
+                      {cat.subCategories.map((sub, i) => {
+                        if (typeof sub === 'string') {
+                          return (
+                            <button 
+                              key={i}
+                              onClick={() => {
+                                onCategorySelect(cat.id);
+                                onSubCategorySelect(sub);
+                                setIsMenuOpen(false);
+                              }}
+                              className={`px-3 py-1.5 rounded-lg text-xs font-bold ${activeSubCategory === sub && activeCategory === cat.id ? 'bg-emerald-600 text-white' : 'bg-zinc-100 text-zinc-500'}`}
+                            >
+                              {sub}
+                            </button>
+                          );
+                        } else {
+                          return sub.items.map((item, j) => (
+                            <button 
+                              key={`${i}-${j}`}
+                              onClick={() => {
+                                onCategorySelect(cat.id);
+                                onSubCategorySelect(item);
+                                setIsMenuOpen(false);
+                              }}
+                              className={`px-3 py-1.5 rounded-lg text-xs font-bold ${activeSubCategory === item && activeCategory === cat.id ? 'bg-emerald-600 text-white' : 'bg-zinc-100 text-zinc-500'}`}
+                            >
+                              {item}
+                            </button>
+                          ));
+                        }
+                      })}
+                    </div>
+                  </div>
                 ))}
               </div>
               <div className="flex flex-col gap-4 pt-6 border-t border-zinc-100">

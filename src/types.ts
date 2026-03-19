@@ -35,14 +35,127 @@ export interface Quotation {
   createdAt: string;
 }
 
+export interface SubCategoryGroup {
+  groupName: string;
+  items: string[];
+}
+
 export interface Category {
   id: string;
   name: string;
   icon: string;
   description: string;
   entryPhrase: string;
-  subCategories: string[];
+  subCategories: string[] | SubCategoryGroup[];
 }
+
+export interface PaperMaterial {
+  id: string;
+  name: string;
+  texture: string;
+  waterproof: boolean;
+  tearResistant: boolean;
+  transparent: boolean;
+  whiteInkRecommended: boolean;
+  coatingAvailable: boolean;
+  recommendedUse: string;
+  precautions: string;
+  image?: string;
+}
+
+export const PAPER_MATERIALS: PaperMaterial[] = [
+  {
+    id: 'art',
+    name: '아트지 라벨',
+    texture: '광택이 있고 매끄러운 표면',
+    waterproof: false,
+    tearResistant: false,
+    transparent: false,
+    whiteInkRecommended: false,
+    coatingAvailable: true,
+    recommendedUse: '일반 홍보용, 박스 부착용, 가격표',
+    precautions: '습기에 취약하므로 실내 사용 권장. 코팅 없이 주문 시 칼선 부분 종이 지분 발생 가능.',
+    image: 'https://picsum.photos/seed/paper-art/400/300'
+  },
+  {
+    id: 'yupo',
+    name: '유포지',
+    texture: '부드럽고 매끈한 플라스틱 느낌',
+    waterproof: true,
+    tearResistant: true,
+    transparent: false,
+    whiteInkRecommended: false,
+    coatingAvailable: true,
+    recommendedUse: '냉장/냉동 식품, 욕실 용품, 옥외 홍보물',
+    precautions: '내구성이 뛰어나며 물에 젖지 않음. 가장 대중적인 방수 재질.',
+    image: 'https://picsum.photos/seed/paper-yupo/400/300'
+  },
+  {
+    id: 'transparent-pet',
+    name: '투명 PET',
+    texture: '완전 투명하고 매끄러운 필름',
+    waterproof: true,
+    tearResistant: true,
+    transparent: true,
+    whiteInkRecommended: true,
+    coatingAvailable: false,
+    recommendedUse: '유리창, 투명 용기, 디자인 강조 스티커',
+    precautions: '배경이 투명하여 부착면 색상에 영향을 받음. 화이트 인쇄 권장.',
+    image: 'https://picsum.photos/seed/paper-pet/400/300'
+  },
+  {
+    id: 'yupo-matte-trans',
+    name: '유포매트 투명후지',
+    texture: '매트하고 차분한 촉감',
+    waterproof: true,
+    tearResistant: true,
+    transparent: false,
+    whiteInkRecommended: false,
+    coatingAvailable: true,
+    recommendedUse: '고급 화장품, 문구류, 다이어리 꾸미기',
+    precautions: '스티커 배경지를 뜯어내면 투명한 후지가 보이는 것이 특징.',
+    image: 'https://picsum.photos/seed/paper-matte/400/300'
+  },
+  {
+    id: 'gmund',
+    name: '그문드 라벨',
+    texture: '독특한 감촉의 프리미엄 종이 질감',
+    waterproof: false,
+    tearResistant: false,
+    transparent: false,
+    whiteInkRecommended: false,
+    coatingAvailable: false,
+    recommendedUse: '와인 라벨, 고급 패키지, 브랜드 봉인 씰',
+    precautions: '독일 GMUND사의 친환경 FSC 인증 용지. 질감이 살아있는 프리미엄 재질.',
+    image: 'https://picsum.photos/seed/paper-gmund/400/300'
+  },
+  {
+    id: 'metallic',
+    name: '은광/금광 PET',
+    texture: '금속 느낌의 반짝이는 광택',
+    waterproof: true,
+    tearResistant: true,
+    transparent: false,
+    whiteInkRecommended: true,
+    coatingAvailable: true,
+    recommendedUse: '전자제품, 기계 명판, 고급 보증 스티커',
+    precautions: '금속 광택이 뛰어나며 내구성이 매우 강함.',
+    image: 'https://picsum.photos/seed/paper-metal/400/300'
+  },
+  {
+    id: 'hologram',
+    name: '홀로그램 용지',
+    texture: '빛에 따라 무지개빛으로 변하는 표면',
+    waterproof: true,
+    tearResistant: true,
+    transparent: false,
+    whiteInkRecommended: true,
+    coatingAvailable: false,
+    recommendedUse: '아이돌 굿즈, 이벤트 스티커, 포인트 라벨',
+    precautions: '화려한 시각적 효과가 특징. 화이트 인쇄로 부분 효과 가능.',
+    image: 'https://picsum.photos/seed/paper-holo/400/300'
+  }
+];
 
 export interface FAQItem {
   question: string;
@@ -62,7 +175,20 @@ export const CATEGORIES: Category[] = [
     icon: 'StickyNote', 
     description: '원하는 모양과 재질로 소량부터 제작할 수 있는 맞춤 스티커',
     entryPhrase: '나만의 개성을 담은 스티커 제작',
-    subCategories: ['자유형', '사각', '원형', '타원형', '사각라운드', '조각스티커', '판스티커', '투명스티커', 'UV스티커', 'DTF열전사', '네임스티커', '패키지스티커']
+    subCategories: [
+      {
+        groupName: '모양별 스티커',
+        items: ['자유형', '사각반칼', '원형', '타원형', '사각라운드', '조각스티커', '다양한 모양']
+      },
+      {
+        groupName: '용도별 스티커',
+        items: ['리무버블', '옥외용', '냉장·냉동', '카드스티커', '스크래치', '자석스티커']
+      },
+      {
+        groupName: '프리미엄/특수가공',
+        items: ['투명', '홀로그램', '그문드 라벨', '메탈', 'UV', 'DTF', '에폭시']
+      }
+    ]
   },
   { 
     id: 'paper', 
@@ -722,6 +848,101 @@ export const PRODUCTS: Product[] = [
     features: ['대량 제작 최적화', '롤 형태 공급', '다양한 재질'],
     leadTime: '7-10일',
     badges: ['대량특화', '자동부착용', '가성비']
+  },
+  {
+    id: 'stk-circle',
+    name: '원형 스티커',
+    category: 'sticker',
+    subCategory: '원형',
+    tagline: '부드러운 원형, 패키지 봉인에 최적.',
+    description: '패키지 마감이나 로고 강조에 적합한 원형 스티커입니다.',
+    image: 'https://picsum.photos/seed/sticker-circle/800/800',
+    minQuantity: 50,
+    basePrice: 4000,
+    options: [
+      {
+        name: '지름 선택',
+        type: 'select',
+        values: [
+          { label: '30mm', priceModifier: 0 },
+          { label: '50mm', priceModifier: 500 },
+          { label: '70mm', priceModifier: 1500 }
+        ]
+      }
+    ],
+    features: ['정교한 원형 칼선', '패키지 봉인용으로 인기', '다양한 지름 옵션'],
+    leadTime: '2~3일'
+  },
+  {
+    id: 'stk-removable',
+    name: '리무버블 스티커',
+    category: 'sticker',
+    subCategory: '리무버블',
+    tagline: '흔적 없이 깔끔하게, 떼었다 붙였다.',
+    description: '제거 시 끈적임이 남지 않아 노트북이나 전자기기에 부착하기 좋습니다.',
+    image: 'https://picsum.photos/seed/sticker-removable/800/800',
+    minQuantity: 10,
+    basePrice: 7000,
+    options: [
+      {
+        name: '작업 사이즈',
+        type: 'select',
+        values: [
+          { label: '50x50mm 이내', priceModifier: 0 },
+          { label: '100x100mm 이내', priceModifier: 2500 }
+        ]
+      }
+    ],
+    features: ['끈적임 없는 제거', '재부착 가능', '노트북/폰케이스용 추천'],
+    leadTime: '3~4일'
+  },
+  {
+    id: 'stk-transparent',
+    name: '투명 PET 스티커',
+    category: 'sticker',
+    subCategory: '투명',
+    tagline: '배경이 비치는 투명함, 디자인의 완성.',
+    description: '투명한 재질로 부착면의 색상을 살릴 수 있는 스티커입니다.',
+    image: 'https://picsum.photos/seed/sticker-trans/800/800',
+    minQuantity: 50,
+    basePrice: 6000,
+    options: [
+      {
+        name: '화이트 인쇄',
+        type: 'radio',
+        values: [
+          { label: '화이트 인쇄 포함', priceModifier: 2000 },
+          { label: '화이트 인쇄 없음', priceModifier: 0 }
+        ]
+      }
+    ],
+    features: ['완전 투명 재질', '화이트 인쇄로 색상 강조 가능', '생활 방수 기본 지원'],
+    leadTime: '3~4일'
+  },
+  {
+    id: 'stk-hologram',
+    name: '홀로그램 스티커',
+    category: 'sticker',
+    subCategory: '홀로그램',
+    tagline: '빛에 따라 변하는 무지개빛 광채.',
+    description: '화려한 홀로그램 효과로 시선을 사로잡는 포인트 스티커입니다.',
+    image: 'https://picsum.photos/seed/sticker-holo/800/800',
+    minQuantity: 10,
+    basePrice: 8000,
+    options: [
+      {
+        name: '홀로그램 패턴',
+        type: 'select',
+        values: [
+          { label: '기본 무지개', priceModifier: 0 },
+          { label: '샌드 패턴', priceModifier: 1000 },
+          { label: '스타 패턴', priceModifier: 1000 }
+        ]
+      }
+    ],
+    features: ['강렬한 홀로그램 효과', '포인트 굿즈로 최적', '내구성이 강한 PET 재질'],
+    leadTime: '4~5일',
+    isNew: true
   }
 ];
 

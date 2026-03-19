@@ -1,7 +1,22 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { ChevronLeft, ShoppingCart, FileUp, CheckCircle2, Clock, Truck, AlertTriangle, HelpCircle, ArrowRight } from 'lucide-react';
-import { Product, Quotation, PRODUCTS, CATEGORIES } from '../types';
+import { 
+  ChevronLeft, 
+  ShoppingCart, 
+  FileUp, 
+  CheckCircle2, 
+  Clock, 
+  Truck, 
+  AlertTriangle, 
+  HelpCircle, 
+  ArrowRight,
+  Info,
+  Droplets,
+  Scissors,
+  Layers,
+  Sparkles
+} from 'lucide-react';
+import { Product, Quotation, PRODUCTS, CATEGORIES, PAPER_MATERIALS, PaperMaterial } from '../types';
 import { QuotationCalculator } from './QuotationCalculator';
 
 interface ProductDetailProps {
@@ -10,11 +25,57 @@ interface ProductDetailProps {
   onQuotationGenerated: (quotation: Quotation) => void;
 }
 
+const PaperCard: React.FC<{ paper: PaperMaterial }> = ({ paper }) => (
+  <div className="bg-white rounded-3xl border border-zinc-100 overflow-hidden shadow-sm hover:shadow-xl transition-all group">
+    <div className="aspect-[4/3] overflow-hidden bg-zinc-100">
+      <img 
+        src={paper.image} 
+        alt={paper.name} 
+        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+        referrerPolicy="no-referrer"
+      />
+    </div>
+    <div className="p-6">
+      <h4 className="text-lg font-black text-zinc-900 mb-2">{paper.name}</h4>
+      <p className="text-xs text-zinc-500 font-medium mb-4">{paper.texture}</p>
+      
+      <div className="grid grid-cols-2 gap-2 mb-6">
+        {[
+          { label: '방수', value: paper.waterproof },
+          { label: '찢김방지', value: paper.tearResistant },
+          { label: '투명', value: paper.transparent },
+          { label: '코팅가능', value: paper.coatingAvailable },
+        ].map((attr) => (
+          <div key={attr.label} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-zinc-50 border border-zinc-100">
+            <div className={`w-1.5 h-1.5 rounded-full ${attr.value ? 'bg-emerald-500' : 'bg-zinc-300'}`} />
+            <span className="text-[10px] font-bold text-zinc-600">{attr.label}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="space-y-3">
+        <div>
+          <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest block mb-1">추천 용도</span>
+          <p className="text-xs text-zinc-600 leading-relaxed">{paper.recommendedUse}</p>
+        </div>
+        {paper.whiteInkRecommended && (
+          <div className="flex items-center gap-2 text-emerald-600">
+            <Sparkles size={12} />
+            <span className="text-[10px] font-bold">화이트 인쇄 추천</span>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+);
+
 export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, onQuotationGenerated }) => {
   const [activeTab, setActiveTab] = useState<'calc' | 'info'>('calc');
 
   // Find similar products for comparison
-  const similarProducts = PRODUCTS.filter(p => p.category === product.category && p.id !== product.id).slice(0, 2);
+  const similarProducts = PRODUCTS.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
+
+  const isSticker = product.category === 'sticker';
 
   return (
     <div className="min-h-screen bg-white pt-24 pb-20">
@@ -33,7 +94,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, o
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="aspect-square rounded-3xl overflow-hidden bg-zinc-100 border border-zinc-100"
+              className="aspect-square rounded-[40px] overflow-hidden bg-zinc-100 border border-zinc-100 shadow-2xl shadow-zinc-200/50"
             >
               <img 
                 src={product.image} 
@@ -44,7 +105,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, o
             </motion.div>
             <div className="grid grid-cols-4 gap-4">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="aspect-square rounded-xl overflow-hidden bg-zinc-50 border border-zinc-100 cursor-pointer hover:border-emerald-500 transition-colors">
+                <div key={i} className="aspect-square rounded-2xl overflow-hidden bg-zinc-50 border border-zinc-100 cursor-pointer hover:border-emerald-500 transition-colors">
                   <img 
                     src={`https://picsum.photos/seed/${product.id}-${i}/400/400`} 
                     alt="sample"
@@ -59,20 +120,20 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, o
           {/* Right: Quotation Calculator */}
           <div className="flex flex-col">
             <div className="mb-8">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="px-3 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-widest rounded-full border border-emerald-100">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="px-4 py-1.5 bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-widest rounded-full border border-emerald-100">
                   {CATEGORIES.find(c => c.id === product.category)?.name}
                 </span>
-                <span className="px-3 py-1 bg-zinc-100 text-zinc-500 text-[10px] font-black uppercase tracking-widest rounded-full border border-zinc-200">
+                <span className="px-4 py-1.5 bg-zinc-100 text-zinc-500 text-[10px] font-black uppercase tracking-widest rounded-full border border-zinc-200">
                   {product.subCategory}
                 </span>
                 {product.isNew && (
-                  <span className="px-3 py-1 bg-zinc-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full">
+                  <span className="px-4 py-1.5 bg-zinc-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full">
                     NEW
                   </span>
                 )}
               </div>
-              <h1 className="text-5xl font-black text-zinc-900 mb-4 tracking-tight">
+              <h1 className="text-5xl font-black text-zinc-900 mb-6 tracking-tight leading-tight">
                 {product.name}
               </h1>
               <p className="text-xl text-zinc-500 leading-relaxed font-serif italic">
@@ -80,18 +141,18 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, o
               </p>
             </div>
 
-            <div className="flex gap-1 p-1 bg-zinc-100 rounded-2xl mb-8 w-fit">
+            <div className="flex gap-1 p-1.5 bg-zinc-100 rounded-[20px] mb-10 w-fit">
               <button 
                 onClick={() => setActiveTab('calc')}
-                className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'calc' ? 'bg-white text-zinc-900 shadow-sm' : 'text-zinc-500 hover:text-zinc-700'}`}
+                className={`px-8 py-3 rounded-2xl text-sm font-bold transition-all ${activeTab === 'calc' ? 'bg-white text-zinc-900 shadow-sm' : 'text-zinc-500 hover:text-zinc-700'}`}
               >
-                견적 계산기
+                주문 및 견적
               </button>
               <button 
                 onClick={() => setActiveTab('info')}
-                className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'info' ? 'bg-white text-zinc-900 shadow-sm' : 'text-zinc-500 hover:text-zinc-700'}`}
+                className={`px-8 py-3 rounded-2xl text-sm font-bold transition-all ${activeTab === 'info' ? 'bg-white text-zinc-900 shadow-sm' : 'text-zinc-500 hover:text-zinc-700'}`}
               >
-                상품 정보
+                상세 정보
               </button>
             </div>
 
@@ -102,269 +163,218 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, o
                   onGenerateQuotation={onQuotationGenerated} 
                 />
                 
-                {/* Production Guides */}
-                <div className="p-8 rounded-[32px] bg-zinc-50 border border-zinc-100">
-                  <h3 className="text-xs font-black text-zinc-900 uppercase tracking-widest mb-6">제작 가이드</h3>
-                  <div className="grid grid-cols-1 gap-3">
-                    {[
-                      '후가공 가이드/인쇄',
-                      '후가공 가이드/코팅',
-                      '후가공 가이드/타공',
-                      '후가공 가이드/귀돌이',
-                      '후가공 가이드/매직잉크'
-                    ].map((guide) => (
-                      <button key={guide} className="flex items-center justify-between p-4 rounded-xl bg-white border border-zinc-100 text-sm font-bold text-zinc-600 hover:border-emerald-500 hover:text-emerald-600 transition-all group">
-                        <span>{guide}</span>
-                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                      </button>
-                    ))}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-6 rounded-3xl bg-zinc-50 border border-zinc-100">
+                    <Clock className="w-5 h-5 text-emerald-600 mb-3" />
+                    <p className="text-[10px] text-zinc-400 font-black uppercase tracking-widest mb-1">제작 기간</p>
+                    <p className="text-base font-bold text-zinc-900">{product.leadTime}</p>
                   </div>
-                </div>
-                {/* Shipping Info */}
-                <div className="p-8 rounded-[32px] bg-zinc-50 border border-zinc-100">
-                  <h3 className="text-xs font-black text-zinc-900 uppercase tracking-widest mb-6">배송 정보</h3>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between p-4 rounded-xl bg-white border border-zinc-100">
-                      <span className="text-sm font-bold text-zinc-600">배송비</span>
-                      <span className="text-sm font-black text-zinc-900">택배 3,000원 (50,000원 이상 무료)</span>
-                    </div>
-                    <div className="flex items-center justify-between p-4 rounded-xl bg-white border border-zinc-100">
-                      <span className="text-sm font-bold text-zinc-600">수령방법</span>
-                      <div className="flex gap-2">
-                        <span className="px-3 py-1 rounded-full bg-zinc-100 text-[10px] font-black text-zinc-600">택배</span>
-                        <span className="px-3 py-1 rounded-full bg-zinc-100 text-[10px] font-black text-zinc-600">방문수령</span>
-                        <span className="px-3 py-1 rounded-full bg-zinc-100 text-[10px] font-black text-zinc-600">퀵배송</span>
-                      </div>
-                    </div>
+                  <div className="p-6 rounded-3xl bg-zinc-50 border border-zinc-100">
+                    <Truck className="w-5 h-5 text-emerald-600 mb-3" />
+                    <p className="text-[10px] text-zinc-400 font-black uppercase tracking-widest mb-1">배송 안내</p>
+                    <p className="text-base font-bold text-zinc-900">3,000원 (5만원↑ 무료)</p>
                   </div>
                 </div>
               </div>
             ) : (
               <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="p-6 rounded-3xl bg-zinc-50 border border-zinc-100">
-                    <Clock className="w-6 h-6 text-emerald-600 mb-4" />
-                    <p className="text-xs text-zinc-400 font-bold uppercase tracking-wider mb-1">제작 기간</p>
-                    <p className="text-lg font-black text-zinc-900">{product.leadTime}</p>
-                  </div>
-                  <div className="p-6 rounded-3xl bg-zinc-50 border border-zinc-100">
-                    <CheckCircle2 className="w-6 h-6 text-emerald-600 mb-4" />
-                    <p className="text-xs text-zinc-400 font-bold uppercase tracking-wider mb-1">최소 수량</p>
-                    <p className="text-lg font-black text-zinc-900">{product.minQuantity}개</p>
-                  </div>
-                </div>
                 <div className="p-8 rounded-[32px] bg-emerald-50 border border-emerald-100">
-                  <h3 className="font-bold text-emerald-900 mb-4 flex items-center gap-2">
-                    <HelpCircle className="w-5 h-5" />
-                    전문가 추천
+                  <h3 className="font-black text-emerald-900 mb-4 flex items-center gap-2 uppercase tracking-tight">
+                    <Sparkles className="w-5 h-5" />
+                    Expert Recommendation
                   </h3>
-                  <p className="text-sm text-emerald-800/70 leading-relaxed">
+                  <p className="text-sm text-emerald-800/80 leading-relaxed font-medium">
                     {product.recommendation || `${product.name} 제작 시 가장 많이 선택하시는 옵션은 '무광 코팅'입니다. 고급스러운 질감을 원하신다면 무광을, 선명한 색감을 원하신다면 유광을 추천드려요.`}
                   </p>
+                </div>
+                
+                <div className="space-y-4">
+                  <h3 className="text-xs font-black text-zinc-900 uppercase tracking-widest">핵심 특징</h3>
+                  <div className="grid grid-cols-1 gap-3">
+                    {product.features.map((f, i) => (
+                      <div key={i} className="flex items-center gap-3 p-4 rounded-2xl bg-zinc-50 border border-zinc-100">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                        <span className="text-sm font-bold text-zinc-700">{f}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Comparison Section */}
-        {product.comparison && (
-          <section className="py-24 border-t border-zinc-100">
-            <div className="flex items-end justify-between mb-12">
-              <div>
-                <h2 className="text-3xl font-black mb-4">{product.comparison.title}</h2>
-                <p className="text-zinc-500">용도에 맞는 최적의 상품을 선택해 보세요.</p>
+        {/* Paper Comparison Section (Sticker Only) */}
+        {isSticker && (
+          <section className="py-32 border-t border-zinc-100">
+            <div className="text-center mb-20">
+              <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-widest mb-4 border border-emerald-100">
+                Material Guide
+              </span>
+              <h2 className="text-4xl font-black text-zinc-900 mb-6 tracking-tight">주문 가능 용지 안내</h2>
+              <p className="text-zinc-500 max-w-2xl mx-auto font-medium text-lg">
+                용도와 디자인에 가장 적합한 재질을 비교해 보세요. <br />
+                재질에 따라 인쇄 느낌과 내구성이 달라집니다.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {PAPER_MATERIALS.map((paper) => (
+                <PaperCard key={paper.id} paper={paper} />
+              ))}
+            </div>
+
+            <div className="mt-16 p-10 rounded-[40px] bg-zinc-50 border border-zinc-100">
+              <div className="flex flex-col md:flex-row gap-12">
+                <div className="flex-1 space-y-6">
+                  <h3 className="text-xl font-black text-zinc-900 flex items-center gap-3">
+                    <Info className="w-6 h-6 text-emerald-600" />
+                    재질 선택 팁
+                  </h3>
+                  <div className="space-y-4">
+                    <div className="flex gap-4">
+                      <div className="w-8 h-8 rounded-full bg-white border border-zinc-200 flex items-center justify-center shrink-0 text-xs font-black">1</div>
+                      <p className="text-sm text-zinc-600 leading-relaxed">물이나 습기에 노출되는 환경이라면 <b>유포지</b>나 <b>PET</b> 재질을 선택하세요.</p>
+                    </div>
+                    <div className="flex gap-4">
+                      <div className="w-8 h-8 rounded-full bg-white border border-zinc-200 flex items-center justify-center shrink-0 text-xs font-black">2</div>
+                      <p className="text-sm text-zinc-600 leading-relaxed">투명 용기에 부착할 때는 <b>투명 PET</b>와 <b>화이트 인쇄</b> 조합이 가장 예쁩니다.</p>
+                    </div>
+                    <div className="flex gap-4">
+                      <div className="w-8 h-8 rounded-full bg-white border border-zinc-200 flex items-center justify-center shrink-0 text-xs font-black">3</div>
+                      <p className="text-sm text-zinc-600 leading-relaxed">고급스러운 느낌을 원하신다면 무광의 <b>그문드 라벨</b>이나 <b>유포매트</b>를 추천합니다.</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex-1 p-8 rounded-3xl bg-white border border-zinc-100">
+                  <h3 className="text-sm font-black text-zinc-900 uppercase tracking-widest mb-6">용지별 주의사항</h3>
+                  <ul className="space-y-3">
+                    {PAPER_MATERIALS.slice(0, 4).map(p => (
+                      <li key={p.id} className="text-xs text-zinc-500 flex gap-3">
+                        <span className="font-black text-emerald-600 whitespace-nowrap">{p.name}</span>
+                        <span>{p.precautions}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {product.comparison.items.map((item, i) => (
-                <div key={i} className="p-8 rounded-3xl bg-zinc-50 border border-zinc-100 text-center">
-                  <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-4">{item.label}</p>
-                  <p className="text-lg font-black text-zinc-900">{item.value}</p>
+          </section>
+        )}
+
+        {/* Detailed Options & Processing (Sticker Only) */}
+        {isSticker && (
+          <section className="py-32 border-t border-zinc-100">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-20">
+              <div className="space-y-16">
+                <div>
+                  <h2 className="text-3xl font-black text-zinc-900 mb-10 flex items-center gap-4">
+                    <Layers className="w-8 h-8 text-emerald-600" />
+                    코팅 및 후가공
+                  </h2>
+                  <div className="grid grid-cols-1 gap-6">
+                    <div className="flex gap-6 p-8 rounded-3xl bg-zinc-50 border border-zinc-100 group hover:bg-white hover:shadow-xl transition-all">
+                      <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center shrink-0">
+                        <Sparkles className="text-emerald-600" />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-zinc-900 mb-2">유광/무광 코팅</h4>
+                        <p className="text-sm text-zinc-500 leading-relaxed">인쇄물을 보호하고 질감을 조절합니다. 유광은 선명함을, 무광은 차분함을 더해줍니다.</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-6 p-8 rounded-3xl bg-zinc-50 border border-zinc-100 group hover:bg-white hover:shadow-xl transition-all">
+                      <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center shrink-0">
+                        <Droplets className="text-emerald-600" />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-zinc-900 mb-2">화이트 인쇄</h4>
+                        <p className="text-sm text-zinc-500 leading-relaxed">투명이나 유색 용지 위에 흰색을 먼저 인쇄하여 색상을 선명하게 표현합니다.</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              ))}
+
+                <div>
+                  <h2 className="text-3xl font-black text-zinc-900 mb-10 flex items-center gap-4">
+                    <Scissors className="w-8 h-8 text-emerald-600" />
+                    재단 방식 안내
+                  </h2>
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="p-8 rounded-3xl bg-zinc-50 border border-zinc-100">
+                      <h4 className="font-bold text-zinc-900 mb-2">반칼 재단</h4>
+                      <p className="text-xs text-zinc-500 leading-relaxed">스티커 배경지는 남겨두고 스티커만 떼어낼 수 있는 방식입니다.</p>
+                    </div>
+                    <div className="p-8 rounded-3xl bg-zinc-50 border border-zinc-100">
+                      <h4 className="font-bold text-zinc-900 mb-2">완칼 재단</h4>
+                      <p className="text-xs text-zinc-500 leading-relaxed">스티커와 배경지를 함께 모양대로 잘라내는 방식입니다. (조각 스티커)</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-12 rounded-[48px] bg-zinc-900 text-white">
+                <h2 className="text-3xl font-black mb-10 flex items-center gap-4">
+                  <AlertTriangle className="w-8 h-8 text-emerald-400" />
+                  제작 시 유의사항
+                </h2>
+                <div className="space-y-8">
+                  <div className="space-y-4">
+                    <h4 className="text-emerald-400 font-bold text-sm uppercase tracking-widest">파일 작업</h4>
+                    <ul className="space-y-3 text-sm text-zinc-400 list-disc pl-5">
+                      <li>칼선(Kiss-cut)은 반드시 별도의 레이어나 색상으로 구분해 주세요.</li>
+                      <li>복잡한 모양의 칼선은 재단 시 오차가 발생할 수 있으니 단순화 권장합니다.</li>
+                      <li>텍스트는 반드시 아웃라인 처리를 해주세요.</li>
+                    </ul>
+                  </div>
+                  <div className="space-y-4">
+                    <h4 className="text-emerald-400 font-bold text-sm uppercase tracking-widest">인쇄 및 색상</h4>
+                    <ul className="space-y-3 text-sm text-zinc-400 list-disc pl-5">
+                      <li>재질에 따라 동일한 색상값이라도 다르게 표현될 수 있습니다.</li>
+                      <li>투명 재질은 화이트 인쇄 유무에 따라 느낌이 크게 달라집니다.</li>
+                      <li>사방 1~2mm 정도의 밀림 현상이 발생할 수 있습니다.</li>
+                    </ul>
+                  </div>
+                  <div className="pt-8 border-t border-white/10">
+                    <p className="text-xs text-zinc-500 leading-relaxed">
+                      ※ 위 유의사항을 숙지하지 않아 발생하는 제작 사고는 교환/환불이 불가합니다. <br />
+                      처음 주문하신다면 반드시 소량 샘플 제작을 추천드립니다.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </section>
         )}
 
         {/* Similar Products Section */}
         {similarProducts.length > 0 && (
-          <section className="py-24 border-t border-zinc-100">
-            <div className="flex items-end justify-between mb-12">
+          <section className="py-32 border-t border-zinc-100">
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
               <div>
-                <h2 className="text-3xl font-black mb-4">함께 보면 좋은 상품</h2>
-                <p className="text-zinc-500">다른 카테고리의 인기 상품들도 확인해 보세요.</p>
+                <h2 className="text-4xl font-black mb-4 tracking-tight">함께 보면 좋은 상품</h2>
+                <p className="text-zinc-500 font-medium text-lg">다른 제작 옵션이나 관련 상품들도 확인해 보세요.</p>
               </div>
+              <button 
+                onClick={onBack}
+                className="px-8 py-3 rounded-2xl bg-zinc-100 text-zinc-900 font-bold text-sm hover:bg-zinc-200 transition-all"
+              >
+                전체 상품 보기
+              </button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {similarProducts.map(p => (
-                <div key={p.id} className="p-8 rounded-[40px] bg-zinc-50 border border-zinc-100 flex gap-8 items-center group cursor-pointer hover:bg-white hover:shadow-2xl hover:shadow-zinc-200/50 transition-all">
-                  <div className="w-32 h-32 rounded-3xl overflow-hidden shrink-0">
+                <div key={p.id} onClick={() => { onBack(); /* Should navigate to this product but for now just back */ }} className="group cursor-pointer">
+                  <div className="aspect-square rounded-[32px] overflow-hidden mb-6 bg-zinc-50 border border-zinc-100">
                     <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" referrerPolicy="no-referrer" />
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold mb-2">{p.name}</h3>
-                    <p className="text-sm text-zinc-500 mb-4 line-clamp-1">{p.tagline}</p>
-                    <div className="flex items-center gap-4 text-xs font-bold text-emerald-600">
-                      <span>{p.basePrice.toLocaleString()}원부터</span>
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
-                    </div>
-                  </div>
+                  <h3 className="text-lg font-bold mb-2 group-hover:text-emerald-600 transition-colors">{p.name}</h3>
+                  <p className="text-sm text-zinc-500 mb-4 line-clamp-1">{p.tagline}</p>
+                  <p className="text-sm font-black text-zinc-900">{p.basePrice.toLocaleString()}원~</p>
                 </div>
               ))}
             </div>
           </section>
         )}
-
-        {/* Detailed Sections */}
-        <div className="space-y-24">
-          {/* Features */}
-          <section>
-            <h2 className="text-2xl font-black text-zinc-900 mb-12 flex items-center gap-4">
-              <span className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-sm">01</span>
-              제품 특징
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {product.features.map((feature, idx) => (
-                <div key={idx} className="p-8 rounded-3xl bg-zinc-50 border border-zinc-100">
-                  <div className="w-10 h-10 rounded-xl bg-white text-emerald-600 flex items-center justify-center mb-6 shadow-sm">
-                    <CheckCircle2 className="w-5 h-5" />
-                  </div>
-                  <h3 className="text-lg font-bold text-zinc-900 mb-4">{feature}</h3>
-                  <p className="text-sm text-zinc-500 leading-relaxed">
-                    완두프린트만의 고품질 제작 공정으로 {feature}의 완성도를 높였습니다.
-                  </p>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Guide */}
-          <section className="p-12 rounded-[40px] bg-zinc-900 text-white relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-1/2 h-full opacity-10 pointer-events-none">
-              <div className="w-full h-full bg-gradient-to-l from-emerald-500 to-transparent" />
-            </div>
-            <div className="relative z-10">
-              <h2 className="text-2xl font-black mb-12 flex items-center gap-4">
-                <span className="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center text-sm">02</span>
-                파일 작업 가이드
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
-                <div className="space-y-8">
-                  <div className="flex gap-6">
-                    <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center shrink-0">
-                      <span className="text-emerald-400 font-black">AI</span>
-                    </div>
-                    <div>
-                      <h4 className="font-bold mb-2">권장 파일 형식</h4>
-                      <p className="text-sm text-zinc-400 leading-relaxed">
-                        Adobe Illustrator (AI), PDF (고해상도), PSD 형식을 권장합니다.
-                        이미지 파일(JPG, PNG)은 300dpi 이상의 해상도가 필요합니다.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex gap-6">
-                    <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center shrink-0">
-                      <span className="text-emerald-400 font-black">CMYK</span>
-                    </div>
-                    <div>
-                      <h4 className="font-bold mb-2">색상 모드</h4>
-                      <p className="text-sm text-zinc-400 leading-relaxed">
-                        반드시 CMYK 모드로 작업해 주세요. RGB 모드 작업 시 인쇄 시 색상 차이가 발생할 수 있습니다.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="space-y-8">
-                  <div className="flex gap-6">
-                    <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center shrink-0">
-                      <span className="text-emerald-400 font-black">3mm</span>
-                    </div>
-                    <div>
-                      <h4 className="font-bold mb-2">재단 여분</h4>
-                      <p className="text-sm text-zinc-400 leading-relaxed">
-                        사방 3mm의 재단 여분을 포함하여 작업해 주세요. 
-                        중요한 텍스트나 로고는 재단선 안쪽 5mm 이내에 배치하는 것이 안전합니다.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex gap-6">
-                    <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center shrink-0">
-                      <span className="text-emerald-400 font-black">OUT</span>
-                    </div>
-                    <div>
-                      <h4 className="font-bold mb-2">서체 아웃라인</h4>
-                      <p className="text-sm text-zinc-400 leading-relaxed">
-                        모든 텍스트는 반드시 Create Outlines(윤곽선 만들기) 처리를 해주셔야 폰트 깨짐 현상을 방지할 수 있습니다.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Process */}
-          <section>
-            <h2 className="text-2xl font-black text-zinc-900 mb-12 flex items-center gap-4">
-              <span className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-sm">03</span>
-              주문 및 제작 프로세스
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-              {[
-                { step: "01", title: "상품 선택", desc: "옵션 및 수량 선택" },
-                { step: "02", title: "파일 업로드", desc: "디자인 파일 제출" },
-                { step: "03", title: "데이터 검수", desc: "전문가 파일 확인" },
-                { step: "04", title: "제작 진행", desc: "고품질 인쇄 및 가공" },
-                { step: "05", title: "배송 시작", desc: "안전한 포장 및 발송" }
-              ].map((item, idx) => (
-                <div key={idx} className="p-6 rounded-2xl bg-zinc-50 border border-zinc-100 relative group">
-                  <span className="text-[40px] font-black text-zinc-200 absolute top-4 right-6 group-hover:text-emerald-100 transition-colors">
-                    {item.step}
-                  </span>
-                  <h4 className="font-bold text-zinc-900 mb-2 relative z-10">{item.title}</h4>
-                  <p className="text-xs text-zinc-500 relative z-10">{item.desc}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Notice & Disclaimer */}
-          <section className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div className="p-10 rounded-3xl bg-amber-50 border border-amber-100">
-              <h3 className="text-lg font-black text-amber-900 mb-6 flex items-center gap-3">
-                <AlertTriangle className="w-5 h-5" />
-                제작 시 유의사항 (필독)
-              </h3>
-              <ul className="space-y-4 text-sm text-amber-800/80 leading-relaxed list-disc pl-5">
-                {product.warnings && product.warnings.length > 0 ? (
-                  product.warnings.map((warning, i) => (
-                    <li key={i}>{warning}</li>
-                  ))
-                ) : (
-                  <>
-                    <li>모니터(RGB)와 실제 인쇄물(CMYK)은 색상 차이가 발생할 수 있습니다.</li>
-                    <li>공정 특성상 사방 1~2mm 내외의 재단 오차가 발생할 수 있습니다.</li>
-                    <li>합판 인쇄 특성상 동일 데이터라도 재주문 시 색상 차이가 있을 수 있습니다.</li>
-                    <li>파일 오류로 인한 오탈자 및 디자인 실수는 교환/환불 사유가 되지 않습니다.</li>
-                  </>
-                )}
-              </ul>
-            </div>
-            <div className="p-10 rounded-3xl bg-zinc-50 border border-zinc-100">
-              <h3 className="text-lg font-black text-zinc-900 mb-6 flex items-center gap-3">
-                <Truck className="w-5 h-5 text-emerald-600" />
-                배송 및 교환 안내
-              </h3>
-              <ul className="space-y-4 text-sm text-zinc-500 leading-relaxed list-disc pl-5">
-                <li>기본 배송비는 3,000원이며, 5만원 이상 구매 시 무료배송입니다.</li>
-                <li>주문 제작 상품 특성상 단순 변심으로 인한 취소/환불은 불가합니다.</li>
-                <li>제품 불량의 경우 수령 후 7일 이내 고객센터로 접수해 주세요.</li>
-                <li>제주 및 도서산간 지역은 추가 배송비가 발생할 수 있습니다.</li>
-              </ul>
-            </div>
-          </section>
-        </div>
       </div>
     </div>
   );
