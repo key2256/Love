@@ -310,14 +310,66 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, o
                     <Scissors className="w-8 h-8 text-emerald-600" />
                     재단 방식 안내
                   </h2>
-                  <div className="grid grid-cols-2 gap-6">
-                    <div className="p-8 rounded-3xl bg-zinc-50 border border-zinc-100">
-                      <h4 className="font-bold text-zinc-900 mb-2">반칼 재단</h4>
-                      <p className="text-xs text-zinc-500 leading-relaxed">스티커 배경지는 남겨두고 스티커만 떼어낼 수 있는 방식입니다.</p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="p-8 rounded-[32px] bg-zinc-50 border border-zinc-100">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 font-bold">
+                          시트
+                        </div>
+                        <h4 className="font-bold text-zinc-900">시트형 반칼 (Kiss-cut)</h4>
+                      </div>
+                      <p className="text-sm text-zinc-600 leading-relaxed mb-4">
+                        스티커 용지는 그대로 두고, 스티커 모양대로 칼선만 내는 방식입니다. 
+                        한 장의 시트에 여러 개의 스티커가 붙어 있어 대량 부착 작업에 편리합니다.
+                      </p>
+                      <ul className="text-xs text-zinc-500 space-y-2">
+                        <li className="flex items-start gap-2">
+                          <span className="text-indigo-500 mt-0.5">•</span>
+                          <span>다이어리 꾸미기, 라벨링 작업에 최적</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-indigo-500 mt-0.5">•</span>
+                          <span>시트 전체 크기 내에서 자유로운 배치 가능</span>
+                        </li>
+                      </ul>
                     </div>
-                    <div className="p-8 rounded-3xl bg-zinc-50 border border-zinc-100">
-                      <h4 className="font-bold text-zinc-900 mb-2">완칼 재단</h4>
-                      <p className="text-xs text-zinc-500 leading-relaxed">스티커와 배경지를 함께 모양대로 잘라내는 방식입니다. (조각 스티커)</p>
+
+                    <div className="p-8 rounded-[32px] bg-zinc-50 border border-zinc-100">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 font-bold">
+                          개별
+                        </div>
+                        <h4 className="font-bold text-zinc-900">개별재단 완칼 (Full-cut)</h4>
+                      </div>
+                      <p className="text-sm text-zinc-600 leading-relaxed mb-4">
+                        스티커와 뒷면 대지까지 모양대로 완전히 잘라내는 방식입니다. 
+                        스티커가 하나씩 낱개로 떨어져 있어 배포용이나 사은품용으로 적합합니다.
+                      </p>
+                      <ul className="text-xs text-zinc-500 space-y-2">
+                        <li className="flex items-start gap-2">
+                          <span className="text-emerald-500 mt-0.5">•</span>
+                          <span>홍보용 배포, 굿즈 판매용으로 인기</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-emerald-500 mt-0.5">•</span>
+                          <span>하나씩 개별적으로 보관 및 사용 가능</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 p-6 bg-amber-50 rounded-[32px] border border-amber-100">
+                    <div className="flex gap-4">
+                      <div className="w-10 h-10 bg-amber-100 rounded-2xl flex items-center justify-center shrink-0">
+                        <Info className="w-5 h-5 text-amber-600" />
+                      </div>
+                      <div>
+                        <h5 className="text-lg font-bold text-amber-900 mb-1">복합 재단 (시트형 반칼 + 개별 완칼)</h5>
+                        <p className="text-sm text-amber-800 leading-relaxed">
+                          시트 안에 여러 개의 모양 반칼을 넣고, 그 시트 자체를 원하는 모양으로 개별 완칼하는 방식입니다. 
+                          브랜드 스티커 팩 제작 시 가장 많이 활용되는 고급 사양입니다.
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>

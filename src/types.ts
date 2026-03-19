@@ -569,7 +569,7 @@ export const CATEGORIES: Category[] = [
     subCategories: [
       {
         groupName: '모양별 스티커',
-        items: ['사각 반칼', '원형', '타원형', '사각라운드', '다양한 모양']
+        items: ['사각 시트형(반칼)', '원형 시트형(반칼)', '타원형 시트형(반칼)', '사각라운드 시트형(반칼)', '다양한 모양']
       },
       {
         groupName: '자유형 스티커',
@@ -581,7 +581,7 @@ export const CATEGORIES: Category[] = [
       },
       {
         groupName: '용도별 스티커',
-        items: ['리무버블', '옥외용', '냉장·냉동', '카드스티커', '스크래치', '자석스티커']
+        items: ['리무버블', '옥외용', '냉장·냉동', '카드스티커', '스크래치', '자석스티커', '롤 스티커']
       },
       {
         groupName: '프리미엄/특수 스티커',
@@ -648,10 +648,10 @@ export const PRODUCTS: Product[] = [
         name: '모양 선택',
         type: 'select',
         values: [
-          { label: '사각 반칼', priceModifier: 0 },
-          { label: '원형', priceModifier: 0 },
-          { label: '타원형', priceModifier: 0 },
-          { label: '사각라운드', priceModifier: 0 },
+          { label: '사각 시트형(반칼)', priceModifier: 0 },
+          { label: '원형 시트형(반칼)', priceModifier: 0 },
+          { label: '타원형 시트형(반칼)', priceModifier: 0 },
+          { label: '사각라운드 시트형(반칼)', priceModifier: 0 },
           { label: '다양한 모양', priceModifier: 500 },
         ]
       },
@@ -685,6 +685,13 @@ export const PRODUCTS: Product[] = [
           { label: '무광', priceModifier: 0 },
           { label: '유광', priceModifier: 0 },
           { label: '홀로그램', priceModifier: 3000 },
+        ]
+      },
+      {
+        name: '재단 방식',
+        type: 'radio',
+        values: [
+          { label: '시트형 반칼 (Kiss-cut)', priceModifier: 0 },
         ]
       }
     ],
@@ -743,10 +750,9 @@ export const PRODUCTS: Product[] = [
         name: '재단 방식',
         type: 'select',
         values: [
-          { label: '반칼', priceModifier: 0 },
-          { label: '완칼', priceModifier: 500 },
-          { label: '개별재단', priceModifier: 1000 },
-          { label: '시트형', priceModifier: 0 },
+          { label: '시트형 반칼 (Kiss-cut)', priceModifier: 0 },
+          { label: '개별재단 완칼 (Full-cut)', priceModifier: 500 },
+          { label: '시트형 반칼 + 개별 완칼 (복합)', priceModifier: 1500 },
         ]
       }
     ],
@@ -801,6 +807,13 @@ export const PRODUCTS: Product[] = [
           { label: '유광', priceModifier: 0 },
           { label: '홀로그램', priceModifier: 3000 },
         ]
+      },
+      {
+        name: '재단 방식',
+        type: 'radio',
+        values: [
+          { label: '개별재단 완칼 (Full-cut)', priceModifier: 0 },
+        ]
       }
     ],
     features: ['개별 재단', '고해상도 인쇄', '강력 접착'],
@@ -810,6 +823,162 @@ export const PRODUCTS: Product[] = [
       '작은 글자·얇은 선은 제작 제한 가능',
       '개별재단 상품은 1~2mm 오차 가능',
       '복잡한 칼선은 제작이 어려울 수 있음'
+    ]
+  },
+  {
+    id: 'stk-roll',
+    name: '롤 스티커',
+    category: 'sticker',
+    subCategory: '롤 스티커',
+    tagline: '자동 라벨러 작업에 최적화된 롤 형태.',
+    description: '대량 제작 및 자동 부착 작업에 적합하도록 롤 형태로 말려있는 스티커입니다.',
+    image: 'https://picsum.photos/seed/sticker-roll/800/800',
+    minQuantity: 1000,
+    basePrice: 45000,
+    options: [
+      {
+        name: '재질 선택',
+        type: 'select',
+        values: [
+          { label: '아트지 라벨', priceModifier: 0 },
+          { label: '유포 스티커', priceModifier: 5000 },
+          { label: '은무PET', priceModifier: 15000 },
+        ]
+      },
+      {
+        name: '롤 방향',
+        type: 'select',
+        values: [
+          { label: '정방향 (머리부터)', priceModifier: 0 },
+          { label: '역방향 (발부터)', priceModifier: 0 },
+          { label: '가로 방향', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '지관 사이즈',
+        type: 'radio',
+        values: [
+          { label: '40mm', priceModifier: 0 },
+          { label: '75mm', priceModifier: 0 },
+        ]
+      }
+    ],
+    features: ['자동 라벨러 호환', '대량 제작 최적화', '다양한 재질'],
+    leadTime: '7~10 영업일',
+    badges: ['대량 제작', '롤 형태', '자동화용'],
+    warnings: [
+      '최소 수량 1,000매부터 제작 가능합니다.',
+      '라벨러 사양에 맞는 롤 방향 확인이 필수입니다.'
+    ]
+  },
+  {
+    id: 'stk-outdoor',
+    name: '옥외용/차량용 스티커',
+    category: 'sticker',
+    subCategory: '옥외용',
+    tagline: '햇빛과 비바람에도 끄떡없는 강력한 내구성.',
+    description: '특수 PVC 재질과 UV 코팅으로 외부 환경에서도 색바램과 변형이 적은 스티커입니다.',
+    image: 'https://picsum.photos/seed/sticker-outdoor/800/800',
+    minQuantity: 1,
+    basePrice: 12000,
+    options: [
+      {
+        name: '재질',
+        type: 'select',
+        values: [
+          { label: '옥외용 PVC 백색', priceModifier: 0 },
+          { label: '옥외용 PVC 투명', priceModifier: 2000 },
+          { label: '차량 전용 랩핑지', priceModifier: 5000 },
+        ]
+      },
+      {
+        name: '코팅 선택',
+        type: 'radio',
+        values: [
+          { label: 'UV 유광 코팅', priceModifier: 0 },
+          { label: 'UV 무광 코팅', priceModifier: 0 },
+        ]
+      }
+    ],
+    features: ['자외선 차단', '완벽 방수', '강력 접착'],
+    leadTime: '4~5 영업일',
+    badges: ['옥외 전용', 'UV 코팅', '고내구성'],
+    warnings: [
+      '부착 면의 이물질을 깨끗이 닦은 후 부착해 주세요.',
+      '굴곡이 심한 면은 전문가용 랩핑지를 추천합니다.'
+    ]
+  },
+  {
+    id: 'stk-magnetic',
+    name: '자석 스티커',
+    category: 'sticker',
+    subCategory: '자석스티커',
+    tagline: '뗐다 붙였다 자유로운 자석형 광고.',
+    description: '차량 광고나 현관문 전단지 등 금속 표면에 자유롭게 탈부착 가능한 자석 스티커입니다.',
+    image: 'https://picsum.photos/seed/sticker-mag/800/800',
+    minQuantity: 10,
+    basePrice: 15000,
+    options: [
+      {
+        name: '자석 두께',
+        type: 'radio',
+        values: [
+          { label: '0.5T (일반)', priceModifier: 0 },
+          { label: '0.8T (강력)', priceModifier: 3000 },
+        ]
+      },
+      {
+        name: '코팅',
+        type: 'radio',
+        values: [
+          { label: '유광 코팅', priceModifier: 0 },
+          { label: '무광 코팅', priceModifier: 0 },
+        ]
+      }
+    ],
+    features: ['자유로운 탈부착', '반복 사용 가능', '강력한 자력'],
+    leadTime: '5~6 영업일',
+    badges: ['차량 광고', '반복 사용', '자석형'],
+    warnings: [
+      '고속 주행 차량은 0.8T 두께를 권장합니다.',
+      '장기간 부착 시 가끔 떼어내어 습기를 제거해 주세요.'
+    ]
+  },
+  {
+    id: 'stk-scratch',
+    name: '스크래치 스티커',
+    category: 'sticker',
+    subCategory: '스크래치',
+    tagline: '긁는 재미가 있는 이벤트용 스티커.',
+    description: '복권처럼 동전으로 긁으면 내용이 나타나는 이벤트 및 프로모션용 스티커입니다.',
+    image: 'https://picsum.photos/seed/sticker-scratch/800/800',
+    minQuantity: 100,
+    basePrice: 25000,
+    options: [
+      {
+        name: '스크래치 모양',
+        type: 'select',
+        values: [
+          { label: '원형 (20mm)', priceModifier: 0 },
+          { label: '사각형 (40x15mm)', priceModifier: 0 },
+          { label: '자유형 (별도문의)', priceModifier: 10000 },
+        ]
+      },
+      {
+        name: '스크래치 색상',
+        type: 'radio',
+        values: [
+          { label: '은색 (기본)', priceModifier: 0 },
+          { label: '금색', priceModifier: 2000 },
+        ]
+      }
+    ],
+    features: ['이벤트 최적화', '내용 보안', '간편한 부착'],
+    leadTime: '6~8 영업일',
+    badges: ['이벤트용', '프로모션', '스크래치'],
+    warnings: [
+      '스크래치 패드 아래 인쇄 내용은 미리 작업되어야 합니다.',
+      '너무 세게 긁으면 하단 인쇄가 손상될 수 있습니다.'
     ]
   },
   {
