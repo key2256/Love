@@ -261,6 +261,80 @@ function App() {
                   </div>
                 )}
 
+                {/* Subcategory Info Section */}
+                {activeSubCategory !== 'all' && filteredProducts.length > 0 && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mb-16 p-8 md:p-12 rounded-[48px] bg-white border border-zinc-100 shadow-xl shadow-zinc-900/5 flex flex-col md:flex-row gap-12 items-center"
+                  >
+                    <div className="w-full md:w-1/3 aspect-square rounded-[40px] overflow-hidden bg-zinc-100 shadow-inner">
+                      <img 
+                        src={filteredProducts[0].image} 
+                        alt={activeSubCategory}
+                        className="w-full h-full object-cover"
+                        referrerPolicy="no-referrer"
+                      />
+                    </div>
+                    <div className="flex-1 space-y-8">
+                      <div>
+                        <div className="flex items-center gap-3 mb-4">
+                          <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-widest border border-emerald-100">
+                            {CATEGORIES.find(c => c.id === activeCategory)?.name}
+                          </span>
+                          <div className="h-px w-8 bg-zinc-200" />
+                          <span className="text-zinc-400 text-[10px] font-bold uppercase tracking-widest">Sub Category</span>
+                        </div>
+                        <h3 className="text-4xl font-black text-zinc-900 mb-4 tracking-tight">{activeSubCategory}</h3>
+                        <p className="text-zinc-500 text-lg font-medium leading-relaxed max-w-2xl">
+                          {filteredProducts[0].description}
+                        </p>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                        <div className="space-y-3">
+                          <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest flex items-center gap-2">
+                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                            제작 가능 재질
+                          </span>
+                          <div className="flex flex-wrap gap-2">
+                            {filteredProducts[0].options.find(o => o.name.includes('재질'))?.values.slice(0, 5).map(v => (
+                              <span key={v.label} className="px-4 py-2 bg-zinc-50 rounded-xl text-xs font-bold text-zinc-600 border border-zinc-100 hover:bg-zinc-100 transition-colors cursor-default">{v.label}</span>
+                            )) || <span className="text-xs font-bold text-zinc-400">상세 페이지에서 확인 가능합니다.</span>}
+                          </div>
+                        </div>
+                        <div className="space-y-3">
+                          <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest flex items-center gap-2">
+                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                            가공 및 특징
+                          </span>
+                          <div className="flex flex-wrap gap-2">
+                            {filteredProducts[0].features.map(f => (
+                              <span key={f} className="px-4 py-2 bg-emerald-50/50 rounded-xl text-xs font-bold text-emerald-700 border border-emerald-100/50">{f}</span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="pt-6 flex flex-wrap gap-4">
+                        <button 
+                          onClick={() => handleProductClick(filteredProducts[0].id)}
+                          className="px-10 py-4 rounded-2xl bg-emerald-600 text-white font-black text-sm hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100 flex items-center gap-2 group"
+                        >
+                          상세 견적 보기
+                          <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                        </button>
+                        <button 
+                          onClick={() => handleInquiry()}
+                          className="px-10 py-4 rounded-2xl bg-zinc-900 text-white font-black text-sm hover:bg-zinc-800 transition-all shadow-lg shadow-zinc-100"
+                        >
+                          1:1 제작 문의
+                        </button>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                   {filteredProducts.map((product) => (
                     <ProductCard 

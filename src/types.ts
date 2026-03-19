@@ -569,11 +569,11 @@ export const CATEGORIES: Category[] = [
     subCategories: [
       {
         groupName: '모양별 스티커',
-        items: ['사각 시트형(반칼)', '원형 시트형(반칼)', '타원형 시트형(반칼)', '사각라운드 시트형(반칼)', '다양한 모양']
+        items: ['사각형 스티커', '원형 스티커', '타원형 스티커', '사각라운드 스티커', '다양한 모양 스티커']
       },
       {
         groupName: '자유형 스티커',
-        items: ['자유형 스티커']
+        items: ['자유형 전체보기', '자유형 일반', '자유형 투명', '자유형 홀로그램']
       },
       {
         groupName: '조각 스티커',
@@ -585,7 +585,7 @@ export const CATEGORIES: Category[] = [
       },
       {
         groupName: '프리미엄/특수 스티커',
-        items: ['투명', '홀로그램', '그문드 라벨', '메탈', 'UV', 'DTF', '에폭시']
+        items: ['투명 스티커', '홀로그램 스티커', '금광 PET', '은광 PET', '은무 PET', '그문드 라벨', '금 라벨지', '은 라벨지', '동 라벨지']
       }
     ]
   },
@@ -634,27 +634,16 @@ export const ORDER_STEPS: OrderStep[] = [
 
 export const PRODUCTS: Product[] = [
   {
-    id: 'stk-shape',
-    name: '모양별 스티커',
+    id: 'stk-rect',
+    name: '사각형 스티커',
     category: 'sticker',
-    subCategory: '모양별',
-    tagline: '원하는 모양을 선택하여 간편하게 제작하세요.',
-    description: '사각, 원형 등 정해진 규격 모양으로 제작하는 가성비 좋은 스티커입니다.',
-    image: 'https://picsum.photos/seed/sticker-shape/800/800',
+    subCategory: '사각형 스티커',
+    tagline: '가장 대중적인 사각형, 깔끔한 재단.',
+    description: '정해진 사각 규격으로 제작하는 가성비 좋은 스티커입니다. 홍보용, 박스 부착용으로 가장 많이 사용됩니다.',
+    image: 'https://picsum.photos/seed/sticker-rect/800/800',
     minQuantity: 100,
     basePrice: 3000,
     options: [
-      {
-        name: '모양 선택',
-        type: 'select',
-        values: [
-          { label: '사각 시트형(반칼)', priceModifier: 0 },
-          { label: '원형 시트형(반칼)', priceModifier: 0 },
-          { label: '타원형 시트형(반칼)', priceModifier: 0 },
-          { label: '사각라운드 시트형(반칼)', priceModifier: 0 },
-          { label: '다양한 모양', priceModifier: 500 },
-        ]
-      },
       {
         name: '작업 사이즈',
         type: 'select',
@@ -674,8 +663,6 @@ export const PRODUCTS: Product[] = [
           { label: '유포 스티커', priceModifier: 500 },
           { label: '투명PET', priceModifier: 1500 },
           { label: '은무PET', priceModifier: 2000 },
-          { label: '금광 PET', priceModifier: 2500 },
-          { label: '(GMUND) 화이트우드', priceModifier: 3500 },
         ]
       },
       {
@@ -684,43 +671,35 @@ export const PRODUCTS: Product[] = [
         values: [
           { label: '무광', priceModifier: 0 },
           { label: '유광', priceModifier: 0 },
-          { label: '홀로그램', priceModifier: 3000 },
-        ]
-      },
-      {
-        name: '재단 방식',
-        type: 'radio',
-        values: [
-          { label: '시트형 반칼 (Kiss-cut)', priceModifier: 0 },
         ]
       }
     ],
-    features: ['다양한 규격', '고해상도 인쇄', '가성비'],
+    features: ['시트형 제작', '반칼 스티커 가공', '가성비 최우수'],
     leadTime: '2~3 영업일',
-    badges: ['규격 선택', '대량 제작 유리', '빠른 제작'],
+    badges: ['시트형', '반칼 스티커', '대량 제작 유리'],
     warnings: [
       '재단 공정상 1~2mm 밀림 현상이 있을 수 있습니다.',
       '모니터 해상도에 따라 실제 제품과 색상 차이가 있을 수 있습니다.'
     ]
   },
   {
-    id: 'stk-free',
-    name: '자유형 스티커',
+    id: 'stk-circle',
+    name: '원형 스티커',
     category: 'sticker',
-    subCategory: '자유형',
-    tagline: '원하는 모양 그대로, 자유롭게 제작하세요.',
-    description: '칼선 제약 없이 원하는 형태 그대로 제작 가능한 스티커입니다.',
-    image: 'https://picsum.photos/seed/sticker1/800/800',
-    minQuantity: 10,
-    basePrice: 5000,
+    subCategory: '원형 스티커',
+    tagline: '부드러운 원형, 패키지 봉인에 최적.',
+    description: '로고 강조나 패키지 마감에 적합한 원형 스티커입니다. 깔끔한 원형 칼선이 특징입니다.',
+    image: 'https://picsum.photos/seed/sticker-circle/800/800',
+    minQuantity: 100,
+    basePrice: 3500,
     options: [
       {
-        name: '작업 사이즈',
+        name: '지름 선택',
         type: 'select',
         values: [
-          { label: '50x50mm 이내', priceModifier: 0 },
-          { label: '70x70mm 이내', priceModifier: 2000 },
-          { label: '100x100mm 이내', priceModifier: 5000 },
+          { label: '30mm', priceModifier: 0 },
+          { label: '50mm', priceModifier: 500 },
+          { label: '70mm', priceModifier: 1500 },
           { label: '직접 입력', priceModifier: 0 },
         ]
       },
@@ -729,41 +708,231 @@ export const PRODUCTS: Product[] = [
         type: 'select',
         values: [
           { label: '아트지 라벨', priceModifier: 0 },
-          { label: '아트지 라벨(초강접)', priceModifier: 500 },
           { label: '유포 스티커', priceModifier: 500 },
           { label: '투명PET', priceModifier: 1500 },
-          { label: '은무PET', priceModifier: 2000 },
-          { label: '금광 PET', priceModifier: 2500 },
-          { label: '(GMUND) 화이트우드', priceModifier: 3500 },
         ]
-      },
+      }
+    ],
+    features: ['시트형 제작', '반칼 스티커 가공', '정교한 원형 칼선'],
+    leadTime: '2~3 영업일',
+    badges: ['시트형', '반칼 스티커', '패키지 봉인용'],
+    warnings: [
+      '원형 중심에서 미세하게 밀림이 발생할 수 있습니다.'
+    ]
+  },
+  {
+    id: 'stk-oval',
+    name: '타원형 스티커',
+    category: 'sticker',
+    subCategory: '타원형 스티커',
+    tagline: '세련된 타원형으로 디자인의 완성도를 높이세요.',
+    description: '가로 또는 세로로 긴 타원형 모양의 스티커입니다. 제품 라벨이나 봉인용으로 인기가 많습니다.',
+    image: 'https://picsum.photos/seed/sticker-oval/800/800',
+    minQuantity: 100,
+    basePrice: 3800,
+    options: [
       {
-        name: '표면 마감',
-        type: 'radio',
-        values: [
-          { label: '무광', priceModifier: 0 },
-          { label: '유광', priceModifier: 0 },
-          { label: '홀로그램', priceModifier: 3000 },
-        ]
-      },
-      {
-        name: '재단 방식',
+        name: '작업 사이즈',
         type: 'select',
         values: [
-          { label: '시트형 반칼 (Kiss-cut)', priceModifier: 0 },
-          { label: '개별재단 완칼 (Full-cut)', priceModifier: 500 },
-          { label: '시트형 반칼 + 개별 완칼 (복합)', priceModifier: 1500 },
+          { label: '50x30mm 이내', priceModifier: 0 },
+          { label: '80x50mm 이내', priceModifier: 2000 },
+          { label: '직접 입력', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '재질 선택',
+        type: 'select',
+        values: [
+          { label: '아트지 라벨', priceModifier: 0 },
+          { label: '유포 스티커', priceModifier: 500 },
+          { label: '투명PET', priceModifier: 1500 },
+        ]
+      }
+    ],
+    features: ['시트형 제작', '반칼 스티커 가공', '세련된 타원 칼선'],
+    leadTime: '2~3 영업일',
+    badges: ['시트형', '반칼 스티커', '디자인 포인트'],
+    warnings: [
+      '타원형은 방향에 따라 재단 오차가 더 눈에 띌 수 있습니다.'
+    ]
+  },
+  {
+    id: 'stk-round-rect',
+    name: '사각라운드 스티커',
+    category: 'sticker',
+    subCategory: '사각라운드 스티커',
+    tagline: '부드러운 모서리, 안정감 있는 디자인.',
+    description: '사각형 모서리를 둥글게 처리하여 부드러운 느낌을 주는 스티커입니다. 명함형 스티커로도 많이 활용됩니다.',
+    image: 'https://picsum.photos/seed/sticker-round-rect/800/800',
+    minQuantity: 100,
+    basePrice: 3500,
+    options: [
+      {
+        name: '작업 사이즈',
+        type: 'select',
+        values: [
+          { label: '90x50mm (명함사이즈)', priceModifier: 0 },
+          { label: '50x50mm 이내', priceModifier: 0 },
+          { label: '직접 입력', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '재질 선택',
+        type: 'select',
+        values: [
+          { label: '아트지 라벨', priceModifier: 0 },
+          { label: '유포 스티커', priceModifier: 500 },
+          { label: '크라프트라벨', priceModifier: 1000 },
+        ]
+      }
+    ],
+    features: ['시트형 제작', '반칼 스티커 가공', '부드러운 라운드 처리'],
+    leadTime: '2~3 영업일',
+    badges: ['시트형', '반칼 스티커', '명함형 스티커'],
+    warnings: [
+      '라운드 값(R)은 기본 3mm로 제작됩니다.'
+    ]
+  },
+  {
+    id: 'stk-various',
+    name: '다양한 모양 스티커',
+    category: 'sticker',
+    subCategory: '다양한 모양 스티커',
+    tagline: '한 장의 시트에 여러 모양을 담으세요.',
+    description: '사각형, 원형 등 여러 가지 모양을 한 장의 시트에 구성하여 제작하는 스티커입니다.',
+    image: 'https://picsum.photos/seed/sticker-various/800/800',
+    minQuantity: 100,
+    basePrice: 4500,
+    options: [
+      {
+        name: '시트 사이즈',
+        type: 'select',
+        values: [
+          { label: 'A6 (105x148mm)', priceModifier: 0 },
+          { label: 'A5 (148x210mm)', priceModifier: 5000 },
+          { label: 'A4 (210x297mm)', priceModifier: 12000 },
+        ]
+      },
+      {
+        name: '재질 선택',
+        type: 'select',
+        values: [
+          { label: '아트지 라벨', priceModifier: 0 },
+          { label: '유포 스티커', priceModifier: 500 },
+          { label: '유포매트 투명후지', priceModifier: 1500 },
+        ]
+      }
+    ],
+    features: ['시트형 제작', '반칼 스티커 가공', '멀티 칼선 구성'],
+    leadTime: '3~4 영업일',
+    badges: ['시트형', '반칼 스티커', '팬시 스티커'],
+    warnings: [
+      '칼선 간격은 최소 2mm 이상 유지해야 합니다.'
+    ]
+  },
+  {
+    id: 'stk-free-all',
+    name: '자유형 전체보기',
+    category: 'sticker',
+    subCategory: '자유형 전체보기',
+    tagline: '모든 자유형 스티커를 한눈에 확인하세요.',
+    description: '원하는 모양 그대로 제작 가능한 모든 자유형 스티커 라인업입니다.',
+    image: 'https://picsum.photos/seed/sticker-free-all/800/800',
+    minQuantity: 10,
+    basePrice: 5000,
+    options: [
+      {
+        name: '재질 선택',
+        type: 'select',
+        values: [
+          { label: '아트지 라벨', priceModifier: 0 },
+          { label: '유포 스티커', priceModifier: 500 },
+          { label: '투명PET', priceModifier: 1500 },
+          { label: '홀로그램', priceModifier: 3000 },
+        ]
+      }
+    ],
+    features: ['자유로운 칼선', '다양한 재질', '소량 제작 가능'],
+    leadTime: '3~5 영업일',
+    badges: ['자유형', '반칼/완칼', '커스텀'],
+    warnings: ['복잡한 칼선은 제작이 제한될 수 있습니다.']
+  },
+  {
+    id: 'stk-free-normal',
+    name: '자유형 일반',
+    category: 'sticker',
+    subCategory: '자유형 일반',
+    tagline: '가장 대중적인 자유형 스티커.',
+    description: '아트지, 유포지 등 일반적인 재질로 제작하는 자유형 스티커입니다.',
+    image: 'https://picsum.photos/seed/sticker-free-normal/800/800',
+    minQuantity: 10,
+    basePrice: 5000,
+    options: [
+      {
+        name: '재질 선택',
+        type: 'select',
+        values: [
+          { label: '아트지 라벨', priceModifier: 0 },
+          { label: '유포 스티커', priceModifier: 500 },
         ]
       }
     ],
     features: ['자유로운 칼선', '고해상도 인쇄', '강력 접착'],
     leadTime: '3~5 영업일',
-    badges: ['재질 4종~', '칼선 커스텀', '소량 제작'],
-    warnings: [
-      '작은 글자·얇은 선·뾰족한 칼선은 제작 제한 가능',
-      '개별재단 상품은 1~2mm 오차 가능',
-      '자유형은 칼선 길이에 따라 추가비용 가능'
-    ]
+    badges: ['자유형', '일반 재질', '가성비'],
+    warnings: ['칼선 간격 2mm 이상 권장']
+  },
+  {
+    id: 'stk-free-transparent',
+    name: '자유형 투명',
+    category: 'sticker',
+    subCategory: '자유형 투명',
+    tagline: '배경이 비치는 투명한 자유형 스티커.',
+    description: '투명 PET 재질을 사용하여 배경이 비치는 독특한 느낌의 자유형 스티커입니다.',
+    image: 'https://picsum.photos/seed/sticker-free-trans/800/800',
+    minQuantity: 10,
+    basePrice: 7000,
+    options: [
+      {
+        name: '재질 선택',
+        type: 'select',
+        values: [
+          { label: '투명PET', priceModifier: 0 },
+          { label: '투명PET(백색인쇄)', priceModifier: 1000 },
+        ]
+      }
+    ],
+    features: ['투명 재질', '자유로운 칼선', '방수 기능'],
+    leadTime: '4~6 영업일',
+    badges: ['자유형', '투명', '방수'],
+    warnings: ['백색 인쇄 시 별도 작업 필요']
+  },
+  {
+    id: 'stk-free-hologram',
+    name: '자유형 홀로그램',
+    category: 'sticker',
+    subCategory: '자유형 홀로그램',
+    tagline: '빛에 따라 반짝이는 홀로그램 자유형.',
+    description: '화려한 홀로그램 효과가 적용된 자유형 스티커로 시선을 사로잡으세요.',
+    image: 'https://picsum.photos/seed/sticker-free-holo/800/800',
+    minQuantity: 10,
+    basePrice: 8500,
+    options: [
+      {
+        name: '홀로그램 패턴',
+        type: 'select',
+        values: [
+          { label: '샌드 패턴', priceModifier: 0 },
+          { label: '스타 패턴', priceModifier: 0 },
+          { label: '레인보우 패턴', priceModifier: 0 },
+        ]
+      }
+    ],
+    features: ['홀로그램 효과', '자유로운 칼선', '강력 접착'],
+    leadTime: '5~7 영업일',
+    badges: ['자유형', '홀로그램', '스페셜'],
+    warnings: ['패턴에 따라 인쇄 색감이 달라질 수 있습니다.']
   },
   {
     id: 'stk-piece',
@@ -945,6 +1114,82 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
+    id: 'stk-removable',
+    name: '리무버블 스티커',
+    category: 'sticker',
+    subCategory: '리무버블',
+    tagline: '흔적 없이 깔끔하게 떼어지는 스티커.',
+    description: '노트북, 캐리어, 다이어리 등 부착 후 떼어낼 때 끈적임이 남지 않는 리무버블 재질입니다.',
+    image: 'https://picsum.photos/seed/removable/800/800',
+    minQuantity: 10,
+    basePrice: 5500,
+    options: [
+      {
+        name: '재질 선택',
+        type: 'select',
+        values: [
+          { label: '리무버블 유포지', priceModifier: 0 },
+          { label: '리무버블 투명', priceModifier: 1500 },
+        ]
+      }
+    ],
+    features: ['끈적임 없음', '재부착 가능', '방수 기능'],
+    leadTime: '3~4 영업일',
+    badges: ['리무버블', '노트북용', '깔끔제거'],
+    warnings: ['장기간 부착 시 표면 상태에 따라 흔적이 남을 수 있습니다.']
+  },
+  {
+    id: 'stk-cold',
+    name: '냉장/냉동용 스티커',
+    category: 'sticker',
+    subCategory: '냉장·냉동',
+    tagline: '저온 환경에서도 떨어지지 않는 강력함.',
+    description: '냉장고나 냉동고 등 습기가 많고 온도가 낮은 환경에서도 접착력을 유지하는 특수 스티커입니다.',
+    image: 'https://picsum.photos/seed/coldstk/800/800',
+    minQuantity: 100,
+    basePrice: 12000,
+    options: [
+      {
+        name: '재질 선택',
+        type: 'select',
+        values: [
+          { label: '냉동 전용 유포지', priceModifier: 0 },
+          { label: '냉동 전용 아트지', priceModifier: -1000 },
+        ]
+      }
+    ],
+    features: ['저온 접착력', '습기 강함', '식품 패키지용'],
+    leadTime: '4~5 영업일',
+    badges: ['냉동용', '강력접착', '식품용'],
+    warnings: ['부착 시 표면의 성에나 물기를 제거한 후 부착해야 효과가 좋습니다.']
+  },
+  {
+    id: 'stk-card',
+    name: '카드 스티커',
+    category: 'sticker',
+    subCategory: '카드스티커',
+    tagline: '교통카드, 출입카드를 나만의 스타일로.',
+    description: '신용카드나 교통카드 규격에 딱 맞는 사이즈로 제작되어 카드를 꾸미기에 최적화된 스티커입니다.',
+    image: 'https://picsum.photos/seed/cardstk/800/800',
+    minQuantity: 10,
+    basePrice: 4000,
+    options: [
+      {
+        name: '표면 마감',
+        type: 'radio',
+        values: [
+          { label: '무광 코팅', priceModifier: 0 },
+          { label: '유광 코팅', priceModifier: 0 },
+          { label: '홀로그램 코팅', priceModifier: 2000 },
+        ]
+      }
+    ],
+    features: ['카드 표준 규격', '얇은 두께', '고해상도 인쇄'],
+    leadTime: '3~4 영업일',
+    badges: ['카드용', 'DIY', '굿즈'],
+    warnings: ['IC칩 부위를 가리지 않도록 주의해서 부착해 주세요.']
+  },
+  {
     id: 'stk-scratch',
     name: '스크래치 스티커',
     category: 'sticker',
@@ -1088,6 +1333,143 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
+    id: 'goods-stand',
+    name: '아크릴 스탠드',
+    category: 'goods',
+    subCategory: '아크릴 스탠드',
+    tagline: '내 캐릭터가 살아 움직이는 듯한 입체감.',
+    description: '책상 위를 장식하기 좋은 아크릴 스탠드입니다. 본체와 받침대가 세트로 구성됩니다.',
+    image: 'https://picsum.photos/seed/stand/800/800',
+    minQuantity: 1,
+    basePrice: 5500,
+    options: [
+      {
+        name: '사이즈',
+        type: 'select',
+        values: [
+          { label: '50x50mm 이내', priceModifier: 0 },
+          { label: '100x100mm 이내', priceModifier: 5000 },
+          { label: '150x150mm 이내', priceModifier: 12000 },
+        ]
+      }
+    ],
+    features: ['입체 장식', '고선명 UV 인쇄', '정밀 레이저 커팅'],
+    leadTime: '5~7 영업일',
+    badges: ['1개부터 제작', '입체 굿즈', '데스크테리어'],
+    warnings: ['조립 시 무리한 힘을 가하면 아크릴이 파손될 수 있습니다.']
+  },
+  {
+    id: 'goods-coaster',
+    name: '코스터',
+    category: 'goods',
+    subCategory: '코스터',
+    tagline: '카페 감성을 담은 나만의 컵받침.',
+    description: '종이, 아크릴, 고무 등 다양한 재질로 제작 가능한 코스터입니다. 카페 홍보물이나 선물용으로 좋습니다.',
+    image: 'https://picsum.photos/seed/coaster/800/800',
+    minQuantity: 10,
+    basePrice: 12000,
+    options: [
+      {
+        name: '재질 선택',
+        type: 'select',
+        values: [
+          { label: '흡수성 종이', priceModifier: 0 },
+          { label: '투명 아크릴', priceModifier: 5000 },
+          { label: '코르크', priceModifier: 3000 },
+        ]
+      }
+    ],
+    features: ['다양한 재질', '풀컬러 인쇄', '실용적인 굿즈'],
+    leadTime: '5~10 영업일',
+    badges: ['카페 굿즈', '실용적', '선물용'],
+    warnings: ['재질에 따라 최소 수량이 다를 수 있습니다.']
+  },
+  {
+    id: 'goods-tape',
+    name: '마스킹 테이프',
+    category: 'goods',
+    subCategory: '마스킹 테이프',
+    tagline: '다이어리 꾸미기의 필수 아이템.',
+    description: '원하는 디자인으로 패턴을 반복하여 제작하는 나만의 마스킹 테이프입니다.',
+    image: 'https://picsum.photos/seed/tape/800/800',
+    minQuantity: 50,
+    basePrice: 85000,
+    options: [
+      {
+        name: '폭 사이즈',
+        type: 'radio',
+        values: [
+          { label: '15mm (표준)', priceModifier: 0 },
+          { label: '20mm', priceModifier: 5000 },
+        ]
+      }
+    ],
+    features: ['패턴 반복 인쇄', '부드러운 접착', '다꾸 필수템'],
+    leadTime: '15~20 영업일',
+    badges: ['다꾸템', '패턴 제작', '대량 제작'],
+    warnings: ['제작 기간이 다소 길 수 있으니 여유 있게 주문해 주세요.']
+  },
+  {
+    id: 'goods-button',
+    name: '핀버튼',
+    category: 'goods',
+    subCategory: '핀버튼',
+    tagline: '가방, 옷 어디든 포인트가 되는 배지.',
+    description: '행사 사은품이나 동호회 굿즈로 인기 있는 핀버튼 배지입니다.',
+    image: 'https://picsum.photos/seed/button/800/800',
+    minQuantity: 10,
+    basePrice: 5000,
+    options: [
+      {
+        name: '사이즈',
+        type: 'select',
+        values: [
+          { label: '32mm', priceModifier: 0 },
+          { label: '44mm', priceModifier: 500 },
+          { label: '58mm', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '코팅 선택',
+        type: 'radio',
+        values: [
+          { label: '유광', priceModifier: 0 },
+          { label: '무광', priceModifier: 0 },
+        ]
+      }
+    ],
+    features: ['간편한 착용', '풀컬러 인쇄', '가성비 굿즈'],
+    leadTime: '3~5 영업일',
+    badges: ['행사용', '가성비', '빠른제작'],
+    warnings: ['핀 끝이 날카로우니 사용 시 주의해 주세요.']
+  },
+  {
+    id: 'goods-tok',
+    name: '스마트톡',
+    category: 'goods',
+    subCategory: '스마트톡',
+    tagline: '편리한 그립감과 나만의 디자인.',
+    description: '스마트폰 뒷면에 부착하여 편리하게 사용하고 거치대로도 활용 가능한 스마트톡입니다.',
+    image: 'https://picsum.photos/seed/tok/800/800',
+    minQuantity: 1,
+    basePrice: 4500,
+    options: [
+      {
+        name: '바디 색상',
+        type: 'radio',
+        values: [
+          { label: '화이트', priceModifier: 0 },
+          { label: '블랙', priceModifier: 0 },
+          { label: '투명', priceModifier: 500 },
+        ]
+      }
+    ],
+    features: ['3단 높이 조절', '이어폰 정리 가능', '강력 부착'],
+    leadTime: '4~6 영업일',
+    badges: ['1개부터 제작', '폰 액세서리', '실용적'],
+    warnings: ['특수 코팅된 케이스나 가죽 케이스는 접착력이 약할 수 있습니다.']
+  },
+  {
     id: 'paper-postcard',
     name: '엽서',
     category: 'paper',
@@ -1133,6 +1515,38 @@ export const PRODUCTS: Product[] = [
       '어두운 배경색은 재단 시 터짐 현상 발생 가능',
       '수입지는 종이 결에 따라 인쇄 느낌이 다를 수 있음'
     ]
+  },
+  {
+    id: 'bc-fold',
+    name: '접지 명함',
+    category: 'paper',
+    subCategory: '접지 명함',
+    tagline: '더 많은 정보를 담을 수 있는 2단 명함.',
+    description: '반으로 접어 사용하는 형태로, 일반 명함보다 2배 더 많은 정보를 담을 수 있어 쿠폰이나 안내장으로 활용하기 좋습니다.',
+    image: 'https://picsum.photos/seed/fold-bc/800/800',
+    minQuantity: 100,
+    basePrice: 15000,
+    options: [
+      {
+        name: '접지 방식',
+        type: 'radio',
+        values: [
+          { label: '가로 접지', priceModifier: 0 },
+          { label: '세로 접지', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '오리시(누름선)',
+        type: 'radio',
+        values: [
+          { label: '1줄 (기본)', priceModifier: 0 },
+        ]
+      }
+    ],
+    features: ['넓은 수납 공간', '정밀 오리시 가공', '다양한 용지'],
+    leadTime: '3~4 영업일',
+    badges: ['2단 접지', '정보량 UP', '쿠폰용'],
+    warnings: ['접히는 부분의 인쇄 터짐 방지를 위해 코팅을 권장합니다.']
   },
   {
     id: 'bc-standard',
@@ -1340,6 +1754,81 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
+    id: 'pkg-bag',
+    name: '종이 쇼핑백',
+    category: 'package',
+    subCategory: '쇼핑백',
+    tagline: '브랜드의 품격을 완성하는 쇼핑백.',
+    description: '다양한 사이즈와 끈 선택으로 브랜드 아이덴티티를 살릴 수 있는 종이 쇼핑백입니다.',
+    image: 'https://picsum.photos/seed/shoppingbag/800/800',
+    minQuantity: 100,
+    basePrice: 85000,
+    options: [
+      {
+        name: '사이즈',
+        type: 'select',
+        values: [
+          { label: '소형 (220x120x280)', priceModifier: 0 },
+          { label: '중형 (320x110x420)', priceModifier: 20000 },
+        ]
+      }
+    ],
+    features: ['고강도 용지', '내구성 있는 끈', '브랜드 홍보 효과'],
+    leadTime: '10~14 영업일',
+    badges: ['브랜드 패키지', '대량 제작', '맞춤 사이즈'],
+    warnings: ['제작 공정상 수량 오차가 3~5% 발생할 수 있습니다.']
+  },
+  {
+    id: 'pkg-envelope',
+    name: '컬러 봉투',
+    category: 'package',
+    subCategory: '봉투',
+    tagline: '첫인상을 결정하는 고급스러운 봉투.',
+    description: '청첩장, 초대장, 상품권 등을 담기에 적합한 다양한 컬러와 재질의 봉투입니다.',
+    image: 'https://picsum.photos/seed/envelope/800/800',
+    minQuantity: 100,
+    basePrice: 12000,
+    options: [
+      {
+        name: '사이즈',
+        type: 'select',
+        values: [
+          { label: '일반형 (175x85)', priceModifier: 0 },
+          { label: '대형 (220x110)', priceModifier: 3000 },
+        ]
+      }
+    ],
+    features: ['다양한 컬러', '고급 수입지', '정밀 가공'],
+    leadTime: '4~5 영업일',
+    badges: ['초대장용', '고급지', '다양한컬러'],
+    warnings: ['봉투 뚜껑 부분의 가공 방식에 따라 견적이 달라질 수 있습니다.']
+  },
+  {
+    id: 'pkg-wrapping',
+    name: '포장지',
+    category: 'package',
+    subCategory: '포장지',
+    tagline: '정성을 더하는 아름다운 포장.',
+    description: '선물이나 상품을 정성스럽게 감싸는 맞춤 인쇄 포장지입니다.',
+    image: 'https://picsum.photos/seed/wrapping/800/800',
+    minQuantity: 100,
+    basePrice: 35000,
+    options: [
+      {
+        name: '용지 선택',
+        type: 'select',
+        values: [
+          { label: '모조지 80g', priceModifier: 0 },
+          { label: '아트지 100g', priceModifier: 5000 },
+        ]
+      }
+    ],
+    features: ['전면 패턴 인쇄', '부드러운 질감', '선물 포장 최적화'],
+    leadTime: '5~7 영업일',
+    badges: ['패턴 인쇄', '선물용', '대량 제작'],
+    warnings: ['얇은 용지 특성상 뒷비침이 있을 수 있습니다.']
+  },
+  {
     id: 'pkg-box',
     name: '커스텀 단상자',
     category: 'package',
@@ -1404,7 +1893,7 @@ export const PRODUCTS: Product[] = [
     id: 'sticker-transparent',
     name: '투명 스티커',
     category: 'sticker',
-    subCategory: '투명스티커',
+    subCategory: '투명 스티커',
     tagline: '배경이 비치는 투명한 재질로 깔끔한 느낌',
     description: '투명한 PET 재질에 인쇄하여 부착 면의 색상이 비치는 스티커입니다. 화이트 인쇄를 추가하여 선명도를 높일 수 있습니다.',
     image: 'https://picsum.photos/seed/transparent/800/800',
@@ -1430,7 +1919,7 @@ export const PRODUCTS: Product[] = [
     id: 'sticker-hologram',
     name: '홀로그램 스티커',
     category: 'sticker',
-    subCategory: '자유형',
+    subCategory: '홀로그램 스티커',
     tagline: '각도에 따라 무지개 빛으로 빛나는 특별함',
     description: '빛의 각도에 따라 다채로운 색상으로 빛나는 홀로그램 원단을 사용하여 시선을 사로잡는 스티커를 제작합니다.',
     image: 'https://picsum.photos/seed/hologram/800/800',
@@ -1446,6 +1935,157 @@ export const PRODUCTS: Product[] = [
     features: ['무지개빛 반사', '강한 점착력', '커스텀 칼선'],
     leadTime: '4-5일',
     badges: ['홀로그램', '시선강탈', '특수원단']
+  },
+  {
+    id: 'sticker-gold-pet',
+    name: '금광 PET',
+    category: 'sticker',
+    subCategory: '금광 PET',
+    tagline: '번쩍이는 금빛 광택으로 고급스러움 극대화',
+    description: '금색 광택이 흐르는 PET 재질로, 프리미엄 상품 라벨이나 봉인용 스티커로 인기가 높습니다.',
+    image: 'https://picsum.photos/seed/goldpet/800/800',
+    minQuantity: 10,
+    basePrice: 7500,
+    options: [
+      {
+        name: '모양',
+        type: 'select',
+        values: [{ label: '원형' }, { label: '사각' }, { label: '자유형', priceModifier: 500 }]
+      }
+    ],
+    features: ['금색 광택', '내구성 우수', '방수 기능'],
+    leadTime: '4-5일',
+    badges: ['금광', '프리미엄', '방수']
+  },
+  {
+    id: 'sticker-silver-pet',
+    name: '은광 PET',
+    category: 'sticker',
+    subCategory: '은광 PET',
+    tagline: '세련된 은빛 광택의 메탈릭 스티커',
+    description: '은색 광택이 돋보이는 재질로, 전자제품 라벨이나 세련된 디자인의 굿즈 제작에 적합합니다.',
+    image: 'https://picsum.photos/seed/silverpet/800/800',
+    minQuantity: 10,
+    basePrice: 7000,
+    options: [
+      {
+        name: '모양',
+        type: 'select',
+        values: [{ label: '원형' }, { label: '사각' }, { label: '자유형', priceModifier: 500 }]
+      }
+    ],
+    features: ['은색 광택', '메탈릭 질감', '방수 기능'],
+    leadTime: '4-5일',
+    badges: ['은광', '메탈릭', '방수']
+  },
+  {
+    id: 'sticker-silver-matte-pet',
+    name: '은무 PET',
+    category: 'sticker',
+    subCategory: '은무 PET',
+    tagline: '차분하고 고급스러운 무광 은빛',
+    description: '광택이 없는 은색 재질로, 차분하면서도 전문적인 느낌을 주어 산업용 라벨이나 고급 패키지에 사용됩니다.',
+    image: 'https://picsum.photos/seed/mattesilver/800/800',
+    minQuantity: 10,
+    basePrice: 7000,
+    options: [
+      {
+        name: '모양',
+        type: 'select',
+        values: [{ label: '원형' }, { label: '사각' }, { label: '자유형', priceModifier: 500 }]
+      }
+    ],
+    features: ['무광 은색', '내열성/내구성', '방수 기능'],
+    leadTime: '4-5일',
+    badges: ['은무', '내구성', '방수']
+  },
+  {
+    id: 'sticker-gmund',
+    name: '그문드 라벨',
+    category: 'sticker',
+    subCategory: '그문드 라벨',
+    tagline: '독일 명품 종이, 그문드의 질감을 스티커로',
+    description: '세계적인 고급지 브랜드 그문드(GMUND)의 원단을 사용한 라벨 스티커입니다. 독보적인 질감과 색감을 자랑합니다.',
+    image: 'https://picsum.photos/seed/gmund/800/800',
+    minQuantity: 10,
+    basePrice: 9500,
+    options: [
+      {
+        name: '종이 선택',
+        type: 'select',
+        values: [
+          { label: '그문드 화이트우드' },
+          { label: '그문드 코튼', priceModifier: 1000 },
+          { label: '그문드 골드', priceModifier: 2000 }
+        ]
+      }
+    ],
+    features: ['명품 수입지', '독보적 질감', '친환경 인증'],
+    leadTime: '5-7일',
+    badges: ['그문드', '명품지', '감성']
+  },
+  {
+    id: 'sticker-gold-label',
+    name: '금 라벨지',
+    category: 'sticker',
+    subCategory: '금 라벨지',
+    tagline: '은은한 금색 종이 질감의 라벨',
+    description: '광택이 강하지 않은 은은한 금색 종이 재질로, 전통적인 느낌이나 고급스러운 답례품 등에 잘 어울립니다.',
+    image: 'https://picsum.photos/seed/goldlabel/800/800',
+    minQuantity: 10,
+    basePrice: 6000,
+    options: [
+      {
+        name: '모양',
+        type: 'select',
+        values: [{ label: '원형' }, { label: '사각' }, { label: '자유형', priceModifier: 500 }]
+      }
+    ],
+    features: ['은은한 금색', '종이 질감', '가성비 고급'],
+    leadTime: '3-4일',
+    badges: ['금라벨', '클래식', '종이재질']
+  },
+  {
+    id: 'sticker-silver-label',
+    name: '은 라벨지',
+    category: 'sticker',
+    subCategory: '은 라벨지',
+    tagline: '차분한 은색 종이 질감의 라벨',
+    description: '은은한 은색 종이 재질로 깔끔하고 정갈한 느낌을 줍니다. 다양한 용도의 라벨로 활용 가능합니다.',
+    image: 'https://picsum.photos/seed/silverlabel/800/800',
+    minQuantity: 10,
+    basePrice: 6000,
+    options: [
+      {
+        name: '모양',
+        type: 'select',
+        values: [{ label: '원형' }, { label: '사각' }, { label: '자유형', priceModifier: 500 }]
+      }
+    ],
+    features: ['은은한 은색', '종이 질감', '깔끔한 마감'],
+    leadTime: '3-4일',
+    badges: ['은라벨', '모던', '종이재질']
+  },
+  {
+    id: 'sticker-bronze-label',
+    name: '동 라벨지',
+    category: 'sticker',
+    subCategory: '동 라벨지',
+    tagline: '빈티지한 동색(브론즈) 종이 라벨',
+    description: '독특한 동색(브론즈) 빛이 도는 종이 재질로, 빈티지하거나 앤티크한 디자인에 매우 잘 어울립니다.',
+    image: 'https://picsum.photos/seed/bronzelabel/800/800',
+    minQuantity: 10,
+    basePrice: 6000,
+    options: [
+      {
+        name: '모양',
+        type: 'select',
+        values: [{ label: '원형' }, { label: '사각' }, { label: '자유형', priceModifier: 500 }]
+      }
+    ],
+    features: ['빈티지 브론즈', '종이 질감', '유니크 색상'],
+    leadTime: '3-4일',
+    badges: ['동라벨', '빈티지', '유니크']
   },
   {
     id: 'paper-postcard-premium',

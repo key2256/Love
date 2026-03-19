@@ -164,11 +164,11 @@ export const Navbar = ({
                       key={groupName}
                       onClick={() => {
                         setSelectedSubGroup(groupName);
+                        onCategorySelect(activeDisplayCategory);
                         if (typeof sub === 'string') {
-                          onCategorySelect(activeDisplayCategory);
                           onSubCategorySelect(sub);
-                        } else if (sub.items.length === 1) {
-                          onCategorySelect(activeDisplayCategory);
+                        } else {
+                          // Default to the first item in the group
                           onSubCategorySelect(sub.items[0]);
                         }
                       }}
