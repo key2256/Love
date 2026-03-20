@@ -32,39 +32,53 @@ export const Navbar = ({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const [selectedSubGroup, setSelectedSubGroup] = useState<string | null>(null);
-  const [prevCategory, setPrevCategory] = useState(activeCategory);
 
-  // Immediate state cleanup when category changes to prevent UI overlap/lag
-  if (activeCategory !== prevCategory) {
-    setPrevCategory(activeCategory);
-    setSelectedSubGroup('all');
-  }
+  // The category we are actually showing in the sub-nav
+  const displayCategoryId = hoveredCategory || (activeCategory !== 'all' ? activeCategory : null);
+  const displayCategory = CATEGORIES.find(c => c.id === displayCategoryId);
 
-  // Determine which category to display in the secondary navigation bar
-  // Priority: activeCategory (click) > hoveredCategory (hover)
-  // If a category is selected by click, hover will not overwrite the sub-navigation display.
-  const activeDisplayCategory = activeCategory !== 'all' ? activeCategory : hoveredCategory;
-  const currentDisplayCategory = CATEGORIES.find(c => c.id === activeDisplayCategory);
-
-  // Sync selectedSubGroup with activeSubCategory
+  // Sync selectedSubGroup when the ACTIVE category/subcategory changes
+  // But don't let it interfere with the HOVER state
   useEffect(() => {
-    if (activeSubCategory === 'all') {
-      setSelectedSubGroup('all');
+    if (activeCategory === 'all') {
+      // If no category is active, and we aren't hovering, clear the subgroup
+      if (!hoveredCategory) {
+        setSelectedSubGroup(null);
+      }
       return;
     }
 
-    // Only sync if the active category matches what we are displaying
-    if (activeCategory === activeDisplayCategory && currentDisplayCategory) {
-      const group = currentDisplayCategory.subCategories.find(sub => {
-        if (typeof sub === 'string') return sub === activeSubCategory;
-        return sub.items.includes(activeSubCategory);
-      });
-      
-      if (group) {
-        setSelectedSubGroup(typeof group === 'string' ? group : group.groupName);
+    // Only sync if we are NOT hovering (or if we are hovering over the active category)
+    if (!hoveredCategory || hoveredCategory === activeCategory) {
+      const activeCatData = CATEGORIES.find(c => c.id === activeCategory);
+      if (activeCatData) {
+        if (activeSubCategory === 'all') {
+          setSelectedSubGroup('all');
+        } else {
+          const group = activeCatData.subCategories.find(sub => {
+            if (typeof sub === 'string') return sub === activeSubCategory;
+            return sub.items.includes(activeSubCategory);
+          });
+          if (group) {
+            setSelectedSubGroup(typeof group === 'string' ? group : group.groupName);
+          }
+        }
       }
     }
-  }, [activeCategory, activeSubCategory, activeDisplayCategory, currentDisplayCategory]);
+  }, [activeCategory, activeSubCategory, hoveredCategory]);
+
+  // When hovering starts, if the hovered category has subcategories, default to 'all'
+  useEffect(() => {
+    if (hoveredCategory && hoveredCategory !== activeCategory) {
+      setSelectedSubGroup('all');
+    }
+  }, [hoveredCategory, activeCategory]);
+
+  const handleCategoryClick = (id: string) => {
+    onCategorySelect(id);
+    setHoveredCategory(null);
+    setSelectedSubGroup('all');
+  };
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-sm' : 'bg-white/80 backdrop-blur-md'}`}>
@@ -128,25 +142,25 @@ export const Navbar = ({
 
       {/* Secondary Sub-navigation Bar */}
       <AnimatePresence mode="wait">
-        {activeDisplayCategory && activeDisplayCategory !== 'all' && (
+        {displayCategoryId && displayCategoryId !== 'all' && (
           <motion.div 
-            key={activeDisplayCategory}
+            key={displayCategoryId}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             className="bg-white/95 backdrop-blur-sm border-b border-zinc-100 shadow-sm hidden lg:block"
-            onMouseEnter={() => activeCategory === 'all' && setHoveredCategory(activeDisplayCategory)}
-            onMouseLeave={() => activeCategory === 'all' && setHoveredCategory(null)}
+            onMouseEnter={() => setHoveredCategory(displayCategoryId)}
+            onMouseLeave={() => setHoveredCategory(null)}
           >
             {/* Tier 1: Groups/Categories */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center gap-3 overflow-x-auto no-scrollbar border-b border-zinc-50/50">
               <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mr-4 whitespace-nowrap opacity-70">
-                {currentDisplayCategory?.name} 분류
+                {displayCategory?.name} 분류
               </span>
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => {
-                    onCategorySelect(activeDisplayCategory);
+                    onCategorySelect(displayCategoryId);
                     onSubCategorySelect('all');
                     setSelectedSubGroup('all');
                   }}
@@ -158,7 +172,7 @@ export const Navbar = ({
                 >
                   전체보기
                 </button>
-                {currentDisplayCategory?.subCategories.map((sub) => {
+                {displayCategory?.subCategories.map((sub) => {
                   const groupName = typeof sub === 'string' ? sub : sub.groupName;
                   const isActive = selectedSubGroup === groupName;
                   
@@ -167,7 +181,7 @@ export const Navbar = ({
                       key={groupName}
                       onClick={() => {
                         setSelectedSubGroup(groupName);
-                        onCategorySelect(activeDisplayCategory);
+                        onCategorySelect(displayCategoryId);
                         if (typeof sub === 'string') {
                           onSubCategorySelect(sub);
                         } else {
@@ -191,7 +205,7 @@ export const Navbar = ({
             {/* Tier 2: Sub-items */}
             <AnimatePresence mode="wait">
               {selectedSubGroup && selectedSubGroup !== 'all' && (() => {
-                const group = currentDisplayCategory?.subCategories.find(sub => 
+                const group = displayCategory?.subCategories.find(sub => 
                   (typeof sub !== 'string' && sub.groupName === selectedSubGroup)
                 );
                 
@@ -215,11 +229,11 @@ export const Navbar = ({
                           <button
                             key={item}
                             onClick={() => {
-                              onCategorySelect(activeDisplayCategory);
+                              onCategorySelect(displayCategoryId);
                               onSubCategorySelect(item);
                             }}
                             className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
-                              activeSubCategory === item && activeCategory === activeDisplayCategory
+                              activeSubCategory === item && activeCategory === displayCategoryId
                                 ? 'bg-zinc-900 text-white shadow-md shadow-zinc-200'
                                 : 'text-zinc-500 hover:bg-zinc-100'
                             }`}

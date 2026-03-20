@@ -11,9 +11,17 @@ import { Footer } from './components/Footer';
 import { Portfolio } from './components/Portfolio';
 import { InquiryForm } from './components/InquiryForm';
 import { PRODUCTS, CATEGORIES, Product, Quotation, ORDER_STEPS, PORTFOLIO_ITEMS, SUBCATEGORY_METADATA } from './types';
-import { FileUp, Send, CheckCircle2, MessageSquare, ArrowRight, Box, Search, Star, Zap } from 'lucide-react';
+import { FileUp, Send, CheckCircle2, MessageSquare, ArrowRight, Box, Search, Star, Zap, Calculator, MapPin } from 'lucide-react';
+import { APIProvider, Map, AdvancedMarker, Pin } from '@vis.gl/react-google-maps';
 
-type View = 'home' | 'detail' | 'category' | 'guide' | 'inquiry' | 'quotation_doc' | 'custom_inquiry' | 'portfolio';
+const API_KEY = 
+  process.env.GOOGLE_MAPS_PLATFORM_KEY || 
+  (import.meta as any).env?.VITE_GOOGLE_MAPS_PLATFORM_KEY || 
+  (globalThis as any).GOOGLE_MAPS_PLATFORM_KEY || 
+  '';
+const hasValidKey = Boolean(API_KEY) && API_KEY !== 'YOUR_API_KEY';
+
+type View = 'home' | 'detail' | 'category' | 'guide' | 'inquiry' | 'quotation_doc' | 'custom_inquiry' | 'portfolio' | 'location';
 
 function App() {
   const [view, setView] = useState<View>('home');
@@ -96,8 +104,48 @@ function App() {
     setVisibleCount(prev => prev + 8);
   };
 
+  if (!hasValidKey) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-zinc-50 font-sans p-4">
+        <div className="max-w-md w-full bg-white rounded-[32px] p-10 shadow-xl border border-zinc-100 text-center">
+          <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-8">
+            <MapPin className="w-8 h-8" />
+          </div>
+          <h2 className="text-2xl font-black text-zinc-900 mb-4 tracking-tight">Google Maps API Key Required</h2>
+          <p className="text-zinc-500 text-sm leading-relaxed mb-8">
+            지도 기능을 활성화하려면 API 키 설정이 필요합니다. 아래 단계를 따라주세요.
+          </p>
+          
+          <div className="text-left space-y-4 mb-8">
+            <div className="flex gap-3">
+              <span className="flex-shrink-0 w-6 h-6 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center text-xs font-bold">1</span>
+              <p className="text-xs text-zinc-600">
+                <a href="https://console.cloud.google.com/google/maps-apis/credentials" target="_blank" rel="noopener" className="text-emerald-600 font-bold hover:underline">여기에서 API 키를 발급</a> 받으세요.
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <span className="flex-shrink-0 w-6 h-6 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center text-xs font-bold">2</span>
+              <p className="text-xs text-zinc-600">
+                우측 상단 <strong>설정(⚙️)</strong> {">"} <strong>Secrets</strong> 메뉴를 엽니다.
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <span className="flex-shrink-0 w-6 h-6 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center text-xs font-bold">3</span>
+              <p className="text-xs text-zinc-600">
+                이름에 <code>GOOGLE_MAPS_PLATFORM_KEY</code>를 입력하고, 값에 발급받은 키를 붙여넣으세요.
+              </p>
+            </div>
+          </div>
+          
+          <p className="text-[10px] text-zinc-400">키를 추가하면 앱이 자동으로 다시 빌드됩니다.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-white font-sans text-zinc-900 selection:bg-emerald-100 selection:text-emerald-900">
+    <APIProvider apiKey={API_KEY} version="weekly">
+      <div className="min-h-screen bg-white font-sans text-zinc-900 selection:bg-emerald-100 selection:text-emerald-900">
       <Navbar 
         onNavigate={onNavigate} 
         onCategorySelect={handleCategorySelect}
@@ -151,9 +199,8 @@ function App() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <button 
                     onClick={() => {
-                      setActiveCategory('sticker');
-                      setActiveSubCategory('일반 스티커');
-                      setVisibleCount(8);
+                      handleCategorySelect('sticker');
+                      handleSubCategorySelect('일반 스티커');
                       document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
                     }}
                     className="group p-8 rounded-[32px] bg-emerald-50 border border-emerald-100 text-left transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-emerald-200/40"
@@ -171,9 +218,8 @@ function App() {
 
                   <button 
                     onClick={() => {
-                      setActiveCategory('sticker');
-                      setActiveSubCategory('투명 일반 스티커');
-                      setVisibleCount(8);
+                      handleCategorySelect('sticker');
+                      handleSubCategorySelect('투명 일반 스티커');
                       document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
                     }}
                     className="group p-8 rounded-[32px] bg-blue-50 border border-blue-100 text-left transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-200/40"
@@ -190,16 +236,20 @@ function App() {
                   </button>
 
                   <button 
-                    onClick={() => onNavigate('inquiry')}
+                    onClick={() => {
+                      handleCategorySelect('sticker');
+                      handleSubCategorySelect('all');
+                      document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
                     className="group p-8 rounded-[32px] bg-zinc-900 text-white shadow-xl shadow-zinc-900/20 text-left transition-all hover:-translate-y-1 hover:shadow-2xl"
                   >
                     <div className="w-12 h-12 rounded-2xl bg-zinc-800 text-emerald-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                      <ArrowRight className="w-6 h-6" />
+                      <Calculator className="w-6 h-6" />
                     </div>
-                    <h3 className="text-xl font-black mb-2">1:1 맞춤 견적 문의</h3>
-                    <p className="text-sm text-zinc-400 leading-relaxed mb-6">복잡한 옵션 없이 전문가의 추천을 받아 바로 제작을 시작하고 싶다면?</p>
+                    <h3 className="text-xl font-black mb-2">빠른 견적 계산기</h3>
+                    <p className="text-sm text-zinc-400 leading-relaxed mb-6">원하는 사양을 선택하고 실시간 제작 비용을 바로 확인하세요.</p>
                     <div className="flex items-center gap-2 text-emerald-400 font-bold text-sm">
-                      <span>문의 페이지로 이동</span>
+                      <span>계산기 바로가기</span>
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </div>
                   </button>
@@ -474,9 +524,72 @@ function App() {
             <Portfolio />
           </motion.div>
         )}
+
+        {view === 'location' && (
+          <motion.div
+            key="location"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="pt-32 pb-24 max-w-7xl mx-auto px-4"
+          >
+            <div className="flex items-center justify-between mb-12">
+              <div>
+                <h1 className="text-4xl font-black mb-4 tracking-tight">오시는 길</h1>
+                <p className="text-zinc-500">완두프린트 오프라인 매장 및 사무실 안내입니다.</p>
+              </div>
+              <button 
+                onClick={() => setView('home')}
+                className="px-6 py-2 rounded-xl bg-zinc-100 text-zinc-900 font-bold text-sm hover:bg-zinc-200 transition-all"
+              >
+                돌아가기
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+              <div className="lg:col-span-1 space-y-8">
+                <div className="p-8 rounded-[32px] bg-zinc-50 border border-zinc-100">
+                  <div className="w-12 h-12 rounded-2xl bg-white text-emerald-600 flex items-center justify-center mb-6 shadow-sm">
+                    <MapPin className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-4">주소 안내</h3>
+                  <p className="text-zinc-600 text-sm leading-relaxed">
+                    서울특별시 강남구 테헤란로 123<br />
+                    완두빌딩 5층 (역삼역 3번 출구 도보 5분)
+                  </p>
+                </div>
+
+                <div className="p-8 rounded-[32px] bg-zinc-50 border border-zinc-100">
+                  <div className="w-12 h-12 rounded-2xl bg-white text-blue-600 flex items-center justify-center mb-6 shadow-sm">
+                    <Send className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-4">연락처</h3>
+                  <p className="text-zinc-600 text-sm leading-relaxed">
+                    T. 1588-0000<br />
+                    E. help@wandooprint.com
+                  </p>
+                </div>
+              </div>
+
+              <div className="lg:col-span-2 h-[500px] rounded-[40px] overflow-hidden border border-zinc-100 shadow-xl relative">
+                <Map
+                  defaultCenter={{ lat: 37.498, lng: 127.027 }} // Gangnam area
+                  defaultZoom={15}
+                  mapId="DEMO_MAP_ID"
+                  internalUsageAttributionIds={['gmp_mcp_codeassist_v1_aistudio']}
+                  style={{ width: '100%', height: '100%' }}
+                >
+                  <AdvancedMarker position={{ lat: 37.498, lng: 127.027 }}>
+                    <Pin background="#10b981" glyphColor="#fff" borderColor="#059669" />
+                  </AdvancedMarker>
+                </Map>
+              </div>
+            </div>
+          </motion.div>
+        )}
       </AnimatePresence>
 
-      <Footer />
+      <Footer onNavigate={onNavigate} onLogoClick={handleLogoClick} />
 
       <AnimatePresence>
         {showInquiry && (
@@ -487,6 +600,7 @@ function App() {
         )}
       </AnimatePresence>
     </div>
+    </APIProvider>
   );
 }
 

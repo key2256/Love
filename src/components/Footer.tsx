@@ -1,14 +1,22 @@
 import React from 'react';
 
-export const Footer = () => {
+interface FooterProps {
+  onNavigate: (view: any) => void;
+  onLogoClick: () => void;
+}
+
+export const Footer = ({ onNavigate, onLogoClick }: FooterProps) => {
   return (
     <footer className="bg-zinc-50 border-t border-zinc-100 pt-20 pb-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           <div className="col-span-1 md:col-span-1">
-            <div className="text-2xl font-black tracking-tighter text-emerald-600 mb-6">
+            <button 
+              onClick={onLogoClick}
+              className="text-2xl font-black tracking-tighter text-emerald-600 mb-6 hover:opacity-80 transition-opacity"
+            >
               WANDOO<span className="text-zinc-900">PRINT</span>
-            </div>
+            </button>
             <p className="text-sm text-zinc-500 leading-relaxed">
               세상의 모든 아이디어를 굿즈로 만듭니다.<br />
               완두프린트는 당신의 창작 활동을 응원합니다.
@@ -29,10 +37,10 @@ export const Footer = () => {
           <div>
             <h4 className="font-bold text-zinc-900 mb-6">고객 지원</h4>
             <ul className="space-y-3 text-sm text-zinc-500">
-              <li>제작 가이드</li>
+              <li><button onClick={() => onNavigate('guide')} className="hover:text-zinc-900 transition-colors">제작 가이드</button></li>
               <li>자주 묻는 질문</li>
               <li>공지사항</li>
-              <li>1:1 문의</li>
+              <li><button onClick={() => onNavigate('location')} className="hover:text-zinc-900 transition-colors">오시는 길</button></li>
               <li>이용약관</li>
             </ul>
           </div>
