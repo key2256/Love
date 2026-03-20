@@ -1,6 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Calculator, Clock, CheckCircle2, ShoppingCart, FileText, FileUp, ChevronDown, ChevronUp } from 'lucide-react';
+import { 
+  Calculator, 
+  Clock, 
+  CheckCircle2, 
+  ShoppingCart, 
+  FileText, 
+  FileUp, 
+  ChevronDown, 
+  ChevronUp,
+  Scissors,
+  Layers,
+  Sparkles,
+  Hash,
+  Zap,
+  Package,
+  Paintbrush,
+  Droplets
+} from 'lucide-react';
 import { Product, Quotation, PAPER_MATERIALS } from '../types';
 
 interface QuotationCalculatorProps {
@@ -28,7 +45,21 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
   const [discountRate, setDiscountRate] = useState(0);
   const [estimatedDeliveryDate, setEstimatedDeliveryDate] = useState('');
   const [customSize, setCustomSize] = useState({ width: '', height: '' });
-  const [expandedGroup, setExpandedGroup] = useState<string | null>('일반/기본 용지');
+  const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
+
+  // Initialize expanded group based on default selected material
+  useEffect(() => {
+    const materialOption = product.options.find(opt => opt.name.includes('재질') || opt.name.includes('용지'));
+    if (materialOption) {
+      const selectedValue = selectedOptions[materialOption.name];
+      const material = PAPER_MATERIALS.find(m => m.name === selectedValue);
+      if (material) {
+        setExpandedGroup(material.group);
+      } else {
+        setExpandedGroup('일반/기본 용지');
+      }
+    }
+  }, [product.id]);
 
   useEffect(() => {
     let pricePerUnit = product.basePrice;
@@ -125,20 +156,163 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
         </div>
 
         {/* Options */}
-        {product.options.map((option) => {
-          const isMaterialOption = option.name.includes('재질') || option.name.includes('용지');
-          
-          // Find if selected material is transparent to conditionally show White Ink option
-          const materialOption = product.options.find(opt => opt.name.includes('재질') || opt.name.includes('용지'));
-          const selectedMaterialName = materialOption ? selectedOptions[materialOption.name] : null;
-          const selectedMaterial = PAPER_MATERIALS.find(m => m.name === selectedMaterialName);
-          const isTransparent = selectedMaterial?.transparent || false;
+        <div className="space-y-8">
+          {/* 1. Material Selection (Always First and Prominent) */}
+          {product.options.filter(opt => opt.name.includes('재질') || opt.name.includes('용지')).map((option) => (
+            <div key={option.name} className="space-y-4">
+              <div className="flex items-center gap-2">
+                <div className="w-1 h-4 bg-emerald-500 rounded-full" />
+                <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
+                  {option.name}
+                </label>
+              </div>
+              <div className="space-y-3">
+                {['일반/기본 용지', '방수/합성지', '투명/PET', '메탈/광택 특수 재질', '프리미엄 라벨(GMUND)'].map(group => {
+                  const groupValues = option.values?.filter(val => {
+                    const material = PAPER_MATERIALS.find(m => m.name === val.label);
+                    return material ? material.group === group : false;
+                  });
 
-          if (option.name === '화이트 인쇄' && !isTransparent) {
-            return null;
-          }
+                  if (!groupValues || groupValues.length === 0) return null;
 
-          return (
+                  const isExpanded = expandedGroup === group;
+                  const hasSelectedInGroup = groupValues.some(val => selectedOptions[option.name] === val.label);
+
+                  return (
+                    <div key={group} className="border border-zinc-100 rounded-2xl overflow-hidden bg-zinc-50/50">
+                      <button
+                        onClick={() => setExpandedGroup(isExpanded ? null : group)}
+                        className={`w-full px-6 py-4 flex items-center justify-between transition-colors ${
+                          isExpanded ? 'bg-zinc-100' : 'hover:bg-zinc-100/50'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className={`text-xs font-black uppercase tracking-widest ${
+                            hasSelectedInGroup ? 'text-emerald-600' : 'text-zinc-500'
+                          }`}>
+                            {group}
+                          </span>
+                          {hasSelectedInGroup && !isExpanded && (
+                            <span className="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">
+                              {selectedOptions[option.name]}
+                            </span>
+                          )}
+                        </div>
+                        {isExpanded ? <ChevronUp className="w-4 h-4 text-zinc-400" /> : <ChevronDown className="w-4 h-4 text-zinc-400" />}
+                      </button>
+                      
+                      {isExpanded && (
+                        <div className="p-4 grid grid-cols-1 gap-2 bg-white">
+                          {groupValues.map((val) => {
+                            const material = PAPER_MATERIALS.find(m => m.name === val.label);
+                            const isSelected = selectedOptions[option.name] === val.label;
+                            
+                            return (
+                              <button
+                                key={val.label}
+                                onClick={() => handleOptionChange(option.name, val.label)}
+                                className={`group p-4 rounded-xl text-left border transition-all ${
+                                  isSelected
+                                    ? 'bg-emerald-50 border-emerald-500 ring-1 ring-emerald-500'
+                                    : 'bg-white border-zinc-100 hover:border-emerald-200 hover:bg-zinc-50'
+                                }`}
+                              >
+                                <div className="flex items-center justify-between mb-1">
+                                  <span className={`text-sm font-bold ${isSelected ? 'text-emerald-900' : 'text-zinc-900'}`}>
+                                    {val.label}
+                                  </span>
+                                  {val.priceModifier !== undefined && val.priceModifier !== 0 && (
+                                    <span className={`text-[10px] font-bold ${isSelected ? 'text-emerald-600' : 'text-zinc-400'}`}>
+                                      {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
+                                    </span>
+                                  )}
+                                </div>
+                                {material?.shortDescription && (
+                                  <p className={`text-[11px] leading-relaxed ${isSelected ? 'text-emerald-700/70' : 'text-zinc-400'}`}>
+                                    {material.shortDescription}
+                                  </p>
+                                )}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+                
+                {/* Handle items that didn't match any group */}
+                {(() => {
+                  const otherValues = option.values?.filter(val => {
+                    const material = PAPER_MATERIALS.find(m => m.name === val.label);
+                    return !material;
+                  });
+                  if (!otherValues || otherValues.length === 0) return null;
+                  
+                  const group = '기타';
+                  const isExpanded = expandedGroup === group;
+                  const hasSelectedInGroup = otherValues.some(val => selectedOptions[option.name] === val.label);
+
+                  return (
+                    <div key={group} className="border border-zinc-100 rounded-2xl overflow-hidden bg-zinc-50/50">
+                      <button
+                        onClick={() => setExpandedGroup(isExpanded ? null : group)}
+                        className={`w-full px-6 py-4 flex items-center justify-between transition-colors ${
+                          isExpanded ? 'bg-zinc-100' : 'hover:bg-zinc-100/50'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className={`text-xs font-black uppercase tracking-widest ${
+                            hasSelectedInGroup ? 'text-emerald-600' : 'text-zinc-500'
+                          }`}>
+                            {group}
+                          </span>
+                        </div>
+                        {isExpanded ? <ChevronUp className="w-4 h-4 text-zinc-400" /> : <ChevronDown className="w-4 h-4 text-zinc-400" />}
+                      </button>
+                      
+                      {isExpanded && (
+                        <div className="p-4 grid grid-cols-1 gap-2 bg-white">
+                          {otherValues.map((val) => {
+                            const isSelected = selectedOptions[option.name] === val.label;
+                            return (
+                              <button
+                                key={val.label}
+                                onClick={() => handleOptionChange(option.name, val.label)}
+                                className={`p-4 rounded-xl text-left border transition-all ${
+                                  isSelected
+                                    ? 'bg-emerald-50 border-emerald-500 ring-1 ring-emerald-500'
+                                    : 'bg-white border-zinc-100 hover:border-emerald-200 hover:bg-zinc-50'
+                                }`}
+                              >
+                                <div className="flex items-center justify-between">
+                                  <span className={`text-sm font-bold ${isSelected ? 'text-emerald-900' : 'text-zinc-900'}`}>
+                                    {val.label}
+                                  </span>
+                                  {val.priceModifier !== undefined && val.priceModifier !== 0 && (
+                                    <span className={`text-[10px] font-bold ${isSelected ? 'text-emerald-600' : 'text-zinc-400'}`}>
+                                      {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
+                                    </span>
+                                  )}
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+              </div>
+            </div>
+          ))}
+
+          {/* 2. Standard Options (Size, etc.) */}
+          {product.options.filter(opt => 
+            !opt.name.includes('재질') && 
+            !opt.name.includes('용지') && 
+            !['재단 방식', '코팅 유무', '후가공 옵션', '화이트 인쇄', '넘버링', '스코딕스', '포장 옵션', '부분 UV', '모양코팅'].includes(opt.name)
+          ).map((option) => (
             <div key={option.name} className="space-y-4">
               <label className="text-xs font-black text-zinc-900 uppercase tracking-widest block">
                 {option.name}
@@ -151,145 +325,6 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                   placeholder={option.placeholder || `${option.name}을 입력해주세요.`}
                   className="w-full px-6 py-4 rounded-2xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none font-bold text-sm transition-colors"
                 />
-              ) : isMaterialOption && option.values ? (
-                <div className="space-y-3">
-                  {['일반/기본 용지', '방수/합성지', '투명/PET', '메탈/광택 특수 재질', '프리미엄 라벨(GMUND)'].map(group => {
-                    const groupValues = option.values?.filter(val => {
-                      const material = PAPER_MATERIALS.find(m => m.name === val.label);
-                      return material ? material.group === group : false;
-                    });
-
-                    if (!groupValues || groupValues.length === 0) return null;
-
-                    const isExpanded = expandedGroup === group;
-                    const hasSelectedInGroup = groupValues.some(val => selectedOptions[option.name] === val.label);
-
-                    return (
-                      <div key={group} className="border border-zinc-100 rounded-2xl overflow-hidden bg-zinc-50/50">
-                        <button
-                          onClick={() => setExpandedGroup(isExpanded ? null : group)}
-                          className={`w-full px-6 py-4 flex items-center justify-between transition-colors ${
-                            isExpanded ? 'bg-zinc-100' : 'hover:bg-zinc-100/50'
-                          }`}
-                        >
-                          <div className="flex items-center gap-3">
-                            <span className={`text-xs font-black uppercase tracking-widest ${
-                              hasSelectedInGroup ? 'text-emerald-600' : 'text-zinc-500'
-                            }`}>
-                              {group}
-                            </span>
-                            {hasSelectedInGroup && !isExpanded && (
-                              <span className="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">
-                                {selectedOptions[option.name]}
-                              </span>
-                            )}
-                          </div>
-                          {isExpanded ? <ChevronUp className="w-4 h-4 text-zinc-400" /> : <ChevronDown className="w-4 h-4 text-zinc-400" />}
-                        </button>
-                        
-                        {isExpanded && (
-                          <div className="p-4 grid grid-cols-1 gap-2 bg-white">
-                            {groupValues.map((val) => {
-                              const material = PAPER_MATERIALS.find(m => m.name === val.label);
-                              const isSelected = selectedOptions[option.name] === val.label;
-                              
-                              return (
-                                <button
-                                  key={val.label}
-                                  onClick={() => handleOptionChange(option.name, val.label)}
-                                  className={`group p-4 rounded-xl text-left border transition-all ${
-                                    isSelected
-                                      ? 'bg-emerald-50 border-emerald-500 ring-1 ring-emerald-500'
-                                      : 'bg-white border-zinc-100 hover:border-emerald-200 hover:bg-zinc-50'
-                                  }`}
-                                >
-                                  <div className="flex items-center justify-between mb-1">
-                                    <span className={`text-sm font-bold ${isSelected ? 'text-emerald-900' : 'text-zinc-900'}`}>
-                                      {val.label}
-                                    </span>
-                                    {val.priceModifier !== undefined && val.priceModifier !== 0 && (
-                                      <span className={`text-[10px] font-bold ${isSelected ? 'text-emerald-600' : 'text-zinc-400'}`}>
-                                        {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
-                                      </span>
-                                    )}
-                                  </div>
-                                  {material?.shortDescription && (
-                                    <p className={`text-[11px] leading-relaxed ${isSelected ? 'text-emerald-700/70' : 'text-zinc-400'}`}>
-                                      {material.shortDescription}
-                                    </p>
-                                  )}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                  
-                  {/* Handle items that didn't match any group */}
-                  {(() => {
-                    const otherValues = option.values?.filter(val => {
-                      const material = PAPER_MATERIALS.find(m => m.name === val.label);
-                      return !material;
-                    });
-                    if (!otherValues || otherValues.length === 0) return null;
-                    
-                    const group = '기타';
-                    const isExpanded = expandedGroup === group;
-                    const hasSelectedInGroup = otherValues.some(val => selectedOptions[option.name] === val.label);
-
-                    return (
-                      <div key={group} className="border border-zinc-100 rounded-2xl overflow-hidden bg-zinc-50/50">
-                        <button
-                          onClick={() => setExpandedGroup(isExpanded ? null : group)}
-                          className={`w-full px-6 py-4 flex items-center justify-between transition-colors ${
-                            isExpanded ? 'bg-zinc-100' : 'hover:bg-zinc-100/50'
-                          }`}
-                        >
-                          <div className="flex items-center gap-3">
-                            <span className={`text-xs font-black uppercase tracking-widest ${
-                              hasSelectedInGroup ? 'text-emerald-600' : 'text-zinc-500'
-                            }`}>
-                              {group}
-                            </span>
-                          </div>
-                          {isExpanded ? <ChevronUp className="w-4 h-4 text-zinc-400" /> : <ChevronDown className="w-4 h-4 text-zinc-400" />}
-                        </button>
-                        
-                        {isExpanded && (
-                          <div className="p-4 grid grid-cols-1 gap-2 bg-white">
-                            {otherValues.map((val) => {
-                              const isSelected = selectedOptions[option.name] === val.label;
-                              return (
-                                <button
-                                  key={val.label}
-                                  onClick={() => handleOptionChange(option.name, val.label)}
-                                  className={`p-4 rounded-xl text-left border transition-all ${
-                                    isSelected
-                                      ? 'bg-emerald-50 border-emerald-500 ring-1 ring-emerald-500'
-                                      : 'bg-white border-zinc-100 hover:border-emerald-200 hover:bg-zinc-50'
-                                  }`}
-                                >
-                                  <div className="flex items-center justify-between">
-                                    <span className={`text-sm font-bold ${isSelected ? 'text-emerald-900' : 'text-zinc-900'}`}>
-                                      {val.label}
-                                    </span>
-                                    {val.priceModifier !== undefined && val.priceModifier !== 0 && (
-                                      <span className={`text-[10px] font-bold ${isSelected ? 'text-emerald-600' : 'text-zinc-400'}`}>
-                                        {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
-                                      </span>
-                                    )}
-                                  </div>
-                                </button>
-                              );
-                            })}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })()}
-                </div>
               ) : (
                 <div className="grid grid-cols-2 gap-3">
                   {option.values?.map((val) => (
@@ -341,8 +376,93 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                 </motion.div>
               )}
             </div>
-          );
-        })}
+          ))}
+
+          {/* 3. Post-processing Section (후가공) */}
+          {(() => {
+            const postProcessingOptions = product.options.filter(opt => 
+              ['재단 방식', '코팅 유무', '후가공 옵션', '화이트 인쇄', '넘버링', '스코딕스', '포장 옵션', '부분 UV', '모양코팅'].includes(opt.name)
+            );
+
+            // Special check for White Ink: only show if material is transparent
+            const materialOption = product.options.find(opt => opt.name.includes('재질') || opt.name.includes('용지'));
+            const selectedMaterialName = materialOption ? selectedOptions[materialOption.name] : null;
+            const selectedMaterial = PAPER_MATERIALS.find(m => m.name === selectedMaterialName);
+            const isTransparent = selectedMaterial?.transparent || false;
+
+            const visiblePostOptions = postProcessingOptions.filter(opt => {
+              if (opt.name === '화이트 인쇄' && !isTransparent) return false;
+              return true;
+            });
+
+            if (visiblePostOptions.length === 0) return null;
+
+            const getIcon = (name: string) => {
+              if (name === '재단 방식') return <Scissors className="w-4 h-4" />;
+              if (name === '코팅 유무') return <Layers className="w-4 h-4" />;
+              if (name === '후가공 옵션' || name === '부분 UV' || name === '모양코팅') return <Sparkles className="w-4 h-4" />;
+              if (name === '화이트 인쇄') return <Paintbrush className="w-4 h-4" />;
+              if (name === '넘버링') return <Hash className="w-4 h-4" />;
+              if (name === '스코딕스') return <Zap className="w-4 h-4" />;
+              if (name === '포장 옵션') return <Package className="w-4 h-4" />;
+              return <Droplets className="w-4 h-4" />;
+            };
+
+            const getDisplayName = (name: string) => {
+              if (name === '재단 방식') return '재단';
+              if (name === '코팅 유무') return '코팅';
+              if (name === '후가공 옵션') return '박 가공';
+              if (name === '모양코팅') return '모양코팅';
+              if (name === '화이트 인쇄') return '화이트인쇄';
+              if (name === '포장 옵션') return '폴리백 개별 포장';
+              return name;
+            };
+
+            return (
+              <div className="space-y-6 pt-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-1 h-4 bg-emerald-500 rounded-full" />
+                  <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
+                    후가공 선택
+                  </label>
+                </div>
+                <div className="grid grid-cols-1 gap-6">
+                  {visiblePostOptions.map(option => (
+                    <div key={option.name} className="space-y-3">
+                      <div className="flex items-center gap-2 text-zinc-500">
+                        {getIcon(option.name)}
+                        <span className="text-[11px] font-black uppercase tracking-wider">{getDisplayName(option.name)}</span>
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        {option.values?.map((val) => {
+                          const isSelected = selectedOptions[option.name] === val.label;
+                          return (
+                            <button
+                              key={val.label}
+                              onClick={() => handleOptionChange(option.name, val.label)}
+                              className={`py-3 px-4 rounded-xl text-[11px] font-bold border transition-all text-center flex flex-col items-center justify-center gap-1 ${
+                                isSelected
+                                  ? 'bg-emerald-600 border-emerald-600 text-white shadow-md shadow-emerald-600/20'
+                                  : 'bg-white border-zinc-100 text-zinc-500 hover:border-emerald-200'
+                              }`}
+                            >
+                              <span>{val.label}</span>
+                              {val.priceModifier !== undefined && val.priceModifier !== 0 && (
+                                <span className={`text-[9px] opacity-70 ${isSelected ? 'text-white' : 'text-zinc-400'}`}>
+                                  {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
+                                </span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
+        </div>
 
         {/* Summary Box */}
         <div className="pt-8 border-t border-zinc-100">

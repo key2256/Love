@@ -763,13 +763,44 @@ export const PRODUCTS: Product[] = [
         ]
       },
       {
+        name: '모양코팅',
+        type: 'radio',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '부분 UV', priceModifier: 3000 },
+        ]
+      },
+      {
         name: '후가공 옵션',
         type: 'select',
         values: [
           { label: '없음', priceModifier: 0 },
           { label: '금박', priceModifier: 5000 },
           { label: '은박', priceModifier: 5000 },
-          { label: '부분 UV', priceModifier: 3000 },
+        ]
+      },
+      {
+        name: '넘버링',
+        type: 'radio',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '있음', priceModifier: 2000 },
+        ]
+      },
+      {
+        name: '스코딕스',
+        type: 'radio',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '있음', priceModifier: 3000 },
+        ]
+      },
+      {
+        name: '포장 옵션',
+        type: 'radio',
+        values: [
+          { label: '기본 포장', priceModifier: 0 },
+          { label: '폴리백 개별 포장', priceModifier: 500 },
         ]
       }
     ],
@@ -1037,13 +1068,44 @@ export const PRODUCTS: Product[] = [
         ]
       },
       {
+        name: '모양코팅',
+        type: 'radio',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '부분 UV', priceModifier: 3000 },
+        ]
+      },
+      {
         name: '후가공 옵션',
         type: 'select',
         values: [
           { label: '없음', priceModifier: 0 },
           { label: '금박', priceModifier: 5000 },
           { label: '은박', priceModifier: 5000 },
-          { label: '부분 UV', priceModifier: 3000 },
+        ]
+      },
+      {
+        name: '넘버링',
+        type: 'radio',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '있음', priceModifier: 2000 },
+        ]
+      },
+      {
+        name: '스코딕스',
+        type: 'radio',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '있음', priceModifier: 3000 },
+        ]
+      },
+      {
+        name: '포장 옵션',
+        type: 'radio',
+        values: [
+          { label: '기본 포장', priceModifier: 0 },
+          { label: '폴리백 개별 포장', priceModifier: 500 },
         ]
       }
     ],
@@ -1093,13 +1155,44 @@ export const PRODUCTS: Product[] = [
         ]
       },
       {
+        name: '모양코팅',
+        type: 'radio',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '부분 UV', priceModifier: 3000 },
+        ]
+      },
+      {
         name: '후가공 옵션',
         type: 'select',
         values: [
           { label: '없음', priceModifier: 0 },
           { label: '금박', priceModifier: 5000 },
           { label: '은박', priceModifier: 5000 },
-          { label: '부분 UV', priceModifier: 3000 },
+        ]
+      },
+      {
+        name: '넘버링',
+        type: 'radio',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '있음', priceModifier: 2000 },
+        ]
+      },
+      {
+        name: '스코딕스',
+        type: 'radio',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '있음', priceModifier: 3000 },
+        ]
+      },
+      {
+        name: '포장 옵션',
+        type: 'radio',
+        values: [
+          { label: '기본 포장', priceModifier: 0 },
+          { label: '폴리백 개별 포장', priceModifier: 500 },
         ]
       }
     ],
