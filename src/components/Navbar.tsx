@@ -8,7 +8,7 @@ import {
   ChevronDown
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { CATEGORIES } from '../types';
+import { CATEGORIES, SubCategoryGroup } from '../types';
 
 interface NavbarProps {
   onNavigate: (view: 'home' | 'detail' | 'category' | 'guide' | 'inquiry' | 'custom_inquiry' | 'portfolio') => void;
@@ -32,18 +32,20 @@ export const Navbar = ({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const [selectedSubGroup, setSelectedSubGroup] = useState<string | null>(null);
+  const [selectedSubSubGroup, setSelectedSubSubGroup] = useState<string | null>(null);
 
   // The category we are actually showing in the sub-nav
   const displayCategoryId = hoveredCategory || (activeCategory !== 'all' ? activeCategory : null);
   const displayCategory = CATEGORIES.find(c => c.id === displayCategoryId);
 
-  // Sync selectedSubGroup when the ACTIVE category/subcategory changes
+  // Sync selectedSubGroup and selectedSubSubGroup when the ACTIVE category/subcategory changes
   // But don't let it interfere with the HOVER state
   useEffect(() => {
     if (activeCategory === 'all') {
-      // If no category is active, and we aren't hovering, clear the subgroup
+      // If no category is active, and we aren't hovering, clear the subgroups
       if (!hoveredCategory) {
         setSelectedSubGroup(null);
+        setSelectedSubSubGroup(null);
       }
       return;
     }
@@ -54,14 +56,72 @@ export const Navbar = ({
       if (activeCatData) {
         if (activeSubCategory === 'all') {
           setSelectedSubGroup('all');
+          setSelectedSubSubGroup(null);
         } else {
-          const group = activeCatData.subCategories.find(sub => {
-            if (typeof sub === 'string') return sub === activeSubCategory;
-            return sub.items.includes(activeSubCategory);
-          });
-          if (group) {
-            setSelectedSubGroup(typeof group === 'string' ? group : group.groupName);
-          }
+          // Find which group (and sub-group) the activeSubCategory belongs to
+          let foundSubGroup: string | null = null;
+          let foundSubSubGroup: string | null = null;
+
+          const search = (items: (string | SubCategoryGroup)[], parentGroupName: string | null) => {
+            for (const item of items) {
+              if (typeof item === 'string') {
+                if (item === activeSubCategory) {
+                  if (parentGroupName) {
+                    // Check if this parent is a top-level sub-category or nested
+                    const isTopLevel = activeCatData.subCategories.some(s => typeof s !== 'string' && s.groupName === parentGroupName);
+                    if (isTopLevel) {
+                      foundSubGroup = parentGroupName;
+                    } else {
+                      // It's a nested group, find its parent
+                      const findParent = (list: (string | SubCategoryGroup)[]): string | null => {
+                        for (const s of list) {
+                          if (typeof s !== 'string') {
+                            if (s.items.some(i => typeof i !== 'string' && i.groupName === parentGroupName)) return s.groupName;
+                            const p = findParent(s.items);
+                            if (p) return p;
+                          }
+                        }
+                        return null;
+                      };
+                      foundSubSubGroup = parentGroupName;
+                      foundSubGroup = findParent(activeCatData.subCategories);
+                    }
+                  } else {
+                    foundSubGroup = item;
+                  }
+                  return true;
+                }
+              } else {
+                if (item.groupName === activeSubCategory) {
+                  // If the active sub-category IS a group name
+                  const isTopLevel = activeCatData.subCategories.some(s => typeof s !== 'string' && s.groupName === item.groupName);
+                  if (isTopLevel) {
+                    foundSubGroup = item.groupName;
+                  } else {
+                    foundSubSubGroup = item.groupName;
+                    const findParent = (list: (string | SubCategoryGroup)[]): string | null => {
+                      for (const s of list) {
+                        if (typeof s !== 'string') {
+                          if (s.items.some(i => typeof i !== 'string' && i.groupName === item.groupName)) return s.groupName;
+                          const p = findParent(s.items);
+                          if (p) return p;
+                        }
+                      }
+                      return null;
+                    };
+                    foundSubGroup = findParent(activeCatData.subCategories);
+                  }
+                  return true;
+                }
+                if (search(item.items, item.groupName)) return true;
+              }
+            }
+            return false;
+          };
+
+          search(activeCatData.subCategories, null);
+          if (foundSubGroup) setSelectedSubGroup(foundSubGroup);
+          if (foundSubSubGroup) setSelectedSubSubGroup(foundSubSubGroup);
         }
       }
     }
@@ -71,6 +131,7 @@ export const Navbar = ({
   useEffect(() => {
     if (hoveredCategory && hoveredCategory !== activeCategory) {
       setSelectedSubGroup('all');
+      setSelectedSubSubGroup(null);
     }
   }, [hoveredCategory, activeCategory]);
 
@@ -78,6 +139,7 @@ export const Navbar = ({
     onCategorySelect(id);
     setHoveredCategory(null);
     setSelectedSubGroup('all');
+    setSelectedSubSubGroup(null);
   };
 
   return (
@@ -181,12 +243,12 @@ export const Navbar = ({
                       key={groupName}
                       onClick={() => {
                         setSelectedSubGroup(groupName);
+                        setSelectedSubSubGroup(null);
                         onCategorySelect(displayCategoryId);
                         if (typeof sub === 'string') {
                           onSubCategorySelect(sub);
                         } else {
-                          // Default to the first item in the group
-                          onSubCategorySelect(sub.items[0]);
+                          onSubCategorySelect(sub.groupName);
                         }
                       }}
                       className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
@@ -209,7 +271,7 @@ export const Navbar = ({
                   (typeof sub !== 'string' && sub.groupName === selectedSubGroup)
                 );
                 
-                if (!group || typeof group === 'string' || group.items.length <= 1) return null;
+                if (!group || typeof group === 'string' || group.items.length === 0) return null;
 
                 return (
                   <motion.div
@@ -233,18 +295,80 @@ export const Navbar = ({
                             <button
                               key={itemName || idx}
                               onClick={() => {
+                                if (typeof item !== 'string') {
+                                  setSelectedSubSubGroup(item.groupName);
+                                } else {
+                                  setSelectedSubSubGroup(null);
+                                }
                                 onCategorySelect(displayCategoryId);
                                 if (typeof item === 'string') {
                                   onSubCategorySelect(item);
                                 } else {
-                                  // If it's another group, select its first item
-                                  const firstItem = typeof item.items[0] === 'string' ? item.items[0] : item.items[0].groupName;
-                                  onSubCategorySelect(firstItem);
+                                  onSubCategorySelect(item.groupName);
                                 }
                               }}
                               className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
                                 isActive
                                   ? 'bg-zinc-900 text-white shadow-md shadow-zinc-200'
+                                  : 'text-zinc-500 hover:bg-zinc-100'
+                              }`}
+                            >
+                              {itemName}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })()}
+            </AnimatePresence>
+
+            {/* Tier 3: Sub-sub-items */}
+            <AnimatePresence mode="wait">
+              {selectedSubSubGroup && (() => {
+                const parentGroup = displayCategory?.subCategories.find(sub => 
+                  (typeof sub !== 'string' && sub.groupName === selectedSubGroup)
+                ) as SubCategoryGroup | undefined;
+                
+                const group = parentGroup?.items.find(sub => 
+                  (typeof sub !== 'string' && sub.groupName === selectedSubSubGroup)
+                ) as SubCategoryGroup | undefined;
+                
+                if (!group || group.items.length === 0) return null;
+
+                return (
+                  <motion.div
+                    key={selectedSubSubGroup}
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="bg-zinc-100/30 overflow-hidden"
+                  >
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex items-center gap-3 overflow-x-auto no-scrollbar">
+                      <span className="text-[9px] font-black text-zinc-400 uppercase tracking-tighter mr-4 whitespace-nowrap pl-16">
+                        세부 선택
+                      </span>
+                      <div className="flex items-center gap-1">
+                        {group.items.map((item, idx) => {
+                          const itemName = typeof item === 'string' ? item : item.groupName;
+                          const isActive = activeSubCategory === itemName && activeCategory === displayCategoryId;
+                          
+                          return (
+                            <button
+                              key={itemName || idx}
+                              onClick={() => {
+                                onCategorySelect(displayCategoryId);
+                                if (typeof item === 'string') {
+                                  onSubCategorySelect(item);
+                                } else {
+                                  onSubCategorySelect(item.groupName);
+                                }
+                              }}
+                              className={`px-4 py-1.5 rounded-full text-[11px] font-bold transition-all whitespace-nowrap ${
+                                isActive
+                                  ? 'bg-zinc-800 text-white shadow-md shadow-zinc-200'
                                   : 'text-zinc-500 hover:bg-zinc-100'
                               }`}
                             >
@@ -298,39 +422,35 @@ export const Navbar = ({
                             </button>
                           );
                         } else {
-                          const isSingleItem = sub.items.length === 1;
-                          if (isSingleItem) {
-                            return (
+                          return (
+                            <div key={i} className="space-y-3 pl-4 border-l-2 border-zinc-100">
                               <button 
-                                key={i}
                                 onClick={() => {
                                   onCategorySelect(cat.id);
-                                  onSubCategorySelect(sub.items[0]);
+                                  onSubCategorySelect(sub.groupName);
                                   setIsMenuOpen(false);
                                 }}
-                                className={`px-3 py-2 rounded-xl text-sm font-bold w-fit ${sub.items.includes(activeSubCategory) && activeCategory === cat.id ? 'bg-emerald-600 text-white' : 'bg-zinc-100 text-zinc-500'}`}
+                                className={`text-sm font-black text-left ${activeSubCategory === sub.groupName && activeCategory === cat.id ? 'text-emerald-600' : 'text-zinc-900'}`}
                               >
                                 {sub.groupName}
                               </button>
-                            );
-                          }
-                          return (
-                            <div key={i} className="space-y-2">
-                              <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest block">{sub.groupName}</span>
                               <div className="flex flex-wrap gap-2">
-                                {sub.items.map((item, j) => (
-                                  <button 
-                                    key={`${i}-${j}`}
-                                    onClick={() => {
-                                      onCategorySelect(cat.id);
-                                      onSubCategorySelect(item);
-                                      setIsMenuOpen(false);
-                                    }}
-                                    className={`px-3 py-1.5 rounded-lg text-xs font-bold ${activeSubCategory === item && activeCategory === cat.id ? 'bg-emerald-600 text-white' : 'bg-zinc-100 text-zinc-500'}`}
-                                  >
-                                    {item}
-                                  </button>
-                                ))}
+                                {sub.items.map((item, j) => {
+                                  const itemName = typeof item === 'string' ? item : item.groupName;
+                                  return (
+                                    <button 
+                                      key={`${i}-${j}`}
+                                      onClick={() => {
+                                        onCategorySelect(cat.id);
+                                        onSubCategorySelect(itemName);
+                                        setIsMenuOpen(false);
+                                      }}
+                                      className={`px-3 py-1.5 rounded-lg text-xs font-bold ${activeSubCategory === itemName && activeCategory === cat.id ? 'bg-zinc-900 text-white' : 'bg-zinc-100 text-zinc-500'}`}
+                                    >
+                                      {itemName}
+                                    </button>
+                                  );
+                                })}
                               </div>
                             </div>
                           );

@@ -75,13 +75,39 @@ function App() {
     setVisibleCount(8);
   };
 
-  const getSubCategoryNames = (categoryId: string): string[] => {
-    const cat = CATEGORIES.find(c => c.id === categoryId);
-    if (!cat) return [];
-    
+  const getLeafSubCategories = (categoryOrGroup: string): string[] => {
+    const findGroup = (items: (string | SubCategoryGroup)[]): SubCategoryGroup | undefined => {
+      for (const item of items) {
+        if (typeof item !== 'string') {
+          if (item.groupName === categoryOrGroup) return item;
+          const found = findGroup(item.items);
+          if (found) return found;
+        }
+      }
+      return undefined;
+    };
+
+    const cat = CATEGORIES.find(c => c.id === categoryOrGroup);
+    let items: (string | SubCategoryGroup)[] = [];
+
+    if (cat) {
+      items = cat.subCategories;
+    } else {
+      // Search in all categories for a group with this name
+      for (const c of CATEGORIES) {
+        const group = findGroup(c.subCategories);
+        if (group) {
+          items = group.items;
+          break;
+        }
+      }
+    }
+
+    if (items.length === 0) return [categoryOrGroup];
+
     const names: string[] = [];
-    const flatten = (items: (string | SubCategoryGroup)[]) => {
-      items.forEach(item => {
+    const flatten = (list: (string | SubCategoryGroup)[]) => {
+      list.forEach(item => {
         if (typeof item === 'string') {
           names.push(item);
         } else {
@@ -89,7 +115,7 @@ function App() {
         }
       });
     };
-    flatten(cat.subCategories);
+    flatten(items);
     return names;
   };
 
@@ -112,20 +138,16 @@ function App() {
   const filteredProducts = PRODUCTS.filter(p => {
     if (activeCategory === 'all') return true;
     
-    if (activeSubCategory !== 'all') {
-      return p.subCategory === activeSubCategory;
+    if (activeSubCategory === 'all' || activeSubCategory === '전체보기') {
+      return p.category === activeCategory;
     }
     
-    // If subCategory is 'all', check if product belongs to the activeCategory
-    if (p.category === activeCategory) return true;
+    // If activeSubCategory is a leaf node, match directly
+    if (p.subCategory === activeSubCategory) return true;
     
-    // Special case for the new sticker categories that were split from 'sticker'
-    if (activeCategory.startsWith('sticker-')) {
-      const allowedSubCategories = getSubCategoryNames(activeCategory);
-      return p.category === 'sticker' && allowedSubCategories.includes(p.subCategory);
-    }
-    
-    return false;
+    // If activeSubCategory is a group name, match any leaf node under it
+    const leafNodes = getLeafSubCategories(activeSubCategory);
+    return p.category === activeCategory && leafNodes.includes(p.subCategory);
   });
 
   const displayedProducts = filteredProducts.slice(0, visibleCount);
