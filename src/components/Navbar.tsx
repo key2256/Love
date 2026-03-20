@@ -18,6 +18,8 @@ interface NavbarProps {
   activeCategory: string;
   activeSubCategory: string;
   isScrolled: boolean;
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
 }
 
 export const Navbar = ({ 
@@ -27,7 +29,9 @@ export const Navbar = ({
   onLogoClick,
   activeCategory,
   activeSubCategory,
-  isScrolled 
+  isScrolled,
+  searchQuery,
+  onSearchChange
 }: NavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
@@ -180,6 +184,24 @@ export const Navbar = ({
 
           <div className="flex items-center gap-4">
             <div className="hidden xl:flex items-center gap-6 mr-6 border-r border-zinc-100 pr-6">
+              <div className="relative group">
+                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-emerald-500 transition-colors" />
+                <input 
+                  type="text" 
+                  placeholder="제품 검색..." 
+                  value={searchQuery}
+                  onChange={(e) => onSearchChange(e.target.value)}
+                  className="pl-9 pr-10 py-1.5 bg-zinc-50 border border-zinc-100 rounded-full text-xs font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all w-40 focus:w-64"
+                />
+                {searchQuery && (
+                  <button 
+                    onClick={() => onSearchChange('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 transition-colors"
+                  >
+                    <X size={14} />
+                  </button>
+                )}
+              </div>
               <button onClick={() => onNavigate('guide')} className="text-xs font-bold text-zinc-400 hover:text-zinc-900 transition-colors">파일 가이드</button>
               <button onClick={() => onNavigate('inquiry')} className="text-xs font-bold text-zinc-400 hover:text-zinc-900 transition-colors">견적 문의</button>
               <button onClick={() => onNavigate('portfolio')} className="text-xs font-bold text-zinc-400 hover:text-zinc-900 transition-colors">제작 사례</button>
@@ -396,6 +418,24 @@ export const Navbar = ({
             className="lg:hidden absolute top-full left-0 right-0 bg-white border-t border-zinc-100 shadow-xl overflow-y-auto max-h-[80vh]"
           >
             <div className="p-6 flex flex-col gap-8">
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={18} />
+                <input 
+                  type="text" 
+                  placeholder="제품 검색..." 
+                  value={searchQuery}
+                  onChange={(e) => onSearchChange(e.target.value)}
+                  className="w-full pl-12 pr-12 py-3 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                />
+                {searchQuery && (
+                  <button 
+                    onClick={() => onSearchChange('')}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 transition-colors"
+                  >
+                    <X size={18} />
+                  </button>
+                )}
+              </div>
               <div className="flex flex-col gap-6">
                 {CATEGORIES.map((cat) => (
                   <div key={cat.id} className="space-y-3">

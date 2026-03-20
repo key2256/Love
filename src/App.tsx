@@ -33,6 +33,16 @@ function App() {
   const [activeSubCategory, setActiveSubCategory] = useState<string>('all');
   const [visibleCount, setVisibleCount] = useState(8);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query);
+    if (query.trim() !== '' && view !== 'category') {
+      setView('category');
+      setActiveCategory('all');
+      setActiveSubCategory('all');
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -136,6 +146,13 @@ function App() {
   };
 
   const filteredProducts = PRODUCTS.filter(p => {
+    const matchesSearch = searchQuery === '' || 
+      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.tagline.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.description.toLowerCase().includes(searchQuery.toLowerCase());
+
+    if (!matchesSearch) return false;
+
     if (activeCategory === 'all') return true;
     
     if (activeSubCategory === 'all' || activeSubCategory === '전체보기') {
@@ -227,6 +244,8 @@ function App() {
         activeCategory={activeCategory}
         activeSubCategory={activeSubCategory}
         isScrolled={isScrolled}
+        searchQuery={searchQuery}
+        onSearchChange={handleSearchChange}
       />
 
       <AnimatePresence mode="wait">
@@ -490,15 +509,35 @@ function App() {
                   </motion.div>
                 )}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                  {displayedProducts.map((product) => (
-                    <ProductCard 
-                      key={product.id} 
-                      product={product} 
-                      onClick={handleProductClick} 
-                    />
-                  ))}
-                </div>
+                {displayedProducts.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    {displayedProducts.map((product) => (
+                      <ProductCard 
+                        key={product.id} 
+                        product={product} 
+                        onClick={handleProductClick} 
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="py-24 text-center bg-white rounded-[48px] border border-zinc-100 shadow-sm">
+                    <div className="w-20 h-20 bg-zinc-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <Search size={32} className="text-zinc-300" />
+                    </div>
+                    <h3 className="text-2xl font-black text-zinc-900 mb-2">검색 결과가 없습니다</h3>
+                    <p className="text-zinc-500 mb-8">다른 검색어를 입력하거나 카테고리를 선택해 보세요.</p>
+                    <button 
+                      onClick={() => {
+                        setSearchQuery('');
+                        setActiveCategory('all');
+                        setActiveSubCategory('all');
+                      }}
+                      className="px-8 py-3 rounded-2xl bg-emerald-600 text-white font-bold text-sm hover:bg-emerald-700 transition-all"
+                    >
+                      전체 상품 보기
+                    </button>
+                  </div>
+                )}
 
                 {hasMore && (
                   <div className="mt-16 flex justify-center">
