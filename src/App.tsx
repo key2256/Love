@@ -63,16 +63,15 @@ function App() {
     setActiveCategory(id);
     setActiveSubCategory('all');
     setVisibleCount(8);
-    setView('home');
-    const element = document.getElementById('products');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    setView('category');
+    window.scrollTo(0, 0);
   };
 
   const handleSubCategorySelect = (sub: string) => {
     setActiveSubCategory(sub);
     setVisibleCount(8);
+    setView('category');
+    window.scrollTo(0, 0);
   };
 
   const getLeafSubCategories = (categoryOrGroup: string): string[] => {
@@ -249,61 +248,45 @@ function App() {
             {/* Redesigned Recommendation Section */}
             <section className="py-12 bg-white">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                   <button 
-                    onClick={() => {
-                      handleCategorySelect('sticker');
-                      handleSubCategorySelect('일반 스티커');
-                      document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                    className="group p-8 rounded-[32px] bg-emerald-50 border border-emerald-100 text-left transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-emerald-200/40"
+                    onClick={() => handleCategorySelect('sticker')}
+                    className="group relative h-[320px] rounded-[48px] overflow-hidden bg-zinc-900"
                   >
-                    <div className="w-12 h-12 rounded-2xl bg-white text-emerald-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-sm">
-                      <Star className="w-6 h-6" />
+                    <div className="absolute inset-0 opacity-40 group-hover:scale-110 transition-transform duration-700">
+                      <img 
+                        src="https://picsum.photos/seed/print/1200/800" 
+                        alt="Sticker" 
+                        className="w-full h-full object-cover"
+                        referrerPolicy="no-referrer"
+                      />
                     </div>
-                    <h3 className="text-xl font-black text-zinc-900 mb-2">처음이라면 여기서 시작</h3>
-                    <p className="text-sm text-zinc-600 leading-relaxed mb-6">가장 인기 있는 기본 라벨부터 살펴보세요. 실패 없는 선택을 도와드립니다.</p>
-                    <div className="flex items-center gap-2 text-emerald-600 font-bold text-sm">
-                      <span>일반 스티커 보러가기</span>
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent" />
+                    <div className="absolute bottom-10 left-10 text-left">
+                      <span className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em] mb-4 block">Best Seller</span>
+                      <h3 className="text-3xl font-black text-white mb-4 tracking-tight">자유형 스티커</h3>
+                      <p className="text-zinc-300 text-sm font-medium mb-6 max-w-xs">원하는 모양 그대로, 소량부터 대량까지 완벽하게 제작하세요.</p>
+                      <div className="flex items-center gap-2 text-white font-bold text-sm">
+                        <span>제작하기</span>
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
                     </div>
                   </button>
 
                   <button 
-                    onClick={() => {
-                      handleCategorySelect('sticker');
-                      handleSubCategorySelect('투명 일반');
-                      document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                    className="group p-8 rounded-[32px] bg-blue-50 border border-blue-100 text-left transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-200/40"
+                    onClick={() => setView('inquiry')}
+                    className="group relative h-[320px] rounded-[48px] overflow-hidden bg-emerald-600"
                   >
-                    <div className="w-12 h-12 rounded-2xl bg-white text-blue-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-sm">
-                      <Zap className="w-6 h-6" />
-                    </div>
-                    <h3 className="text-xl font-black text-zinc-900 mb-2">많이 찾는 제작물</h3>
-                    <p className="text-sm text-zinc-600 leading-relaxed mb-6">방수 유포지, 투명 라벨 등 베스트셀러 상품들을 한눈에 확인하세요.</p>
-                    <div className="flex items-center gap-2 text-blue-600 font-bold text-sm">
-                      <span>베스트 상품 보러가기</span>
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </button>
-
-                  <button 
-                    onClick={() => {
-                      handleCategorySelect('sticker');
-                      handleSubCategorySelect('all');
-                      document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                    className="group p-8 rounded-[32px] bg-zinc-900 text-white shadow-xl shadow-zinc-900/20 text-left transition-all hover:-translate-y-1 hover:shadow-2xl"
-                  >
-                    <div className="w-12 h-12 rounded-2xl bg-zinc-800 text-emerald-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                      <Calculator className="w-6 h-6" />
-                    </div>
-                    <h3 className="text-xl font-black mb-2">빠른 견적 계산기</h3>
-                    <p className="text-sm text-zinc-400 leading-relaxed mb-6">원하는 사양을 선택하고 실시간 제작 비용을 바로 확인하세요.</p>
-                    <div className="flex items-center gap-2 text-emerald-400 font-bold text-sm">
-                      <span>계산기 바로가기</span>
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    <div className="absolute inset-0 p-12 flex flex-col justify-center">
+                      <div className="w-16 h-16 rounded-3xl bg-white/20 flex items-center justify-center text-white mb-8 group-hover:scale-110 transition-transform">
+                        <Calculator className="w-6 h-6" />
+                      </div>
+                      <h3 className="text-xl font-black mb-2">빠른 견적 계산기</h3>
+                      <p className="text-sm text-zinc-400 leading-relaxed mb-6">원하는 사양을 선택하고 실시간 제작 비용을 바로 확인하세요.</p>
+                      <div className="flex items-center gap-2 text-emerald-400 font-bold text-sm">
+                        <span>계산기 바로가기</span>
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
                     </div>
                   </button>
                 </div>
@@ -331,26 +314,101 @@ function App() {
               </div>
             </section>
 
+            <TrustSection />
+
+            {/* Portfolio Section */}
+            <section className="py-24 bg-white overflow-hidden">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+                  <div>
+                    <h2 className="text-4xl font-black mb-4 tracking-tight">제작 사례</h2>
+                    <p className="text-zinc-500">완두프린트와 함께한 다양한 프로젝트를 확인하세요.</p>
+                  </div>
+                  <button 
+                    onClick={() => setView('portfolio')}
+                    className="px-8 py-3 rounded-2xl bg-zinc-900 text-white font-bold text-sm hover:bg-zinc-800 transition-all"
+                  >
+                    전체 사례 보기
+                  </button>
+                </div>
+                
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                  {PORTFOLIO_ITEMS.slice(0, 4).map((item, i) => (
+                    <motion.div 
+                      key={i}
+                      whileHover={{ y: -10 }}
+                      onClick={() => setView('portfolio')}
+                      className="group cursor-pointer"
+                    >
+                      <div className="aspect-[3/4] rounded-[32px] overflow-hidden mb-6 bg-zinc-100 border border-zinc-100">
+                        <img 
+                          src={item.image} 
+                          alt={item.title} 
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                          referrerPolicy="no-referrer"
+                        />
+                      </div>
+                      <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-2 block">
+                        {CATEGORIES.find(c => c.id === item.category)?.name}
+                      </span>
+                      <h3 className="font-bold text-zinc-900">{item.title}</h3>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          </motion.main>
+        )}
+
+        {view === 'category' && (
+          <motion.main
+            key="category"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="pt-24 md:pt-32"
+          >
             <section id="products" className="py-24 bg-zinc-50">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex flex-col mb-12 gap-8">
                   {/* Section Title */}
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div>
-                      <h2 className="text-4xl font-black text-zinc-900 mb-2 tracking-tight">
-                        {activeCategory === 'all' ? '제품 탐색' : CATEGORIES.find(c => c.id === activeCategory)?.name}
-                        {activeSubCategory !== 'all' && <span className="text-emerald-500 ml-2">/ {activeSubCategory}</span>}
+                      <div className="flex items-center gap-2 mb-4">
+                        <button 
+                          onClick={() => setView('home')}
+                          className="text-[10px] font-black text-zinc-400 uppercase tracking-widest hover:text-emerald-600 transition-colors"
+                        >
+                          HOME
+                        </button>
+                        <div className="w-1 h-1 rounded-full bg-zinc-300" />
+                        <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">
+                          {activeCategory === 'all' ? 'ALL PRODUCTS' : CATEGORIES.find(c => c.id === activeCategory)?.name}
+                        </span>
+                        {activeSubCategory !== 'all' && (
+                          <>
+                            <div className="w-1 h-1 rounded-full bg-zinc-300" />
+                            <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">
+                              {activeSubCategory}
+                            </span>
+                          </>
+                        )}
+                      </div>
+                      <h2 className="text-5xl font-black text-zinc-900 mb-4 tracking-tight">
+                        {activeSubCategory !== 'all' ? activeSubCategory : (activeCategory === 'all' ? '제품 탐색' : CATEGORIES.find(c => c.id === activeCategory)?.name)}
                       </h2>
-                      <p className="text-zinc-500 font-medium">
-                        {activeCategory === 'all' 
-                          ? '완두프린트의 다양한 제작 상품을 만나보세요.' 
-                          : CATEGORIES.find(c => c.id === activeCategory)?.description}
+                      <p className="text-zinc-500 font-medium text-lg max-w-2xl">
+                        {activeSubCategory !== 'all' 
+                          ? SUBCATEGORY_METADATA[activeSubCategory]?.description || (filteredProducts.length > 0 ? filteredProducts[0].description : '')
+                          : (activeCategory === 'all' 
+                              ? '완두프린트의 다양한 제작 상품을 만나보세요.' 
+                              : CATEGORIES.find(c => c.id === activeCategory)?.description)}
                       </p>
                     </div>
                   </div>
                 </div>
 
-                {/* Subcategory Info Section */}
+                {/* Subcategory Info Section - Redesigned for better hierarchy */}
                 {activeSubCategory !== 'all' && filteredProducts.length > 0 && (
                   <motion.div 
                     initial={{ opacity: 0, y: 20 }}
@@ -366,20 +424,6 @@ function App() {
                       />
                     </div>
                     <div className="flex-1 space-y-8">
-                      <div>
-                        <div className="flex items-center gap-3 mb-4">
-                          <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-widest border border-emerald-100">
-                            {CATEGORIES.find(c => c.id === activeCategory)?.name}
-                          </span>
-                          <div className="h-px w-8 bg-zinc-200" />
-                          <span className="text-zinc-400 text-[10px] font-bold uppercase tracking-widest">Sub Category</span>
-                        </div>
-                        <h3 className="text-4xl font-black text-zinc-900 mb-4 tracking-tight">{activeSubCategory}</h3>
-                        <p className="text-zinc-500 text-lg font-medium leading-relaxed max-w-2xl">
-                          {SUBCATEGORY_METADATA[activeSubCategory]?.description || filteredProducts[0].description}
-                        </p>
-                      </div>
-                      
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                         <div className="space-y-3">
                           <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest flex items-center gap-2">
@@ -445,50 +489,6 @@ function App() {
                     </button>
                   </div>
                 )}
-              </div>
-            </section>
-
-            <TrustSection />
-
-            {/* Portfolio Section */}
-            <section className="py-24 bg-white overflow-hidden">
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-                  <div>
-                    <h2 className="text-4xl font-black mb-4 tracking-tight">제작 사례</h2>
-                    <p className="text-zinc-500">완두프린트와 함께한 다양한 프로젝트를 확인하세요.</p>
-                  </div>
-                  <button 
-                    onClick={() => setView('portfolio')}
-                    className="px-8 py-3 rounded-2xl bg-zinc-900 text-white font-bold text-sm hover:bg-zinc-800 transition-all"
-                  >
-                    전체 사례 보기
-                  </button>
-                </div>
-                
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                  {PORTFOLIO_ITEMS.slice(0, 4).map((item, i) => (
-                    <motion.div 
-                      key={i}
-                      whileHover={{ y: -10 }}
-                      onClick={() => setView('portfolio')}
-                      className="group cursor-pointer"
-                    >
-                      <div className="aspect-[3/4] rounded-[32px] overflow-hidden mb-6 bg-zinc-100 border border-zinc-100">
-                        <img 
-                          src={item.image} 
-                          alt={item.title} 
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                          referrerPolicy="no-referrer"
-                        />
-                      </div>
-                      <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-2 block">
-                        {CATEGORIES.find(c => c.id === item.category)?.name}
-                      </span>
-                      <h3 className="font-bold text-zinc-900">{item.title}</h3>
-                    </motion.div>
-                  ))}
-                </div>
               </div>
             </section>
           </motion.main>
