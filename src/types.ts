@@ -94,7 +94,7 @@ export const PAPER_MATERIALS: PaperMaterial[] = [
     name: '아트지 라벨(초강접)',
     weight: '090g',
     shortDescription: '강력한 접착력의 일반용지',
-    description: '백색 용지로 색상 구현력이 뛰어나고 저렴하여 많이 이용되는 일반용지 스티커입니다. 전면 재질은 일반 아트지와 같지만 접착력이 더 강합니다. 컬러 인쇄 시 색감 표현이 우수하며, 약간 반짝이는 질감이 있습니다.',
+    description: '백색 용지로 색상 구현력이 뛰어나고 저렴하여 많이 이용되는 일반용지 스티커입니다. 전면 재질은 일반 아트지 라벨과 같지만 접착력이 더 강합니다. 컬러 인쇄 시 색감 표현이 우수하며, 약간 반짝이는 질감이 있습니다.',
     waterproof: false,
     tearResistant: false,
     transparent: false,
@@ -109,7 +109,7 @@ export const PAPER_MATERIALS: PaperMaterial[] = [
   {
     id: 'kraft-label',
     group: '일반/기본 용지',
-    name: '크라프트라벨',
+    name: '크라프트 라벨',
     weight: '057g',
     shortDescription: '자연스럽고 빈티지한 감성',
     description: '일반 라벨과 달리 자연스럽고 품격 있는 분위기를 주는 라벨입니다. 우편물, 상품 안내문, 격식 있는 문서 분류용으로 적합합니다.',
@@ -165,7 +165,7 @@ export const PAPER_MATERIALS: PaperMaterial[] = [
   {
     id: 'yupo-matte-trans-back',
     group: '방수/합성지',
-    name: '유포매트 투명후지',
+    name: '유포 매트',
     weight: '080g',
     shortDescription: '매트한 질감과 투명한 배경지',
     description: '합성지로 얇고 부드러우며 찢어지지 않고 물에 젖지 않습니다. 매트한 표면 질감이 특징이며, 후지가 투명하여 팬시 스티커 용도로 많이 사용됩니다.',
@@ -221,7 +221,7 @@ export const PAPER_MATERIALS: PaperMaterial[] = [
   {
     id: 'trans-pet',
     group: '투명/PET',
-    name: '투명PET',
+    name: '투명 PET',
     weight: '050g',
     shortDescription: '내용물이 비치는 투명한 매력',
     description: '투명 비닐 원단에 인쇄되는 스티커로, 내부가 투명하게 보여 다양한 용도로 활용할 수 있습니다.',
@@ -239,7 +239,7 @@ export const PAPER_MATERIALS: PaperMaterial[] = [
   {
     id: 'high-trans-pet-back',
     group: '투명/PET',
-    name: '고투명PET 투명후지',
+    name: '고투명 PET 투명후지',
     weight: '050g',
     shortDescription: '유리처럼 맑고 깨끗한 투명도',
     description: 'PET 소재의 고투명 점착 원단으로 물에 젖지 않고 잘 찢어지지 않습니다. 전면과 후지 모두 투명하여 컬러 인쇄와 화이트 인쇄를 함께 진행하기 좋습니다. 다만 인쇄 및 후가공 중 스크래치가 발생할 수 있고, 정전기로 인해 코팅이 어렵습니다.',
@@ -277,7 +277,7 @@ export const PAPER_MATERIALS: PaperMaterial[] = [
   {
     id: 'silver-matte-pet',
     group: '메탈/광택 특수 재질',
-    name: '은무PET',
+    name: '은무 PET',
     weight: '050g',
     shortDescription: '세련된 무광 은색 메탈',
     description: '은색 무광 메탈 느낌의 재질입니다. 찢어지지 않고 물에 젖지 않으며 내구성이 강해 기계나 전자제품 라벨에 많이 사용됩니다.',
@@ -632,6 +632,54 @@ export const ORDER_STEPS: OrderStep[] = [
   { number: '06', title: '발송', description: '꼼꼼하게 포장하여 안전하게 배송해 드립니다.' },
 ];
 
+export interface SubCategoryMetadata {
+  description: string;
+  tagline?: string;
+}
+
+export const SUBCATEGORY_METADATA: Record<string, SubCategoryMetadata> = {
+  '사각형 스티커': {
+    tagline: '가장 대중적인 사각형, 깔끔한 재단.',
+    description: '정해진 사각 규격으로 제작하는 가성비 좋은 스티커입니다. 홍보용, 박스 부착용으로 가장 많이 사용됩니다.'
+  },
+  '원형 스티커': {
+    tagline: '부드러운 원형, 패키지 봉인에 최적.',
+    description: '패키지 마감이나 로고 강조에 적합한 원형 스티커입니다. 정교한 원형 칼선으로 깔끔한 마감을 제공합니다.'
+  },
+  '타원형 스티커': {
+    tagline: '유연한 타원형, 부드러운 디자인.',
+    description: '가로 또는 세로로 긴 타원형 스티커입니다. 로고나 텍스트를 부드럽게 감싸는 디자인에 효과적입니다.'
+  },
+  '사각라운드 스티커': {
+    tagline: '부드러운 모서리, 세련된 사각형.',
+    description: '모서리가 둥글게 처리된 사각형 스티커입니다. 일반 사각형보다 세련된 느낌을 주며 모서리 들뜸이 적습니다.'
+  },
+  '모양별 스티커': {
+    tagline: '규격화된 기본 도형 스티커',
+    description: '사각형, 원형, 타원형 등 가장 많이 쓰이는 기본 도형 규격 스티커입니다. 빠른 제작과 가성비가 장점입니다.'
+  },
+  '자유형 스티커': {
+    tagline: '원하는 모양 그대로, 자유로운 칼선.',
+    description: '캐릭터나 로고 외곽선을 따라 자유롭게 컷팅되는 스티커입니다. 개성 있는 굿즈 제작에 필수적입니다.'
+  },
+  '조각 스티커': {
+    tagline: '하나씩 낱개로, 배포용 최적.',
+    description: '한 장씩 낱개로 재단되어 배포나 판매용으로 적합한 스티커입니다. 배경지까지 함께 재단되어 깔끔합니다.'
+  },
+  '리무버블': {
+    tagline: '흔적 없이 깔끔하게, 떼었다 붙였다.',
+    description: '제거 시 끈적임이 남지 않아 노트북이나 전자기기에 부착하기 좋습니다. 재부착이 가능하여 활용도가 높습니다.'
+  },
+  '아크릴 키링': {
+    tagline: '영롱한 투명함, 나만의 굿즈.',
+    description: '고투명 아크릴에 배면 인쇄하여 제작하는 가장 인기 있는 굿즈입니다. 다양한 부자재와 조합이 가능합니다.'
+  },
+  '포토카드': {
+    tagline: '덕질 필수템, 고화질 포토카드.',
+    description: '선명한 인쇄와 탄탄한 두께감으로 소장 가치를 높인 포토카드입니다. 다양한 코팅 옵션으로 분위기를 연출하세요.'
+  }
+};
+
 export const PRODUCTS: Product[] = [
   {
     id: 'stk-rect',
@@ -661,8 +709,8 @@ export const PRODUCTS: Product[] = [
           { label: '아트지 라벨', priceModifier: 0 },
           { label: '아트지 라벨(초강접)', priceModifier: 500 },
           { label: '유포 스티커', priceModifier: 500 },
-          { label: '투명PET', priceModifier: 1500 },
-          { label: '은무PET', priceModifier: 2000 },
+          { label: '투명 PET', priceModifier: 1500 },
+          { label: '은무 PET', priceModifier: 2000 },
         ]
       },
       {
@@ -709,7 +757,7 @@ export const PRODUCTS: Product[] = [
         values: [
           { label: '아트지 라벨', priceModifier: 0 },
           { label: '유포 스티커', priceModifier: 500 },
-          { label: '투명PET', priceModifier: 1500 },
+          { label: '투명 PET', priceModifier: 1500 },
         ]
       }
     ],
@@ -746,7 +794,7 @@ export const PRODUCTS: Product[] = [
         values: [
           { label: '아트지 라벨', priceModifier: 0 },
           { label: '유포 스티커', priceModifier: 500 },
-          { label: '투명PET', priceModifier: 1500 },
+          { label: '투명 PET', priceModifier: 1500 },
         ]
       }
     ],
@@ -783,7 +831,7 @@ export const PRODUCTS: Product[] = [
         values: [
           { label: '아트지 라벨', priceModifier: 0 },
           { label: '유포 스티커', priceModifier: 500 },
-          { label: '크라프트라벨', priceModifier: 1000 },
+          { label: '크라프트 라벨', priceModifier: 1000 },
         ]
       }
     ],
@@ -820,7 +868,7 @@ export const PRODUCTS: Product[] = [
         values: [
           { label: '아트지 라벨', priceModifier: 0 },
           { label: '유포 스티커', priceModifier: 500 },
-          { label: '유포매트 투명후지', priceModifier: 1500 },
+          { label: '유포 매트', priceModifier: 1500 },
         ]
       }
     ],
@@ -848,7 +896,7 @@ export const PRODUCTS: Product[] = [
         values: [
           { label: '아트지 라벨', priceModifier: 0 },
           { label: '유포 스티커', priceModifier: 500 },
-          { label: '투명PET', priceModifier: 1500 },
+          { label: '투명 PET', priceModifier: 1500 },
           { label: '홀로그램', priceModifier: 3000 },
         ]
       }
@@ -864,7 +912,7 @@ export const PRODUCTS: Product[] = [
     category: 'sticker',
     subCategory: '자유형 일반',
     tagline: '가장 대중적인 자유형 스티커.',
-    description: '아트지, 유포지 등 일반적인 재질로 제작하는 자유형 스티커입니다.',
+    description: '아트지 라벨, 유포 스티커 등 일반적인 재질로 제작하는 자유형 스티커입니다.',
     image: 'https://picsum.photos/seed/sticker-free-normal/800/800',
     minQuantity: 10,
     basePrice: 5000,
@@ -898,8 +946,8 @@ export const PRODUCTS: Product[] = [
         name: '재질 선택',
         type: 'select',
         values: [
-          { label: '투명PET', priceModifier: 0 },
-          { label: '투명PET(백색인쇄)', priceModifier: 1000 },
+          { label: '투명 PET', priceModifier: 0 },
+          { label: '투명 PET (백색인쇄)', priceModifier: 1000 },
         ]
       }
     ],
@@ -962,8 +1010,8 @@ export const PRODUCTS: Product[] = [
           { label: '아트지 라벨', priceModifier: 0 },
           { label: '아트지 라벨(초강접)', priceModifier: 500 },
           { label: '유포 스티커', priceModifier: 500 },
-          { label: '투명PET', priceModifier: 1500 },
-          { label: '은무PET', priceModifier: 2000 },
+          { label: '투명 PET', priceModifier: 1500 },
+          { label: '은무 PET', priceModifier: 2000 },
           { label: '금광 PET', priceModifier: 2500 },
           { label: '(GMUND) 화이트우드', priceModifier: 3500 },
         ]
@@ -1011,7 +1059,7 @@ export const PRODUCTS: Product[] = [
         values: [
           { label: '아트지 라벨', priceModifier: 0 },
           { label: '유포 스티커', priceModifier: 5000 },
-          { label: '은무PET', priceModifier: 15000 },
+          { label: '은무 PET', priceModifier: 15000 },
         ]
       },
       {
@@ -1128,8 +1176,8 @@ export const PRODUCTS: Product[] = [
         name: '재질 선택',
         type: 'select',
         values: [
-          { label: '리무버블 유포지', priceModifier: 0 },
-          { label: '리무버블 투명', priceModifier: 1500 },
+          { label: '유포 리무버블', priceModifier: 0 },
+          { label: '고투명 PET 리무버블', priceModifier: 1500 },
         ]
       }
     ],
@@ -1153,8 +1201,8 @@ export const PRODUCTS: Product[] = [
         name: '재질 선택',
         type: 'select',
         values: [
-          { label: '냉동 전용 유포지', priceModifier: 0 },
-          { label: '냉동 전용 아트지', priceModifier: -1000 },
+          { label: '냉동 전용 유포 스티커', priceModifier: 0 },
+          { label: '냉동 전용 아트지 라벨', priceModifier: -1000 },
         ]
       }
     ],
@@ -2130,7 +2178,7 @@ export const PRODUCTS: Product[] = [
         values: [{ label: '유광 코팅' }, { label: '무광 코팅' }, { label: '홀로그램 코팅', priceModifier: 1500 }]
       }
     ],
-    features: ['라운드 처리 기본', '양면 인쇄', '고급 아트지'],
+    features: ['라운드 처리 기본', '양면 인쇄', '고급 아트지 라벨'],
     leadTime: '3-4일',
     badges: ['굿즈필수', '라운드기본', '양면인쇄']
   },
@@ -2169,7 +2217,7 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질',
         type: 'select',
-        values: [{ label: '아트지' }, { label: '유포지(방수)', priceModifier: 5000 }, { label: '은광무지', priceModifier: 8000 }]
+        values: [{ label: '아트지 라벨' }, { label: '유포 스티커', priceModifier: 5000 }, { label: '은광 PET', priceModifier: 8000 }]
       }
     ],
     features: ['대량 제작 최적화', '롤 형태 공급', '다양한 재질'],
@@ -2290,17 +2338,17 @@ export const PORTFOLIO_ITEMS: PortfolioItem[] = [
     title: '캐릭터 브랜드 자유형 스티커',
     category: 'sticker',
     subCategory: '자유형',
-    material: '유포지',
+    material: '유포 스티커',
     finishing: '무광 코팅',
     image: 'https://picsum.photos/seed/port1/800/1000',
-    description: '귀여운 캐릭터 라인을 살린 자유형 스티커입니다. 방수가 되는 유포지에 무광 코팅을 더해 고급스럽습니다.'
+    description: '귀여운 캐릭터 라인을 살린 자유형 스티커입니다. 방수가 되는 유포 스티커에 무광 코팅을 더해 고급스럽습니다.'
   },
   {
     id: 'p2',
     title: '카페 로고 사각형 스티커',
     category: 'sticker',
     subCategory: '사각형',
-    material: '아트지',
+    material: '아트지 라벨',
     finishing: '유광 코팅',
     image: 'https://picsum.photos/seed/port2/800/1000',
     description: '카페 패키지용으로 제작된 사각형 스티커입니다. 유광 코팅으로 색감이 선명하게 표현되었습니다.'

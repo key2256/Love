@@ -245,7 +245,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, o
                   <div className="space-y-4">
                     <div className="flex gap-4">
                       <div className="w-8 h-8 rounded-full bg-white border border-zinc-200 flex items-center justify-center shrink-0 text-xs font-black">1</div>
-                      <p className="text-sm text-zinc-600 leading-relaxed">물이나 습기에 노출되는 환경이라면 <b>유포지</b>나 <b>PET</b> 재질을 선택하세요.</p>
+                      <p className="text-sm text-zinc-600 leading-relaxed">물이나 습기에 노출되는 환경이라면 <b>유포 스티커</b>나 <b>PET</b> 재질을 선택하세요.</p>
                     </div>
                     <div className="flex gap-4">
                       <div className="w-8 h-8 rounded-full bg-white border border-zinc-200 flex items-center justify-center shrink-0 text-xs font-black">2</div>

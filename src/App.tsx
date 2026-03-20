@@ -10,7 +10,7 @@ import { QuotationDocument } from './components/QuotationDocument';
 import { Footer } from './components/Footer';
 import { Portfolio } from './components/Portfolio';
 import { InquiryForm } from './components/InquiryForm';
-import { PRODUCTS, CATEGORIES, Product, Quotation, ORDER_STEPS, PORTFOLIO_ITEMS } from './types';
+import { PRODUCTS, CATEGORIES, Product, Quotation, ORDER_STEPS, PORTFOLIO_ITEMS, SUBCATEGORY_METADATA } from './types';
 import { FileUp, Send, CheckCircle2, MessageSquare, ArrowRight, Box, Search } from 'lucide-react';
 
 type View = 'home' | 'detail' | 'category' | 'guide' | 'inquiry' | 'quotation_doc' | 'custom_inquiry' | 'portfolio';
@@ -287,7 +287,7 @@ function App() {
                         </div>
                         <h3 className="text-4xl font-black text-zinc-900 mb-4 tracking-tight">{activeSubCategory}</h3>
                         <p className="text-zinc-500 text-lg font-medium leading-relaxed max-w-2xl">
-                          {filteredProducts[0].description}
+                          {SUBCATEGORY_METADATA[activeSubCategory]?.description || filteredProducts[0].description}
                         </p>
                       </div>
                       
@@ -295,7 +295,8 @@ function App() {
                         <div className="space-y-3">
                           <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest flex items-center gap-2">
                             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                            제작 가능 재질
+                            대표 제작 재질
+                            <span className="text-zinc-400 font-normal lowercase">(이외 다양한 재질 선택 가능)</span>
                           </span>
                           <div className="flex flex-wrap gap-2">
                             {filteredProducts[0].options.find(o => o.name.includes('재질'))?.values.slice(0, 5).map(v => (
