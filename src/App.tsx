@@ -10,7 +10,7 @@ import { QuotationDocument } from './components/QuotationDocument';
 import { Footer } from './components/Footer';
 import { Portfolio } from './components/Portfolio';
 import { InquiryForm } from './components/InquiryForm';
-import { PRODUCTS, CATEGORIES, Product, Quotation, ORDER_STEPS, PORTFOLIO_ITEMS, SUBCATEGORY_METADATA } from './types';
+import { PRODUCTS, CATEGORIES, Product, Quotation, ORDER_STEPS, PORTFOLIO_ITEMS, SUBCATEGORY_METADATA, SubCategoryGroup } from './types';
 import { FileUp, Send, CheckCircle2, MessageSquare, ArrowRight, Box, Search, Star, Zap, Calculator, MapPin } from 'lucide-react';
 import { APIProvider, Map, AdvancedMarker, Pin } from '@vis.gl/react-google-maps';
 
@@ -75,6 +75,24 @@ function App() {
     setVisibleCount(8);
   };
 
+  const getSubCategoryNames = (categoryId: string): string[] => {
+    const cat = CATEGORIES.find(c => c.id === categoryId);
+    if (!cat) return [];
+    
+    const names: string[] = [];
+    const flatten = (items: (string | SubCategoryGroup)[]) => {
+      items.forEach(item => {
+        if (typeof item === 'string') {
+          names.push(item);
+        } else {
+          flatten(item.items);
+        }
+      });
+    };
+    flatten(cat.subCategories);
+    return names;
+  };
+
   const handleQuotationGenerated = (quotation: Quotation) => {
     setCurrentQuotation(quotation);
     setView('quotation_doc');
@@ -92,9 +110,22 @@ function App() {
   };
 
   const filteredProducts = PRODUCTS.filter(p => {
-    const matchesCategory = activeCategory === 'all' || p.category === activeCategory;
-    const matchesSubCategory = activeSubCategory === 'all' || p.subCategory === activeSubCategory;
-    return matchesCategory && matchesSubCategory;
+    if (activeCategory === 'all') return true;
+    
+    if (activeSubCategory !== 'all') {
+      return p.subCategory === activeSubCategory;
+    }
+    
+    // If subCategory is 'all', check if product belongs to the activeCategory
+    if (p.category === activeCategory) return true;
+    
+    // Special case for the new sticker categories that were split from 'sticker'
+    if (activeCategory.startsWith('sticker-')) {
+      const allowedSubCategories = getSubCategoryNames(activeCategory);
+      return p.category === 'sticker' && allowedSubCategories.includes(p.subCategory);
+    }
+    
+    return false;
   });
 
   const displayedProducts = filteredProducts.slice(0, visibleCount);
@@ -219,7 +250,7 @@ function App() {
                   <button 
                     onClick={() => {
                       handleCategorySelect('sticker');
-                      handleSubCategorySelect('투명 일반 스티커');
+                      handleSubCategorySelect('투명 일반');
                       document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
                     }}
                     className="group p-8 rounded-[32px] bg-blue-50 border border-blue-100 text-left transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-200/40"

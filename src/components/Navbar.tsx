@@ -225,22 +225,33 @@ export const Navbar = ({
                         상세 선택
                       </span>
                       <div className="flex items-center gap-1">
-                        {group.items.map(item => (
-                          <button
-                            key={item}
-                            onClick={() => {
-                              onCategorySelect(displayCategoryId);
-                              onSubCategorySelect(item);
-                            }}
-                            className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
-                              activeSubCategory === item && activeCategory === displayCategoryId
-                                ? 'bg-zinc-900 text-white shadow-md shadow-zinc-200'
-                                : 'text-zinc-500 hover:bg-zinc-100'
-                            }`}
-                          >
-                            {item}
-                          </button>
-                        ))}
+                        {group.items.map((item, idx) => {
+                          const itemName = typeof item === 'string' ? item : item.groupName;
+                          const isActive = activeSubCategory === itemName && activeCategory === displayCategoryId;
+                          
+                          return (
+                            <button
+                              key={itemName || idx}
+                              onClick={() => {
+                                onCategorySelect(displayCategoryId);
+                                if (typeof item === 'string') {
+                                  onSubCategorySelect(item);
+                                } else {
+                                  // If it's another group, select its first item
+                                  const firstItem = typeof item.items[0] === 'string' ? item.items[0] : item.items[0].groupName;
+                                  onSubCategorySelect(firstItem);
+                                }
+                              }}
+                              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
+                                isActive
+                                  ? 'bg-zinc-900 text-white shadow-md shadow-zinc-200'
+                                  : 'text-zinc-500 hover:bg-zinc-100'
+                              }`}
+                            >
+                              {itemName}
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
                   </motion.div>

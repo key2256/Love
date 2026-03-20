@@ -37,7 +37,7 @@ export interface Quotation {
 
 export interface SubCategoryGroup {
   groupName: string;
-  items: string[];
+  items: (string | SubCategoryGroup)[];
 }
 
 export interface Category {
@@ -560,42 +560,62 @@ export interface OrderStep {
 }
 
 export const CATEGORIES: Category[] = [
-  { 
-    id: 'sticker', 
-    name: '스티커', 
-    icon: 'StickyNote', 
-    description: '원하는 모양과 재질로 소량부터 제작할 수 있는 맞춤 스티커',
-    entryPhrase: '나만의 개성을 담은 스티커 제작',
+  {
+    id: 'all',
+    name: '전체보기',
+    icon: 'LayoutGrid',
+    description: '완두프린트의 모든 스티커 제품을 한눈에 확인하세요.',
+    entryPhrase: '다양한 스티커 제품을 한눈에',
+    subCategories: ['all']
+  },
+  {
+    id: 'sticker-free',
+    name: '자유형 스티커',
+    icon: 'StickyNote',
+    description: '원하는 모양 그대로, 자유로운 칼선으로 제작하는 스티커',
+    entryPhrase: '나만의 개성을 담은 자유형 스티커',
     subCategories: [
       {
-        groupName: '자유형 일반',
-        items: ['일반 스티커', '자유형 스티커']
+        groupName: '일반 스티커',
+        items: ['일반 스티커']
       },
       {
-        groupName: '투명 일반',
-        items: ['투명 일반 스티커', '투명 스티커']
-      },
-      {
-        groupName: '투명 후지',
-        items: ['투명 후지 스티커']
-      },
-      {
-        groupName: '모양별',
-        items: ['사각형 스티커', '원형 스티커', '타원형 스티커', '사각라운드 스티커', '다양한 모양 스티커']
-      },
-      {
-        groupName: '용도별',
-        items: ['리무버블', '옥외용', '냉장·냉동', '카드스티커', '스크래치', '자석스티커', '롤 스티커']
-      },
-      {
-        groupName: '프리미엄',
-        items: ['홀로그램 스티커', '금광 PET', '은광 PET', '은무 PET', '그문드 라벨', '금 라벨지', '은 라벨지', '동 라벨지']
-      },
-      {
-        groupName: '조각 스티커',
-        items: ['조각 스티커']
+        groupName: '투명 스티커',
+        items: ['투명 일반', '투명 후지']
       }
     ]
+  },
+  {
+    id: 'sticker-shape',
+    name: '모양별 스티커',
+    icon: 'Shapes',
+    description: '사각형, 원형 등 규격화된 기본 도형 스티커',
+    entryPhrase: '깔끔한 기본 도형 스티커 제작',
+    subCategories: ['사각형 스티커', '원형 스티커', '타원형 스티커', '사각라운드 스티커']
+  },
+  {
+    id: 'sticker-usage',
+    name: '용도별 스티커',
+    icon: 'Tag',
+    description: '리무버블, 옥외용 등 용도에 최적화된 스티커',
+    entryPhrase: '용도에 딱 맞는 기능성 스티커',
+    subCategories: ['리무버블', '옥외용', '냉장·냉동', '카드스티커', '스크래치', '자석스티커', '롤 스티커']
+  },
+  {
+    id: 'sticker-premium',
+    name: '프리미엄 스티커',
+    icon: 'Star',
+    description: '홀로그램, 금속 재질 등 고급스러운 프리미엄 스티커',
+    entryPhrase: '브랜드의 가치를 높이는 프리미엄 라벨',
+    subCategories: ['홀로그램 스티커', '금광 PET', '은광 PET', '은무 PET', '그문드 라벨', '금 라벨지', '은 라벨지', '동 라벨지']
+  },
+  {
+    id: 'sticker-piece',
+    name: '조각 스티커',
+    icon: 'Scissors',
+    description: '하나씩 낱개로 재단되어 배포나 판매용으로 적합한 스티커',
+    entryPhrase: '나눠주기 좋은 개별 조각 스티커',
+    subCategories: ['조각 스티커']
   },
   { 
     id: 'paper', 
@@ -678,11 +698,11 @@ export const SUBCATEGORY_METADATA: Record<string, SubCategoryMetadata> = {
     tagline: '배경이 비치는 투명한 자유형 스티커.',
     description: '투명 PET 재질을 사용하여 배경이 비치는 독특한 느낌의 자유형 스티커입니다.'
   },
-  '투명 일반 스티커': {
+  '투명 일반': {
     tagline: '가장 기본적인 투명 자유형 스티커.',
     description: '표준 투명 PET 재질로 제작되는 자유형 스티커입니다.'
   },
-  '투명 후지 스티커': {
+  '투명 후지': {
     tagline: '투명한 배경지까지 투명한 스티커.',
     description: '스티커를 떼어낸 후의 배경지(후지)까지 투명하여 디자인 확인이 용이합니다.'
   },
@@ -1316,7 +1336,7 @@ export const PRODUCTS: Product[] = [
     id: 'stk-free-trans-normal',
     name: '투명 일반 스티커',
     category: 'sticker',
-    subCategory: '투명 일반 스티커',
+    subCategory: '투명 일반',
     tagline: '가장 기본적인 투명 자유형 스티커.',
     description: '표준 투명 PET 재질로 제작되는 자유형 스티커입니다.',
     image: 'https://picsum.photos/seed/sticker-free-trans-normal/800/800',
@@ -1375,7 +1395,7 @@ export const PRODUCTS: Product[] = [
     id: 'stk-free-trans-back',
     name: '투명 후지 스티커',
     category: 'sticker',
-    subCategory: '투명 후지 스티커',
+    subCategory: '투명 후지',
     tagline: '투명한 배경지까지 투명한 스티커.',
     description: '스티커를 떼어낸 후의 배경지(후지)까지 투명하여 디자인 확인이 용이합니다.',
     image: 'https://picsum.photos/seed/sticker-free-trans-back/800/800',
