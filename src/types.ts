@@ -569,13 +569,11 @@ export const CATEGORIES: Category[] = [
     subCategories: [
       {
         groupName: '자유형 스티커',
-        items: [
-          '일반 스티커',
-          {
-            groupName: '투명 스티커',
-            items: ['투명 일반', '투명 후지']
-          }
-        ]
+        items: ['일반 스티커']
+      },
+      {
+        groupName: '투명 스티커',
+        items: ['투명 일반', '투명 후지']
       },
       {
         groupName: '모양별 스티커',
@@ -1504,6 +1502,8 @@ export const PRODUCTS: Product[] = [
         type: 'radio',
         values: [
           { label: '완칼 (개별조각)', priceModifier: 0 },
+          { label: '반칼 (시트형)', priceModifier: 500 },
+          { label: '완칼 + 반칼 (추가비용)', priceModifier: 1500 },
         ]
       },
       {
@@ -1512,6 +1512,7 @@ export const PRODUCTS: Product[] = [
         values: [
           { label: '무광 코팅', priceModifier: 0 },
           { label: '유광 코팅', priceModifier: 0 },
+          { label: '홀로그램 코팅', priceModifier: 2000 },
           { label: '코팅 없음', priceModifier: -500 },
         ]
       },
