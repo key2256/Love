@@ -67,9 +67,29 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
     
     product.options.forEach(opt => {
       if (opt.values) {
-        const selectedValue = opt.values.find(v => v.label === selectedOptions[opt.name]);
-        if (selectedValue?.priceModifier) {
-          pricePerUnit += selectedValue.priceModifier;
+        if (opt.type === 'checkbox') {
+          const selectedList = selectedOptions[opt.name]?.split(', ').filter(Boolean) || [];
+          if (opt.name === '재단 방식') {
+            // Special logic for combined cutting
+            if (selectedList.includes('완칼 재단') && selectedList.includes('반칼 재단')) {
+              pricePerUnit += 1500;
+            } else {
+              selectedList.forEach(valLabel => {
+                const val = opt.values?.find(v => v.label === valLabel);
+                if (val?.priceModifier) pricePerUnit += val.priceModifier;
+              });
+            }
+          } else {
+            selectedList.forEach(valLabel => {
+              const val = opt.values?.find(v => v.label === valLabel);
+              if (val?.priceModifier) pricePerUnit += val.priceModifier;
+            });
+          }
+        } else {
+          const selectedValue = opt.values.find(v => v.label === selectedOptions[opt.name]);
+          if (selectedValue?.priceModifier) {
+            pricePerUnit += selectedValue.priceModifier;
+          }
         }
       }
     });
@@ -93,7 +113,18 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
   }, [product, quantity, selectedOptions]);
 
   const handleOptionChange = (name: string, value: string) => {
-    setSelectedOptions(prev => ({ ...prev, [name]: value }));
+    const option = product.options.find(opt => opt.name === name);
+    if (option?.type === 'checkbox') {
+      setSelectedOptions(prev => {
+        const currentValues = prev[name] ? prev[name].split(', ').filter(Boolean) : [];
+        const newValues = currentValues.includes(value)
+          ? currentValues.filter(v => v !== value)
+          : [...currentValues, value];
+        return { ...prev, [name]: newValues.join(', ') };
+      });
+    } else {
+      setSelectedOptions(prev => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleGenerate = () => {
@@ -365,7 +396,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
 
             const isOptionActive = (name: string) => {
               const val = selectedOptions[name];
-              return val && val !== '없음' && val !== '안함' && val !== '코팅 없음' && val !== '기본 포장';
+              return val && val !== '없음' && val !== '안함' && val !== '코팅 없음' && val !== '기본 포장' && val !== '';
             };
 
             const expandedOption = visiblePostOptions.find(opt => opt.name === expandedPostOption);
@@ -442,7 +473,9 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                           </div>
                           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                             {expandedOption.values?.map((val) => {
-                              const isSelected = selectedOptions[expandedOption.name] === val.label;
+                              const isSelected = expandedOption.type === 'checkbox'
+                                ? selectedOptions[expandedOption.name]?.split(', ').includes(val.label)
+                                : selectedOptions[expandedOption.name] === val.label;
                               return (
                                 <button
                                   key={val.label}
@@ -453,7 +486,16 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                                       : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
                                   }`}
                                 >
-                                  <span>{val.label}</span>
+                                  <div className="flex items-center gap-2">
+                                    {expandedOption.type === 'checkbox' && (
+                                      <div className={`w-3 h-3 rounded border flex items-center justify-center ${
+                                        isSelected ? 'bg-white border-white' : 'border-zinc-300'
+                                      }`}>
+                                        {isSelected && <CheckCircle2 className="w-2.5 h-2.5 text-emerald-600" />}
+                                      </div>
+                                    )}
+                                    <span>{val.label}</span>
+                                  </div>
                                   {val.priceModifier !== undefined && val.priceModifier !== 0 && (
                                     <span className={`text-[9px] opacity-70 ${isSelected ? 'text-white' : 'text-zinc-400'}`}>
                                       {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}

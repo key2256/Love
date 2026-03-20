@@ -10,7 +10,7 @@ export interface Product {
   basePrice: number;
   options: {
     name: string;
-    type: 'select' | 'radio' | 'number' | 'text';
+    type: 'select' | 'radio' | 'number' | 'text' | 'checkbox';
     values?: { label: string; priceModifier?: number }[];
     placeholder?: string;
   }[];
@@ -1499,11 +1499,10 @@ export const PRODUCTS: Product[] = [
       },
       {
         name: '재단 방식',
-        type: 'radio',
+        type: 'checkbox',
         values: [
-          { label: '완칼 (개별조각)', priceModifier: 0 },
-          { label: '반칼 (시트형)', priceModifier: 500 },
-          { label: '완칼 + 반칼 (추가비용)', priceModifier: 1500 },
+          { label: '완칼 재단', priceModifier: 0 },
+          { label: '반칼 재단', priceModifier: 500 },
         ]
       },
       {
