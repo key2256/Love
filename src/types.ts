@@ -75,7 +75,7 @@ export const PAPER_MATERIALS: PaperMaterial[] = [
     group: '일반/기본 용지',
     name: '아트지 라벨',
     weight: '090g',
-    shortDescription: '가장 대중적인 일반용지',
+    shortDescription: '기본형 / 선명한 인쇄',
     description: '백색 용지로 색상 구현력이 뛰어나고 저렴하여 가장 많이 이용되는 일반용지 스티커입니다. 코팅을 하지 않으면 잘 찢어집니다.',
     waterproof: false,
     tearResistant: false,
@@ -149,7 +149,7 @@ export const PAPER_MATERIALS: PaperMaterial[] = [
     group: '방수/합성지',
     name: '유포 스티커',
     weight: '080g',
-    shortDescription: '물에 젖지 않는 내구성',
+    shortDescription: '방수 / 잘 안 찢어짐',
     description: '합성지 재질로 얇고 부드러우며 잘 찢어지지 않고 물에 젖지 않습니다.',
     waterproof: true,
     tearResistant: true,
@@ -223,7 +223,7 @@ export const PAPER_MATERIALS: PaperMaterial[] = [
     group: '투명/PET',
     name: '투명 PET',
     weight: '050g',
-    shortDescription: '내용물이 비치는 투명한 매력',
+    shortDescription: '투명 / 화이트인쇄 추천',
     description: '투명 비닐 원단에 인쇄되는 스티커로, 내부가 투명하게 보여 다양한 용도로 활용할 수 있습니다.',
     waterproof: true,
     tearResistant: true,
@@ -573,7 +573,7 @@ export const CATEGORIES: Category[] = [
       },
       {
         groupName: '자유형 스티커',
-        items: ['자유형 전체보기', '자유형 일반', '자유형 투명', '자유형 홀로그램']
+        items: ['자유형 스티커', '일반 스티커', '투명 스티커', '투명 일반 스티커', '투명 후지 스티커']
       },
       {
         groupName: '조각 스티커',
@@ -662,6 +662,22 @@ export const SUBCATEGORY_METADATA: Record<string, SubCategoryMetadata> = {
     tagline: '원하는 모양 그대로, 자유로운 칼선.',
     description: '캐릭터나 로고 외곽선을 따라 자유롭게 컷팅되는 스티커입니다. 개성 있는 굿즈 제작에 필수적입니다.'
   },
+  '일반 스티커': {
+    tagline: '가장 대중적인 자유형 스티커.',
+    description: '아트지 라벨, 유포 스티커 등 일반적인 재질로 제작하는 자유형 스티커입니다.'
+  },
+  '투명 스티커': {
+    tagline: '배경이 비치는 투명한 자유형 스티커.',
+    description: '투명 PET 재질을 사용하여 배경이 비치는 독특한 느낌의 자유형 스티커입니다.'
+  },
+  '투명 일반 스티커': {
+    tagline: '가장 기본적인 투명 자유형 스티커.',
+    description: '표준 투명 PET 재질로 제작되는 자유형 스티커입니다.'
+  },
+  '투명 후지 스티커': {
+    tagline: '투명한 배경지까지 투명한 스티커.',
+    description: '스티커를 떼어낸 후의 배경지(후지)까지 투명하여 디자인 확인이 용이합니다.'
+  },
   '조각 스티커': {
     tagline: '하나씩 낱개로, 배포용 최적.',
     description: '한 장씩 낱개로 재단되어 배포나 판매용으로 적합한 스티커입니다. 배경지까지 함께 재단되어 깔끔합니다.'
@@ -714,11 +730,38 @@ export const PRODUCTS: Product[] = [
         ]
       },
       {
-        name: '표면 마감',
+        name: '화이트 인쇄',
         type: 'radio',
         values: [
-          { label: '무광', priceModifier: 0 },
-          { label: '유광', priceModifier: 0 },
+          { label: '화이트 인쇄 없음', priceModifier: 0 },
+          { label: '화이트 인쇄 있음', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '재단 방식',
+        type: 'radio',
+        values: [
+          { label: '반칼 (시트형)', priceModifier: 0 },
+          { label: '완칼 (개별조각)', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '코팅 유무',
+        type: 'radio',
+        values: [
+          { label: '무광 코팅', priceModifier: 0 },
+          { label: '유광 코팅', priceModifier: 0 },
+          { label: '코팅 없음', priceModifier: -500 },
+        ]
+      },
+      {
+        name: '후가공 옵션',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '금박', priceModifier: 5000 },
+          { label: '은박', priceModifier: 5000 },
+          { label: '부분 UV', priceModifier: 3000 },
         ]
       }
     ],
@@ -759,6 +802,41 @@ export const PRODUCTS: Product[] = [
           { label: '유포 스티커', priceModifier: 500 },
           { label: '투명 PET', priceModifier: 1500 },
         ]
+      },
+      {
+        name: '화이트 인쇄',
+        type: 'radio',
+        values: [
+          { label: '화이트 인쇄 없음', priceModifier: 0 },
+          { label: '화이트 인쇄 있음', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '재단 방식',
+        type: 'radio',
+        values: [
+          { label: '반칼 (시트형)', priceModifier: 0 },
+          { label: '완칼 (개별조각)', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '코팅 유무',
+        type: 'radio',
+        values: [
+          { label: '무광 코팅', priceModifier: 0 },
+          { label: '유광 코팅', priceModifier: 0 },
+          { label: '코팅 없음', priceModifier: -500 },
+        ]
+      },
+      {
+        name: '후가공 옵션',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '금박', priceModifier: 5000 },
+          { label: '은박', priceModifier: 5000 },
+          { label: '부분 UV', priceModifier: 3000 },
+        ]
       }
     ],
     features: ['시트형 제작', '반칼 스티커 가공', '정교한 원형 칼선'],
@@ -795,6 +873,41 @@ export const PRODUCTS: Product[] = [
           { label: '아트지 라벨', priceModifier: 0 },
           { label: '유포 스티커', priceModifier: 500 },
           { label: '투명 PET', priceModifier: 1500 },
+        ]
+      },
+      {
+        name: '화이트 인쇄',
+        type: 'radio',
+        values: [
+          { label: '화이트 인쇄 없음', priceModifier: 0 },
+          { label: '화이트 인쇄 있음', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '재단 방식',
+        type: 'radio',
+        values: [
+          { label: '반칼 (시트형)', priceModifier: 0 },
+          { label: '완칼 (개별조각)', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '코팅 유무',
+        type: 'radio',
+        values: [
+          { label: '무광 코팅', priceModifier: 0 },
+          { label: '유광 코팅', priceModifier: 0 },
+          { label: '코팅 없음', priceModifier: -500 },
+        ]
+      },
+      {
+        name: '후가공 옵션',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '금박', priceModifier: 5000 },
+          { label: '은박', priceModifier: 5000 },
+          { label: '부분 UV', priceModifier: 3000 },
         ]
       }
     ],
@@ -833,6 +946,33 @@ export const PRODUCTS: Product[] = [
           { label: '유포 스티커', priceModifier: 500 },
           { label: '크라프트 라벨', priceModifier: 1000 },
         ]
+      },
+      {
+        name: '재단 방식',
+        type: 'radio',
+        values: [
+          { label: '반칼 (시트형)', priceModifier: 0 },
+          { label: '완칼 (개별조각)', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '코팅 유무',
+        type: 'radio',
+        values: [
+          { label: '무광 코팅', priceModifier: 0 },
+          { label: '유광 코팅', priceModifier: 0 },
+          { label: '코팅 없음', priceModifier: -500 },
+        ]
+      },
+      {
+        name: '후가공 옵션',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '금박', priceModifier: 5000 },
+          { label: '은박', priceModifier: 5000 },
+          { label: '부분 UV', priceModifier: 3000 },
+        ]
       }
     ],
     features: ['시트형 제작', '반칼 스티커 가공', '부드러운 라운드 처리'],
@@ -870,6 +1010,33 @@ export const PRODUCTS: Product[] = [
           { label: '유포 스티커', priceModifier: 500 },
           { label: '유포 매트', priceModifier: 1500 },
         ]
+      },
+      {
+        name: '재단 방식',
+        type: 'radio',
+        values: [
+          { label: '반칼 (시트형)', priceModifier: 0 },
+          { label: '완칼 (개별조각)', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '코팅 유무',
+        type: 'radio',
+        values: [
+          { label: '무광 코팅', priceModifier: 0 },
+          { label: '유광 코팅', priceModifier: 0 },
+          { label: '코팅 없음', priceModifier: -500 },
+        ]
+      },
+      {
+        name: '후가공 옵션',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '금박', priceModifier: 5000 },
+          { label: '은박', priceModifier: 5000 },
+          { label: '부분 UV', priceModifier: 3000 },
+        ]
       }
     ],
     features: ['시트형 제작', '반칼 스티커 가공', '멀티 칼선 구성'],
@@ -881,11 +1048,11 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'stk-free-all',
-    name: '자유형 전체보기',
+    name: '자유형 스티커',
     category: 'sticker',
-    subCategory: '자유형 전체보기',
-    tagline: '모든 자유형 스티커를 한눈에 확인하세요.',
-    description: '원하는 모양 그대로 제작 가능한 모든 자유형 스티커 라인업입니다.',
+    subCategory: '자유형 스티커',
+    tagline: '원하는 모양 그대로, 자유로운 칼선.',
+    description: '캐릭터나 로고 외곽선을 따라 자유롭게 컷팅되는 스티커입니다. 개성 있는 굿즈 제작에 필수적입니다.',
     image: 'https://picsum.photos/seed/sticker-free-all/800/800',
     minQuantity: 10,
     basePrice: 5000,
@@ -899,6 +1066,33 @@ export const PRODUCTS: Product[] = [
           { label: '투명 PET', priceModifier: 1500 },
           { label: '홀로그램', priceModifier: 3000 },
         ]
+      },
+      {
+        name: '재단 방식',
+        type: 'radio',
+        values: [
+          { label: '반칼 (시트형)', priceModifier: 0 },
+          { label: '완칼 (개별조각)', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '코팅 유무',
+        type: 'radio',
+        values: [
+          { label: '무광 코팅', priceModifier: 0 },
+          { label: '유광 코팅', priceModifier: 0 },
+          { label: '코팅 없음', priceModifier: -500 },
+        ]
+      },
+      {
+        name: '후가공 옵션',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '금박', priceModifier: 5000 },
+          { label: '은박', priceModifier: 5000 },
+          { label: '부분 UV', priceModifier: 3000 },
+        ]
       }
     ],
     features: ['자유로운 칼선', '다양한 재질', '소량 제작 가능'],
@@ -908,9 +1102,9 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'stk-free-normal',
-    name: '자유형 일반',
+    name: '일반 스티커',
     category: 'sticker',
-    subCategory: '자유형 일반',
+    subCategory: '일반 스티커',
     tagline: '가장 대중적인 자유형 스티커.',
     description: '아트지 라벨, 유포 스티커 등 일반적인 재질로 제작하는 자유형 스티커입니다.',
     image: 'https://picsum.photos/seed/sticker-free-normal/800/800',
@@ -924,6 +1118,33 @@ export const PRODUCTS: Product[] = [
           { label: '아트지 라벨', priceModifier: 0 },
           { label: '유포 스티커', priceModifier: 500 },
         ]
+      },
+      {
+        name: '재단 방식',
+        type: 'radio',
+        values: [
+          { label: '반칼 (시트형)', priceModifier: 0 },
+          { label: '완칼 (개별조각)', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '코팅 유무',
+        type: 'radio',
+        values: [
+          { label: '무광 코팅', priceModifier: 0 },
+          { label: '유광 코팅', priceModifier: 0 },
+          { label: '코팅 없음', priceModifier: -500 },
+        ]
+      },
+      {
+        name: '후가공 옵션',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '금박', priceModifier: 5000 },
+          { label: '은박', priceModifier: 5000 },
+          { label: '부분 UV', priceModifier: 3000 },
+        ]
       }
     ],
     features: ['자유로운 칼선', '고해상도 인쇄', '강력 접착'],
@@ -933,9 +1154,9 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'stk-free-transparent',
-    name: '자유형 투명',
+    name: '투명 스티커',
     category: 'sticker',
-    subCategory: '자유형 투명',
+    subCategory: '투명 스티커',
     tagline: '배경이 비치는 투명한 자유형 스티커.',
     description: '투명 PET 재질을 사용하여 배경이 비치는 독특한 느낌의 자유형 스티커입니다.',
     image: 'https://picsum.photos/seed/sticker-free-trans/800/800',
@@ -947,7 +1168,41 @@ export const PRODUCTS: Product[] = [
         type: 'select',
         values: [
           { label: '투명 PET', priceModifier: 0 },
-          { label: '투명 PET (백색인쇄)', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '화이트 인쇄',
+        type: 'radio',
+        values: [
+          { label: '화이트 인쇄 없음', priceModifier: 0 },
+          { label: '화이트 인쇄 있음', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '재단 방식',
+        type: 'radio',
+        values: [
+          { label: '반칼 (시트형)', priceModifier: 0 },
+          { label: '완칼 (개별조각)', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '코팅 유무',
+        type: 'radio',
+        values: [
+          { label: '무광 코팅', priceModifier: 0 },
+          { label: '유광 코팅', priceModifier: 0 },
+          { label: '코팅 없음', priceModifier: -500 },
+        ]
+      },
+      {
+        name: '후가공 옵션',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '금박', priceModifier: 5000 },
+          { label: '은박', priceModifier: 5000 },
+          { label: '부분 UV', priceModifier: 3000 },
         ]
       }
     ],
@@ -955,6 +1210,124 @@ export const PRODUCTS: Product[] = [
     leadTime: '4~6 영업일',
     badges: ['자유형', '투명', '방수'],
     warnings: ['백색 인쇄 시 별도 작업 필요']
+  },
+  {
+    id: 'stk-free-trans-normal',
+    name: '투명 일반 스티커',
+    category: 'sticker',
+    subCategory: '투명 일반 스티커',
+    tagline: '가장 기본적인 투명 자유형 스티커.',
+    description: '표준 투명 PET 재질로 제작되는 자유형 스티커입니다.',
+    image: 'https://picsum.photos/seed/sticker-free-trans-normal/800/800',
+    minQuantity: 10,
+    basePrice: 7000,
+    options: [
+      {
+        name: '재질 선택',
+        type: 'select',
+        values: [
+          { label: '투명 PET', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '화이트 인쇄',
+        type: 'radio',
+        values: [
+          { label: '화이트 인쇄 없음', priceModifier: 0 },
+          { label: '화이트 인쇄 있음', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '재단 방식',
+        type: 'radio',
+        values: [
+          { label: '반칼 (시트형)', priceModifier: 0 },
+          { label: '완칼 (개별조각)', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '코팅 유무',
+        type: 'radio',
+        values: [
+          { label: '무광 코팅', priceModifier: 0 },
+          { label: '유광 코팅', priceModifier: 0 },
+          { label: '코팅 없음', priceModifier: -500 },
+        ]
+      },
+      {
+        name: '후가공 옵션',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '금박', priceModifier: 5000 },
+          { label: '은박', priceModifier: 5000 },
+          { label: '부분 UV', priceModifier: 3000 },
+        ]
+      }
+    ],
+    features: ['투명 재질', '자유로운 칼선', '방수 기능'],
+    leadTime: '4~6 영업일',
+    badges: ['자유형', '투명', '방수'],
+    warnings: ['백색 인쇄 시 별도 작업 필요']
+  },
+  {
+    id: 'stk-free-trans-back',
+    name: '투명 후지 스티커',
+    category: 'sticker',
+    subCategory: '투명 후지 스티커',
+    tagline: '투명한 배경지까지 투명한 스티커.',
+    description: '스티커를 떼어낸 후의 배경지(후지)까지 투명하여 디자인 확인이 용이합니다.',
+    image: 'https://picsum.photos/seed/sticker-free-trans-back/800/800',
+    minQuantity: 10,
+    basePrice: 8000,
+    options: [
+      {
+        name: '재질 선택',
+        type: 'select',
+        values: [
+          { label: '고투명 PET 투명후지', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '화이트 인쇄',
+        type: 'radio',
+        values: [
+          { label: '화이트 인쇄 없음', priceModifier: 0 },
+          { label: '화이트 인쇄 있음', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '재단 방식',
+        type: 'radio',
+        values: [
+          { label: '반칼 (시트형)', priceModifier: 0 },
+          { label: '완칼 (개별조각)', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '코팅 유무',
+        type: 'radio',
+        values: [
+          { label: '무광 코팅', priceModifier: 0 },
+          { label: '유광 코팅', priceModifier: 0 },
+          { label: '코팅 없음', priceModifier: -500 },
+        ]
+      },
+      {
+        name: '후가공 옵션',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '금박', priceModifier: 5000 },
+          { label: '은박', priceModifier: 5000 },
+          { label: '부분 UV', priceModifier: 3000 },
+        ]
+      }
+    ],
+    features: ['고투명 재질', '투명 후지', '자유로운 칼선'],
+    leadTime: '5~7 영업일',
+    badges: ['자유형', '고투명', '투명후지'],
+    warnings: ['스크래치에 주의해 주세요.']
   },
   {
     id: 'stk-free-hologram',
@@ -974,6 +1347,33 @@ export const PRODUCTS: Product[] = [
           { label: '샌드 패턴', priceModifier: 0 },
           { label: '스타 패턴', priceModifier: 0 },
           { label: '레인보우 패턴', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '재단 방식',
+        type: 'radio',
+        values: [
+          { label: '반칼 (시트형)', priceModifier: 0 },
+          { label: '완칼 (개별조각)', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '코팅 유무',
+        type: 'radio',
+        values: [
+          { label: '무광 코팅', priceModifier: 0 },
+          { label: '유광 코팅', priceModifier: 0 },
+          { label: '코팅 없음', priceModifier: -500 },
+        ]
+      },
+      {
+        name: '후가공 옵션',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '금박', priceModifier: 5000 },
+          { label: '은박', priceModifier: 5000 },
+          { label: '부분 UV', priceModifier: 3000 },
         ]
       }
     ],
@@ -1017,19 +1417,37 @@ export const PRODUCTS: Product[] = [
         ]
       },
       {
-        name: '표면 마감',
+        name: '화이트 인쇄',
         type: 'radio',
         values: [
-          { label: '무광', priceModifier: 0 },
-          { label: '유광', priceModifier: 0 },
-          { label: '홀로그램', priceModifier: 3000 },
+          { label: '화이트 인쇄 없음', priceModifier: 0 },
+          { label: '화이트 인쇄 있음', priceModifier: 1000 },
         ]
       },
       {
         name: '재단 방식',
         type: 'radio',
         values: [
-          { label: '개별재단 완칼 (Full-cut)', priceModifier: 0 },
+          { label: '완칼 (개별조각)', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '코팅 유무',
+        type: 'radio',
+        values: [
+          { label: '무광 코팅', priceModifier: 0 },
+          { label: '유광 코팅', priceModifier: 0 },
+          { label: '코팅 없음', priceModifier: -500 },
+        ]
+      },
+      {
+        name: '후가공 옵션',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '금박', priceModifier: 5000 },
+          { label: '은박', priceModifier: 5000 },
+          { label: '부분 UV', priceModifier: 3000 },
         ]
       }
     ],

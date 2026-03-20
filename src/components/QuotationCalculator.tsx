@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Calculator, Clock, CheckCircle2, ShoppingCart, FileText, FileUp } from 'lucide-react';
+import { Calculator, Clock, CheckCircle2, ShoppingCart, FileText, FileUp, ChevronDown, ChevronUp } from 'lucide-react';
 import { Product, Quotation, PAPER_MATERIALS } from '../types';
 
 interface QuotationCalculatorProps {
@@ -28,6 +28,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
   const [discountRate, setDiscountRate] = useState(0);
   const [estimatedDeliveryDate, setEstimatedDeliveryDate] = useState('');
   const [customSize, setCustomSize] = useState({ width: '', height: '' });
+  const [expandedGroup, setExpandedGroup] = useState<string | null>('일반/기본 용지');
 
   useEffect(() => {
     let pricePerUnit = product.basePrice;
@@ -127,6 +128,16 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
         {product.options.map((option) => {
           const isMaterialOption = option.name.includes('재질') || option.name.includes('용지');
           
+          // Find if selected material is transparent to conditionally show White Ink option
+          const materialOption = product.options.find(opt => opt.name.includes('재질') || opt.name.includes('용지'));
+          const selectedMaterialName = materialOption ? selectedOptions[materialOption.name] : null;
+          const selectedMaterial = PAPER_MATERIALS.find(m => m.name === selectedMaterialName);
+          const isTransparent = selectedMaterial?.transparent || false;
+
+          if (option.name === '화이트 인쇄' && !isTransparent) {
+            return null;
+          }
+
           return (
             <div key={option.name} className="space-y-4">
               <label className="text-xs font-black text-zinc-900 uppercase tracking-widest block">
@@ -141,7 +152,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                   className="w-full px-6 py-4 rounded-2xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none font-bold text-sm transition-colors"
                 />
               ) : isMaterialOption && option.values ? (
-                <div className="space-y-6">
+                <div className="space-y-3">
                   {['일반/기본 용지', '방수/합성지', '투명/PET', '메탈/광택 특수 재질', '프리미엄 라벨(GMUND)'].map(group => {
                     const groupValues = option.values?.filter(val => {
                       const material = PAPER_MATERIALS.find(m => m.name === val.label);
@@ -150,32 +161,72 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
 
                     if (!groupValues || groupValues.length === 0) return null;
 
+                    const isExpanded = expandedGroup === group;
+                    const hasSelectedInGroup = groupValues.some(val => selectedOptions[option.name] === val.label);
+
                     return (
-                      <div key={group} className="space-y-3">
-                        <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest block">{group}</span>
-                        <div className="grid grid-cols-2 gap-3">
-                          {groupValues.map((val) => (
-                            <button
-                              key={val.label}
-                              onClick={() => handleOptionChange(option.name, val.label)}
-                              className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden ${
-                                selectedOptions[option.name] === val.label
-                                  ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/20'
-                                  : 'bg-white border-zinc-200 text-zinc-600 hover:border-emerald-200'
-                              }`}
-                            >
-                              <span className="relative z-10">{val.label}</span>
-                              {val.priceModifier !== undefined && val.priceModifier !== 0 && (
-                                <span className={`block text-[10px] mt-1 opacity-70 ${selectedOptions[option.name] === val.label ? 'text-white' : 'text-zinc-400'}`}>
-                                  {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
-                                </span>
-                              )}
-                            </button>
-                          ))}
-                        </div>
+                      <div key={group} className="border border-zinc-100 rounded-2xl overflow-hidden bg-zinc-50/50">
+                        <button
+                          onClick={() => setExpandedGroup(isExpanded ? null : group)}
+                          className={`w-full px-6 py-4 flex items-center justify-between transition-colors ${
+                            isExpanded ? 'bg-zinc-100' : 'hover:bg-zinc-100/50'
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <span className={`text-xs font-black uppercase tracking-widest ${
+                              hasSelectedInGroup ? 'text-emerald-600' : 'text-zinc-500'
+                            }`}>
+                              {group}
+                            </span>
+                            {hasSelectedInGroup && !isExpanded && (
+                              <span className="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">
+                                {selectedOptions[option.name]}
+                              </span>
+                            )}
+                          </div>
+                          {isExpanded ? <ChevronUp className="w-4 h-4 text-zinc-400" /> : <ChevronDown className="w-4 h-4 text-zinc-400" />}
+                        </button>
+                        
+                        {isExpanded && (
+                          <div className="p-4 grid grid-cols-1 gap-2 bg-white">
+                            {groupValues.map((val) => {
+                              const material = PAPER_MATERIALS.find(m => m.name === val.label);
+                              const isSelected = selectedOptions[option.name] === val.label;
+                              
+                              return (
+                                <button
+                                  key={val.label}
+                                  onClick={() => handleOptionChange(option.name, val.label)}
+                                  className={`group p-4 rounded-xl text-left border transition-all ${
+                                    isSelected
+                                      ? 'bg-emerald-50 border-emerald-500 ring-1 ring-emerald-500'
+                                      : 'bg-white border-zinc-100 hover:border-emerald-200 hover:bg-zinc-50'
+                                  }`}
+                                >
+                                  <div className="flex items-center justify-between mb-1">
+                                    <span className={`text-sm font-bold ${isSelected ? 'text-emerald-900' : 'text-zinc-900'}`}>
+                                      {val.label}
+                                    </span>
+                                    {val.priceModifier !== undefined && val.priceModifier !== 0 && (
+                                      <span className={`text-[10px] font-bold ${isSelected ? 'text-emerald-600' : 'text-zinc-400'}`}>
+                                        {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
+                                      </span>
+                                    )}
+                                  </div>
+                                  {material?.shortDescription && (
+                                    <p className={`text-[11px] leading-relaxed ${isSelected ? 'text-emerald-700/70' : 'text-zinc-400'}`}>
+                                      {material.shortDescription}
+                                    </p>
+                                  )}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
                       </div>
                     );
                   })}
+                  
                   {/* Handle items that didn't match any group */}
                   {(() => {
                     const otherValues = option.values?.filter(val => {
@@ -183,29 +234,58 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                       return !material;
                     });
                     if (!otherValues || otherValues.length === 0) return null;
+                    
+                    const group = '기타';
+                    const isExpanded = expandedGroup === group;
+                    const hasSelectedInGroup = otherValues.some(val => selectedOptions[option.name] === val.label);
+
                     return (
-                      <div className="space-y-3">
-                        <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest block">기타</span>
-                        <div className="grid grid-cols-2 gap-3">
-                          {otherValues.map((val) => (
-                            <button
-                              key={val.label}
-                              onClick={() => handleOptionChange(option.name, val.label)}
-                              className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden ${
-                                selectedOptions[option.name] === val.label
-                                  ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/20'
-                                  : 'bg-white border-zinc-200 text-zinc-600 hover:border-emerald-200'
-                              }`}
-                            >
-                              <span className="relative z-10">{val.label}</span>
-                              {val.priceModifier !== undefined && val.priceModifier !== 0 && (
-                                <span className={`block text-[10px] mt-1 opacity-70 ${selectedOptions[option.name] === val.label ? 'text-white' : 'text-zinc-400'}`}>
-                                  {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
-                                </span>
-                              )}
-                            </button>
-                          ))}
-                        </div>
+                      <div key={group} className="border border-zinc-100 rounded-2xl overflow-hidden bg-zinc-50/50">
+                        <button
+                          onClick={() => setExpandedGroup(isExpanded ? null : group)}
+                          className={`w-full px-6 py-4 flex items-center justify-between transition-colors ${
+                            isExpanded ? 'bg-zinc-100' : 'hover:bg-zinc-100/50'
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <span className={`text-xs font-black uppercase tracking-widest ${
+                              hasSelectedInGroup ? 'text-emerald-600' : 'text-zinc-500'
+                            }`}>
+                              {group}
+                            </span>
+                          </div>
+                          {isExpanded ? <ChevronUp className="w-4 h-4 text-zinc-400" /> : <ChevronDown className="w-4 h-4 text-zinc-400" />}
+                        </button>
+                        
+                        {isExpanded && (
+                          <div className="p-4 grid grid-cols-1 gap-2 bg-white">
+                            {otherValues.map((val) => {
+                              const isSelected = selectedOptions[option.name] === val.label;
+                              return (
+                                <button
+                                  key={val.label}
+                                  onClick={() => handleOptionChange(option.name, val.label)}
+                                  className={`p-4 rounded-xl text-left border transition-all ${
+                                    isSelected
+                                      ? 'bg-emerald-50 border-emerald-500 ring-1 ring-emerald-500'
+                                      : 'bg-white border-zinc-100 hover:border-emerald-200 hover:bg-zinc-50'
+                                  }`}
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <span className={`text-sm font-bold ${isSelected ? 'text-emerald-900' : 'text-zinc-900'}`}>
+                                      {val.label}
+                                    </span>
+                                    {val.priceModifier !== undefined && val.priceModifier !== 0 && (
+                                      <span className={`text-[10px] font-bold ${isSelected ? 'text-emerald-600' : 'text-zinc-400'}`}>
+                                        {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
+                                      </span>
+                                    )}
+                                  </div>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
                       </div>
                     );
                   })()}

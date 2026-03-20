@@ -11,7 +11,7 @@ import { Footer } from './components/Footer';
 import { Portfolio } from './components/Portfolio';
 import { InquiryForm } from './components/InquiryForm';
 import { PRODUCTS, CATEGORIES, Product, Quotation, ORDER_STEPS, PORTFOLIO_ITEMS, SUBCATEGORY_METADATA } from './types';
-import { FileUp, Send, CheckCircle2, MessageSquare, ArrowRight, Box, Search } from 'lucide-react';
+import { FileUp, Send, CheckCircle2, MessageSquare, ArrowRight, Box, Search, Star, Zap } from 'lucide-react';
 
 type View = 'home' | 'detail' | 'category' | 'guide' | 'inquiry' | 'quotation_doc' | 'custom_inquiry' | 'portfolio';
 
@@ -23,7 +23,7 @@ function App() {
   const [inquiryQuotation, setInquiryQuotation] = useState<Quotation | undefined>(undefined);
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [activeSubCategory, setActiveSubCategory] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [visibleCount, setVisibleCount] = useState(8);
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -38,7 +38,7 @@ function App() {
     setView('home');
     setActiveCategory('all');
     setActiveSubCategory('all');
-    setSearchQuery('');
+    setVisibleCount(8);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -54,7 +54,7 @@ function App() {
   const handleCategorySelect = (id: string) => {
     setActiveCategory(id);
     setActiveSubCategory('all');
-    setSearchQuery('');
+    setVisibleCount(8);
     setView('home');
     const element = document.getElementById('products');
     if (element) {
@@ -62,14 +62,9 @@ function App() {
     }
   };
 
-  const handleTagClick = (tag: string) => {
-    setSearchQuery(tag);
-    setActiveCategory('all');
-    setView('home');
-    const element = document.getElementById('products');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+  const handleSubCategorySelect = (sub: string) => {
+    setActiveSubCategory(sub);
+    setVisibleCount(8);
   };
 
   const handleQuotationGenerated = (quotation: Quotation) => {
@@ -83,29 +78,30 @@ function App() {
     setShowInquiry(true);
   };
 
-  const handleInquiryFromQuotation = (quotation: Quotation) => {
-    setCurrentQuotation(quotation);
-    setView('inquiry');
+  const onNavigate = (v: View) => {
+    setView(v);
     window.scrollTo(0, 0);
   };
 
   const filteredProducts = PRODUCTS.filter(p => {
     const matchesCategory = activeCategory === 'all' || p.category === activeCategory;
     const matchesSubCategory = activeSubCategory === 'all' || p.subCategory === activeSubCategory;
-    const matchesSearch = !searchQuery || 
-      p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      p.subCategory.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.tagline.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.badges?.some(b => b.toLowerCase().includes(searchQuery.toLowerCase()));
-    return matchesCategory && matchesSubCategory && matchesSearch;
+    return matchesCategory && matchesSubCategory;
   });
+
+  const displayedProducts = filteredProducts.slice(0, visibleCount);
+  const hasMore = filteredProducts.length > visibleCount;
+
+  const handleLoadMore = () => {
+    setVisibleCount(prev => prev + 8);
+  };
 
   return (
     <div className="min-h-screen bg-white font-sans text-zinc-900 selection:bg-emerald-100 selection:text-emerald-900">
       <Navbar 
-        onNavigate={(v) => setView(v as View)} 
+        onNavigate={onNavigate} 
         onCategorySelect={handleCategorySelect}
-        onSubCategorySelect={setActiveSubCategory}
+        onSubCategorySelect={handleSubCategorySelect}
         onLogoClick={handleLogoClick}
         activeCategory={activeCategory}
         activeSubCategory={activeSubCategory}
@@ -149,28 +145,47 @@ function App() {
               activeCategory={activeCategory} 
             />
 
-            {/* Quick Find Tags */}
-            <section className="py-12 bg-zinc-50 border-b border-zinc-200">
+            {/* Redesigned Recommendation Section */}
+            <section className="py-12 bg-white">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex flex-col md:flex-row items-center gap-6">
-                  <span className="text-sm font-black text-zinc-900 whitespace-nowrap">빠른 상품 찾기</span>
-                  <div className="flex flex-wrap gap-2">
-                    {[
-                      '1개부터 가능', '소량 테스트', '방수 스티커', '아크릴 굿즈', '패키지 제작', '파일업로드 가능', '당일 출고 가능'
-                    ].map((tag) => (
-                      <button 
-                        key={tag}
-                        onClick={() => handleTagClick(tag)}
-                        className={`px-4 py-2 rounded-xl border text-xs font-bold transition-all shadow-sm ${
-                          searchQuery === tag 
-                            ? 'bg-emerald-600 border-emerald-600 text-white' 
-                            : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-500 hover:text-emerald-600'
-                        }`}
-                      >
-                        #{tag}
-                      </button>
-                    ))}
-                  </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <button 
+                    onClick={() => handleCategorySelect('stickers')}
+                    className="group p-8 rounded-[32px] bg-emerald-50 border border-emerald-100 text-left transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-emerald-200/40"
+                  >
+                    <div className="w-12 h-12 rounded-2xl bg-white text-emerald-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-sm">
+                      <Star className="w-6 h-6" />
+                    </div>
+                    <h3 className="text-xl font-black text-zinc-900 mb-2">처음이라면 여기서 시작</h3>
+                    <p className="text-sm text-zinc-600 leading-relaxed">가장 인기 있는 기본 라벨부터 살펴보세요. 실패 없는 선택을 도와드립니다.</p>
+                  </button>
+
+                  <button 
+                    onClick={() => {
+                      setActiveCategory('stickers');
+                      setActiveSubCategory('유포 스티커');
+                      setVisibleCount(8);
+                      document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="group p-8 rounded-[32px] bg-blue-50 border border-blue-100 text-left transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-200/40"
+                  >
+                    <div className="w-12 h-12 rounded-2xl bg-white text-blue-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-sm">
+                      <Zap className="w-6 h-6" />
+                    </div>
+                    <h3 className="text-xl font-black text-zinc-900 mb-2">많이 찾는 제작물</h3>
+                    <p className="text-sm text-zinc-600 leading-relaxed">방수 유포지, 투명 라벨 등 베스트셀러 상품들을 한눈에 확인하세요.</p>
+                  </button>
+
+                  <button 
+                    onClick={() => onNavigate('inquiry')}
+                    className="group p-8 rounded-[32px] bg-zinc-900 text-white shadow-xl shadow-zinc-900/20 text-left transition-all hover:-translate-y-1 hover:shadow-2xl"
+                  >
+                    <div className="w-12 h-12 rounded-2xl bg-zinc-800 text-emerald-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                      <ArrowRight className="w-6 h-6" />
+                    </div>
+                    <h3 className="text-xl font-black mb-2">빠른 주문 추천</h3>
+                    <p className="text-sm text-zinc-400 leading-relaxed">복잡한 옵션 없이 전문가의 추천을 받아 바로 제작을 시작하고 싶다면?</p>
+                  </button>
                 </div>
               </div>
             </section>
@@ -199,7 +214,7 @@ function App() {
             <section id="products" className="py-24 bg-zinc-50">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex flex-col mb-12 gap-8">
-                  {/* Section Title & Search */}
+                  {/* Section Title */}
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div>
                       <h2 className="text-4xl font-black text-zinc-900 mb-2 tracking-tight">
@@ -212,54 +227,8 @@ function App() {
                           : CATEGORIES.find(c => c.id === activeCategory)?.description}
                       </p>
                     </div>
-                    <div className="relative w-full md:w-80">
-                      <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
-                      <input 
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="상품명, 태그 검색..."
-                        className="w-full pl-12 pr-4 py-3 bg-white border border-zinc-200 rounded-2xl text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all outline-none shadow-sm"
-                      />
-                    </div>
                   </div>
                 </div>
-
-                {/* Popular/Recommended Section (Moved inside products for better context) */}
-                {activeCategory === 'all' && !searchQuery && (
-                  <div className="mb-12 p-8 rounded-[32px] bg-white border border-zinc-100 shadow-sm">
-                    <div className="flex flex-col md:flex-row gap-8">
-                      <div className="flex-1">
-                        <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-3 block">처음 주문한다면</span>
-                        <div className="flex flex-wrap gap-4">
-                          {['방수 스티커', '아크릴 키링', '엽서', '일반 명함'].map(item => (
-                            <button 
-                              key={item} 
-                              onClick={() => handleTagClick(item)}
-                              className="text-sm font-bold text-zinc-900 hover:text-emerald-600 transition-colors"
-                            >
-                              {item}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                      <div className="flex-1 border-t md:border-t-0 md:border-l border-zinc-100 pt-6 md:pt-0 md:pl-8">
-                        <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-3 block">추천 테마</span>
-                        <div className="flex flex-wrap gap-6">
-                          {['소량 제작', '패키지 제작', '굿즈 필수'].map(item => (
-                            <button 
-                              key={item} 
-                              onClick={() => handleTagClick(item)}
-                              className="text-sm font-bold text-zinc-50 hover:text-zinc-900 transition-colors"
-                            >
-                              {item}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
 
                 {/* Subcategory Info Section */}
                 {activeSubCategory !== 'all' && filteredProducts.length > 0 && (
@@ -337,7 +306,7 @@ function App() {
                 )}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                  {filteredProducts.map((product) => (
+                  {displayedProducts.map((product) => (
                     <ProductCard 
                       key={product.id} 
                       product={product} 
@@ -345,6 +314,17 @@ function App() {
                     />
                   ))}
                 </div>
+
+                {hasMore && (
+                  <div className="mt-16 flex justify-center">
+                    <button 
+                      onClick={handleLoadMore}
+                      className="px-12 py-5 rounded-2xl bg-white border-2 border-zinc-900 text-zinc-900 font-black hover:bg-zinc-900 hover:text-white transition-all shadow-xl shadow-zinc-200/50 active:scale-[0.98]"
+                    >
+                      더 많은 상품 보기
+                    </button>
+                  </div>
+                )}
               </div>
             </section>
 

@@ -109,14 +109,6 @@ export const Navbar = ({
               <button onClick={() => onNavigate('portfolio')} className="text-xs font-bold text-zinc-400 hover:text-zinc-900 transition-colors">제작 사례</button>
             </div>
 
-            <div className="hidden sm:flex items-center bg-zinc-100 rounded-full px-4 py-1.5">
-              <Search size={16} className="text-zinc-400 mr-2" />
-              <input 
-                type="text" 
-                placeholder="검색" 
-                className="bg-transparent text-sm outline-none w-24 focus:w-40 transition-all text-zinc-900 placeholder:text-zinc-400"
-              />
-            </div>
             <button className="p-2 rounded-full text-zinc-600 hover:bg-zinc-100 transition-colors relative">
               <ShoppingCart size={20} />
               <span className="absolute top-1 right-1 w-4 h-4 bg-emerald-500 text-zinc-900 text-[10px] flex items-center justify-center rounded-full font-bold">0</span>
