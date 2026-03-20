@@ -1098,11 +1098,11 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'stk-free-all',
-    name: '자유형 스티커',
+    name: '자유형 스티커 (프리미엄)',
     category: 'sticker',
     subCategory: '자유형 스티커',
-    tagline: '원하는 모양 그대로, 자유로운 칼선.',
-    description: '캐릭터나 로고 외곽선을 따라 자유롭게 컷팅되는 스티커입니다. 개성 있는 굿즈 제작에 필수적입니다.',
+    tagline: '홀로그램, 투명 등 다양한 재질의 자유형 스티커.',
+    description: '캐릭터나 로고 외곽선을 따라 자유롭게 컷팅되는 스티커입니다. 홀로그램, 투명 등 특수 재질 선택이 가능합니다.',
     image: 'https://picsum.photos/seed/sticker-free-all/800/800',
     minQuantity: 10,
     basePrice: 5000,
@@ -1175,7 +1175,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'stk-free-normal',
-    name: '일반 스티커',
+    name: '자유형 일반 스티커',
     category: 'sticker',
     subCategory: '일반 스티커',
     tagline: '가장 대중적인 자유형 스티커.',
@@ -1227,7 +1227,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'stk-free-transparent',
-    name: '투명 스티커',
+    name: '투명 자유형 스티커 (종합)',
     category: 'sticker',
     subCategory: '투명 스티커',
     tagline: '배경이 비치는 투명한 자유형 스티커.',

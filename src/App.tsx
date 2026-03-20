@@ -142,12 +142,32 @@ function App() {
       return p.category === activeCategory;
     }
     
-    // If activeSubCategory is a leaf node, match directly
-    if (p.subCategory === activeSubCategory) return true;
-    
     // If activeSubCategory is a group name, match any leaf node under it
-    const leafNodes = getLeafSubCategories(activeSubCategory);
-    return p.category === activeCategory && leafNodes.includes(p.subCategory);
+    // BUT if the product's subCategory EXACTLY matches the activeSubCategory, it's a direct match.
+    // The issue was that if activeSubCategory is a leaf node, we should ONLY match that leaf node.
+    
+    const findGroup = (items: (string | SubCategoryGroup)[]): SubCategoryGroup | undefined => {
+      for (const item of items) {
+        if (typeof item !== 'string') {
+          if (item.groupName === activeSubCategory) return item;
+          const found = findGroup(item.items);
+          if (found) return found;
+        }
+      }
+      return undefined;
+    };
+
+    const cat = CATEGORIES.find(c => c.id === activeCategory);
+    const group = cat ? findGroup(cat.subCategories) : undefined;
+
+    if (group) {
+      // It's a group, show all leaf nodes under it AND the group's representative product if it exists
+      const leafNodes = getLeafSubCategories(activeSubCategory);
+      return p.category === activeCategory && leafNodes.includes(p.subCategory);
+    } else {
+      // It's a leaf node, show ONLY products that match this subCategory exactly
+      return p.category === activeCategory && p.subCategory === activeSubCategory;
+    }
   });
 
   const displayedProducts = filteredProducts.slice(0, visibleCount);
