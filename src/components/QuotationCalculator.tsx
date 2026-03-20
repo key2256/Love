@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { 
   Calculator, 
   Clock, 
@@ -46,6 +46,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
   const [estimatedDeliveryDate, setEstimatedDeliveryDate] = useState('');
   const [customSize, setCustomSize] = useState({ width: '', height: '' });
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
+  const [expandedPostOption, setExpandedPostOption] = useState<string | null>(null);
 
   // Initialize expanded group based on default selected material
   useEffect(() => {
@@ -326,7 +327,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
           {/* 3. Post-processing Section (후가공) */}
           {(() => {
             const postProcessingOptions = product.options.filter(opt => 
-              ['재단 방식', '코팅 유무', '후가공 옵션', '화이트 인쇄', '넘버링', '스코딕스', '포장 옵션', '부분 UV', '모양코팅'].includes(opt.name)
+              ['재단 방식', '코팅 유무', '후가공 옵션', '화이트 인쇄', '넘버링', '스코딕스', '포장 옵션', '부분 UV'].includes(opt.name)
             );
 
             // Special check for White Ink: only show if material is transparent
@@ -343,70 +344,129 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
             if (visiblePostOptions.length === 0) return null;
 
             const getIcon = (name: string) => {
-              if (name === '재단 방식') return <Scissors className="w-4 h-4" />;
-              if (name === '코팅 유무') return <Layers className="w-4 h-4" />;
-              if (name === '후가공 옵션' || name === '부분 UV' || name === '모양코팅') return <Sparkles className="w-4 h-4" />;
-              if (name === '화이트 인쇄') return <Paintbrush className="w-4 h-4" />;
-              if (name === '넘버링') return <Hash className="w-4 h-4" />;
-              if (name === '스코딕스') return <Zap className="w-4 h-4" />;
-              if (name === '포장 옵션') return <Package className="w-4 h-4" />;
-              return <Droplets className="w-4 h-4" />;
+              if (name === '재단 방식') return <Scissors className="w-5 h-5" />;
+              if (name === '코팅 유무') return <Layers className="w-5 h-5" />;
+              if (name === '후가공 옵션' || name === '부분 UV') return <Sparkles className="w-5 h-5" />;
+              if (name === '화이트 인쇄') return <Paintbrush className="w-5 h-5" />;
+              if (name === '넘버링') return <Hash className="w-5 h-5" />;
+              if (name === '스코딕스') return <Zap className="w-5 h-5" />;
+              if (name === '포장 옵션') return <Package className="w-5 h-5" />;
+              return <Droplets className="w-5 h-5" />;
             };
 
             const getDisplayName = (name: string) => {
               if (name === '재단 방식') return '재단';
               if (name === '코팅 유무') return '코팅';
               if (name === '후가공 옵션') return '박 가공';
-              if (name === '모양코팅') return '모양코팅';
               if (name === '화이트 인쇄') return '화이트인쇄';
-              if (name === '포장 옵션') return '포장';
+              if (name === '포장 옵션') return '개별포장';
               return name;
             };
 
+            const isOptionActive = (name: string) => {
+              const val = selectedOptions[name];
+              return val && val !== '없음' && val !== '안함' && val !== '코팅 없음' && val !== '기본 포장';
+            };
+
+            const expandedOption = visiblePostOptions.find(opt => opt.name === expandedPostOption);
+
             return (
               <div className="space-y-6 pt-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-1 h-4 bg-emerald-500 rounded-full" />
-                  <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
-                    후가공 선택
-                  </label>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1 h-4 bg-emerald-500 rounded-full" />
+                    <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
+                      후가공 선택
+                    </label>
+                  </div>
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
+                    아이콘을 클릭하여 상세 옵션 선택
+                  </span>
                 </div>
-                <div className="bg-zinc-50/50 rounded-[32px] p-6 border border-zinc-100">
-                  <div className="grid grid-cols-1 gap-8">
-                    {visiblePostOptions.map(option => (
-                      <div key={option.name} className="space-y-4">
-                        <div className="flex items-center gap-2 text-zinc-900">
-                          <div className="w-8 h-8 rounded-xl bg-white shadow-sm flex items-center justify-center text-emerald-600">
+                
+                <div className="bg-zinc-50/50 rounded-[32px] p-6 border border-zinc-100 space-y-6">
+                  {/* Icon Grid */}
+                  <div className="grid grid-cols-4 sm:grid-cols-7 gap-3">
+                    {visiblePostOptions.map(option => {
+                      const isActive = isOptionActive(option.name);
+                      const isExpanded = expandedPostOption === option.name;
+                      
+                      return (
+                        <button
+                          key={option.name}
+                          onClick={() => setExpandedPostOption(isExpanded ? null : option.name)}
+                          className={`flex flex-col items-center gap-2 group transition-all ${
+                            isExpanded ? 'scale-110' : 'hover:scale-105'
+                          }`}
+                        >
+                          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all shadow-sm ${
+                            isExpanded 
+                              ? 'bg-emerald-600 text-white shadow-emerald-600/20' 
+                              : isActive
+                                ? 'bg-emerald-50 text-emerald-600 border border-emerald-100'
+                                : 'bg-white text-zinc-400 border border-zinc-100 group-hover:border-zinc-300'
+                          }`}>
                             {getIcon(option.name)}
                           </div>
-                          <span className="text-xs font-black uppercase tracking-widest">{getDisplayName(option.name)}</span>
-                        </div>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                          {option.values?.map((val) => {
-                            const isSelected = selectedOptions[option.name] === val.label;
-                            return (
-                              <button
-                                key={val.label}
-                                onClick={() => handleOptionChange(option.name, val.label)}
-                                className={`py-3 px-4 rounded-xl text-[11px] font-bold border transition-all text-center flex flex-col items-center justify-center gap-1 ${
-                                  isSelected
-                                    ? 'bg-emerald-600 border-emerald-600 text-white shadow-md shadow-emerald-600/20'
-                                    : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
-                                }`}
-                              >
-                                <span>{val.label}</span>
-                                {val.priceModifier !== undefined && val.priceModifier !== 0 && (
-                                  <span className={`text-[9px] opacity-70 ${isSelected ? 'text-white' : 'text-zinc-400'}`}>
-                                    {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
-                                  </span>
-                                )}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    ))}
+                          <span className={`text-[10px] font-black whitespace-nowrap transition-colors ${
+                            isExpanded ? 'text-emerald-600' : isActive ? 'text-zinc-900' : 'text-zinc-400'
+                          }`}>
+                            {getDisplayName(option.name)}
+                          </span>
+                        </button>
+                      );
+                    })}
                   </div>
+
+                  {/* Expanded Sub-options */}
+                  <AnimatePresence mode="wait">
+                    {expandedOption && (
+                      <motion.div
+                        key={expandedOption.name}
+                        initial={{ opacity: 0, y: -10, height: 0 }}
+                        animate={{ opacity: 1, y: 0, height: 'auto' }}
+                        exit={{ opacity: 0, y: -10, height: 0 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="pt-4 border-t border-zinc-200/50 space-y-4">
+                          <div className="flex items-center justify-between">
+                            <h4 className="text-xs font-black text-zinc-900 uppercase tracking-widest">
+                              {expandedOption.name} 상세 설정
+                            </h4>
+                            <button 
+                              onClick={() => setExpandedPostOption(null)}
+                              className="text-[10px] font-bold text-zinc-400 hover:text-zinc-600"
+                            >
+                              닫기
+                            </button>
+                          </div>
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                            {expandedOption.values?.map((val) => {
+                              const isSelected = selectedOptions[expandedOption.name] === val.label;
+                              return (
+                                <button
+                                  key={val.label}
+                                  onClick={() => handleOptionChange(expandedOption.name, val.label)}
+                                  className={`py-3 px-4 rounded-xl text-[11px] font-bold border transition-all text-center flex flex-col items-center justify-center gap-1 ${
+                                    isSelected
+                                      ? 'bg-emerald-600 border-emerald-600 text-white shadow-md shadow-emerald-600/20'
+                                      : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
+                                  }`}
+                                >
+                                  <span>{val.label}</span>
+                                  {val.priceModifier !== undefined && val.priceModifier !== 0 && (
+                                    <span className={`text-[9px] opacity-70 ${isSelected ? 'text-white' : 'text-zinc-400'}`}>
+                                      {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
+                                    </span>
+                                  )}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </div>
             );

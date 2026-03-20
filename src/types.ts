@@ -567,7 +567,6 @@ export const CATEGORIES: Category[] = [
     description: '원하는 모양과 재질로 소량부터 제작할 수 있는 맞춤 스티커',
     entryPhrase: '나만의 개성을 담은 스티커 제작',
     subCategories: [
-      '전체보기',
       {
         groupName: '자유형 스티커',
         items: [
@@ -759,14 +758,6 @@ export const PRODUCTS: Product[] = [
           { label: '무광 코팅', priceModifier: 0 },
           { label: '유광 코팅', priceModifier: 0 },
           { label: '코팅 없음', priceModifier: -500 },
-        ]
-      },
-      {
-        name: '모양코팅',
-        type: 'radio',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '부분 UV', priceModifier: 3000 },
         ]
       },
       {
@@ -1067,14 +1058,6 @@ export const PRODUCTS: Product[] = [
         ]
       },
       {
-        name: '모양코팅',
-        type: 'radio',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '부분 UV', priceModifier: 3000 },
-        ]
-      },
-      {
         name: '후가공 옵션',
         type: 'select',
         values: [
@@ -1151,14 +1134,6 @@ export const PRODUCTS: Product[] = [
           { label: '무광 코팅', priceModifier: 0 },
           { label: '유광 코팅', priceModifier: 0 },
           { label: '코팅 없음', priceModifier: -500 },
-        ]
-      },
-      {
-        name: '모양코팅',
-        type: 'radio',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '부분 UV', priceModifier: 3000 },
         ]
       },
       {
