@@ -75,6 +75,7 @@ function App() {
   };
 
   const getLeafSubCategories = (categoryOrGroup: string): string[] => {
+    const names: string[] = [];
     const findGroup = (items: (string | SubCategoryGroup)[]): SubCategoryGroup | undefined => {
       for (const item of items) {
         if (typeof item !== 'string') {
@@ -97,6 +98,7 @@ function App() {
         const group = findGroup(c.subCategories);
         if (group) {
           items = group.items;
+          names.push(group.groupName); // Include the group name itself
           break;
         }
       }
@@ -104,7 +106,6 @@ function App() {
 
     if (items.length === 0) return [categoryOrGroup];
 
-    const names: string[] = [];
     const flatten = (list: (string | SubCategoryGroup)[]) => {
       list.forEach(item => {
         if (typeof item === 'string') {
