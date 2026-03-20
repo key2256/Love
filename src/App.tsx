@@ -150,20 +150,29 @@ function App() {
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <button 
-                    onClick={() => handleCategorySelect('stickers')}
+                    onClick={() => {
+                      setActiveCategory('sticker');
+                      setActiveSubCategory('일반 스티커');
+                      setVisibleCount(8);
+                      document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
                     className="group p-8 rounded-[32px] bg-emerald-50 border border-emerald-100 text-left transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-emerald-200/40"
                   >
                     <div className="w-12 h-12 rounded-2xl bg-white text-emerald-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-sm">
                       <Star className="w-6 h-6" />
                     </div>
                     <h3 className="text-xl font-black text-zinc-900 mb-2">처음이라면 여기서 시작</h3>
-                    <p className="text-sm text-zinc-600 leading-relaxed">가장 인기 있는 기본 라벨부터 살펴보세요. 실패 없는 선택을 도와드립니다.</p>
+                    <p className="text-sm text-zinc-600 leading-relaxed mb-6">가장 인기 있는 기본 라벨부터 살펴보세요. 실패 없는 선택을 도와드립니다.</p>
+                    <div className="flex items-center gap-2 text-emerald-600 font-bold text-sm">
+                      <span>일반 스티커 보러가기</span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </div>
                   </button>
 
                   <button 
                     onClick={() => {
-                      setActiveCategory('stickers');
-                      setActiveSubCategory('유포 스티커');
+                      setActiveCategory('sticker');
+                      setActiveSubCategory('투명 일반 스티커');
                       setVisibleCount(8);
                       document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
                     }}
@@ -173,7 +182,11 @@ function App() {
                       <Zap className="w-6 h-6" />
                     </div>
                     <h3 className="text-xl font-black text-zinc-900 mb-2">많이 찾는 제작물</h3>
-                    <p className="text-sm text-zinc-600 leading-relaxed">방수 유포지, 투명 라벨 등 베스트셀러 상품들을 한눈에 확인하세요.</p>
+                    <p className="text-sm text-zinc-600 leading-relaxed mb-6">방수 유포지, 투명 라벨 등 베스트셀러 상품들을 한눈에 확인하세요.</p>
+                    <div className="flex items-center gap-2 text-blue-600 font-bold text-sm">
+                      <span>베스트 상품 보러가기</span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </div>
                   </button>
 
                   <button 
@@ -183,8 +196,12 @@ function App() {
                     <div className="w-12 h-12 rounded-2xl bg-zinc-800 text-emerald-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                       <ArrowRight className="w-6 h-6" />
                     </div>
-                    <h3 className="text-xl font-black mb-2">빠른 주문 추천</h3>
-                    <p className="text-sm text-zinc-400 leading-relaxed">복잡한 옵션 없이 전문가의 추천을 받아 바로 제작을 시작하고 싶다면?</p>
+                    <h3 className="text-xl font-black mb-2">1:1 맞춤 견적 문의</h3>
+                    <p className="text-sm text-zinc-400 leading-relaxed mb-6">복잡한 옵션 없이 전문가의 추천을 받아 바로 제작을 시작하고 싶다면?</p>
+                    <div className="flex items-center gap-2 text-emerald-400 font-bold text-sm">
+                      <span>문의 페이지로 이동</span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </div>
                   </button>
                 </div>
               </div>

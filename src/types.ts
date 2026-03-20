@@ -568,24 +568,32 @@ export const CATEGORIES: Category[] = [
     entryPhrase: '나만의 개성을 담은 스티커 제작',
     subCategories: [
       {
-        groupName: '모양별 스티커',
+        groupName: '자유형 일반',
+        items: ['일반 스티커', '자유형 스티커']
+      },
+      {
+        groupName: '투명 일반',
+        items: ['투명 일반 스티커', '투명 스티커']
+      },
+      {
+        groupName: '투명 후지',
+        items: ['투명 후지 스티커']
+      },
+      {
+        groupName: '모양별',
         items: ['사각형 스티커', '원형 스티커', '타원형 스티커', '사각라운드 스티커', '다양한 모양 스티커']
       },
       {
-        groupName: '자유형 스티커',
-        items: ['자유형 스티커', '일반 스티커', '투명 스티커', '투명 일반 스티커', '투명 후지 스티커']
+        groupName: '용도별',
+        items: ['리무버블', '옥외용', '냉장·냉동', '카드스티커', '스크래치', '자석스티커', '롤 스티커']
+      },
+      {
+        groupName: '프리미엄',
+        items: ['홀로그램 스티커', '금광 PET', '은광 PET', '은무 PET', '그문드 라벨', '금 라벨지', '은 라벨지', '동 라벨지']
       },
       {
         groupName: '조각 스티커',
         items: ['조각 스티커']
-      },
-      {
-        groupName: '용도별 스티커',
-        items: ['리무버블', '옥외용', '냉장·냉동', '카드스티커', '스크래치', '자석스티커', '롤 스티커']
-      },
-      {
-        groupName: '프리미엄/특수 스티커',
-        items: ['투명 스티커', '홀로그램 스티커', '금광 PET', '은광 PET', '은무 PET', '그문드 라벨', '금 라벨지', '은 라벨지', '동 라벨지']
       }
     ]
   },
@@ -1496,6 +1504,32 @@ export const PRODUCTS: Product[] = [
           { label: '40mm', priceModifier: 0 },
           { label: '75mm', priceModifier: 0 },
         ]
+      },
+      {
+        name: '재단 방식',
+        type: 'radio',
+        values: [
+          { label: '롤 재단', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '코팅 유무',
+        type: 'radio',
+        values: [
+          { label: '무광 코팅', priceModifier: 0 },
+          { label: '유광 코팅', priceModifier: 0 },
+          { label: '코팅 없음', priceModifier: -500 },
+        ]
+      },
+      {
+        name: '후가공 옵션',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '금박', priceModifier: 5000 },
+          { label: '은박', priceModifier: 5000 },
+          { label: '부분 UV', priceModifier: 3000 },
+        ]
       }
     ],
     features: ['자동 라벨러 호환', '대량 제작 최적화', '다양한 재질'],
@@ -1518,7 +1552,7 @@ export const PRODUCTS: Product[] = [
     basePrice: 12000,
     options: [
       {
-        name: '재질',
+        name: '재질 선택',
         type: 'select',
         values: [
           { label: '옥외용 PVC 백색', priceModifier: 0 },
@@ -1527,11 +1561,37 @@ export const PRODUCTS: Product[] = [
         ]
       },
       {
-        name: '코팅 선택',
+        name: '화이트 인쇄',
+        type: 'radio',
+        values: [
+          { label: '화이트 인쇄 없음', priceModifier: 0 },
+          { label: '화이트 인쇄 있음', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '재단 방식',
+        type: 'radio',
+        values: [
+          { label: '반칼 (시트형)', priceModifier: 0 },
+          { label: '완칼 (개별조각)', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '코팅 유무',
         type: 'radio',
         values: [
           { label: 'UV 유광 코팅', priceModifier: 0 },
           { label: 'UV 무광 코팅', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '후가공 옵션',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '금박', priceModifier: 5000 },
+          { label: '은박', priceModifier: 5000 },
+          { label: '부분 UV', priceModifier: 3000 },
         ]
       }
     ],
@@ -1555,6 +1615,14 @@ export const PRODUCTS: Product[] = [
     basePrice: 15000,
     options: [
       {
+        name: '재질 선택',
+        type: 'select',
+        values: [
+          { label: '자석 시트 + 아트지', priceModifier: 0 },
+          { label: '자석 시트 + 유포지', priceModifier: 2000 },
+        ]
+      },
+      {
         name: '자석 두께',
         type: 'radio',
         values: [
@@ -1563,11 +1631,26 @@ export const PRODUCTS: Product[] = [
         ]
       },
       {
-        name: '코팅',
+        name: '재단 방식',
+        type: 'radio',
+        values: [
+          { label: '사각형 재단', priceModifier: 0 },
+          { label: '모양 재단 (도송)', priceModifier: 5000 },
+        ]
+      },
+      {
+        name: '코팅 유무',
         type: 'radio',
         values: [
           { label: '유광 코팅', priceModifier: 0 },
           { label: '무광 코팅', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '후가공 옵션',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
         ]
       }
     ],
@@ -1597,6 +1680,41 @@ export const PRODUCTS: Product[] = [
           { label: '유포 리무버블', priceModifier: 0 },
           { label: '고투명 PET 리무버블', priceModifier: 1500 },
         ]
+      },
+      {
+        name: '화이트 인쇄',
+        type: 'radio',
+        values: [
+          { label: '화이트 인쇄 없음', priceModifier: 0 },
+          { label: '화이트 인쇄 있음', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '재단 방식',
+        type: 'radio',
+        values: [
+          { label: '반칼 (시트형)', priceModifier: 0 },
+          { label: '완칼 (개별조각)', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '코팅 유무',
+        type: 'radio',
+        values: [
+          { label: '무광 코팅', priceModifier: 0 },
+          { label: '유광 코팅', priceModifier: 0 },
+          { label: '코팅 없음', priceModifier: -500 },
+        ]
+      },
+      {
+        name: '후가공 옵션',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '금박', priceModifier: 5000 },
+          { label: '은박', priceModifier: 5000 },
+          { label: '부분 UV', priceModifier: 3000 },
+        ]
       }
     ],
     features: ['끈적임 없음', '재부착 가능', '방수 기능'],
@@ -1622,6 +1740,33 @@ export const PRODUCTS: Product[] = [
           { label: '냉동 전용 유포 스티커', priceModifier: 0 },
           { label: '냉동 전용 아트지 라벨', priceModifier: -1000 },
         ]
+      },
+      {
+        name: '재단 방식',
+        type: 'radio',
+        values: [
+          { label: '반칼 (시트형)', priceModifier: 0 },
+          { label: '완칼 (개별조각)', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '코팅 유무',
+        type: 'radio',
+        values: [
+          { label: '무광 코팅', priceModifier: 0 },
+          { label: '유광 코팅', priceModifier: 0 },
+          { label: '코팅 없음', priceModifier: -500 },
+        ]
+      },
+      {
+        name: '후가공 옵션',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '금박', priceModifier: 5000 },
+          { label: '은박', priceModifier: 5000 },
+          { label: '부분 UV', priceModifier: 3000 },
+        ]
       }
     ],
     features: ['저온 접착력', '습기 강함', '식품 패키지용'],
@@ -1641,12 +1786,34 @@ export const PRODUCTS: Product[] = [
     basePrice: 4000,
     options: [
       {
+        name: '재질 선택',
+        type: 'select',
+        values: [
+          { label: '유포 스티커', priceModifier: 0 },
+          { label: '아트지 라벨', priceModifier: 0 },
+        ]
+      },
+      {
         name: '표면 마감',
         type: 'radio',
         values: [
           { label: '무광 코팅', priceModifier: 0 },
           { label: '유광 코팅', priceModifier: 0 },
           { label: '홀로그램 코팅', priceModifier: 2000 },
+        ]
+      },
+      {
+        name: '재단 방식',
+        type: 'radio',
+        values: [
+          { label: '완칼 (개별조각)', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '후가공 옵션',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
         ]
       }
     ],
@@ -1667,6 +1834,14 @@ export const PRODUCTS: Product[] = [
     basePrice: 25000,
     options: [
       {
+        name: '재질 선택',
+        type: 'select',
+        values: [
+          { label: '아트지 라벨', priceModifier: 0 },
+          { label: '유포 스티커', priceModifier: 2000 },
+        ]
+      },
+      {
         name: '스크래치 모양',
         type: 'select',
         values: [
@@ -1681,6 +1856,29 @@ export const PRODUCTS: Product[] = [
         values: [
           { label: '은색 (기본)', priceModifier: 0 },
           { label: '금색', priceModifier: 2000 },
+        ]
+      },
+      {
+        name: '재단 방식',
+        type: 'radio',
+        values: [
+          { label: '반칼 (시트형)', priceModifier: 0 },
+          { label: '완칼 (개별조각)', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '코팅 유무',
+        type: 'radio',
+        values: [
+          { label: '무광 코팅', priceModifier: 0 },
+          { label: '유광 코팅', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '후가공 옵션',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
         ]
       }
     ],
@@ -2367,14 +2565,48 @@ export const PRODUCTS: Product[] = [
     basePrice: 4500,
     options: [
       {
-        name: '모양',
+        name: '재질 선택',
         type: 'select',
-        values: [{ label: '원형' }, { label: '사각' }, { label: '자유형', priceModifier: 500 }]
+        values: [
+          { label: '투명 PET', priceModifier: 0 },
+          { label: '고투명 PET', priceModifier: 1000 },
+        ]
       },
       {
         name: '화이트 인쇄',
         type: 'radio',
-        values: [{ label: '없음' }, { label: '부분 화이트', priceModifier: 1000 }, { label: '전체 화이트', priceModifier: 1500 }]
+        values: [
+          { label: '화이트 인쇄 없음', priceModifier: 0 },
+          { label: '부분 화이트', priceModifier: 1000 },
+          { label: '전체 화이트', priceModifier: 1500 },
+        ]
+      },
+      {
+        name: '재단 방식',
+        type: 'radio',
+        values: [
+          { label: '반칼 (시트형)', priceModifier: 0 },
+          { label: '완칼 (개별조각)', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '코팅 유무',
+        type: 'radio',
+        values: [
+          { label: '무광 코팅', priceModifier: 0 },
+          { label: '유광 코팅', priceModifier: 0 },
+          { label: '코팅 없음', priceModifier: -500 },
+        ]
+      },
+      {
+        name: '후가공 옵션',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '금박', priceModifier: 5000 },
+          { label: '은박', priceModifier: 5000 },
+          { label: '부분 UV', priceModifier: 3000 },
+        ]
       }
     ],
     features: ['방수 기능', '투명 PET 재질', '화이트 인쇄 가능'],
@@ -2393,9 +2625,40 @@ export const PRODUCTS: Product[] = [
     basePrice: 6500,
     options: [
       {
-        name: '원단 선택',
+        name: '재질 선택',
         type: 'select',
-        values: [{ label: '일반 홀로그램' }, { label: '샌드 홀로그램', priceModifier: 500 }, { label: '스타 홀로그램', priceModifier: 800 }]
+        values: [
+          { label: '일반 홀로그램', priceModifier: 0 },
+          { label: '샌드 홀로그램', priceModifier: 500 },
+          { label: '스타 홀로그램', priceModifier: 800 }
+        ]
+      },
+      {
+        name: '재단 방식',
+        type: 'radio',
+        values: [
+          { label: '반칼 (시트형)', priceModifier: 0 },
+          { label: '완칼 (개별조각)', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '코팅 유무',
+        type: 'radio',
+        values: [
+          { label: '무광 코팅', priceModifier: 0 },
+          { label: '유광 코팅', priceModifier: 0 },
+          { label: '코팅 없음', priceModifier: -500 },
+        ]
+      },
+      {
+        name: '후가공 옵션',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '금박', priceModifier: 5000 },
+          { label: '은박', priceModifier: 5000 },
+          { label: '부분 UV', priceModifier: 3000 },
+        ]
       }
     ],
     features: ['무지개빛 반사', '강한 점착력', '커스텀 칼선'],
@@ -2414,9 +2677,35 @@ export const PRODUCTS: Product[] = [
     basePrice: 7500,
     options: [
       {
-        name: '모양',
+        name: '재질 선택',
         type: 'select',
-        values: [{ label: '원형' }, { label: '사각' }, { label: '자유형', priceModifier: 500 }]
+        values: [
+          { label: '금광 PET', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '재단 방식',
+        type: 'radio',
+        values: [
+          { label: '반칼 (시트형)', priceModifier: 0 },
+          { label: '완칼 (개별조각)', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '코팅 유무',
+        type: 'radio',
+        values: [
+          { label: '무광 코팅', priceModifier: 0 },
+          { label: '유광 코팅', priceModifier: 0 },
+          { label: '코팅 없음', priceModifier: -500 },
+        ]
+      },
+      {
+        name: '후가공 옵션',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
+        ]
       }
     ],
     features: ['금색 광택', '내구성 우수', '방수 기능'],
@@ -2435,9 +2724,35 @@ export const PRODUCTS: Product[] = [
     basePrice: 7000,
     options: [
       {
-        name: '모양',
+        name: '재질 선택',
         type: 'select',
-        values: [{ label: '원형' }, { label: '사각' }, { label: '자유형', priceModifier: 500 }]
+        values: [
+          { label: '은광 PET', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '재단 방식',
+        type: 'radio',
+        values: [
+          { label: '반칼 (시트형)', priceModifier: 0 },
+          { label: '완칼 (개별조각)', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '코팅 유무',
+        type: 'radio',
+        values: [
+          { label: '무광 코팅', priceModifier: 0 },
+          { label: '유광 코팅', priceModifier: 0 },
+          { label: '코팅 없음', priceModifier: -500 },
+        ]
+      },
+      {
+        name: '후가공 옵션',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
+        ]
       }
     ],
     features: ['은색 광택', '메탈릭 질감', '방수 기능'],
@@ -2456,9 +2771,35 @@ export const PRODUCTS: Product[] = [
     basePrice: 7000,
     options: [
       {
-        name: '모양',
+        name: '재질 선택',
         type: 'select',
-        values: [{ label: '원형' }, { label: '사각' }, { label: '자유형', priceModifier: 500 }]
+        values: [
+          { label: '은무 PET', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '재단 방식',
+        type: 'radio',
+        values: [
+          { label: '반칼 (시트형)', priceModifier: 0 },
+          { label: '완칼 (개별조각)', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '코팅 유무',
+        type: 'radio',
+        values: [
+          { label: '무광 코팅', priceModifier: 0 },
+          { label: '유광 코팅', priceModifier: 0 },
+          { label: '코팅 없음', priceModifier: -500 },
+        ]
+      },
+      {
+        name: '후가공 옵션',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
+        ]
       }
     ],
     features: ['무광 은색', '내열성/내구성', '방수 기능'],
@@ -2477,12 +2818,36 @@ export const PRODUCTS: Product[] = [
     basePrice: 9500,
     options: [
       {
-        name: '종이 선택',
+        name: '재질 선택',
         type: 'select',
         values: [
           { label: '그문드 화이트우드' },
           { label: '그문드 코튼', priceModifier: 1000 },
           { label: '그문드 골드', priceModifier: 2000 }
+        ]
+      },
+      {
+        name: '재단 방식',
+        type: 'radio',
+        values: [
+          { label: '반칼 (시트형)', priceModifier: 0 },
+          { label: '완칼 (개별조각)', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '코팅 유무',
+        type: 'radio',
+        values: [
+          { label: '무광 코팅', priceModifier: 0 },
+          { label: '유광 코팅', priceModifier: 0 },
+          { label: '코팅 없음', priceModifier: -500 },
+        ]
+      },
+      {
+        name: '후가공 옵션',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
         ]
       }
     ],
@@ -2502,9 +2867,35 @@ export const PRODUCTS: Product[] = [
     basePrice: 6000,
     options: [
       {
-        name: '모양',
+        name: '재질 선택',
         type: 'select',
-        values: [{ label: '원형' }, { label: '사각' }, { label: '자유형', priceModifier: 500 }]
+        values: [
+          { label: '금 라벨지', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '재단 방식',
+        type: 'radio',
+        values: [
+          { label: '반칼 (시트형)', priceModifier: 0 },
+          { label: '완칼 (개별조각)', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '코팅 유무',
+        type: 'radio',
+        values: [
+          { label: '무광 코팅', priceModifier: 0 },
+          { label: '유광 코팅', priceModifier: 0 },
+          { label: '코팅 없음', priceModifier: -500 },
+        ]
+      },
+      {
+        name: '후가공 옵션',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
+        ]
       }
     ],
     features: ['은은한 금색', '종이 질감', '가성비 고급'],
@@ -2523,9 +2914,35 @@ export const PRODUCTS: Product[] = [
     basePrice: 6000,
     options: [
       {
-        name: '모양',
+        name: '재질 선택',
         type: 'select',
-        values: [{ label: '원형' }, { label: '사각' }, { label: '자유형', priceModifier: 500 }]
+        values: [
+          { label: '은 라벨지', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '재단 방식',
+        type: 'radio',
+        values: [
+          { label: '반칼 (시트형)', priceModifier: 0 },
+          { label: '완칼 (개별조각)', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '코팅 유무',
+        type: 'radio',
+        values: [
+          { label: '무광 코팅', priceModifier: 0 },
+          { label: '유광 코팅', priceModifier: 0 },
+          { label: '코팅 없음', priceModifier: -500 },
+        ]
+      },
+      {
+        name: '후가공 옵션',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
+        ]
       }
     ],
     features: ['은은한 은색', '종이 질감', '깔끔한 마감'],
@@ -2544,9 +2961,35 @@ export const PRODUCTS: Product[] = [
     basePrice: 6000,
     options: [
       {
-        name: '모양',
+        name: '재질 선택',
         type: 'select',
-        values: [{ label: '원형' }, { label: '사각' }, { label: '자유형', priceModifier: 500 }]
+        values: [
+          { label: '동 라벨지', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '재단 방식',
+        type: 'radio',
+        values: [
+          { label: '반칼 (시트형)', priceModifier: 0 },
+          { label: '완칼 (개별조각)', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '코팅 유무',
+        type: 'radio',
+        values: [
+          { label: '무광 코팅', priceModifier: 0 },
+          { label: '유광 코팅', priceModifier: 0 },
+          { label: '코팅 없음', priceModifier: -500 },
+        ]
+      },
+      {
+        name: '후가공 옵션',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
+        ]
       }
     ],
     features: ['빈티지 브론즈', '종이 질감', '유니크 색상'],
@@ -2641,101 +3084,6 @@ export const PRODUCTS: Product[] = [
     features: ['대량 제작 최적화', '롤 형태 공급', '다양한 재질'],
     leadTime: '7-10일',
     badges: ['대량특화', '자동부착용', '가성비']
-  },
-  {
-    id: 'stk-circle-v2',
-    name: '원형 스티커',
-    category: 'sticker',
-    subCategory: '원형',
-    tagline: '부드러운 원형, 패키지 봉인에 최적.',
-    description: '패키지 마감이나 로고 강조에 적합한 원형 스티커입니다.',
-    image: 'https://picsum.photos/seed/sticker-circle/800/800',
-    minQuantity: 50,
-    basePrice: 4000,
-    options: [
-      {
-        name: '지름 선택',
-        type: 'select',
-        values: [
-          { label: '30mm', priceModifier: 0 },
-          { label: '50mm', priceModifier: 500 },
-          { label: '70mm', priceModifier: 1500 }
-        ]
-      }
-    ],
-    features: ['정교한 원형 칼선', '패키지 봉인용으로 인기', '다양한 지름 옵션'],
-    leadTime: '2~3일'
-  },
-  {
-    id: 'stk-removable-v2',
-    name: '리무버블 스티커',
-    category: 'sticker',
-    subCategory: '리무버블',
-    tagline: '흔적 없이 깔끔하게, 떼었다 붙였다.',
-    description: '제거 시 끈적임이 남지 않아 노트북이나 전자기기에 부착하기 좋습니다.',
-    image: 'https://picsum.photos/seed/sticker-removable/800/800',
-    minQuantity: 10,
-    basePrice: 7000,
-    options: [
-      {
-        name: '작업 사이즈',
-        type: 'select',
-        values: [
-          { label: '50x50mm 이내', priceModifier: 0 },
-          { label: '100x100mm 이내', priceModifier: 2500 }
-        ]
-      }
-    ],
-    features: ['끈적임 없는 제거', '재부착 가능', '노트북/폰케이스용 추천'],
-    leadTime: '3~4일'
-  },
-  {
-    id: 'stk-transparent',
-    name: '투명 PET 스티커',
-    category: 'sticker',
-    subCategory: '투명',
-    tagline: '배경이 비치는 투명함, 디자인의 완성.',
-    description: '투명한 재질로 부착면의 색상을 살릴 수 있는 스티커입니다.',
-    image: 'https://picsum.photos/seed/sticker-trans/800/800',
-    minQuantity: 50,
-    basePrice: 6000,
-    options: [
-      {
-        name: '화이트 인쇄',
-        type: 'radio',
-        values: [
-          { label: '화이트 인쇄 포함', priceModifier: 2000 },
-          { label: '화이트 인쇄 없음', priceModifier: 0 }
-        ]
-      }
-    ],
-    features: ['완전 투명 재질', '화이트 인쇄로 색상 강조 가능', '생활 방수 기본 지원'],
-    leadTime: '3~4일'
-  },
-  {
-    id: 'stk-hologram',
-    name: '홀로그램 스티커',
-    category: 'sticker',
-    subCategory: '홀로그램',
-    tagline: '빛에 따라 변하는 무지개빛 광채.',
-    description: '화려한 홀로그램 효과로 시선을 사로잡는 포인트 스티커입니다.',
-    image: 'https://picsum.photos/seed/sticker-holo/800/800',
-    minQuantity: 10,
-    basePrice: 8000,
-    options: [
-      {
-        name: '홀로그램 패턴',
-        type: 'select',
-        values: [
-          { label: '기본 무지개', priceModifier: 0 },
-          { label: '샌드 패턴', priceModifier: 1000 },
-          { label: '스타 패턴', priceModifier: 1000 }
-        ]
-      }
-    ],
-    features: ['강렬한 홀로그램 효과', '포인트 굿즈로 최적', '내구성이 강한 PET 재질'],
-    leadTime: '4~5일',
-    isNew: true
   }
 ];
 
