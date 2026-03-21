@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { ChevronLeft, Download, Printer, Send, FileText, CheckCircle2, Clock, AlertTriangle } from 'lucide-react';
-import { Quotation } from '../types';
+import { Quotation, POSTCARD_MATERIALS } from '../types';
 
 interface QuotationDocumentProps {
   quotation: Quotation;
@@ -10,6 +10,25 @@ interface QuotationDocumentProps {
 }
 
 export const QuotationDocument: React.FC<QuotationDocumentProps> = ({ quotation, onBack, onInquiry }) => {
+  const postcardPaper = POSTCARD_MATERIALS.find(m => `${m.name} ${m.weight}` === (quotation.options['용지 선택'] || quotation.options['용지']));
+
+  const getAutoPrecautions = () => {
+    if (!postcardPaper) return [];
+    const precautions = [];
+    if (['골드시리오펄', '크라프트보드', '마제스틱마블화이트', '띤또레또'].includes(postcardPaper.name)) {
+      precautions.push('코팅, 스코딕스 가공을 추천하지 않는 용지입니다.');
+    }
+    if (['백색모조', 'E-보드 Y04', '얼스팩'].includes(postcardPaper.name)) {
+      precautions.push('재생지 및 특수지 특성상 색상 편차가 발생할 수 있습니다.');
+    }
+    if (postcardPaper.name === '띤또레또') {
+      precautions.push('필기용 또는 시향지로 사용 시 번짐이 있을 수 있으니 테스트를 권장합니다.');
+    }
+    return precautions;
+  };
+
+  const autoPrecautions = getAutoPrecautions();
+
   return (
     <div className="min-h-screen bg-zinc-50 pt-24 pb-20">
       <div className="max-w-4xl mx-auto px-4">
@@ -63,7 +82,7 @@ export const QuotationDocument: React.FC<QuotationDocumentProps> = ({ quotation,
           </div>
 
           <div className="p-12 space-y-12">
-            {/* Customer Info */}
+            {/* Customer Info & Summary */}
             <div className="grid grid-cols-2 gap-12">
               <div className="space-y-4">
                 <h3 className="text-xs font-black text-zinc-400 uppercase tracking-widest">To. Customer</h3>
@@ -83,51 +102,105 @@ export const QuotationDocument: React.FC<QuotationDocumentProps> = ({ quotation,
               </div>
             </div>
 
-            {/* Item Details */}
-            <div className="space-y-6">
+            {/* Reorganized Item Details */}
+            <div className="space-y-8">
               <h3 className="text-xs font-black text-zinc-400 uppercase tracking-widest">Item Details</h3>
-              <div className="overflow-hidden rounded-2xl border border-zinc-100">
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="bg-zinc-50 border-b border-zinc-100">
-                      <th className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-widest">품명 및 옵션</th>
-                      <th className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-widest text-center">수량</th>
-                      <th className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-widest text-right">단가</th>
-                      <th className="px-6 py-4 text-xs font-black text-zinc-500 uppercase tracking-widest text-right">금액</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-zinc-50">
-                    <tr>
-                      <td className="px-6 py-8">
-                        <p className="text-lg font-black text-zinc-900 mb-2">{quotation.productName}</p>
-                        <div className="flex flex-wrap gap-2">
-                          {Object.entries(quotation.options).map(([key, val]) => (
-                            <span key={key} className="px-2 py-1 bg-zinc-100 rounded-md text-[10px] font-bold text-zinc-500">
-                              {key}: {val}
-                            </span>
-                          ))}
+              
+              <div className="grid grid-cols-1 gap-6">
+                {/* 1. Product Info */}
+                <div className="p-8 rounded-3xl bg-zinc-50 border border-zinc-100">
+                  <h4 className="text-xs font-black text-zinc-400 uppercase tracking-widest mb-4">상품 정보</h4>
+                  <div className="flex justify-between items-end">
+                    <div>
+                      <p className="text-2xl font-black text-zinc-900">{quotation.productName}</p>
+                      <p className="text-sm text-zinc-500 mt-1">수량: {quotation.quantity.toLocaleString()}개</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs text-zinc-400 font-bold">단가</p>
+                      <p className="text-xl font-black text-zinc-900">{quotation.unitPrice.toLocaleString()}원</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Paper Info */}
+                <div className="p-8 rounded-3xl bg-white border border-zinc-100 shadow-sm">
+                  <h4 className="text-xs font-black text-zinc-400 uppercase tracking-widest mb-4">용지 정보</h4>
+                  {postcardPaper ? (
+                    <div className="grid grid-cols-2 gap-8">
+                      <div className="space-y-4">
+                        <div>
+                          <p className="text-xs text-zinc-400 font-bold mb-1">용지명 / 평량</p>
+                          <p className="text-lg font-black text-zinc-900">{postcardPaper.name} {postcardPaper.weight}</p>
                         </div>
-                      </td>
-                      <td className="px-6 py-8 text-center font-black text-zinc-900">
-                        {quotation.quantity.toLocaleString()}
-                      </td>
-                      <td className="px-6 py-8 text-right font-black text-zinc-900">
-                        {quotation.unitPrice.toLocaleString()}원
-                      </td>
-                      <td className="px-6 py-8 text-right font-black text-zinc-900">
-                        {quotation.totalPrice.toLocaleString()}원
-                      </td>
-                    </tr>
-                  </tbody>
-                  <tfoot>
-                    <tr className="bg-zinc-900 text-white">
-                      <td colSpan={3} className="px-6 py-6 text-right font-bold uppercase tracking-widest text-xs">Total (VAT Included)</td>
-                      <td className="px-6 py-6 text-right text-2xl font-black tracking-tight text-emerald-400">
-                        {quotation.totalPrice.toLocaleString()}원
-                      </td>
-                    </tr>
-                  </tfoot>
-                </table>
+                        <div>
+                          <p className="text-xs text-zinc-400 font-bold mb-1">용지군</p>
+                          <span className="px-3 py-1 bg-zinc-100 rounded-full text-[10px] font-black text-zinc-600">
+                            {postcardPaper.group}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="space-y-4">
+                        <div>
+                          <p className="text-xs text-zinc-400 font-bold mb-1">핵심 특징</p>
+                          <p className="text-sm text-zinc-600 font-medium">{postcardPaper.features}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-zinc-400 font-bold mb-1">추천 용도</p>
+                          <p className="text-sm text-emerald-600 font-bold">{postcardPaper.recommendedUse}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-zinc-500 font-bold">
+                      {quotation.options['용지 선택'] || quotation.options['용지'] || '선택된 용지 정보가 없습니다.'}
+                    </p>
+                  )}
+                </div>
+
+                {/* 3. Print & Post-processing */}
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="p-8 rounded-3xl bg-zinc-50 border border-zinc-100">
+                    <h4 className="text-xs font-black text-zinc-400 uppercase tracking-widest mb-4">인쇄 정보</h4>
+                    <div className="space-y-2">
+                      {Object.entries(quotation.options)
+                        .filter(([key]) => key.includes('인쇄') || key.includes('도수'))
+                        .map(([key, val]) => (
+                          <div key={key} className="flex justify-between items-center">
+                            <span className="text-xs text-zinc-500 font-bold">{key}</span>
+                            <span className="text-sm font-black text-zinc-900">{val}</span>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                  <div className="p-8 rounded-3xl bg-zinc-50 border border-zinc-100">
+                    <h4 className="text-xs font-black text-zinc-400 uppercase tracking-widest mb-4">후가공 정보</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {Object.entries(quotation.options)
+                        .filter(([key]) => !key.includes('용지') && !key.includes('인쇄') && !key.includes('도수') && !key.includes('사이즈') && !key.includes('규격'))
+                        .map(([key, val]) => (
+                          <span key={key} className="px-3 py-1.5 bg-white border border-zinc-200 rounded-xl text-[10px] font-bold text-zinc-600">
+                            {key}: {val}
+                          </span>
+                        ))}
+                      {Object.entries(quotation.options).filter(([key]) => !key.includes('용지') && !key.includes('인쇄') && !key.includes('도수') && !key.includes('사이즈') && !key.includes('규격')).length === 0 && (
+                        <span className="text-xs text-zinc-400 font-medium">선택된 후가공 옵션이 없습니다.</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Price Info */}
+            <div className="space-y-6">
+              <h3 className="text-xs font-black text-zinc-400 uppercase tracking-widest">Amount Details</h3>
+              <div className="overflow-hidden rounded-[32px] border border-zinc-100">
+                <div className="p-8 bg-zinc-900 text-white flex justify-between items-center">
+                  <span className="text-sm font-bold uppercase tracking-widest opacity-60">Total Amount (VAT Included)</span>
+                  <span className="text-4xl font-black tracking-tighter text-emerald-400">
+                    {quotation.totalPrice.toLocaleString()}원
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -145,9 +218,6 @@ export const QuotationDocument: React.FC<QuotationDocumentProps> = ({ quotation,
                   <p className="text-sm text-zinc-500 leading-relaxed">
                     예상 수령일: <span className="font-bold text-emerald-600">{quotation.estimatedDeliveryDate}</span>
                   </p>
-                  <p className="text-[11px] text-zinc-400 leading-relaxed">
-                    * 파일 검수 및 결제 완료 시점부터 제작이 시작됩니다.
-                  </p>
                 </div>
               </div>
               <div className="p-8 rounded-3xl bg-zinc-50 border border-zinc-100 space-y-4">
@@ -157,7 +227,6 @@ export const QuotationDocument: React.FC<QuotationDocumentProps> = ({ quotation,
                 </div>
                 <p className="text-sm text-zinc-500 leading-relaxed">
                   본 견적서는 발행일로부터 <span className="font-bold text-zinc-900">7일간</span> 유효합니다. 
-                  이후에는 원자재 가격 변동에 따라 견적이 변경될 수 있습니다.
                 </p>
               </div>
             </div>
@@ -172,6 +241,9 @@ export const QuotationDocument: React.FC<QuotationDocumentProps> = ({ quotation,
                 <ul className="text-xs text-amber-800/70 space-y-1 list-disc pl-4">
                   <li>모니터 색상(RGB)과 인쇄 색상(CMYK)은 차이가 있을 수 있습니다.</li>
                   <li>공정상 1~2mm의 재단 오차가 발생할 수 있습니다.</li>
+                  {autoPrecautions.map((p, i) => (
+                    <li key={i} className="font-bold text-amber-900">{p}</li>
+                  ))}
                   <li>주문 제작 상품 특성상 제작 시작 후에는 취소 및 환불이 불가합니다.</li>
                 </ul>
               </div>

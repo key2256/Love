@@ -19,7 +19,7 @@ import {
   Droplets,
   HelpCircle
 } from 'lucide-react';
-import { Product, Quotation, PAPER_MATERIALS } from '../types';
+import { Product, Quotation, PAPER_MATERIALS, POSTCARD_MATERIALS } from '../types';
 
 interface QuotationCalculatorProps {
   product: Product;
@@ -47,10 +47,12 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
   const [estimatedDeliveryDate, setEstimatedDeliveryDate] = useState('');
   const [customSize, setCustomSize] = useState({ width: '', height: '' });
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
+  const [selectedPostcardGroup, setSelectedPostcardGroup] = useState<string | null>(null);
   const [expandedPostOption, setExpandedPostOption] = useState<string | null>(null);
 
   const getLayoutPattern = (product: Product) => {
     if (product.category === 'sticker') return 'STICKER';
+    if (product.id === 'paper-postcard') return 'POSTCARD';
     if (product.category === 'card-paper' || product.id === 'memo-standard') return 'PAPER_GOODS';
     if (product.category === 'binding-booklet' || product.id === 'note-spring') return 'BINDING_GOODS';
     if (product.category === 'poster-promo') return 'LARGE_FORMAT';
@@ -62,15 +64,27 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
 
   // Initialize expanded group based on default selected material
   useEffect(() => {
-    if (pattern !== 'STICKER') return;
-    const materialOption = product.options.find(opt => opt.name.includes('재질') || opt.name.includes('용지'));
-    if (materialOption) {
-      const selectedValue = selectedOptions[materialOption.name];
-      const material = PAPER_MATERIALS.find(m => m.name === selectedValue);
-      if (material) {
-        setExpandedGroup(material.group);
-      } else {
-        setExpandedGroup('일반/기본 용지');
+    if (pattern === 'STICKER') {
+      const materialOption = product.options.find(opt => opt.name.includes('재질') || opt.name.includes('용지'));
+      if (materialOption) {
+        const selectedValue = selectedOptions[materialOption.name];
+        const material = PAPER_MATERIALS.find(m => m.name === selectedValue);
+        if (material) {
+          setExpandedGroup(material.group);
+        } else {
+          setExpandedGroup('일반/기본 용지');
+        }
+      }
+    } else if (pattern === 'POSTCARD') {
+      const materialOption = product.options.find(opt => opt.name.includes('용지'));
+      if (materialOption) {
+        const selectedValue = selectedOptions[materialOption.name];
+        const material = POSTCARD_MATERIALS.find(m => `${m.name} ${m.weight}` === selectedValue);
+        if (material) {
+          setSelectedPostcardGroup(material.group);
+        } else {
+          setSelectedPostcardGroup('기본 대중형');
+        }
       }
     }
   }, [product.id, pattern]);
@@ -202,6 +216,88 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
 
         {/* Options */}
         <div className="space-y-8">
+          {/* Postcard Material Selection */}
+          {pattern === 'POSTCARD' && product.options.filter(opt => opt.name.includes('용지')).map((option) => (
+            <div key={option.name} className="space-y-6">
+              <label className="text-xs font-black text-zinc-900 uppercase tracking-widest block">
+                1. 용지 그룹 선택
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                {['기본 대중형', '고급 감성형', '친환경/내추럴형', '컬러/특수지형'].map((group) => (
+                  <button
+                    key={group}
+                    onClick={() => setSelectedPostcardGroup(group)}
+                    className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all ${
+                      selectedPostcardGroup === group
+                        ? 'bg-zinc-900 border-zinc-900 text-white shadow-lg'
+                        : 'bg-white border-zinc-200 text-zinc-600 hover:border-zinc-400'
+                    }`}
+                  >
+                    {group}
+                  </button>
+                ))}
+              </div>
+
+              {selectedPostcardGroup && (
+                <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                  <label className="text-xs font-black text-zinc-900 uppercase tracking-widest block">
+                    2. 세부 용지 선택
+                  </label>
+                  <div className="grid grid-cols-1 gap-3">
+                    {POSTCARD_MATERIALS.filter(m => m.group === selectedPostcardGroup).map((material) => {
+                      const isSelected = selectedOptions[option.name] === `${material.name} ${material.weight}`;
+                      return (
+                        <button
+                          key={material.id}
+                          onClick={() => handleOptionChange(option.name, `${material.name} ${material.weight}`)}
+                          className={`p-5 rounded-2xl border text-left transition-all relative group ${
+                            isSelected
+                              ? 'bg-emerald-50 border-emerald-500 ring-1 ring-emerald-500'
+                              : 'bg-white border-zinc-100 hover:border-zinc-300'
+                          }`}
+                        >
+                          <div className="flex justify-between items-start mb-2">
+                            <div>
+                              <span className={`text-sm font-black ${isSelected ? 'text-emerald-900' : 'text-zinc-900'}`}>
+                                {material.name}
+                              </span>
+                              <span className="ml-2 text-xs text-zinc-400 font-bold">{material.weight}</span>
+                            </div>
+                            <span className={`px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-tighter ${
+                              isSelected ? 'bg-emerald-200 text-emerald-700' : 'bg-zinc-100 text-zinc-500'
+                            }`}>
+                              {material.recommendationLabel}
+                            </span>
+                          </div>
+                          <p className={`text-[11px] leading-relaxed ${isSelected ? 'text-emerald-700/70' : 'text-zinc-500'}`}>
+                            {material.features}
+                          </p>
+                          
+                          {isSelected && (
+                            <motion.div 
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: 'auto' }}
+                              className="mt-4 pt-4 border-t border-emerald-100 space-y-2"
+                            >
+                              <div className="flex gap-2">
+                                <span className="text-[10px] font-black text-emerald-600 uppercase shrink-0">추천용도:</span>
+                                <span className="text-[10px] text-emerald-800/70">{material.recommendedUse}</span>
+                              </div>
+                              <div className="flex gap-2">
+                                <span className="text-[10px] font-black text-amber-600 uppercase shrink-0">주의사항:</span>
+                                <span className="text-[10px] text-amber-800/70">{material.precautions}</span>
+                              </div>
+                            </motion.div>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+
           {/* 1. Material Selection (Special UI for Stickers) */}
           {pattern === 'STICKER' && product.options.filter(opt => opt.name.includes('재질') || opt.name.includes('용지')).map((option) => (
             <div key={option.name} className="space-y-4">
@@ -302,6 +398,10 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
             if (pattern === 'STICKER') {
               return !opt.name.includes('재질') && 
                      !opt.name.includes('용지') && 
+                     !['재단 방식', '코팅 유무', '후가공 옵션', '화이트 인쇄', '넘버링', '스코딕스', '포장 옵션', '부분 UV', '모양코팅'].includes(opt.name);
+            }
+            if (pattern === 'POSTCARD') {
+              return !opt.name.includes('용지') && 
                      !['재단 방식', '코팅 유무', '후가공 옵션', '화이트 인쇄', '넘버링', '스코딕스', '포장 옵션', '부분 UV', '모양코팅'].includes(opt.name);
             }
             return !['재단 방식', '코팅 유무', '후가공 옵션', '화이트 인쇄', '넘버링', '스코딕스', '포장 옵션', '부분 UV', '모양코팅'].includes(opt.name);

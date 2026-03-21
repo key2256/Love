@@ -50,6 +50,244 @@ export interface Category {
   subCategories: (string | SubCategoryGroup)[];
 }
 
+export interface PostcardPaperMaterial {
+  id: string;
+  group: '기본 대중형' | '고급 감성형' | '친환경/내추럴형' | '컬러/특수지형';
+  name: string;
+  weight: string;
+  recommendationLabel: string;
+  features: string;
+  recommendedUse: string;
+  precautions: string;
+}
+
+export const POSTCARD_MATERIALS: PostcardPaperMaterial[] = [
+  // 1. 기본 대중형
+  {
+    id: 'art-250',
+    group: '기본 대중형',
+    name: '아트지',
+    weight: '250g',
+    recommendationLabel: '선명한 인쇄',
+    features: '광택이 있고 인쇄 색감이 선명함',
+    recommendedUse: '홍보용 엽서, 대량 배포용',
+    precautions: '지문이 잘 묻을 수 있으니 코팅을 권장합니다.'
+  },
+  {
+    id: 'art-300',
+    group: '기본 대중형',
+    name: '아트지',
+    weight: '300g',
+    recommendationLabel: '선명한 인쇄',
+    features: '두툼하고 광택이 있는 고광택 용지',
+    recommendedUse: '고급 홍보물, 쿠폰 엽서',
+    precautions: '접지 시 터짐 현상이 있을 수 있습니다.'
+  },
+  {
+    id: 'snow-250',
+    group: '기본 대중형',
+    name: '스노우',
+    weight: '250g',
+    recommendationLabel: '차분한 무광',
+    features: '광택이 없는 차분하고 부드러운 느낌',
+    recommendedUse: '전시회 엽서, 안내장',
+    precautions: '인쇄 후 건조 시간이 다소 필요합니다.'
+  },
+  {
+    id: 'snow-300',
+    group: '기본 대중형',
+    name: '스노우',
+    weight: '300g',
+    recommendationLabel: '차분한 무광',
+    features: '두툼하고 매트한 질감의 고급 용지',
+    recommendedUse: '프리미엄 엽서, 초대장',
+    precautions: '어두운 배경색 인쇄 시 뒷묻음 주의.'
+  },
+  {
+    id: 'white-mojo-220',
+    group: '기본 대중형',
+    name: '백색모조',
+    weight: '220g',
+    recommendationLabel: '필기감 우수',
+    features: '일반 복사용지와 비슷한 질감의 무광 용지',
+    recommendedUse: '메모 엽서, 컬러링 엽서',
+    precautions: '잉크 흡수율이 높아 색상이 다소 흐리게 보일 수 있습니다. (색상 편차 가능)'
+  },
+  // 2. 고급 감성형
+  {
+    id: 'vannu-250',
+    group: '고급 감성형',
+    name: '반누보화이트',
+    weight: '250g',
+    recommendationLabel: '고급 엽서 추천',
+    features: '부드러운 질감과 따뜻한 화이트 톤',
+    recommendedUse: '작가 굿즈, 고급 브랜드 엽서',
+    precautions: '수입지 특유의 고급스러운 질감이 특징입니다.'
+  },
+  {
+    id: 'mont-240',
+    group: '고급 감성형',
+    name: '몽블랑화이트',
+    weight: '240g',
+    recommendationLabel: '선명한 화이트',
+    features: '표면이 매끄럽고 백색도가 높은 고급지',
+    recommendedUse: '사진 엽서, 일러스트 엽서',
+    precautions: '잉크 건조가 빠르고 발색이 뛰어납니다.'
+  },
+  {
+    id: 'rend-nat-240',
+    group: '고급 감성형',
+    name: '랑데뷰내츄럴',
+    weight: '240g',
+    recommendationLabel: '감성 굿즈 추천',
+    features: '자연스러운 미색과 거친 질감의 조화',
+    recommendedUse: '빈티지 엽서, 감성 일러스트',
+    precautions: '종이 본연의 질감이 인쇄물에 반영됩니다.'
+  },
+  {
+    id: 'rend-nat-310',
+    group: '고급 감성형',
+    name: '랑데뷰내츄럴',
+    weight: '310g',
+    recommendationLabel: '감성 굿즈 추천',
+    features: '매우 두툼하고 묵직한 고급 수입지',
+    recommendedUse: 'VIP 초대장, 프리미엄 굿즈',
+    precautions: '두께감이 있어 고급스러운 느낌을 줍니다.'
+  },
+  {
+    id: 'rend-ultra-240',
+    group: '고급 감성형',
+    name: '랑데뷰울트라화이트',
+    weight: '240g',
+    recommendationLabel: '깨끗한 화이트',
+    features: '순백색의 깨끗한 느낌과 고급스러운 질감',
+    recommendedUse: '미니멀 디자인, 웨딩 엽서',
+    precautions: '백색도가 매우 높아 깔끔한 인상을 줍니다.'
+  },
+  {
+    id: 'marsh-262',
+    group: '고급 감성형',
+    name: '매쉬멜로우 White',
+    weight: '262g',
+    recommendationLabel: '사진표현 우수',
+    features: '표면이 매우 매끄럽고 잉크 발색이 뛰어남',
+    recommendedUse: '고해상도 사진 엽서, 포트폴리오',
+    precautions: '매우 매끄러운 표면으로 지문 주의.'
+  },
+  {
+    id: 'arco-300',
+    group: '고급 감성형',
+    name: '아코팩',
+    weight: '300g',
+    recommendationLabel: '탄탄한 질감',
+    features: '탄성이 좋고 표면이 깨끗한 프리미엄지',
+    recommendedUse: '패키지 동봉 엽서, 브랜드 카드',
+    precautions: '종이의 탄성이 좋아 잘 휘어지지 않습니다.'
+  },
+  {
+    id: 'tinto-250',
+    group: '고급 감성형',
+    name: '띤또레또',
+    weight: '250g',
+    recommendationLabel: '수채화 느낌',
+    features: '올록볼록한 엠보싱 질감이 특징인 수입지',
+    recommendedUse: '수채화 일러스트, 시향지',
+    precautions: '코팅, 스코딕스 비추천. 필기용, 시향지로 부적합할 수 있음.'
+  },
+  // 3. 친환경/내추럴형
+  {
+    id: 'env-216',
+    group: '친환경/내추럴형',
+    name: '인바이런먼트(크라프트필)',
+    weight: '216g',
+    recommendationLabel: '친환경 감성',
+    features: '재생지 느낌의 내추럴한 컬러와 질감',
+    recommendedUse: '에코 브랜드, 오가닉 제품 안내',
+    precautions: '용지 자체의 티끌이 보일 수 있습니다.'
+  },
+  {
+    id: 'kraft-240',
+    group: '친환경/내추럴형',
+    name: '크라프트보드',
+    weight: '240g',
+    recommendationLabel: '핸드메이드 감성',
+    features: '갈색의 거친 질감이 살아있는 친환경지',
+    recommendedUse: '빈티지 엽서, 수제 제품 태그',
+    precautions: '코팅, 스코딕스 비추천. 어두운 색상 인쇄 권장.'
+  },
+  {
+    id: 'eboard-230',
+    group: '친환경/내추럴형',
+    name: 'E-보드 Y04',
+    weight: '230g',
+    recommendationLabel: '내추럴 화이트',
+    features: '자연스러운 미색과 재생지 특유의 질감',
+    recommendedUse: '친환경 엽서, 소박한 디자인',
+    precautions: '색상 편차 가능. 재생지 특유의 티끌이 포함됨.'
+  },
+  {
+    id: 'earth-226',
+    group: '친환경/내추럴형',
+    name: '얼스팩',
+    weight: '226g',
+    recommendationLabel: '친환경 추천',
+    features: '100% 사탕수수 부산물로 만든 친환경지',
+    recommendedUse: '비건 브랜드, 제로웨이스트 엽서',
+    precautions: '색상 편차 가능. 표면이 다소 거칠 수 있습니다.'
+  },
+  // 4. 컬러/특수지형
+  {
+    id: 'gold-sirio-300',
+    group: '컬러/특수지형',
+    name: '골드시리오펄',
+    weight: '300g',
+    recommendationLabel: '펄 특수지',
+    features: '은은한 골드 펄감이 화려한 고급지',
+    recommendedUse: '연말 카드, 축하 엽서',
+    precautions: '코팅, 스코딕스 비추천. 펄감으로 인해 인쇄 색상이 다를 수 있음.'
+  },
+  {
+    id: 'majestic-250',
+    group: '컬러/특수지형',
+    name: '마제스틱마블화이트',
+    weight: '250g',
+    recommendationLabel: '은은한 펄감',
+    features: '대리석 같은 은은한 광택과 펄감',
+    recommendedUse: '웨딩 엽서, 쥬얼리 브랜드',
+    precautions: '코팅, 스코딕스 비추천.'
+  },
+  {
+    id: 'sirio-blue-290',
+    group: '컬러/특수지형',
+    name: '시리오칼라 다크블루',
+    weight: '290g',
+    recommendationLabel: '컬러 특수지',
+    features: '깊고 진한 다크블루 컬러의 색지',
+    recommendedUse: '고급 패키지 동봉 엽서, 포인트 카드',
+    precautions: '화이트 인쇄나 금/은박 후가공을 추천합니다.'
+  },
+  {
+    id: 'sirio-red-290',
+    group: '컬러/특수지형',
+    name: '시리오칼라 레드',
+    weight: '290g',
+    recommendationLabel: '컬러 특수지',
+    features: '강렬하고 선명한 레드 컬러의 색지',
+    recommendedUse: '크리스마스 카드, 이벤트 엽서',
+    precautions: '화이트 인쇄나 금/은박 후가공을 추천합니다.'
+  },
+  {
+    id: 'sirio-black-290',
+    group: '컬러/특수지형',
+    name: '시리오칼라 블랙',
+    weight: '290g',
+    recommendationLabel: '컬러 특수지',
+    features: '깊이 있는 블랙 컬러의 고중량 색지',
+    recommendedUse: '블랙 디자인 엽서, VIP 카드',
+    precautions: '화이트 인쇄나 금/은박 후가공을 추천합니다.'
+  }
+];
+
 export interface PaperMaterial {
   id: string;
   group: '일반/기본 용지' | '방수/합성지' | '투명/PET' | '메탈/광택 특수 재질' | '프리미엄 라벨(GMUND)';
@@ -2209,12 +2447,10 @@ export const PRODUCTS: Product[] = [
       {
         name: '용지 선택',
         type: 'select',
-        values: [
-          { label: '스노우 250g', priceModifier: 0 },
-          { label: '랑데뷰 240g', priceModifier: 1500 },
-          { label: '아르떼 230g', priceModifier: 1500 },
-          { label: '띤또레또 250g', priceModifier: 2500 },
-        ]
+        values: POSTCARD_MATERIALS.map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: m.group === '기본 대중형' ? 0 : m.group === '고급 감성형' ? 1500 : 2500
+        }))
       },
       {
         name: '인쇄 도수',
