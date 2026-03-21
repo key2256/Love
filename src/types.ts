@@ -52,6 +52,13 @@ export interface Category {
   subCategories: (string | SubCategoryGroup)[];
 }
 
+export interface Template {
+  id: string;
+  name: string;
+  category: string;
+  image: string;
+}
+
 export interface BusinessCardPaperMaterial {
   id: string;
   group: '기본 대중형' | '고급 감성형' | '내추럴/친환경형' | '특수지/프리미엄형';
@@ -62,6 +69,22 @@ export interface BusinessCardPaperMaterial {
   recommendedUse: string;
   precautions: string;
 }
+
+export const DESIGN_CARD_TEMPLATES: Template[] = [
+  { id: 'SB-01', name: '심플 비즈니스 A', category: '심플/비즈니스', image: 'https://picsum.photos/seed/sb01/400/250' },
+  { id: 'SB-02', name: '모던 코퍼레이트', category: '심플/비즈니스', image: 'https://picsum.photos/seed/sb02/400/250' },
+  { id: 'SB-03', name: '미니멀 라인', category: '심플/비즈니스', image: 'https://picsum.photos/seed/sb03/400/250' },
+  { id: 'EB-01', name: '내추럴 무드', category: '감성/브랜드', image: 'https://picsum.photos/seed/eb01/400/250' },
+  { id: 'EB-02', name: '소프트 파스텔', category: '감성/브랜드', image: 'https://picsum.photos/seed/eb02/400/250' },
+  { id: 'CW-01', name: '아티스트 프로필', category: '크리에이터/작가', image: 'https://picsum.photos/seed/cw01/400/250' },
+  { id: 'CW-02', name: '핸드라이팅 스타일', category: '크리에이터/작가', image: 'https://picsum.photos/seed/cw02/400/250' },
+  { id: 'CB-01', name: '카페 시그니처', category: '카페/베이커리', image: 'https://picsum.photos/seed/cb01/400/250' },
+  { id: 'CB-02', name: '베이커리 감성', category: '카페/베이커리', image: 'https://picsum.photos/seed/cb02/400/250' },
+  { id: 'BS-01', name: '뷰티 살롱', category: '뷰티/샵', image: 'https://picsum.photos/seed/bs01/400/250' },
+  { id: 'BS-02', name: '코스메틱 라인', category: '뷰티/샵', image: 'https://picsum.photos/seed/bs02/400/250' },
+  { id: 'EC-01', name: '스탬프 쿠폰 A', category: '이벤트/쿠폰형', image: 'https://picsum.photos/seed/ec01/400/250' },
+  { id: 'EC-02', name: '할인권 스타일', category: '이벤트/쿠폰형', image: 'https://picsum.photos/seed/ec02/400/250' },
+];
 
 export const BUSINESS_CARD_MATERIALS: BusinessCardPaperMaterial[] = [
   // A. 기본 대중형
@@ -3016,40 +3039,117 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'bc-template',
-    name: '디자인 템플릿 명함',
+    name: '디자인 명함',
     category: 'card-paper',
-    subCategory: '디자인 템플릿 명함',
-    tagline: '디자인 고민 없이 빠르게 제작하세요.',
-    description: '전문 디자이너가 제작한 다양한 템플릿을 활용해 쉽고 빠르게 명함을 완성할 수 있습니다.',
-    image: 'https://picsum.photos/seed/bc-template/800/800',
+    subCategory: '디자인 명함',
+    tagline: '전문 디자이너의 템플릿으로 쉽고 빠르게.',
+    description: '업종별 템플릿을 선택하고 정보만 입력하면 완성되는 빠른 주문형 명함입니다.',
+    image: 'https://picsum.photos/seed/bc-design/800/800',
     minQuantity: 100,
-    basePrice: 9900,
+    basePrice: 12000,
     options: [
       {
-        name: '템플릿 선택',
+        name: '템플릿 카테고리',
         type: 'select',
         values: [
-          { label: '심플 비즈니스', priceModifier: 0 },
-          { label: '모던 미니멀', priceModifier: 0 },
-          { label: '크리에이티브', priceModifier: 2000 },
-          { label: '럭셔리 골드', priceModifier: 5000 },
+          { label: '심플/비즈니스', priceModifier: 0 },
+          { label: '감성/브랜드', priceModifier: 0 },
+          { label: '크리에이터/작가', priceModifier: 0 },
+          { label: '카페/베이커리', priceModifier: 0 },
+          { label: '뷰티/샵', priceModifier: 0 },
+          { label: '이벤트/쿠폰형', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '템플릿 선택',
+        type: 'text',
+      },
+      {
+        name: '규격',
+        type: 'radio',
+        values: [
+          { label: '90x50 표준', priceModifier: 0 },
+          { label: '85x55 카드형', priceModifier: 0 },
         ]
       },
       {
         name: '용지',
         type: 'select',
         values: [
-          { label: '반누보 250g', priceModifier: 0 },
-          { label: '랑데뷰 240g', priceModifier: 500 },
-          { label: '스타드림 240g', priceModifier: 1500 },
+          { label: '스노우 250g', priceModifier: 0 },
+          { label: '스노우 300g', priceModifier: 500 },
+          { label: '아트지 250g', priceModifier: 0 },
+          { label: '반누보화이트 250g', priceModifier: 2000 },
         ]
+      },
+      {
+        name: '인쇄도수',
+        type: 'radio',
+        values: [
+          { label: '단면 칼라', priceModifier: 0 },
+          { label: '양면 칼라', priceModifier: 2000 },
+        ]
+      },
+      {
+        name: '수량',
+        type: 'radio',
+        values: [
+          { label: '100매', priceModifier: 0 },
+          { label: '200매', priceModifier: 8000 },
+          { label: '500매', priceModifier: 25000 },
+        ]
+      },
+      {
+        name: '후가공',
+        type: 'checkbox',
+        values: [
+          { label: '무광 코팅', priceModifier: 1000 },
+          { label: '유광 코팅', priceModifier: 1000 },
+          { label: '귀돌이', priceModifier: 1500 },
+        ]
+      },
+      {
+        name: '이름',
+        type: 'text',
+        placeholder: '홍길동'
+      },
+      {
+        name: '직함',
+        type: 'text',
+        placeholder: '대표이사 / 팀장'
+      },
+      {
+        name: '연락처',
+        type: 'text',
+        placeholder: '010-0000-0000'
+      },
+      {
+        name: '이메일',
+        type: 'text',
+        placeholder: 'example@email.com'
+      },
+      {
+        name: '주소/SNS',
+        type: 'text',
+        placeholder: '서울시 강남구... / @instagram'
+      },
+      {
+        name: '로고 업로드',
+        type: 'text',
+        placeholder: '로고 파일이 있다면 업로드해주세요.'
+      },
+      {
+        name: '요청사항',
+        type: 'text',
+        placeholder: '추가로 전달하실 내용을 입력해주세요.'
       }
     ],
-    features: ['다양한 디자인 템플릿', '간편한 편집', '고품질 인쇄'],
+    features: ['다양한 디자인 템플릿', '간편한 정보 입력', '빠른 제작 및 배송'],
     leadTime: '1~2 영업일',
     warnings: [
-      '템플릿 디자인은 수정이 제한될 수 있습니다.',
-      '오타 교정은 직접 확인해 주셔야 합니다.'
+      '입력하신 정보대로 시안이 제작되니 오타를 꼭 확인해주세요.',
+      '로고 파일은 고해상도(AI, PDF, 고화질 JPG)를 권장합니다.',
+      '모니터 색상과 실제 인쇄 색상은 차이가 있을 수 있습니다.'
     ]
   },
   {

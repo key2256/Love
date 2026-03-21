@@ -19,7 +19,7 @@ import {
   Droplets,
   HelpCircle
 } from 'lucide-react';
-import { Product, Quotation, PAPER_MATERIALS, POSTCARD_MATERIALS, BUSINESS_CARD_MATERIALS, BusinessCardPaperMaterial } from '../types';
+import { Product, Quotation, PAPER_MATERIALS, POSTCARD_MATERIALS, BUSINESS_CARD_MATERIALS, BusinessCardPaperMaterial, DESIGN_CARD_TEMPLATES, Template } from '../types';
 
 interface QuotationCalculatorProps {
   product: Product;
@@ -54,6 +54,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
   const getLayoutPattern = (product: Product) => {
     if (product.category === 'sticker') return 'STICKER';
     if (product.id === 'paper-postcard') return 'POSTCARD';
+    if (product.id === 'bc-template') return 'DESIGN_CARD';
     if (product.id === 'bc-standard' || product.id === 'bc-premium') return 'BUSINESS_CARD';
     if (product.id === 'bc-folded') return 'FOLDED_BUSINESS_CARD';
     if (product.category === 'card-paper' || product.id === 'memo-standard') return 'PAPER_GOODS';
@@ -146,6 +147,15 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
   );
 
   // Initialize expanded group based on default selected material
+  useEffect(() => {
+    if (pattern === 'DESIGN_CARD' && selectedOptions['수량']) {
+      const qty = parseInt(selectedOptions['수량'].replace('매', '')) || 100;
+      if (qty !== quantity) {
+        setQuantity(qty);
+      }
+    }
+  }, [selectedOptions['수량'], pattern]);
+
   useEffect(() => {
     if (pattern === 'STICKER') {
       const materialOption = product.options.find(opt => opt.name.includes('재질') || opt.name.includes('용지'));
@@ -292,32 +302,34 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
 
       <div className="p-8 space-y-8">
         {/* Quantity */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <label className="text-xs font-black text-zinc-900 uppercase tracking-widest">주문 수량</label>
-            <span className="text-xs font-bold text-emerald-600">최소 {product.minQuantity}개부터</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <input 
-              type="number" 
-              min={product.minQuantity}
-              value={quantity}
-              onChange={(e) => setQuantity(Math.max(product.minQuantity, parseInt(e.target.value) || 0))}
-              className="flex-1 px-6 py-4 rounded-2xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none font-bold text-lg transition-colors"
-            />
-            <div className="flex gap-2">
-              {[10, 50, 100].map(add => (
-                <button 
-                  key={add}
-                  onClick={() => setQuantity(prev => prev + add)}
-                  className="px-4 py-4 rounded-xl bg-zinc-100 text-zinc-600 text-xs font-bold hover:bg-zinc-200 transition-colors"
-                >
-                  +{add}
-                </button>
-              ))}
+        {pattern !== 'DESIGN_CARD' && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-black text-zinc-900 uppercase tracking-widest">주문 수량</label>
+              <span className="text-xs font-bold text-emerald-600">최소 {product.minQuantity}개부터</span>
+            </div>
+            <div className="flex items-center gap-4">
+              <input 
+                type="number" 
+                min={product.minQuantity}
+                value={quantity}
+                onChange={(e) => setQuantity(Math.max(product.minQuantity, parseInt(e.target.value) || 0))}
+                className="flex-1 px-6 py-4 rounded-2xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none font-bold text-lg transition-colors"
+              />
+              <div className="flex gap-2">
+                {[10, 50, 100].map(add => (
+                  <button 
+                    key={add}
+                    onClick={() => setQuantity(prev => prev + add)}
+                    className="px-4 py-4 rounded-xl bg-zinc-100 text-zinc-600 text-xs font-bold hover:bg-zinc-200 transition-colors"
+                  >
+                    +{add}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Options */}
         <div className="space-y-8">
@@ -907,6 +919,11 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
               if (parentVal !== opt.visibleIf.value) return false;
             }
 
+            if (pattern === 'DESIGN_CARD') {
+              // Only show basic specs in standard list, others handled specially
+              return ['템플릿 카테고리', '규격', '용지', '인쇄도수', '수량', '후가공'].includes(opt.name);
+            }
+
             if (pattern === 'STICKER') {
               return !opt.name.includes('재질') && 
                      !opt.name.includes('용지') && 
@@ -982,6 +999,40 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                   type={selectedOptions['접지 형태'] || '2단 명함'} 
                   direction={selectedOptions['방향'] || '가로형'} 
                 />
+              )}
+              {pattern === 'DESIGN_CARD' && option.name === '템플릿 카테고리' && (
+                <div className="space-y-6">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {DESIGN_CARD_TEMPLATES.filter(t => t.category === selectedOptions['템플릿 카테고리']).map((template) => (
+                      <button
+                        key={template.id}
+                        onClick={() => handleOptionChange('템플릿 선택', template.id)}
+                        className={`group relative aspect-[4/2.5] rounded-2xl overflow-hidden border-2 transition-all ${
+                          selectedOptions['템플릿 선택'] === template.id
+                            ? 'border-emerald-500 ring-4 ring-emerald-500/10'
+                            : 'border-zinc-100 hover:border-emerald-200'
+                        }`}
+                      >
+                        <img 
+                          src={template.image} 
+                          alt={template.name}
+                          className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                          referrerPolicy="no-referrer"
+                        />
+                        <div className={`absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity ${
+                          selectedOptions['템플릿 선택'] === template.id ? 'opacity-100' : ''
+                        }`}>
+                          <div className="bg-white text-zinc-900 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider">
+                            {selectedOptions['템플릿 선택'] === template.id ? '선택됨' : '선택하기'}
+                          </div>
+                        </div>
+                        <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/60 to-transparent">
+                          <p className="text-[10px] font-bold text-white truncate">{template.name}</p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
               )}
               {(option.name === '사이즈' || option.name === '규격(mm)' || option.name === '작업 사이즈') && selectedOptions[option.name] === '직접입력' && (
                 <motion.div 
@@ -1174,6 +1225,51 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
           })()}
           
           {pattern === 'FOLDED_BUSINESS_CARD' && <WorkPrecautions />}
+
+          {pattern === 'DESIGN_CARD' && (
+            <div className="space-y-8 pt-8 border-t border-zinc-100">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-emerald-500/20 flex items-center justify-center">
+                  <FileText className="w-4 h-4 text-emerald-400" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-black tracking-tight">명함 정보 입력</h4>
+                  <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Business Card Information</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {product.options.filter(opt => 
+                  ['이름', '직함', '연락처', '이메일', '주소/SNS', '로고 업로드', '요청사항'].includes(opt.name)
+                ).map((option) => (
+                  <div key={option.name} className="space-y-2">
+                    <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">{option.name}</label>
+                    {option.name === '로고 업로드' ? (
+                      <div className="relative group">
+                        <input
+                          type="text"
+                          readOnly
+                          placeholder={option.placeholder}
+                          className="w-full px-6 py-4 rounded-2xl bg-zinc-50 border border-zinc-100 font-bold text-sm outline-none cursor-pointer group-hover:border-emerald-200 transition-colors"
+                        />
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                          <FileUp className="w-4 h-4 text-zinc-400 group-hover:text-emerald-500 transition-colors" />
+                        </div>
+                      </div>
+                    ) : (
+                      <input
+                        type="text"
+                        value={selectedOptions[option.name]}
+                        onChange={(e) => handleOptionChange(option.name, e.target.value)}
+                        placeholder={option.placeholder}
+                        className="w-full px-6 py-4 rounded-2xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none font-bold text-sm transition-colors"
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Summary Box */}
@@ -1189,6 +1285,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
 
                     // 2. Check if option is visible for this product
                     const option = product.options.find(opt => opt.name === key);
+                    if (pattern === 'DESIGN_CARD' && key === '템플릿 카테고리') return false;
                     if (option?.visibleIf) {
                       const parentVal = selectedOptions[option.visibleIf.optionName];
                       if (parentVal !== option.visibleIf.value) return false;
