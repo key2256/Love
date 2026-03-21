@@ -55,6 +55,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
     if (product.category === 'sticker') return 'STICKER';
     if (product.id === 'paper-postcard') return 'POSTCARD';
     if (product.id === 'bc-standard' || product.id === 'bc-premium') return 'BUSINESS_CARD';
+    if (product.id === 'bc-folded') return 'FOLDED_BUSINESS_CARD';
     if (product.category === 'card-paper' || product.id === 'memo-standard') return 'PAPER_GOODS';
     if (product.category === 'binding-booklet' || product.id === 'note-spring') return 'BINDING_GOODS';
     if (product.category === 'poster-promo') return 'LARGE_FORMAT';
@@ -111,6 +112,12 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
     let pricePerUnit = product.basePrice;
     
     product.options.forEach(opt => {
+      // Check conditional visibility
+      if (opt.visibleIf) {
+        const parentVal = selectedOptions[opt.visibleIf.optionName];
+        if (parentVal !== opt.visibleIf.value) return;
+      }
+
       if (opt.values) {
         if (opt.type === 'checkbox') {
           const selectedList = selectedOptions[opt.name]?.split(', ').filter(Boolean) || [];
@@ -814,6 +821,12 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
 
           {/* 2. Standard Options */}
           {product.options.filter(opt => {
+            // Check conditional visibility
+            if (opt.visibleIf) {
+              const parentVal = selectedOptions[opt.visibleIf.optionName];
+              if (parentVal !== opt.visibleIf.value) return false;
+            }
+
             if (pattern === 'STICKER') {
               return !opt.name.includes('재질') && 
                      !opt.name.includes('용지') && 
@@ -867,6 +880,22 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                     </button>
                   ))}
                 </div>
+              )}
+              {option.name === '용도' && selectedOptions['용도'] === '도장 쿠폰용' && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="p-4 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-start gap-3"
+                >
+                  <Sparkles className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <div className="space-y-1">
+                    <p className="text-[11px] font-black text-emerald-900 uppercase tracking-tight">추천 용지 안내</p>
+                    <p className="text-[11px] leading-relaxed text-emerald-700/80 font-medium">
+                      모조지 / 크라프트보드 / 인바이런먼트 크라프트 추천<br />
+                      <span className="text-[10px] opacity-70">도장 후 빠르게 건조되고 번짐이 적습니다.</span>
+                    </p>
+                  </div>
+                </motion.div>
               )}
               {(option.name === '사이즈' || option.name === '규격(mm)' || option.name === '작업 사이즈') && selectedOptions[option.name] === '직접입력' && (
                 <motion.div 
@@ -1070,7 +1099,14 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                     // 1. Basic filtering (empty or 'none')
                     if (!val || val === '없음' || String(val).trim() === '') return false;
 
-                    // 2. Parent-Child dependency filtering
+                    // 2. Check if option is visible for this product
+                    const option = product.options.find(opt => opt.name === key);
+                    if (option?.visibleIf) {
+                      const parentVal = selectedOptions[option.visibleIf.optionName];
+                      if (parentVal !== option.visibleIf.value) return false;
+                    }
+
+                    // 3. Parent-Child dependency filtering
                     const dependencies: Record<string, string> = {
                       '코팅 면수': '코팅 종류',
                       '귀돌이 크기': '귀돌이 사용',

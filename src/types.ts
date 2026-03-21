@@ -13,6 +13,8 @@ export interface Product {
     type: 'select' | 'radio' | 'number' | 'text' | 'checkbox';
     values?: { label: string; priceModifier?: number }[];
     placeholder?: string;
+    visibleIf?: { optionName: string; value: string };
+    description?: string;
   }[];
   features: string[];
   leadTime: string;
@@ -102,6 +104,16 @@ export const BUSINESS_CARD_MATERIALS: BusinessCardPaperMaterial[] = [
     features: '두툼하고 매트한 질감의 고급 용지',
     recommendedUse: '전문직 명함, 기업용 명함',
     precautions: '어두운 배경색 인쇄 시 뒷묻음 주의.'
+  },
+  {
+    id: 'bc-offset-220',
+    group: '기본 대중형',
+    name: '모조지',
+    weight: '220g',
+    recommendationLabel: '필기감 우수',
+    features: '광택이 없고 필기감이 좋은 백색 용지',
+    recommendedUse: '도장 쿠폰, 메모용 명함',
+    precautions: '잉크 흡수력이 좋아 색상이 다소 차분하게 표현됩니다.'
   },
   {
     id: 'bc-earth-226',
@@ -2906,11 +2918,88 @@ export const PRODUCTS: Product[] = [
     basePrice: 14700,
     options: [
       {
-        name: '접지 방식',
+        name: '접지 형태',
         type: 'radio',
         values: [
-          { label: '2단 접지', priceModifier: 0 },
-          { label: '3단 접지', priceModifier: 5000 },
+          { label: '2단 명함', priceModifier: 0 },
+          { label: '3단 명함', priceModifier: 5000 },
+        ]
+      },
+      {
+        name: '방향',
+        type: 'radio',
+        values: [
+          { label: '가로형', priceModifier: 0 },
+          { label: '세로형', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '용지 타입',
+        type: 'radio',
+        values: [
+          { label: '일반지', priceModifier: 0 },
+          { label: '고급지', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '상세 용지 (일반지)',
+        type: 'select',
+        visibleIf: { optionName: '용지 타입', value: '일반지' },
+        values: [
+          { label: '아트지 250g', priceModifier: 0 },
+          { label: '아트지 300g', priceModifier: 500 },
+          { label: '스노우 250g', priceModifier: 0 },
+          { label: '스노우 300g', priceModifier: 500 },
+          { label: '모조지 220g', priceModifier: 0 },
+          { label: '크라프트보드 240g', priceModifier: 1000 },
+          { label: '인바이런먼트 크라프트 216g', priceModifier: 1500 },
+        ]
+      },
+      {
+        name: '상세 용지 (고급지)',
+        type: 'select',
+        visibleIf: { optionName: '용지 타입', value: '고급지' },
+        values: [
+          { label: '반누보화이트 250g', priceModifier: 2000 },
+          { label: '랑데뷰내츄럴 240g', priceModifier: 2500 },
+          { label: '랑데뷰울트라화이트 240g', priceModifier: 2500 },
+          { label: '몽블랑화이트 240g', priceModifier: 2500 },
+          { label: '띤또레또 250g', priceModifier: 3000 },
+          { label: '골드시리오펄 300g', priceModifier: 4000 },
+        ]
+      },
+      {
+        name: '인쇄도수',
+        type: 'radio',
+        values: [
+          { label: '단면 칼라', priceModifier: 0 },
+          { label: '양면 칼라', priceModifier: 2000 },
+        ]
+      },
+      {
+        name: '코팅',
+        type: 'radio',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '무광 코팅', priceModifier: 1000 },
+          { label: '유광 코팅', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '용도',
+        type: 'radio',
+        values: [
+          { label: '일반 명함용', priceModifier: 0 },
+          { label: '쿠폰용', priceModifier: 0 },
+          { label: '도장 쿠폰용', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '명함케이스',
+        type: 'radio',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '추가 구매', priceModifier: 500 },
         ]
       }
     ],
@@ -2918,8 +3007,12 @@ export const PRODUCTS: Product[] = [
     leadTime: '3~4 영업일',
     warnings: [
       '접는 선(오시) 부분의 인쇄 터짐이 발생할 수 있습니다.',
-      '정확한 데이터 작업이 필요합니다.'
-    ]
+      '정확한 데이터 작업이 필요합니다.',
+      '기본 코팅 없이 제작되고 필요 시 후가공으로 코팅 선택',
+      '오시는 템플릿 위치대로 후가공',
+      '접지되어 배송되지 않음'
+    ],
+    recommendation: '도장 쿠폰용 선택 시 모조지 / 크라프트보드 / 인바이런먼트 크라프트 추천. 도장 후 빠르게 건조되고 번짐이 적음.'
   },
   {
     id: 'bc-template',
