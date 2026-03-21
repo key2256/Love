@@ -350,7 +350,9 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                     .filter(group => {
                       if (product.id === 'stk-postcard-standard') return group === '기본 대중형';
                       if (product.id === 'stk-postcard-premium') return group !== '기본 대중형';
-                      if (product.id === 'stk-postcard-special') return false; // 특가는 용지 선택이 고정적임
+                      if (product.id === 'stk-postcard-shape') return group !== '컬러/특수지형';
+                      if (product.id === 'stk-postcard-effect') return group === '기본 대중형' || group === '고급 감성형';
+                      if (product.id === 'stk-postcard-special') return false;
                       return true;
                     })
                     .map((group) => (
@@ -531,12 +533,12 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                 {/* Icon Grid */}
                 <div className="grid grid-cols-4 gap-3">
                   {[
-                    { id: 'coating', name: '코팅', icon: <Layers className="w-5 h-5" />, active: pattern === 'DESIGN_CARD' ? selectedOptions['코팅'] !== '없음' : (selectedOptions['코팅 종류'] !== '없음' || selectedOptions['코팅'] !== '없음'), hidden: product.id === 'bc-premium' },
-                    { id: 'rounding', name: '귀돌이', icon: <Scissors className="w-5 h-5" />, active: selectedOptions['귀돌이 사용'] === '있음' },
-                    { id: 'punching', name: '타공', icon: <Droplets className="w-5 h-5" />, active: selectedOptions['타공 사용'] === '있음', hidden: pattern === 'DESIGN_CARD' },
-                    { id: 'creasing', name: '오시', icon: <FileText className="w-5 h-5" />, active: selectedOptions['오시 사용'] === '있음', hidden: pattern === 'DESIGN_CARD' || pattern === 'BUSINESS_CARD' },
-                    { id: 'effect', name: '효과', icon: <Sparkles className="w-5 h-5" />, active: selectedOptions['후가공 효과'] !== '없음', hidden: pattern !== 'POSTCARD' && pattern !== 'BUSINESS_CARD' },
-                    { id: 'case', name: '케이스', icon: <Package className="w-5 h-5" />, active: selectedOptions['명함케이스'] !== '없음', hidden: pattern === 'DESIGN_CARD' || pattern === 'POSTCARD' }
+                    { id: 'coating', name: '코팅', icon: <Layers className="w-5 h-5" />, active: pattern === 'DESIGN_CARD' ? selectedOptions['코팅'] !== '없음' : (selectedOptions['코팅 종류'] !== '없음' || selectedOptions['코팅'] !== '없음'), hidden: !product.options.some(o => o.name === '코팅' || o.name === '코팅 종류') },
+                    { id: 'rounding', name: '귀돌이', icon: <Scissors className="w-5 h-5" />, active: selectedOptions['귀돌이 사용'] === '있음', hidden: !product.options.some(o => o.name === '귀돌이 사용') },
+                    { id: 'punching', name: '타공', icon: <Droplets className="w-5 h-5" />, active: selectedOptions['타공 사용'] === '있음', hidden: !product.options.some(o => o.name === '타공 사용') },
+                    { id: 'creasing', name: '오시', icon: <FileText className="w-5 h-5" />, active: selectedOptions['오시 사용'] === '있음', hidden: !product.options.some(o => o.name === '오시 사용') },
+                    { id: 'effect', name: '효과', icon: <Sparkles className="w-5 h-5" />, active: selectedOptions['후가공 효과'] !== '없음', hidden: !product.options.some(o => o.name === '후가공 효과') },
+                    { id: 'case', name: '케이스', icon: <Package className="w-5 h-5" />, active: selectedOptions['명함케이스'] !== '없음', hidden: !product.options.some(o => o.name === '명함케이스') }
                   ].filter(item => !item.hidden).map(item => {
                     const isExpanded = expandedPostOption === item.id;
                     return (
@@ -1047,7 +1049,8 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                      !['재단 방식', '코팅 유무', '후가공 옵션', '화이트 인쇄', '넘버링', '스코딕스', '포장 옵션', '부분 UV', '모양코팅'].includes(opt.name);
             }
             if (pattern === 'POSTCARD') {
-              return !opt.name.includes('용지') && 
+              const hasPaperGroup = product.options.some(o => o.name === '용지 그룹');
+              return (hasPaperGroup ? !opt.name.includes('용지') : !['용지 그룹'].includes(opt.name)) && 
                      !opt.name.includes('코팅') && 
                      !opt.name.includes('귀돌이') && 
                      !opt.name.includes('타공') && 
