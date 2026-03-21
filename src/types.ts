@@ -1098,6 +1098,42 @@ export const PAPER_MATERIALS: PaperMaterial[] = [
     recommendedUse: '코스메틱, 향수, 프리미엄 패키지',
     precautions: '각도에 따라 은은한 블루 펄이 반짝입니다.',
     image: 'https://picsum.photos/seed/paper-sparkling/400/300'
+  },
+  {
+    id: 'hologram-sticker-paper',
+    group: '메탈/광택 특수 재질',
+    name: '홀로그램 스티커',
+    weight: '050g',
+    shortDescription: '무지개빛 반짝임',
+    description: '빛의 각도에 따라 무지개빛으로 반짝이는 홀로그램 원단입니다.',
+    waterproof: true,
+    tearResistant: true,
+    transparent: false,
+    removable: false,
+    metal: true,
+    premium: false,
+    whiteInkRecommended: true,
+    recommendedUse: '굿즈, 캐릭터 스티커, 포인트 라벨',
+    precautions: '패턴에 따라 인쇄 색감이 달라질 수 있습니다.',
+    image: 'https://picsum.photos/seed/paper-hologram/400/300'
+  },
+  {
+    id: 'cold-yupo-sticker',
+    group: '방수/합성지',
+    name: '냉동 유포지',
+    weight: '080g',
+    shortDescription: '냉동 환경 최적화',
+    description: '강력한 저온 점착제를 사용하여 냉동 식품 패키지에 적합한 유포지입니다.',
+    waterproof: true,
+    tearResistant: true,
+    transparent: false,
+    removable: false,
+    metal: false,
+    premium: false,
+    whiteInkRecommended: false,
+    recommendedUse: '냉동 식품, 냉장 보관 용기',
+    precautions: '부착 시 표면의 물기를 제거해 주세요.',
+    image: 'https://picsum.photos/seed/paper-cold-yupo/400/300'
   }
 ];
 
@@ -1122,7 +1158,7 @@ export const CATEGORIES: Category[] = [
     subCategories: [
       {
         groupName: '자유형 스티커',
-        items: ['자유형 스티커', '투명 자유형 스티커', '투명 후면인쇄', '홀로그램 스티커', '다양한 모양 스티커']
+        items: ['자유형 스티커', '투명 자유형 스티커', '투명 배면 스티커', '홀로그램 스티커', '다양한 모양 스티커']
       },
       {
         groupName: '규격형 스티커',
@@ -1137,8 +1173,8 @@ export const CATEGORIES: Category[] = [
         items: ['금광 PET', '은광 PET', '은무 PET', '그문드 라벨', '금 라벨지', '은 라벨지', '동 라벨지']
       },
       {
-        groupName: '조각형 스티커',
-        items: ['조각형 스티커']
+        groupName: '조각 스티커',
+        items: ['조각 스티커']
       },
       {
         groupName: 'UV 스티커',
@@ -1289,7 +1325,7 @@ export const SUBCATEGORY_METADATA: Record<string, SubCategoryMetadata> = {
     tagline: '배경이 비치는 투명한 자유형 스티커.',
     description: '투명 PET 재질을 사용하여 배경이 비치는 독특한 느낌의 자유형 스티커입니다.'
   },
-  '투명 후면인쇄': {
+  '투명 배면 스티커': {
     tagline: '유리 안쪽에서 부착하는 투명 스티커.',
     description: '투명 재질의 뒷면에 인쇄하여 유리창 안쪽에서 부착 시 밖에서 정방향으로 보이게 제작합니다.'
   },
@@ -1357,7 +1393,7 @@ export const SUBCATEGORY_METADATA: Record<string, SubCategoryMetadata> = {
     tagline: '엔틱하고 빈티지한 브론즈 메탈 느낌.',
     description: '동색 포일 가공으로 수제 맥주나 가죽 제품 등 엔틱한 디자인에 잘 어울립니다.'
   },
-  '조각형 스티커': {
+  '조각 스티커': {
     tagline: '하나씩 낱개로, 배포용 최적.',
     description: '한 장씩 낱개로 재단되어 배포나 판매용으로 적합한 스티커입니다. 배경지까지 함께 재단되어 깔끔합니다.'
   },
@@ -1432,6 +1468,7 @@ export const STICKER_COMMON_OPTIONS = {
     name: '코팅 유무',
     type: 'radio' as const,
     values: [
+      { label: '없음', priceModifier: 0 },
       { label: '무광 코팅', priceModifier: 0 },
       { label: '유광 코팅', priceModifier: 0 },
     ]
@@ -1441,6 +1478,10 @@ export const STICKER_COMMON_OPTIONS = {
     type: 'select' as const,
     values: [
       { label: '없음', priceModifier: 0 },
+      { label: '금박', priceModifier: 15000 },
+      { label: '은박', priceModifier: 15000 },
+      { label: '형압', priceModifier: 20000 },
+      { label: '귀도리', priceModifier: 5000 },
     ]
   }
 };
@@ -1451,7 +1492,7 @@ export const STICKER_COMMON_OPTIONS = {
 export const getStickerMaterials = (type: 'standard' | 'free' | 'transparent' | 'premium' | 'special' | 'outdoor' | 'removable' | 'magnetic') => {
   switch (type) {
     case 'standard':
-      return PAPER_MATERIALS.filter(m => !m.premium && !m.transparent && !m.metal && !m.removable);
+      return PAPER_MATERIALS.filter(m => !m.premium && !m.transparent && !m.metal && !m.removable && !m.name.includes('냉동'));
     case 'free':
       return PAPER_MATERIALS.filter(m => !m.premium && !m.metal);
     case 'transparent':
@@ -1459,7 +1500,7 @@ export const getStickerMaterials = (type: 'standard' | 'free' | 'transparent' | 
     case 'premium':
       return PAPER_MATERIALS.filter(m => m.premium);
     case 'special':
-      return PAPER_MATERIALS.filter(m => m.metal);
+      return PAPER_MATERIALS.filter(m => m.metal || m.name.includes('홀로그램') || m.name.includes('냉동'));
     case 'outdoor':
       return PAPER_MATERIALS.filter(m => m.waterproof && m.tearResistant);
     case 'removable':
@@ -1842,8 +1883,8 @@ export const PRODUCTS: Product[] = [
     id: 'stk-piece',
     name: '조각 스티커',
     category: 'sticker',
-    subCategory: '조각형 스티커',
-    ...SUBCATEGORY_METADATA['조각형 스티커'],
+    subCategory: '조각 스티커',
+    ...SUBCATEGORY_METADATA['조각 스티커'],
     image: 'https://picsum.photos/seed/sticker-piece/800/800',
     minQuantity: 50,
     basePrice: 8000,
@@ -1891,7 +1932,7 @@ export const PRODUCTS: Product[] = [
     id: 'stk-roll',
     name: '롤 스티커',
     category: 'sticker',
-    subCategory: '용도형 스티커',
+    subCategory: '롤 스티커',
     ...SUBCATEGORY_METADATA['롤 스티커'],
     image: 'https://picsum.photos/seed/sticker-roll/800/800',
     minQuantity: 1000,
