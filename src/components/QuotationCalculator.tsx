@@ -16,7 +16,8 @@ import {
   Zap,
   Package,
   Paintbrush,
-  Droplets
+  Droplets,
+  HelpCircle
 } from 'lucide-react';
 import { Product, Quotation, PAPER_MATERIALS } from '../types';
 
@@ -48,8 +49,20 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
   const [expandedPostOption, setExpandedPostOption] = useState<string | null>(null);
 
+  const getLayoutPattern = (product: Product) => {
+    if (product.category === 'sticker') return 'STICKER';
+    if (product.category === 'card-paper' || product.id === 'memo-standard') return 'PAPER_GOODS';
+    if (product.category === 'binding-booklet' || product.id === 'note-spring') return 'BINDING_GOODS';
+    if (product.category === 'poster-promo') return 'LARGE_FORMAT';
+    if (product.category === 'package-supply') return 'PACKAGE';
+    return 'DEFAULT';
+  };
+
+  const pattern = getLayoutPattern(product);
+
   // Initialize expanded group based on default selected material
   useEffect(() => {
+    if (pattern !== 'STICKER') return;
     const materialOption = product.options.find(opt => opt.name.includes('재질') || opt.name.includes('용지'));
     if (materialOption) {
       const selectedValue = selectedOptions[materialOption.name];
@@ -60,7 +73,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
         setExpandedGroup('일반/기본 용지');
       }
     }
-  }, [product.id]);
+  }, [product.id, pattern]);
 
   useEffect(() => {
     let pricePerUnit = product.basePrice;
@@ -189,8 +202,8 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
 
         {/* Options */}
         <div className="space-y-8">
-          {/* 1. Material Selection (Always First and Prominent) */}
-          {product.options.filter(opt => opt.name.includes('재질') || opt.name.includes('용지')).map((option) => (
+          {/* 1. Material Selection (Special UI for Stickers) */}
+          {pattern === 'STICKER' && product.options.filter(opt => opt.name.includes('재질') || opt.name.includes('용지')).map((option) => (
             <div key={option.name} className="space-y-4">
               <div className="flex items-center gap-2">
                 <div className="w-1 h-4 bg-emerald-500 rounded-full" />
@@ -284,12 +297,15 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
             </div>
           ))}
 
-          {/* 2. Standard Options (Size, etc.) */}
-          {product.options.filter(opt => 
-            !opt.name.includes('재질') && 
-            !opt.name.includes('용지') && 
-            !['재단 방식', '코팅 유무', '후가공 옵션', '화이트 인쇄', '넘버링', '스코딕스', '포장 옵션', '부분 UV', '모양코팅'].includes(opt.name)
-          ).map((option) => (
+          {/* 2. Standard Options */}
+          {product.options.filter(opt => {
+            if (pattern === 'STICKER') {
+              return !opt.name.includes('재질') && 
+                     !opt.name.includes('용지') && 
+                     !['재단 방식', '코팅 유무', '후가공 옵션', '화이트 인쇄', '넘버링', '스코딕스', '포장 옵션', '부분 UV', '모양코팅'].includes(opt.name);
+            }
+            return !['재단 방식', '코팅 유무', '후가공 옵션', '화이트 인쇄', '넘버링', '스코딕스', '포장 옵션', '부분 UV', '모양코팅'].includes(opt.name);
+          }).map((option) => (
             <div key={option.name} className="space-y-4">
               <label className="text-xs font-black text-zinc-900 uppercase tracking-widest block">
                 {option.name}
@@ -358,7 +374,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
           {/* 3. Post-processing Section (후가공) */}
           {(() => {
             const postProcessingOptions = product.options.filter(opt => 
-              ['재단 방식', '코팅 유무', '후가공 옵션', '화이트 인쇄', '넘버링', '스코딕스', '포장 옵션', '부분 UV'].includes(opt.name)
+              ['재단 방식', '코팅 유무', '후가공 옵션', '후가공', '화이트 인쇄', '넘버링', '스코딕스', '포장 옵션', '부분 UV', '모양코팅', '표지 코팅', '코팅 방식'].includes(opt.name)
             );
 
             // Special check for White Ink: only show if material is transparent
@@ -376,8 +392,8 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
 
             const getIcon = (name: string) => {
               if (name === '재단 방식') return <Scissors className="w-5 h-5" />;
-              if (name === '코팅 유무') return <Layers className="w-5 h-5" />;
-              if (name === '후가공 옵션' || name === '부분 UV') return <Sparkles className="w-5 h-5" />;
+              if (name === '코팅 유무' || name === '표지 코팅' || name === '코팅 방식') return <Layers className="w-5 h-5" />;
+              if (name === '후가공 옵션' || name === '후가공' || name === '부분 UV') return <Sparkles className="w-5 h-5" />;
               if (name === '화이트 인쇄') return <Paintbrush className="w-5 h-5" />;
               if (name === '넘버링') return <Hash className="w-5 h-5" />;
               if (name === '스코딕스') return <Zap className="w-5 h-5" />;
@@ -387,8 +403,8 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
 
             const getDisplayName = (name: string) => {
               if (name === '재단 방식') return '재단';
-              if (name === '코팅 유무') return '코팅';
-              if (name === '후가공 옵션') return '박 가공';
+              if (name === '코팅 유무' || name === '표지 코팅' || name === '코팅 방식') return '코팅';
+              if (name === '후가공 옵션' || name === '후가공') return '후가공';
               if (name === '화이트 인쇄') return '화이트인쇄';
               if (name === '포장 옵션') return '개별포장';
               return name;
@@ -621,10 +637,14 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
               <span>장바구니</span>
             </button>
             <button className="py-4 bg-emerald-50 text-emerald-700 font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-emerald-100 transition-all border border-emerald-100">
-              <CheckCircle2 className="w-4 h-4" />
-              <span>바로구매</span>
+              <HelpCircle className="w-4 h-4" />
+              <span>1:1 문의</span>
             </button>
           </div>
+          <button className="w-full py-4 bg-zinc-100 text-zinc-600 font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-zinc-200 transition-all">
+            <CheckCircle2 className="w-4 h-4" />
+            <span>바로구매</span>
+          </button>
         </div>
       </div>
     </div>

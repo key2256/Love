@@ -11,6 +11,7 @@ import {
   HelpCircle, 
   ArrowRight,
   Info,
+  FileText,
   Droplets,
   Scissors,
   Layers,
@@ -40,6 +41,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, o
   const similarProducts = PRODUCTS.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
 
   const isSticker = product.category === 'sticker';
+  const hasWarnings = product.warnings && product.warnings.length > 0;
 
   const materialGroups: PaperMaterial['group'][] = [
     '일반/기본 용지',
@@ -173,6 +175,45 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, o
                       </div>
                     ))}
                   </div>
+                </div>
+
+                {hasWarnings && (
+                  <div className="space-y-4">
+                    <h3 className="text-xs font-black text-zinc-900 uppercase tracking-widest">제작 시 유의사항</h3>
+                    <div className="p-6 rounded-2xl bg-amber-50 border border-amber-100 space-y-3">
+                      {product.warnings?.map((w, i) => (
+                        <div key={i} className="flex gap-3 text-xs text-amber-800/80 leading-relaxed">
+                          <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+                          <span>{w}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {product.notes && product.notes.length > 0 && (
+                  <div className="space-y-4">
+                    <h3 className="text-xs font-black text-zinc-900 uppercase tracking-widest">참고사항</h3>
+                    <div className="p-6 rounded-2xl bg-zinc-50 border border-zinc-100 space-y-3">
+                      {product.notes.map((note, i) => (
+                        <div key={i} className="flex gap-3 text-xs text-zinc-600 leading-relaxed">
+                          <FileText className="w-4 h-4 text-zinc-400 shrink-0" />
+                          <span>{note}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="pt-4 flex flex-col gap-3">
+                  <button className="w-full py-4 rounded-2xl bg-zinc-900 text-white font-bold text-sm flex items-center justify-center gap-2 hover:bg-zinc-800 transition-all">
+                    <FileUp className="w-4 h-4" />
+                    작업 가이드 다운로드
+                  </button>
+                  <button className="w-full py-4 rounded-2xl bg-white border-2 border-zinc-900 text-zinc-900 font-bold text-sm flex items-center justify-center gap-2 hover:bg-zinc-50 transition-all">
+                    <HelpCircle className="w-4 h-4" />
+                    1:1 제작 문의하기
+                  </button>
                 </div>
               </div>
             )}

@@ -20,6 +20,7 @@ export interface Product {
   isNew?: boolean;
   recommendation?: string;
   badges?: string[];
+  notes?: string[];
 }
 
 export interface Quotation {
@@ -1999,6 +2000,15 @@ export const PRODUCTS: Product[] = [
         ]
       },
       {
+        name: '용지',
+        type: 'select',
+        values: [
+          { label: '모조지 80g', priceModifier: 0 },
+          { label: '모조지 100g', priceModifier: 1000 },
+          { label: '색지 (파스텔)', priceModifier: 2000 },
+        ]
+      },
+      {
         name: '매수',
         type: 'radio',
         values: [
@@ -2008,7 +2018,16 @@ export const PRODUCTS: Product[] = [
     ],
     features: ['부드러운 상단 풀바름', '백색 모조지 80g', '풀컬러 인쇄'],
     leadTime: '4~6 영업일',
-    badges: ['사무용', '가성비', '선물용']
+    badges: ['사무용', '가성비', '선물용'],
+    recommendation: '가장 많이 쓰이는 사이즈는 "80x80mm"입니다. 메모하기 적당하며 휴대성도 좋습니다.',
+    warnings: [
+      '한 장씩 떼어 쓰는 떡제본 방식으로, 실제 제본 부위는 인쇄가 되지 않습니다.',
+      '모조지 특성상 잉크 흡수율이 높아 색상이 다소 차분하게 나올 수 있습니다.'
+    ],
+    notes: [
+      '상단 떡제본(풀바름) 위치를 고려하여 디자인하세요.',
+      '기본 100매 1권 단위로 제작됩니다.'
+    ]
   },
   {
     id: 'note-spring',
@@ -2027,6 +2046,7 @@ export const PRODUCTS: Product[] = [
         values: [
           { label: 'A5 (148x210)', priceModifier: 0 },
           { label: 'B5 (182x257)', priceModifier: 5000 },
+          { label: 'A4 (210x297)', priceModifier: 8000 },
         ]
       },
       {
@@ -2036,11 +2056,38 @@ export const PRODUCTS: Product[] = [
           { label: '무광 코팅', priceModifier: 0 },
           { label: '유광 코팅', priceModifier: 0 },
         ]
+      },
+      {
+        name: '내지 매수',
+        type: 'select',
+        values: [
+          { label: '40매', priceModifier: 0 },
+          { label: '60매', priceModifier: 3000 },
+          { label: '80매', priceModifier: 6000 },
+        ]
+      },
+      {
+        name: '스프링 색상',
+        type: 'radio',
+        values: [
+          { label: '실버', priceModifier: 0 },
+          { label: '화이트', priceModifier: 0 },
+          { label: '블랙', priceModifier: 0 },
+        ]
       }
     ],
     features: ['트윈 와이어 스프링', '단단한 표지', '내지 모조지 80g'],
     leadTime: '5~7 영업일',
-    badges: ['홍보용', '튼튼함', '필기최적']
+    badges: ['홍보용', '튼튼함', '필기최적'],
+    recommendation: '학습용이나 업무용으로는 "B5" 사이즈를, 휴대용으로는 "A5" 사이즈를 추천합니다.',
+    warnings: [
+      '스프링 타공 부위에 중요한 디자인이나 텍스트가 걸리지 않도록 주의하세요.',
+      '표지 코팅은 내구성을 위해 무광/유광 중 하나를 반드시 선택하는 것이 좋습니다.'
+    ],
+    notes: [
+      '내지는 기본 무지(인쇄 없음) 기준이며, 내지 인쇄 필요 시 별도 문의 바랍니다.',
+      '스프링 색상은 기본 실버/화이트/블랙 중 선택 가능합니다.'
+    ]
   },
   {
     id: 'binding-saddle',
@@ -2054,18 +2101,56 @@ export const PRODUCTS: Product[] = [
     basePrice: 35000,
     options: [
       {
+        name: '규격',
+        type: 'select',
+        values: [
+          { label: 'A4 (210x297)', priceModifier: 0 },
+          { label: 'A5 (148x210)', priceModifier: -5000 },
+          { label: 'B5 (182x257)', priceModifier: -2000 },
+        ]
+      },
+      {
         name: '페이지 수',
         type: 'select',
         values: [
           { label: '8페이지', priceModifier: 0 },
           { label: '12페이지', priceModifier: 5000 },
           { label: '16페이지', priceModifier: 10000 },
+          { label: '20페이지', priceModifier: 15000 },
+          { label: '24페이지', priceModifier: 20000 },
+        ]
+      },
+      {
+        name: '표지 용지',
+        type: 'select',
+        values: [
+          { label: '아트지 200g', priceModifier: 0 },
+          { label: '스노우 200g', priceModifier: 0 },
+          { label: '랑데뷰 210g', priceModifier: 3000 },
+        ]
+      },
+      {
+        name: '내지 용지',
+        type: 'select',
+        values: [
+          { label: '아트지 100g', priceModifier: 0 },
+          { label: '스노우 100g', priceModifier: 0 },
+          { label: '모조지 80g', priceModifier: 0 },
         ]
       }
     ],
     features: ['깔끔한 스테이플 마감', '완전 펼침 가능', '빠른 제작'],
     leadTime: '3~5 영업일',
-    badges: ['카탈로그', '실용적', '빠른제작']
+    badges: ['카탈로그', '실용적', '빠른제작'],
+    recommendation: '가벼운 홍보물이나 메뉴판용으로는 "8페이지" 또는 "12페이지" 중철 제본이 가장 경제적입니다.',
+    warnings: [
+      '중철 제본은 반드시 4의 배수 페이지로 구성되어야 합니다.',
+      '페이지 수가 너무 많으면 책이 벌어질 수 있으니 32페이지 이내를 권장합니다.'
+    ],
+    notes: [
+      '표지와 내지 용지를 다르게 구성하고 싶으시면 별도 문의 주세요.',
+      '세로형 제본이 기본이며 가로형은 별도 상담이 필요합니다.'
+    ]
   },
   {
     id: 'poster-standard',
@@ -2090,7 +2175,16 @@ export const PRODUCTS: Product[] = [
     ],
     features: ['고해상도 인쇄', '다양한 용지 선택', '소량 제작 가능'],
     leadTime: '2~3 영업일',
-    badges: ['이벤트용', '고화질', '소량가능']
+    badges: ['이벤트용', '고화질', '소량가능'],
+    recommendation: '가장 표준적인 홍보용 포스터는 "A2" 사이즈입니다. 시인성이 좋고 게시하기 편리합니다.',
+    warnings: [
+      '대형 출력 특성상 해상도가 낮은 이미지는 깨져 보일 수 있습니다.',
+      '말아서 배송되므로 수령 후 평평하게 펴서 보관해 주세요.'
+    ],
+    notes: [
+      '실외 게시용은 유포지나 합성지 재질을 추천드립니다.',
+      '대량 인쇄(옵셋)는 별도 문의 바랍니다.'
+    ]
   },
   {
     id: 'paper-postcard',
@@ -2134,9 +2228,14 @@ export const PRODUCTS: Product[] = [
     features: ['고급 수입지 사용', '선명한 색상 표현', '다양한 사이즈'],
     leadTime: '3~4 영업일',
     badges: ['수입지 4종~', '양면 인쇄', '파일 업로드'],
+    recommendation: '전시회나 작품 엽서용으로는 "랑데뷰 240g"을 추천합니다. 종이 본연의 질감이 살아나 작품의 깊이를 더해줍니다.',
     warnings: [
       '어두운 배경색은 재단 시 터짐 현상 발생 가능',
       '수입지는 종이 결에 따라 인쇄 느낌이 다를 수 있음'
+    ],
+    notes: [
+      '엽서 뒷면 디자인 시 우표 칸이나 주소 줄 위치를 고려하세요.',
+      '대량 제작 시 별도 견적 문의 바랍니다.'
     ]
   },
   {
@@ -2200,10 +2299,15 @@ export const PRODUCTS: Product[] = [
     features: ['1장부터 제작 가능', '다양한 용지 선택', '정밀 재단'],
     leadTime: '1~2 영업일',
     badges: ['재질 4종~', '후가공 선택', '빠른 제작'],
+    recommendation: '가장 대중적인 명함 제작에는 "스노우 250g"에 "무광 코팅" 옵션을 추천합니다. 차분하고 신뢰감 있는 인상을 줍니다.',
     warnings: [
       '재단 공정상 1~2mm 밀림 현상이 있을 수 있습니다.',
       '모니터 해상도에 따라 실제 제품과 색상 차이가 있을 수 있습니다.',
       '명함 케이스는 기본 제공되지 않습니다.'
+    ],
+    notes: [
+      '작업 사이즈는 92x52mm, 재단 사이즈는 90x50mm입니다.',
+      '중요한 텍스트는 재단선 안쪽으로 3mm 이상 여유를 두세요.'
     ]
   },
   {
@@ -2339,9 +2443,14 @@ export const PRODUCTS: Product[] = [
     ],
     features: ['표준 규격 55x85mm', '양면 칼라 기본', '고급 코팅 마감'],
     leadTime: '4~5 영업일',
+    recommendation: '아이돌 굿즈용 포토카드라면 "유광 코팅"을 추천합니다. 색감이 더욱 선명하고 화려하게 표현됩니다.',
     warnings: [
       '코팅 종류에 따라 색감이 다르게 보일 수 있음',
       '재단 공정상 1~2mm 밀림 현상 발생 가능'
+    ],
+    notes: [
+      '귀도리(라운드) 처리는 기본 사양에 포함되어 있습니다.',
+      '홀로그램 코팅 선택 시 인쇄 색상이 다소 어두워 보일 수 있습니다.'
     ]
   },
   {
@@ -2451,9 +2560,14 @@ export const PRODUCTS: Product[] = [
     features: ['고강도 용지 사용', '정밀 도송 가공', '다양한 후가공'],
     leadTime: '7~10 영업일',
     badges: ['재질 선택 가능', '후가공 가능', '대량 제작 문의'],
+    recommendation: '고급스러운 패키징을 원하신다면 "로얄아이보리 350g"에 "무광 라미네이팅"을 추천합니다.',
     warnings: [
       '박스 형태에 따라 칼선 제작 비용이 발생할 수 있습니다.',
       '인쇄 터짐 방지를 위해 코팅을 권장합니다.'
+    ],
+    notes: [
+      '박스 전개도(칼선) 데이터가 반드시 필요합니다.',
+      '샘플 제작 후 본 제작 진행을 권장드립니다.'
     ]
   },
   {
