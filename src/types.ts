@@ -1489,7 +1489,7 @@ export const STICKER_COMMON_OPTIONS = {
 /**
  * 스티커 종류별 재질 리스트 반환
  */
-export const getStickerMaterials = (type: 'standard' | 'free' | 'transparent' | 'premium' | 'special' | 'outdoor' | 'removable' | 'magnetic') => {
+export const getStickerMaterials = (type: 'standard' | 'free' | 'transparent' | 'premium' | 'special' | 'outdoor' | 'removable' | 'magnetic' | 'metal' | 'gmund') => {
   switch (type) {
     case 'standard':
       return PAPER_MATERIALS.filter(m => !m.premium && !m.transparent && !m.metal && !m.removable && !m.name.includes('냉동'));
@@ -1501,6 +1501,10 @@ export const getStickerMaterials = (type: 'standard' | 'free' | 'transparent' | 
       return PAPER_MATERIALS.filter(m => m.premium);
     case 'special':
       return PAPER_MATERIALS.filter(m => m.metal || m.name.includes('홀로그램') || m.name.includes('냉동'));
+    case 'metal':
+      return PAPER_MATERIALS.filter(m => m.metal);
+    case 'gmund':
+      return PAPER_MATERIALS.filter(m => m.group === '프리미엄 라벨(GMUND)');
     case 'outdoor':
       return PAPER_MATERIALS.filter(m => m.waterproof && m.tearResistant);
     case 'removable':
@@ -1902,7 +1906,7 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: getStickerMaterials('special').map(m => ({
+        values: PAPER_MATERIALS.filter(m => !m.premium && !m.transparent).map(m => ({
           label: `${m.name} ${m.weight}`,
           priceModifier: m.group === '일반/기본 용지' ? 0 : 1500
         }))
@@ -2126,7 +2130,7 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: getStickerMaterials('special').filter(m => m.name.includes('유포') || m.name.includes('PET')).map(m => ({
+        values: PAPER_MATERIALS.filter(m => m.name.includes('유포') || m.name.includes('PET') || m.name.includes('아트지')).map(m => ({
           label: `${m.name} ${m.weight}`,
           priceModifier: 0
         }))
@@ -3013,7 +3017,7 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: getStickerMaterials('premium').filter(m => m.name === '금광 PET').map(m => ({
+        values: getStickerMaterials('metal').filter(m => m.name === '금광 PET').map(m => ({
           label: `${m.name} ${m.weight}`,
           priceModifier: 0
         }))
@@ -3039,7 +3043,7 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: getStickerMaterials('premium').filter(m => m.name === '은광 PET').map(m => ({
+        values: getStickerMaterials('metal').filter(m => m.name === '은광 PET').map(m => ({
           label: `${m.name} ${m.weight}`,
           priceModifier: 0
         }))
@@ -3065,7 +3069,7 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: getStickerMaterials('premium').filter(m => m.name === '은무 PET').map(m => ({
+        values: getStickerMaterials('metal').filter(m => m.name === '은무 PET').map(m => ({
           label: `${m.name} ${m.weight}`,
           priceModifier: 0
         }))
@@ -3091,9 +3095,9 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: getStickerMaterials('premium').filter(m => m.name.includes('그문드')).map(m => ({
+        values: getStickerMaterials('gmund').map(m => ({
           label: `${m.name} ${m.weight}`,
-          priceModifier: m.name === '그문드 화이트우드' ? 0 : 1000
+          priceModifier: m.name === '(GMUND) 화이트우드' ? 0 : 1000
         }))
       },
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
@@ -3117,7 +3121,7 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: getStickerMaterials('premium').filter(m => m.name === '금 라벨지').map(m => ({
+        values: getStickerMaterials('metal').filter(m => m.name === '금 라벨지').map(m => ({
           label: `${m.name} ${m.weight}`,
           priceModifier: 0
         }))
@@ -3143,7 +3147,7 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: getStickerMaterials('premium').filter(m => m.name === '은 라벨지').map(m => ({
+        values: getStickerMaterials('metal').filter(m => m.name === '은 라벨지').map(m => ({
           label: `${m.name} ${m.weight}`,
           priceModifier: 0
         }))
@@ -3169,7 +3173,7 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: getStickerMaterials('premium').filter(m => m.name === '동 라벨지').map(m => ({
+        values: getStickerMaterials('metal').filter(m => m.name === '동 라벨지').map(m => ({
           label: `${m.name} ${m.weight}`,
           priceModifier: 0
         }))
