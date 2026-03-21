@@ -594,37 +594,107 @@ export const CATEGORIES: Category[] = [
     ]
   },
   { 
-    id: 'paper', 
-    name: '카드/지류', 
+    id: 'card-paper', 
+    name: '카드 · 지류', 
     icon: 'FileText', 
     description: '명함, 엽서, 포토카드 등 인쇄 굿즈의 기본',
     entryPhrase: '감성을 담은 지류 굿즈의 완성',
-    subCategories: ['일반 명함', '프리미엄 명함', '접지 명함', '디자인 템플릿 명함', '엽서', '포토카드']
+    subCategories: [
+      {
+        groupName: '명함',
+        items: ['일반 명함', '프리미엄 명함', '접지 명함', '디자인 템플릿 명함']
+      },
+      {
+        groupName: '엽서',
+        items: ['일반 엽서', '미니 엽서', '아트지 엽서', '수입지 엽서']
+      },
+      {
+        groupName: '포토카드',
+        items: ['기본 포토카드', '홀로그램 포토카드', '라운드 포토카드', '특전 포토']
+      }
+    ]
   },
   { 
-    id: 'goods', 
-    name: '아크릴 굿즈', 
-    icon: 'Gift', 
-    description: '키링과 스탠드 중심의 커스텀 아크릴 굿즈',
-    entryPhrase: '영롱하게 빛나는 아크릴 굿즈',
-    subCategories: ['아크릴 키링', '유색 아크릴 키링', '글리터 아크릴 키링', '자개 아크릴 키링', '렌티큘러 키링', '아크릴 스탠드']
+    id: 'memo-note', 
+    name: '메모지 · 노트', 
+    icon: 'BookOpen', 
+    description: '떡메모지와 다양한 제본 방식의 노트 제작',
+    entryPhrase: '기록의 즐거움을 더하는 메모지와 노트',
+    subCategories: [
+      {
+        groupName: '떡메모지',
+        items: ['일반 떡메모지', '디자인 떡메모지', '소량 떡메모지']
+      },
+      {
+        groupName: '노트',
+        items: ['스프링 노트', '실제본 노트', '중철 노트', '하드커버 노트']
+      }
+    ]
   },
   { 
-    id: 'package', 
-    name: '패키지', 
-    icon: 'Box', 
-    description: '브랜드의 가치를 높여주는 고품질 패키지 제작',
-    entryPhrase: '완성도 높은 패키지의 시작',
-    subCategories: ['박스', '슬리브', '택', '라벨', '소형박스']
+    id: 'binding-booklet', 
+    name: '제본 · 책자', 
+    icon: 'Book', 
+    description: '소량 책자부터 대량 출판물까지 완벽한 제본',
+    entryPhrase: '당신의 이야기를 한 권의 책으로',
+    subCategories: [
+      {
+        groupName: '제본 방식',
+        items: ['중철제본', '무선제본', '스프링제본', '양장제본']
+      },
+      {
+        groupName: '책자 종류',
+        items: ['카탈로그', '브로슈어', '포트폴리오', '작품집']
+      }
+    ]
+  },
+  { 
+    id: 'poster-promo', 
+    name: '포스터 · 홍보물', 
+    icon: 'Image', 
+    description: '시선을 사로잡는 포스터와 다양한 홍보 인쇄물',
+    entryPhrase: '메시지를 전달하는 가장 강력한 시각 매체',
+    subCategories: [
+      {
+        groupName: '포스터',
+        items: ['일반 포스터', '대형 포스터', '패브릭 포스터', '디자인 포스터']
+      },
+      {
+        groupName: '홍보물',
+        items: ['리플렛', '전단지', '티켓', '홀더']
+      }
+    ]
+  },
+  { 
+    id: 'package-supply', 
+    name: '패키지 · 부자재', 
+    icon: 'Package', 
+    description: '브랜드의 가치를 높이는 패키지와 다양한 부자재',
+    entryPhrase: '브랜드의 완성, 고품격 패키지',
+    subCategories: [
+      {
+        groupName: '패키지',
+        items: ['쇼핑백', '봉투', '포장지', '박스']
+      },
+      {
+        groupName: '부자재',
+        items: ['택(Tag)', '헤더택', '띠지', '라벨']
+      }
+    ]
   },
   { 
     id: 'custom', 
     name: '맞춤제작', 
-    icon: 'MessageSquare', 
-    description: '규격 외 제작, 대량 발주, 조합형 굿즈는 별도 상담으로 진행',
-    entryPhrase: '특별한 프로젝트를 위한 맞춤 상담',
-    subCategories: ['규격 외 제작', '대량 제작', '조합형 굿즈', '패키지/세트 제작', '별도 상담 제작']
-  },
+    icon: 'Settings', 
+    description: '규격 외 상품이나 대량 제작 상담',
+    entryPhrase: '상상하는 모든 것, 완두프린트와 함께',
+    subCategories: [
+      {
+        groupName: '상담 제작',
+        items: ['별도 상담 제작', '대량 제작 문의', '샘플 제작']
+      }
+    ]
+  }
 ];
 
 export const ORDER_STEPS: OrderStep[] = [
@@ -690,13 +760,53 @@ export const SUBCATEGORY_METADATA: Record<string, SubCategoryMetadata> = {
     tagline: '흔적 없이 깔끔하게, 떼었다 붙였다.',
     description: '제거 시 끈적임이 남지 않아 노트북이나 전자기기에 부착하기 좋습니다. 재부착이 가능하여 활용도가 높습니다.'
   },
-  '아크릴 키링': {
-    tagline: '영롱한 투명함, 나만의 굿즈.',
-    description: '고투명 아크릴에 배면 인쇄하여 제작하는 가장 인기 있는 굿즈입니다. 다양한 부자재와 조합이 가능합니다.'
+  '일반 명함': {
+    tagline: '가장 대중적인 명함, 가성비 최우수.',
+    description: '다양한 용지와 규격으로 제작 가능한 표준 명함입니다.'
   },
-  '포토카드': {
-    tagline: '덕질 필수템, 고화질 포토카드.',
-    description: '선명한 인쇄와 탄탄한 두께감으로 소장 가치를 높인 포토카드입니다. 다양한 코팅 옵션으로 분위기를 연출하세요.'
+  '프리미엄 명함': {
+    tagline: '고급 수입지와 후가공으로 완성하는 품격.',
+    description: '박, 형압 등 특별한 가공이 더해진 프리미엄 명함입니다.'
+  },
+  '일반 엽서': {
+    tagline: '소중한 마음을 담는 클래식 엽서.',
+    description: '표준 규격의 고품질 엽서 제작 서비스입니다.'
+  },
+  '기본 포토카드': {
+    tagline: '한 손에 쏙, 나만의 굿즈.',
+    description: '아이돌 굿즈나 명함 대용으로 인기 있는 포토카드입니다.'
+  },
+  '일반 떡메모지': {
+    tagline: '한 장씩 떼어 쓰는 편리한 메모지.',
+    description: '다양한 디자인으로 제작 가능한 표준 떡메모지입니다.'
+  },
+  '스프링 노트': {
+    tagline: '필기가 편한 스프링 제본 노트.',
+    description: '튼튼한 스프링으로 마감되어 펼침이 좋은 노트입니다.'
+  },
+  '중철제본': {
+    tagline: '가볍고 실용적인 중철 제본 책자.',
+    description: '카탈로그나 팜플렛 제작에 적합한 제본 방식입니다.'
+  },
+  '일반 포스터': {
+    tagline: '공간을 채우는 선명한 포스터.',
+    description: '다양한 사이즈로 제작 가능한 표준 포스터입니다.'
+  },
+  '쇼핑백': {
+    tagline: '브랜드의 가치를 담는 쇼핑백.',
+    description: '튼튼하고 고급스러운 맞춤형 종이 쇼핑백입니다.'
+  },
+  '봉투': {
+    tagline: '첫인상을 결정하는 고급스러운 봉투.',
+    description: '다양한 컬러와 재질로 제작하는 고품질 봉투입니다.'
+  },
+  '박스': {
+    tagline: '브랜드의 가치를 담는 완벽한 패키지.',
+    description: '상품의 가치를 높여주는 맞춤형 박스 제작 서비스입니다.'
+  },
+  '별도 상담 제작': {
+    tagline: '상상하는 모든 것, 맞춤 상담 제작.',
+    description: '규격 외 상품이나 복합 공정이 필요한 상품을 위한 전문가 상담 서비스입니다.'
   }
 };
 
@@ -1869,206 +1979,124 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
-    id: 'goods-keyring',
-    name: '아크릴 키링',
-    category: 'goods',
-    subCategory: '아크릴 키링',
-    tagline: '투명하고 영롱한 나만의 캐릭터 굿즈.',
-    description: '고품질 아크릴에 배면 인쇄 방식으로 제작되어 긁힘에 강하고 선명합니다.',
-    image: 'https://picsum.photos/seed/keyring/800/800',
-    minQuantity: 1,
-    basePrice: 3500,
-    options: [
-      {
-        name: '제품 종류',
-        type: 'select',
-        values: [
-          { label: '투명', priceModifier: 0 },
-          { label: '유색', priceModifier: 1000 },
-          { label: '글리터', priceModifier: 2000 },
-          { label: '자개', priceModifier: 3000 },
-          { label: '렌티큘러', priceModifier: 5000 },
-        ]
-      },
-      {
-        name: '인쇄 방식',
-        type: 'radio',
-        values: [
-          { label: '단면', priceModifier: 0 },
-          { label: '양면', priceModifier: 2000 },
-        ]
-      },
-      {
-        name: '제작 방식',
-        type: 'radio',
-        values: [
-          { label: '일반', priceModifier: 0 },
-          { label: '라미', priceModifier: 1500 },
-        ]
-      },
-      {
-        name: '부자재 선택',
-        type: 'select',
-        values: [
-          { label: '기본 고리', priceModifier: 0 },
-          { label: '카라비너', priceModifier: 500 },
-          { label: '컬러 와이어링', priceModifier: 800 },
-          { label: '구슬줄', priceModifier: 300 },
-        ]
-      }
-    ],
-    features: ['고선명 UV 인쇄', '정밀 레이저 커팅', '다양한 부자재'],
-    leadTime: '5~7 영업일',
-    badges: ['1개부터 제작', '라미 가공', '부자재 선택'],
-    warnings: [
-      '화이트 인쇄 없으면 이미지가 투명하게 비침',
-      '일반 방식은 인쇄면 노출 가능',
-      '라미 방식은 내구성 높음',
-      '키링 구멍 최소 규격 필요'
-    ]
-  },
-  {
-    id: 'goods-stand',
-    name: '아크릴 스탠드',
-    category: 'goods',
-    subCategory: '아크릴 스탠드',
-    tagline: '내 캐릭터가 살아 움직이는 듯한 입체감.',
-    description: '책상 위를 장식하기 좋은 아크릴 스탠드입니다. 본체와 받침대가 세트로 구성됩니다.',
-    image: 'https://picsum.photos/seed/stand/800/800',
-    minQuantity: 1,
-    basePrice: 5500,
+    id: 'memo-standard',
+    name: '일반 떡메모지',
+    category: 'memo-note',
+    subCategory: '일반 떡메모지',
+    tagline: '한 장씩 떼어 쓰는 편리한 메모지.',
+    description: '다양한 디자인으로 제작 가능한 표준 떡메모지입니다. 사무용, 선물용으로 인기가 높습니다.',
+    image: 'https://picsum.photos/seed/memo/800/800',
+    minQuantity: 40,
+    basePrice: 15000,
     options: [
       {
         name: '사이즈',
         type: 'select',
         values: [
-          { label: '50x50mm 이내', priceModifier: 0 },
-          { label: '100x100mm 이내', priceModifier: 5000 },
-          { label: '150x150mm 이내', priceModifier: 12000 },
+          { label: '80x80mm', priceModifier: 0 },
+          { label: '90x90mm', priceModifier: 1000 },
+          { label: '100x140mm', priceModifier: 3000 },
+        ]
+      },
+      {
+        name: '매수',
+        type: 'radio',
+        values: [
+          { label: '100매', priceModifier: 0 },
         ]
       }
     ],
-    features: ['입체 장식', '고선명 UV 인쇄', '정밀 레이저 커팅'],
-    leadTime: '5~7 영업일',
-    badges: ['1개부터 제작', '입체 굿즈', '데스크테리어'],
-    warnings: ['조립 시 무리한 힘을 가하면 아크릴이 파손될 수 있습니다.']
+    features: ['부드러운 상단 풀바름', '백색 모조지 80g', '풀컬러 인쇄'],
+    leadTime: '4~6 영업일',
+    badges: ['사무용', '가성비', '선물용']
   },
   {
-    id: 'goods-coaster',
-    name: '코스터',
-    category: 'goods',
-    subCategory: '코스터',
-    tagline: '카페 감성을 담은 나만의 컵받침.',
-    description: '종이, 아크릴, 고무 등 다양한 재질로 제작 가능한 코스터입니다. 카페 홍보물이나 선물용으로 좋습니다.',
-    image: 'https://picsum.photos/seed/coaster/800/800',
+    id: 'note-spring',
+    name: '스프링 노트',
+    category: 'memo-note',
+    subCategory: '스프링 노트',
+    tagline: '필기가 편한 스프링 제본 노트.',
+    description: '튼튼한 스프링으로 마감되어 펼침이 좋은 노트입니다. 학원, 기업 홍보용으로 좋습니다.',
+    image: 'https://picsum.photos/seed/note/800/800',
+    minQuantity: 50,
+    basePrice: 25000,
+    options: [
+      {
+        name: '사이즈',
+        type: 'select',
+        values: [
+          { label: 'A5 (148x210)', priceModifier: 0 },
+          { label: 'B5 (182x257)', priceModifier: 5000 },
+        ]
+      },
+      {
+        name: '표지 코팅',
+        type: 'radio',
+        values: [
+          { label: '무광 코팅', priceModifier: 0 },
+          { label: '유광 코팅', priceModifier: 0 },
+        ]
+      }
+    ],
+    features: ['트윈 와이어 스프링', '단단한 표지', '내지 모조지 80g'],
+    leadTime: '5~7 영업일',
+    badges: ['홍보용', '튼튼함', '필기최적']
+  },
+  {
+    id: 'binding-saddle',
+    name: '중철제본 책자',
+    category: 'binding-booklet',
+    subCategory: '중철제본',
+    tagline: '가볍고 실용적인 중철 제본 책자.',
+    description: '카탈로그나 팜플렛 제작에 적합한 제본 방식입니다. 페이지 수가 적은 책자에 최적입니다.',
+    image: 'https://picsum.photos/seed/booklet/800/800',
     minQuantity: 10,
+    basePrice: 35000,
+    options: [
+      {
+        name: '페이지 수',
+        type: 'select',
+        values: [
+          { label: '8페이지', priceModifier: 0 },
+          { label: '12페이지', priceModifier: 5000 },
+          { label: '16페이지', priceModifier: 10000 },
+        ]
+      }
+    ],
+    features: ['깔끔한 스테이플 마감', '완전 펼침 가능', '빠른 제작'],
+    leadTime: '3~5 영업일',
+    badges: ['카탈로그', '실용적', '빠른제작']
+  },
+  {
+    id: 'poster-standard',
+    name: '일반 포스터',
+    category: 'poster-promo',
+    subCategory: '일반 포스터',
+    tagline: '공간을 채우는 선명한 포스터.',
+    description: '다양한 사이즈로 제작 가능한 표준 포스터입니다. 이벤트 홍보나 인테리어용으로 좋습니다.',
+    image: 'https://picsum.photos/seed/poster/800/800',
+    minQuantity: 1,
     basePrice: 12000,
     options: [
       {
-        name: '재질 선택',
-        type: 'select',
-        values: [
-          { label: '흡수성 종이', priceModifier: 0 },
-          { label: '투명 아크릴', priceModifier: 5000 },
-          { label: '코르크', priceModifier: 3000 },
-        ]
-      }
-    ],
-    features: ['다양한 재질', '풀컬러 인쇄', '실용적인 굿즈'],
-    leadTime: '5~10 영업일',
-    badges: ['카페 굿즈', '실용적', '선물용'],
-    warnings: ['재질에 따라 최소 수량이 다를 수 있습니다.']
-  },
-  {
-    id: 'goods-tape',
-    name: '마스킹 테이프',
-    category: 'goods',
-    subCategory: '마스킹 테이프',
-    tagline: '다이어리 꾸미기의 필수 아이템.',
-    description: '원하는 디자인으로 패턴을 반복하여 제작하는 나만의 마스킹 테이프입니다.',
-    image: 'https://picsum.photos/seed/tape/800/800',
-    minQuantity: 50,
-    basePrice: 85000,
-    options: [
-      {
-        name: '폭 사이즈',
-        type: 'radio',
-        values: [
-          { label: '15mm (표준)', priceModifier: 0 },
-          { label: '20mm', priceModifier: 5000 },
-        ]
-      }
-    ],
-    features: ['패턴 반복 인쇄', '부드러운 접착', '다꾸 필수템'],
-    leadTime: '15~20 영업일',
-    badges: ['다꾸템', '패턴 제작', '대량 제작'],
-    warnings: ['제작 기간이 다소 길 수 있으니 여유 있게 주문해 주세요.']
-  },
-  {
-    id: 'goods-button',
-    name: '핀버튼',
-    category: 'goods',
-    subCategory: '핀버튼',
-    tagline: '가방, 옷 어디든 포인트가 되는 배지.',
-    description: '행사 사은품이나 동호회 굿즈로 인기 있는 핀버튼 배지입니다.',
-    image: 'https://picsum.photos/seed/button/800/800',
-    minQuantity: 10,
-    basePrice: 5000,
-    options: [
-      {
         name: '사이즈',
         type: 'select',
         values: [
-          { label: '32mm', priceModifier: 0 },
-          { label: '44mm', priceModifier: 500 },
-          { label: '58mm', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '코팅 선택',
-        type: 'radio',
-        values: [
-          { label: '유광', priceModifier: 0 },
-          { label: '무광', priceModifier: 0 },
+          { label: 'A3 (297x420)', priceModifier: 0 },
+          { label: 'A2 (420x594)', priceModifier: 5000 },
+          { label: 'A1 (594x841)', priceModifier: 15000 },
         ]
       }
     ],
-    features: ['간편한 착용', '풀컬러 인쇄', '가성비 굿즈'],
-    leadTime: '3~5 영업일',
-    badges: ['행사용', '가성비', '빠른제작'],
-    warnings: ['핀 끝이 날카로우니 사용 시 주의해 주세요.']
-  },
-  {
-    id: 'goods-tok',
-    name: '스마트톡',
-    category: 'goods',
-    subCategory: '스마트톡',
-    tagline: '편리한 그립감과 나만의 디자인.',
-    description: '스마트폰 뒷면에 부착하여 편리하게 사용하고 거치대로도 활용 가능한 스마트톡입니다.',
-    image: 'https://picsum.photos/seed/tok/800/800',
-    minQuantity: 1,
-    basePrice: 4500,
-    options: [
-      {
-        name: '바디 색상',
-        type: 'radio',
-        values: [
-          { label: '화이트', priceModifier: 0 },
-          { label: '블랙', priceModifier: 0 },
-          { label: '투명', priceModifier: 500 },
-        ]
-      }
-    ],
-    features: ['3단 높이 조절', '이어폰 정리 가능', '강력 부착'],
-    leadTime: '4~6 영업일',
-    badges: ['1개부터 제작', '폰 액세서리', '실용적'],
-    warnings: ['특수 코팅된 케이스나 가죽 케이스는 접착력이 약할 수 있습니다.']
+    features: ['고해상도 인쇄', '다양한 용지 선택', '소량 제작 가능'],
+    leadTime: '2~3 영업일',
+    badges: ['이벤트용', '고화질', '소량가능']
   },
   {
     id: 'paper-postcard',
     name: '엽서',
-    category: 'paper',
-    subCategory: '엽서',
+    category: 'card-paper',
+    subCategory: '일반 엽서',
     tagline: '소중한 마음을 담는 가장 클래식한 방법.',
     description: '다양한 고급 수입지와 후가공으로 제작하는 고품질 엽서입니다.',
     image: 'https://picsum.photos/seed/postcard/800/800',
@@ -2114,7 +2142,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'bc-standard',
     name: '일반 명함',
-    category: 'paper',
+    category: 'card-paper',
     subCategory: '일반 명함',
     tagline: '좋은 퀄리티로 빠르게 제작할 수 있어요.',
     description: '가장 대중적인 90x50 규격은 물론, 원하는 규격으로도 제작이 가능해 명함 이외 다용도로 활용이 가능합니다.',
@@ -2181,7 +2209,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'bc-premium',
     name: '프리미엄 명함',
-    category: 'paper',
+    category: 'card-paper',
     subCategory: '프리미엄 명함',
     tagline: '특별한 가공으로 품격을 더하세요.',
     description: '박, 형압, 엠보싱 등 다양한 후가공을 통해 차별화된 명함을 제작합니다.',
@@ -2217,7 +2245,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'bc-folded',
     name: '접지 명함',
-    category: 'paper',
+    category: 'card-paper',
     subCategory: '접지 명함',
     tagline: '더 많은 정보를 담을 수 있는 접지형.',
     description: '2단, 3단 접지로 명함 이상의 정보를 전달하기에 적합합니다.',
@@ -2244,7 +2272,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'bc-template',
     name: '디자인 템플릿 명함',
-    category: 'paper',
+    category: 'card-paper',
     subCategory: '디자인 템플릿 명함',
     tagline: '디자인 고민 없이 빠르게 제작하세요.',
     description: '전문 디자이너가 제작한 다양한 템플릿을 활용해 쉽고 빠르게 명함을 완성할 수 있습니다.',
@@ -2282,8 +2310,8 @@ export const PRODUCTS: Product[] = [
   {
     id: 'paper-photocard',
     name: '포토카드',
-    category: 'paper',
-    subCategory: '포토카드',
+    category: 'card-paper',
+    subCategory: '기본 포토카드',
     tagline: '한 손에 쏙 들어오는 나만의 굿즈.',
     description: '아이돌 굿즈, 명함, 쿠폰 등 다용도로 활용 가능한 포토카드입니다.',
     image: 'https://picsum.photos/seed/photocard/800/800',
@@ -2319,7 +2347,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'pkg-bag',
     name: '종이 쇼핑백',
-    category: 'package',
+    category: 'package-supply',
     subCategory: '쇼핑백',
     tagline: '브랜드의 품격을 완성하는 쇼핑백.',
     description: '다양한 사이즈와 끈 선택으로 브랜드 아이덴티티를 살릴 수 있는 종이 쇼핑백입니다.',
@@ -2344,7 +2372,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'pkg-envelope',
     name: '컬러 봉투',
-    category: 'package',
+    category: 'package-supply',
     subCategory: '봉투',
     tagline: '첫인상을 결정하는 고급스러운 봉투.',
     description: '청첩장, 초대장, 상품권 등을 담기에 적합한 다양한 컬러와 재질의 봉투입니다.',
@@ -2369,7 +2397,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'pkg-wrapping',
     name: '포장지',
-    category: 'package',
+    category: 'package-supply',
     subCategory: '포장지',
     tagline: '정성을 더하는 아름다운 포장.',
     description: '선물이나 상품을 정성스럽게 감싸는 맞춤 인쇄 포장지입니다.',
@@ -2394,7 +2422,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'pkg-box',
     name: '커스텀 단상자',
-    category: 'package',
+    category: 'package-supply',
     subCategory: '박스',
     tagline: '브랜드의 가치를 담는 가장 완벽한 그릇.',
     description: '화장품, 의약품, 소형 전자기기 등 다양한 용도로 활용 가능한 단상자입니다.',
@@ -2786,7 +2814,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'package-label',
     name: '롤 라벨 스티커',
-    category: 'package',
+    category: 'package-supply',
     subCategory: '라벨',
     tagline: '대량 부착에 용이한 롤 형태의 라벨',
     description: '제품 패키징에 효율적인 롤 형태의 라벨 스티커입니다. 자동 부착기 사용이 가능하도록 제작됩니다.',
@@ -2841,28 +2869,18 @@ export const PORTFOLIO_ITEMS: PortfolioItem[] = [
   {
     id: 'p3',
     title: '전시회 작품 엽서 세트',
-    category: 'paper',
-    subCategory: '엽서',
+    category: 'card-paper',
+    subCategory: '일반 엽서',
     material: '랑데뷰 240g',
     finishing: '없음',
     image: 'https://picsum.photos/seed/port3/800/1000',
     description: '작가의 작품을 담은 엽서 세트입니다. 종이 본연의 질감을 살리기 위해 코팅 없이 제작되었습니다.'
   },
   {
-    id: 'p4',
-    title: '홀로그램 아크릴 키링',
-    category: 'goods',
-    subCategory: '아크릴 키링',
-    material: '홀로그램 아크릴',
-    finishing: 'D자 고리',
-    image: 'https://picsum.photos/seed/port4/800/1000',
-    description: '빛의 각도에 따라 영롱하게 빛나는 홀로그램 아크릴 키링입니다.'
-  },
-  {
     id: 'p5',
     title: '프리미엄 코스메틱 박스',
-    category: 'package',
-    subCategory: '박스/슬리브',
+    category: 'package-supply',
+    subCategory: '박스',
     material: '아이보리 350g',
     finishing: '무광 라미네이팅 + 금박',
     image: 'https://picsum.photos/seed/port5/800/1000',
