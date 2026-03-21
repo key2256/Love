@@ -677,30 +677,84 @@ export const POSTCARD_COMMON_OPTIONS = {
       { label: '유광 코팅', priceModifier: 1000 },
     ]
   },
-  ROUNDING: {
-    name: '귀도리 (라운드)',
-    type: 'radio' as const,
-    values: [
-      { label: '없음', priceModifier: 0 },
-      { label: '있음', priceModifier: 1500 },
-    ]
-  },
-  PUNCHING: {
-    name: '타공 (구멍)',
-    type: 'radio' as const,
-    values: [
-      { label: '없음', priceModifier: 0 },
-      { label: '있음', priceModifier: 1000 },
-    ]
-  },
-  CREASING: {
-    name: '오시 (접는선)',
-    type: 'radio' as const,
-    values: [
-      { label: '없음', priceModifier: 0 },
-      { label: '있음', priceModifier: 1000 },
-    ]
-  },
+  ROUNDING: [
+    {
+      name: '귀돌이 사용',
+      type: 'radio' as const,
+      values: [
+        { label: '없음', priceModifier: 0 },
+        { label: '있음', priceModifier: 1500 },
+      ]
+    },
+    {
+      name: '귀돌이 크기',
+      type: 'radio' as const,
+      values: [
+        { label: '4mm', priceModifier: 0 },
+        { label: '6mm', priceModifier: 0 },
+      ]
+    },
+    {
+      name: '귀돌이 면수',
+      type: 'radio' as const,
+      values: [
+        { label: '1면', priceModifier: 0 },
+        { label: '4면', priceModifier: 1000 },
+      ]
+    },
+    {
+      name: '귀돌이 방향',
+      type: 'select' as const,
+      values: [
+        { label: '상단좌', priceModifier: 0 },
+        { label: '상단우', priceModifier: 0 },
+        { label: '하단좌', priceModifier: 0 },
+        { label: '하단우', priceModifier: 0 },
+      ]
+    }
+  ],
+  PUNCHING: [
+    {
+      name: '타공 사용',
+      type: 'radio' as const,
+      values: [
+        { label: '없음', priceModifier: 0 },
+        { label: '있음', priceModifier: 1000 },
+      ]
+    },
+    {
+      name: '구멍 크기',
+      type: 'radio' as const,
+      values: [
+        { label: '4mm', priceModifier: 0 },
+        { label: '6mm', priceModifier: 0 },
+        { label: '8mm', priceModifier: 0 },
+      ]
+    },
+    {
+      name: '타공 설명',
+      type: 'text' as const,
+      placeholder: '예: 좌측 상단 1개 / 간격 50mm'
+    }
+  ],
+  CREASING: [
+    {
+      name: '오시 사용',
+      type: 'radio' as const,
+      values: [
+        { label: '없음', priceModifier: 0 },
+        { label: '있음', priceModifier: 1000 },
+      ]
+    },
+    {
+      name: '오시 줄수',
+      type: 'radio' as const,
+      values: [
+        { label: '1줄', priceModifier: 0 },
+        { label: '2줄', priceModifier: 1000 },
+      ]
+    }
+  ],
   EFFECT: {
     name: '후가공 효과',
     type: 'select' as const,
@@ -2592,6 +2646,9 @@ export const PRODUCTS: Product[] = [
       POSTCARD_COMMON_OPTIONS.PAPER_SELECT_BASIC,
       POSTCARD_COMMON_OPTIONS.PRINT_COLOR,
       POSTCARD_COMMON_OPTIONS.COATING,
+      ...POSTCARD_COMMON_OPTIONS.ROUNDING,
+      ...POSTCARD_COMMON_OPTIONS.PUNCHING,
+      ...POSTCARD_COMMON_OPTIONS.CREASING,
       {
         name: '제작 수량',
         type: 'select',
@@ -2632,6 +2689,7 @@ export const PRODUCTS: Product[] = [
         ]
       },
       POSTCARD_COMMON_OPTIONS.PRINT_COLOR,
+      POSTCARD_COMMON_OPTIONS.COATING,
       {
         name: '제작 수량',
         type: 'select',
@@ -2689,6 +2747,9 @@ export const PRODUCTS: Product[] = [
       POSTCARD_COMMON_OPTIONS.PAPER_SELECT_ECO,
       POSTCARD_COMMON_OPTIONS.PRINT_COLOR,
       POSTCARD_COMMON_OPTIONS.COATING,
+      ...POSTCARD_COMMON_OPTIONS.ROUNDING,
+      ...POSTCARD_COMMON_OPTIONS.PUNCHING,
+      ...POSTCARD_COMMON_OPTIONS.CREASING,
       {
         name: '제작 수량',
         type: 'select',
@@ -2726,9 +2787,10 @@ export const PRODUCTS: Product[] = [
       POSTCARD_COMMON_OPTIONS.PAPER_SELECT_ECO,
       POSTCARD_COMMON_OPTIONS.PAPER_SELECT_SPECIAL,
       POSTCARD_COMMON_OPTIONS.PRINT_COLOR,
-      POSTCARD_COMMON_OPTIONS.ROUNDING,
-      POSTCARD_COMMON_OPTIONS.PUNCHING,
-      POSTCARD_COMMON_OPTIONS.CREASING,
+      POSTCARD_COMMON_OPTIONS.COATING,
+      ...POSTCARD_COMMON_OPTIONS.ROUNDING,
+      ...POSTCARD_COMMON_OPTIONS.PUNCHING,
+      ...POSTCARD_COMMON_OPTIONS.CREASING,
       {
         name: '제작 수량',
         type: 'select',
@@ -2753,7 +2815,6 @@ export const PRODUCTS: Product[] = [
     minQuantity: 100,
     basePrice: 25000,
     options: [
-      POSTCARD_COMMON_OPTIONS.EFFECT,
       POSTCARD_COMMON_OPTIONS.SIZE,
       {
         ...POSTCARD_COMMON_OPTIONS.PAPER_GROUP,
@@ -2765,6 +2826,11 @@ export const PRODUCTS: Product[] = [
       POSTCARD_COMMON_OPTIONS.PAPER_SELECT_BASIC,
       POSTCARD_COMMON_OPTIONS.PAPER_SELECT_PREMIUM,
       POSTCARD_COMMON_OPTIONS.PRINT_COLOR,
+      POSTCARD_COMMON_OPTIONS.COATING,
+      POSTCARD_COMMON_OPTIONS.EFFECT,
+      ...POSTCARD_COMMON_OPTIONS.ROUNDING,
+      ...POSTCARD_COMMON_OPTIONS.PUNCHING,
+      ...POSTCARD_COMMON_OPTIONS.CREASING,
       {
         name: '제작 수량',
         type: 'select',
