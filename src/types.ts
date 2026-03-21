@@ -50,6 +50,184 @@ export interface Category {
   subCategories: (string | SubCategoryGroup)[];
 }
 
+export interface BusinessCardPaperMaterial {
+  id: string;
+  group: '기본 대중형' | '고급 감성형' | '내추럴/친환경형' | '특수지/프리미엄형';
+  name: string;
+  weight: string;
+  recommendationLabel: string;
+  features: string;
+  recommendedUse: string;
+  precautions: string;
+}
+
+export const BUSINESS_CARD_MATERIALS: BusinessCardPaperMaterial[] = [
+  // A. 기본 대중형
+  {
+    id: 'bc-art-250',
+    group: '기본 대중형',
+    name: '아트지',
+    weight: '250g',
+    recommendationLabel: '선명한 인쇄',
+    features: '광택이 있고 인쇄 색감이 선명함',
+    recommendedUse: '대량 배포용 명함, 쿠폰',
+    precautions: '지문이 잘 묻을 수 있으니 코팅을 권장합니다.'
+  },
+  {
+    id: 'bc-art-300',
+    group: '기본 대중형',
+    name: '아트지',
+    weight: '300g',
+    recommendationLabel: '두께감 있는 광택',
+    features: '두툼하고 광택이 있는 고광택 용지',
+    recommendedUse: '고급 홍보용 명함',
+    precautions: '접지 시 터짐 현상이 있을 수 있습니다.'
+  },
+  {
+    id: 'bc-snow-250',
+    group: '기본 대중형',
+    name: '스노우',
+    weight: '250g',
+    recommendationLabel: '차분한 무광',
+    features: '광택이 없는 차분하고 부드러운 느낌',
+    recommendedUse: '일반 비즈니스 명함',
+    precautions: '인쇄 후 건조 시간이 다소 필요합니다.'
+  },
+  {
+    id: 'bc-snow-300',
+    group: '기본 대중형',
+    name: '스노우',
+    weight: '300g',
+    recommendationLabel: '기본 명함 추천',
+    features: '두툼하고 매트한 질감의 고급 용지',
+    recommendedUse: '전문직 명함, 기업용 명함',
+    precautions: '어두운 배경색 인쇄 시 뒷묻음 주의.'
+  },
+  {
+    id: 'bc-earth-226',
+    group: '기본 대중형',
+    name: '얼스팩',
+    weight: '226g',
+    recommendationLabel: '친환경 추천',
+    features: '100% 사탕수수 부산물로 만든 친환경지',
+    recommendedUse: '친환경 브랜드, 비건 명함',
+    precautions: '색상 편차 가능. 표면이 다소 거칠 수 있습니다.'
+  },
+  // B. 고급 감성형
+  {
+    id: 'bc-vannu-250',
+    group: '고급 감성형',
+    name: '반누보화이트',
+    weight: '250g',
+    recommendationLabel: '고급 명함 추천',
+    features: '부드러운 질감과 따뜻한 화이트 톤',
+    recommendedUse: '전문가 명함, 브랜드 카드',
+    precautions: '수입지 특유의 고급스러운 질감이 특징입니다.'
+  },
+  {
+    id: 'bc-tinto-250',
+    group: '고급 감성형',
+    name: '띤또레또',
+    weight: '250g',
+    recommendationLabel: '질감 강조',
+    features: '올록볼록한 엠보싱 질감이 특징인 수입지',
+    recommendedUse: '작가 명함, 감성 브랜드',
+    precautions: '코팅, 스코딕스 비추천. 필기용 또는 시향지 용도로 부적합할 수 있음.'
+  },
+  {
+    id: 'bc-marsh-262',
+    group: '고급 감성형',
+    name: '매쉬멜로우 White',
+    weight: '262g',
+    recommendationLabel: '사진표현 우수',
+    features: '표면이 매우 매끄럽고 잉크 발색이 뛰어남',
+    recommendedUse: '포토 명함, 디자이너 명함',
+    precautions: '매우 매끄러운 표면으로 지문 주의.'
+  },
+  {
+    id: 'bc-rend-nat-240',
+    group: '고급 감성형',
+    name: '랑데뷰내츄럴',
+    weight: '240g',
+    recommendationLabel: '감성 브랜드용',
+    features: '자연스러운 미색과 거친 질감의 조화',
+    recommendedUse: '카페 명함, 공방 명함',
+    precautions: '종이 본연의 질감이 인쇄물에 반영됩니다.'
+  },
+  {
+    id: 'bc-rend-ultra-240',
+    group: '고급 감성형',
+    name: '랑데뷰울트라화이트',
+    weight: '240g',
+    recommendationLabel: '깨끗한 화이트',
+    features: '순백색의 깨끗한 느낌과 고급스러운 질감',
+    recommendedUse: '미니멀 명함, 웨딩 카드',
+    precautions: '백색도가 매우 높아 깔끔한 인상을 줍니다.'
+  },
+  {
+    id: 'bc-mont-240',
+    group: '고급 감성형',
+    name: '몽블랑화이트',
+    weight: '240g',
+    recommendationLabel: '세련된 표면감',
+    features: '표면이 매끄럽고 백색도가 높은 고급지',
+    recommendedUse: '기업 임원 명함, 갤러리 카드',
+    precautions: '잉크 건조가 빠르고 발색이 뛰어납니다.'
+  },
+  {
+    id: 'bc-env-216',
+    group: '고급 감성형',
+    name: '인바이런먼트(크라프트필)',
+    weight: '216g',
+    recommendationLabel: '친환경 고급지',
+    features: '재생지 느낌의 내추럴한 컬러와 질감',
+    recommendedUse: '에코 브랜드, 오가닉 명함',
+    precautions: '용지 자체의 티끌이 보일 수 있습니다.'
+  },
+  // C. 내추럴/친환경형
+  {
+    id: 'bc-kraft-240',
+    group: '내추럴/친환경형',
+    name: '크라프트보드',
+    weight: '240g',
+    recommendationLabel: '핸드메이드 감성',
+    features: '갈색의 거친 질감이 살아있는 친환경지',
+    recommendedUse: '빈티지 명함, 수제 제품 태그',
+    precautions: '코팅, 스코딕스 비추천. 어두운 색상 인쇄 권장.'
+  },
+  {
+    id: 'bc-eboard-230',
+    group: '내추럴/친환경형',
+    name: 'E-보드 Y04',
+    weight: '230g',
+    recommendationLabel: '재생지 감성',
+    features: '자연스러운 미색과 재생지 특유의 질감',
+    recommendedUse: '친환경 명함, 소박한 디자인',
+    precautions: '색상 편차 가능. 재생지 특유의 티끌이 포함됨.'
+  },
+  // D. 특수지/프리미엄형
+  {
+    id: 'bc-gold-sirio-300',
+    group: '특수지/프리미엄형',
+    name: '골드시리오펄',
+    weight: '300g',
+    recommendationLabel: '펄 특수지',
+    features: '은은한 골드 펄감이 화려한 고급지',
+    recommendedUse: 'VIP 명함, 축하 카드',
+    precautions: '코팅, 스코딕스 비추천. 펄감으로 인해 인쇄 색상이 다를 수 있음.'
+  },
+  {
+    id: 'bc-majestic-250',
+    group: '특수지/프리미엄형',
+    name: '마제스틱마블화이트',
+    weight: '250g',
+    recommendationLabel: '메탈 펄감',
+    features: '대리석 같은 은은한 광택과 펄감',
+    recommendedUse: '쥬얼리 샵, 웨딩 명함',
+    precautions: '코팅, 스코딕스 비추천.'
+  }
+];
+
 export interface PostcardPaperMaterial {
   id: string;
   group: '기본 대중형' | '고급 감성형' | '친환경/내추럴형' | '컬러/특수지형';
@@ -2486,32 +2664,6 @@ export const PRODUCTS: Product[] = [
     basePrice: 7000,
     options: [
       {
-        name: '용지',
-        type: 'select',
-        values: [
-          { label: '아트지', priceModifier: 0 },
-          { label: '스노우', priceModifier: 0 },
-          { label: '얼스팩', priceModifier: 1000 },
-          { label: '반누보', priceModifier: 2000 },
-        ]
-      },
-      {
-        name: '용지/g수',
-        type: 'select',
-        values: [
-          { label: '250g', priceModifier: 0 },
-          { label: '300g', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '인쇄도수',
-        type: 'radio',
-        values: [
-          { label: '단면', priceModifier: 0 },
-          { label: '양면', priceModifier: 2000 },
-        ]
-      },
-      {
         name: '규격(mm)',
         type: 'select',
         values: [
@@ -2521,14 +2673,101 @@ export const PRODUCTS: Product[] = [
         ]
       },
       {
-        name: '후가공',
+        name: '용지 선택',
+        type: 'select',
+        values: BUSINESS_CARD_MATERIALS.map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: m.group === '기본 대중형' ? 0 : m.group === '고급 감성형' ? 2000 : 3000
+        }))
+      },
+      {
+        name: '인쇄도수',
+        type: 'radio',
+        values: [
+          { label: '단면 칼라', priceModifier: 0 },
+          { label: '양면 칼라', priceModifier: 2000 },
+        ]
+      },
+      {
+        name: '코팅 종류',
         type: 'select',
         values: [
           { label: '없음', priceModifier: 0 },
-          { label: '코팅', priceModifier: 1000 },
-          { label: '귀돌이', priceModifier: 1500 },
-          { label: '타공', priceModifier: 1000 },
-          { label: '매직잉크', priceModifier: 5000 },
+          { label: '무광', priceModifier: 1000 },
+          { label: '유광', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '코팅 면수',
+        type: 'radio',
+        values: [
+          { label: '단면', priceModifier: 0 },
+          { label: '양면', priceModifier: 500 },
+        ]
+      },
+      {
+        name: '귀돌이 사용',
+        type: 'radio',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '있음', priceModifier: 1500 },
+        ]
+      },
+      {
+        name: '귀돌이 크기',
+        type: 'radio',
+        values: [
+          { label: '4mm', priceModifier: 0 },
+          { label: '6mm', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '귀돌이 면수',
+        type: 'radio',
+        values: [
+          { label: '1면', priceModifier: 0 },
+          { label: '4면', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '귀돌이 방향',
+        type: 'select',
+        values: [
+          { label: '상단좌', priceModifier: 0 },
+          { label: '상단우', priceModifier: 0 },
+          { label: '하단좌', priceModifier: 0 },
+          { label: '하단우', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '타공 사용',
+        type: 'radio',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '있음', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '구멍 크기',
+        type: 'radio',
+        values: [
+          { label: '4mm', priceModifier: 0 },
+          { label: '6mm', priceModifier: 0 },
+          { label: '8mm', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '타공 설명',
+        type: 'text',
+        placeholder: '예: 2공 / 좌측 상단 1개, 우측 상단 1개 / 간격 50mm'
+      },
+      {
+        name: '명함케이스',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '종이 케이스', priceModifier: 500 },
+          { label: '플라스틱 케이스', priceModifier: 1000 },
         ]
       }
     ],
@@ -2548,30 +2787,120 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'bc-premium',
-    name: '프리미엄 명함',
+    name: '고급지 명함',
     category: 'card-paper',
-    subCategory: '프리미엄 명함',
+    subCategory: '고급지 명함',
     tagline: '특별한 가공으로 품격을 더하세요.',
-    description: '박, 형압, 엠보싱 등 다양한 후가공을 통해 차별화된 명함을 제작합니다.',
+    description: '다양한 고급 수입지와 후가공으로 제작하는 고품질 명함입니다.',
     image: 'https://picsum.photos/seed/bc-premium/800/800',
     minQuantity: 100,
     basePrice: 15700,
     options: [
       {
-        name: '가공 종류',
+        name: '규격(mm)',
         type: 'select',
         values: [
-          { label: '박/형압', priceModifier: 0 },
-          { label: '엠보싱<스코딕스>', priceModifier: 11800 },
-          { label: '레이저커팅', priceModifier: 13500 },
+          { label: '90x50 (표준)', priceModifier: 0 },
+          { label: '85x55 (신용카드형)', priceModifier: 0 },
+          { label: '직접입력', priceModifier: 0 },
         ]
       },
       {
-        name: '용지',
+        name: '용지 선택',
+        type: 'select',
+        values: BUSINESS_CARD_MATERIALS.filter(m => m.group !== '기본 대중형').map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: m.group === '고급 감성형' ? 0 : 1500
+        }))
+      },
+      {
+        name: '인쇄도수',
+        type: 'radio',
+        values: [
+          { label: '단면 칼라', priceModifier: 0 },
+          { label: '양면 칼라', priceModifier: 2000 },
+        ]
+      },
+      {
+        name: '코팅 종류',
         type: 'select',
         values: [
-          { label: '고급지', priceModifier: 0 },
-          { label: '수입지', priceModifier: 2000 },
+          { label: '없음', priceModifier: 0 },
+          { label: '무광', priceModifier: 1000 },
+          { label: '유광', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '코팅 면수',
+        type: 'radio',
+        values: [
+          { label: '단면', priceModifier: 0 },
+          { label: '양면', priceModifier: 500 },
+        ]
+      },
+      {
+        name: '귀돌이 사용',
+        type: 'radio',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '있음', priceModifier: 1500 },
+        ]
+      },
+      {
+        name: '귀돌이 크기',
+        type: 'radio',
+        values: [
+          { label: '4mm', priceModifier: 0 },
+          { label: '6mm', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '귀돌이 면수',
+        type: 'radio',
+        values: [
+          { label: '1면', priceModifier: 0 },
+          { label: '4면', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '귀돌이 방향',
+        type: 'select',
+        values: [
+          { label: '상단좌', priceModifier: 0 },
+          { label: '상단우', priceModifier: 0 },
+          { label: '하단좌', priceModifier: 0 },
+          { label: '하단우', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '타공 사용',
+        type: 'radio',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '있음', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '구멍 크기',
+        type: 'radio',
+        values: [
+          { label: '4mm', priceModifier: 0 },
+          { label: '6mm', priceModifier: 0 },
+          { label: '8mm', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '타공 설명',
+        type: 'text',
+        placeholder: '예: 2공 / 좌측 상단 1개, 우측 상단 1개 / 간격 50mm'
+      },
+      {
+        name: '명함케이스',
+        type: 'select',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '종이 케이스', priceModifier: 500 },
+          { label: '플라스틱 케이스', priceModifier: 1000 },
         ]
       }
     ],

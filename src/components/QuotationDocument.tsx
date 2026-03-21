@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { ChevronLeft, Download, Printer, Send, FileText, CheckCircle2, Clock, AlertTriangle } from 'lucide-react';
-import { Quotation, POSTCARD_MATERIALS } from '../types';
+import { Quotation, POSTCARD_MATERIALS, BUSINESS_CARD_MATERIALS } from '../types';
 
 interface QuotationDocumentProps {
   quotation: Quotation;
@@ -11,18 +11,21 @@ interface QuotationDocumentProps {
 
 export const QuotationDocument: React.FC<QuotationDocumentProps> = ({ quotation, onBack, onInquiry }) => {
   const postcardPaper = POSTCARD_MATERIALS.find(m => `${m.name} ${m.weight}` === (quotation.options['용지 선택'] || quotation.options['용지']));
+  const businessCardPaper = BUSINESS_CARD_MATERIALS.find(m => `${m.name} ${m.weight}` === (quotation.options['용지 선택'] || quotation.options['용지']));
+  const selectedPaper = postcardPaper || businessCardPaper;
 
   const getAutoPrecautions = () => {
-    if (!postcardPaper) return [];
     const precautions = [];
-    if (['골드시리오펄', '크라프트보드', '마제스틱마블화이트', '띤또레또'].includes(postcardPaper.name)) {
-      precautions.push('코팅, 스코딕스 가공을 추천하지 않는 용지입니다.');
-    }
-    if (['백색모조', 'E-보드 Y04', '얼스팩'].includes(postcardPaper.name)) {
-      precautions.push('재생지 및 특수지 특성상 색상 편차가 발생할 수 있습니다.');
-    }
-    if (postcardPaper.name === '띤또레또') {
-      precautions.push('필기용 또는 시향지로 사용 시 번짐이 있을 수 있으니 테스트를 권장합니다.');
+    if (selectedPaper) {
+      if (['골드시리오펄', '크라프트보드', '마제스틱마블화이트', '띤또레또'].includes(selectedPaper.name)) {
+        precautions.push('코팅, 스코딕스 가공을 추천하지 않는 용지입니다.');
+      }
+      if (['백색모조', 'E-보드 Y04', '얼스팩'].includes(selectedPaper.name)) {
+        precautions.push('재생지 및 특수지 특성상 색상 편차가 발생할 수 있습니다.');
+      }
+      if (selectedPaper.name === '띤또레또') {
+        precautions.push('필기용 또는 시향지 용도로 부적합할 수 있으니 테스트를 권장합니다.');
+      }
     }
     return precautions;
   };
@@ -125,28 +128,28 @@ export const QuotationDocument: React.FC<QuotationDocumentProps> = ({ quotation,
                 {/* 2. Paper Info */}
                 <div className="p-8 rounded-3xl bg-white border border-zinc-100 shadow-sm">
                   <h4 className="text-xs font-black text-zinc-400 uppercase tracking-widest mb-4">용지 정보</h4>
-                  {postcardPaper ? (
+                  {selectedPaper ? (
                     <div className="grid grid-cols-2 gap-8">
                       <div className="space-y-4">
                         <div>
                           <p className="text-xs text-zinc-400 font-bold mb-1">용지명 / 평량</p>
-                          <p className="text-lg font-black text-zinc-900">{postcardPaper.name} {postcardPaper.weight}</p>
+                          <p className="text-lg font-black text-zinc-900">{selectedPaper.name} {selectedPaper.weight}</p>
                         </div>
                         <div>
                           <p className="text-xs text-zinc-400 font-bold mb-1">용지군</p>
                           <span className="px-3 py-1 bg-zinc-100 rounded-full text-[10px] font-black text-zinc-600">
-                            {postcardPaper.group}
+                            {selectedPaper.group}
                           </span>
                         </div>
                       </div>
                       <div className="space-y-4">
                         <div>
                           <p className="text-xs text-zinc-400 font-bold mb-1">핵심 특징</p>
-                          <p className="text-sm text-zinc-600 font-medium">{postcardPaper.features}</p>
+                          <p className="text-sm text-zinc-600 font-medium">{selectedPaper.features}</p>
                         </div>
                         <div>
                           <p className="text-xs text-zinc-400 font-bold mb-1">추천 용도</p>
-                          <p className="text-sm text-emerald-600 font-bold">{postcardPaper.recommendedUse}</p>
+                          <p className="text-sm text-emerald-600 font-bold">{selectedPaper.recommendedUse}</p>
                         </div>
                       </div>
                     </div>
@@ -175,14 +178,50 @@ export const QuotationDocument: React.FC<QuotationDocumentProps> = ({ quotation,
                   <div className="p-8 rounded-3xl bg-zinc-50 border border-zinc-100">
                     <h4 className="text-xs font-black text-zinc-400 uppercase tracking-widest mb-4">후가공 정보</h4>
                     <div className="flex flex-wrap gap-2">
+                      {/* Business Card Specific Formatting */}
+                      {quotation.options['코팅 종류'] && quotation.options['코팅 종류'] !== '없음' && (
+                        <span className="px-3 py-1.5 bg-white border border-zinc-200 rounded-xl text-[10px] font-bold text-zinc-600">
+                          코팅: {quotation.options['코팅 종류']} / {quotation.options['코팅 면수']}
+                        </span>
+                      )}
+                      {quotation.options['귀돌이 사용'] === '있음' && (
+                        <span className="px-3 py-1.5 bg-white border border-zinc-200 rounded-xl text-[10px] font-bold text-zinc-600">
+                          귀돌이: {quotation.options['귀돌이 크기']} / {quotation.options['귀돌이 면수']} {quotation.options['귀돌이 면수'] === '1면' ? `/ ${quotation.options['귀돌이 방향']}` : ''}
+                        </span>
+                      )}
+                      {quotation.options['타공 사용'] === '있음' && (
+                        <span className="px-3 py-1.5 bg-white border border-zinc-200 rounded-xl text-[10px] font-bold text-zinc-600">
+                          타공: {quotation.options['구멍 크기']} / {quotation.options['타공 설명']}
+                        </span>
+                      )}
+                      {quotation.options['명함케이스'] && quotation.options['명함케이스'] !== '없음' && (
+                        <span className="px-3 py-1.5 bg-white border border-zinc-200 rounded-xl text-[10px] font-bold text-zinc-600">
+                          명함케이스: {quotation.options['명함케이스']}
+                        </span>
+                      )}
+                      
+                      {/* Standard Options (excluding those already handled) */}
                       {Object.entries(quotation.options)
-                        .filter(([key]) => !key.includes('용지') && !key.includes('인쇄') && !key.includes('도수') && !key.includes('사이즈') && !key.includes('규격'))
+                        .filter(([key]) => 
+                          !key.includes('용지') && 
+                          !key.includes('인쇄') && 
+                          !key.includes('도수') && 
+                          !key.includes('사이즈') && 
+                          !key.includes('규격') &&
+                          !['코팅 종류', '코팅 면수', '귀돌이 사용', '귀돌이 크기', '귀돌이 면수', '귀돌이 방향', '타공 사용', '구멍 크기', '타공 설명', '명함케이스'].includes(key)
+                        )
                         .map(([key, val]) => (
                           <span key={key} className="px-3 py-1.5 bg-white border border-zinc-200 rounded-xl text-[10px] font-bold text-zinc-600">
                             {key}: {val}
                           </span>
                         ))}
-                      {Object.entries(quotation.options).filter(([key]) => !key.includes('용지') && !key.includes('인쇄') && !key.includes('도수') && !key.includes('사이즈') && !key.includes('규격')).length === 0 && (
+                      {Object.entries(quotation.options).filter(([key]) => 
+                        !key.includes('용지') && 
+                        !key.includes('인쇄') && 
+                        !key.includes('도수') && 
+                        !key.includes('사이즈') && 
+                        !key.includes('규격')
+                      ).length === 0 && (
                         <span className="text-xs text-zinc-400 font-medium">선택된 후가공 옵션이 없습니다.</span>
                       )}
                     </div>

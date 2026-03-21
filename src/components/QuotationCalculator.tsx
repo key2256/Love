@@ -19,7 +19,7 @@ import {
   Droplets,
   HelpCircle
 } from 'lucide-react';
-import { Product, Quotation, PAPER_MATERIALS, POSTCARD_MATERIALS } from '../types';
+import { Product, Quotation, PAPER_MATERIALS, POSTCARD_MATERIALS, BUSINESS_CARD_MATERIALS, BusinessCardPaperMaterial } from '../types';
 
 interface QuotationCalculatorProps {
   product: Product;
@@ -48,11 +48,13 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
   const [customSize, setCustomSize] = useState({ width: '', height: '' });
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
   const [selectedPostcardGroup, setSelectedPostcardGroup] = useState<string | null>(null);
+  const [selectedBusinessCardGroup, setSelectedBusinessCardGroup] = useState<string | null>(null);
   const [expandedPostOption, setExpandedPostOption] = useState<string | null>(null);
 
   const getLayoutPattern = (product: Product) => {
     if (product.category === 'sticker') return 'STICKER';
     if (product.id === 'paper-postcard') return 'POSTCARD';
+    if (product.id === 'bc-standard' || product.id === 'bc-premium') return 'BUSINESS_CARD';
     if (product.category === 'card-paper' || product.id === 'memo-standard') return 'PAPER_GOODS';
     if (product.category === 'binding-booklet' || product.id === 'note-spring') return 'BINDING_GOODS';
     if (product.category === 'poster-promo') return 'LARGE_FORMAT';
@@ -84,6 +86,17 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
           setSelectedPostcardGroup(material.group);
         } else {
           setSelectedPostcardGroup('기본 대중형');
+        }
+      }
+    } else if (pattern === 'BUSINESS_CARD') {
+      const materialOption = product.options.find(opt => opt.name.includes('용지'));
+      if (materialOption) {
+        const selectedValue = selectedOptions[materialOption.name];
+        const material = BUSINESS_CARD_MATERIALS.find(m => `${m.name} ${m.weight}` === selectedValue);
+        if (material) {
+          setSelectedBusinessCardGroup(material.group);
+        } else {
+          setSelectedBusinessCardGroup('기본 대중형');
         }
       }
     }
@@ -298,6 +311,321 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
             </div>
           ))}
 
+          {/* Business Card Material Selection */}
+          {pattern === 'BUSINESS_CARD' && product.options.filter(opt => opt.name.includes('용지')).map((option) => (
+            <div key={option.name} className="space-y-6">
+              <label className="text-xs font-black text-zinc-900 uppercase tracking-widest block">
+                1. 용지 그룹 선택
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                {['기본 대중형', '고급 감성형', '내추럴/친환경형', '특수지/프리미엄형'].map((group) => (
+                  <button
+                    key={group}
+                    onClick={() => setSelectedBusinessCardGroup(group)}
+                    className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all ${
+                      selectedBusinessCardGroup === group
+                        ? 'bg-zinc-900 border-zinc-900 text-white shadow-lg'
+                        : 'bg-white border-zinc-200 text-zinc-600 hover:border-zinc-400'
+                    }`}
+                  >
+                    {group}
+                  </button>
+                ))}
+              </div>
+
+              {selectedBusinessCardGroup && (
+                <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                  <label className="text-xs font-black text-zinc-900 uppercase tracking-widest block">
+                    2. 세부 용지 선택
+                  </label>
+                  <div className="grid grid-cols-1 gap-3">
+                    {BUSINESS_CARD_MATERIALS.filter(m => m.group === selectedBusinessCardGroup).map((material) => {
+                      const isSelected = selectedOptions[option.name] === `${material.name} ${material.weight}`;
+                      return (
+                        <button
+                          key={material.id}
+                          onClick={() => handleOptionChange(option.name, `${material.name} ${material.weight}`)}
+                          className={`p-5 rounded-2xl border text-left transition-all relative group ${
+                            isSelected
+                              ? 'bg-emerald-50 border-emerald-500 ring-1 ring-emerald-500'
+                              : 'bg-white border-zinc-100 hover:border-zinc-300'
+                          }`}
+                        >
+                          <div className="flex justify-between items-start mb-2">
+                            <div>
+                              <span className={`text-sm font-black ${isSelected ? 'text-emerald-900' : 'text-zinc-900'}`}>
+                                {material.name}
+                              </span>
+                              <span className="ml-2 text-xs text-zinc-400 font-bold">{material.weight}</span>
+                            </div>
+                            <span className={`px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-tighter ${
+                              isSelected ? 'bg-emerald-200 text-emerald-700' : 'bg-zinc-100 text-zinc-500'
+                            }`}>
+                              {material.recommendationLabel}
+                            </span>
+                          </div>
+                          <p className={`text-[11px] leading-relaxed ${isSelected ? 'text-emerald-700/70' : 'text-zinc-500'}`}>
+                            {material.features}
+                          </p>
+                          
+                          {isSelected && (
+                            <motion.div 
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: 'auto' }}
+                              className="mt-4 pt-4 border-t border-emerald-100 space-y-2"
+                            >
+                              <div className="flex gap-2">
+                                <span className="text-[10px] font-black text-emerald-600 uppercase shrink-0">추천용도:</span>
+                                <span className="text-[10px] text-emerald-800/70">{material.recommendedUse}</span>
+                              </div>
+                              <div className="flex gap-2">
+                                <span className="text-[10px] font-black text-amber-600 uppercase shrink-0">주의사항:</span>
+                                <span className="text-[10px] text-amber-800/70">{material.precautions}</span>
+                              </div>
+                            </motion.div>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+
+          {/* Business Card Post-processing Options */}
+          {pattern === 'BUSINESS_CARD' && (
+            <div className="space-y-8 pt-4 border-t border-zinc-100">
+              <h3 className="text-sm font-black text-zinc-900 flex items-center gap-2">
+                <Scissors className="w-4 h-4 text-emerald-500" />
+                명함 후가공 옵션
+              </h3>
+
+              {/* 1. Coating */}
+              <div className="space-y-4">
+                <label className="text-xs font-black text-zinc-400 uppercase tracking-widest block">코팅</label>
+                <div className="grid grid-cols-3 gap-3">
+                  {['없음', '무광', '유광'].map(type => (
+                    <button
+                      key={type}
+                      onClick={() => {
+                        handleOptionChange('코팅 종류', type);
+                        if (type === '없음') handleOptionChange('코팅 면수', '단면');
+                      }}
+                      className={`py-3 rounded-xl text-xs font-bold border transition-all ${
+                        selectedOptions['코팅 종류'] === type
+                          ? 'bg-zinc-900 border-zinc-900 text-white'
+                          : 'bg-white border-zinc-200 text-zinc-600 hover:border-zinc-400'
+                      }`}
+                    >
+                      {type}
+                    </button>
+                  ))}
+                </div>
+                <AnimatePresence>
+                  {selectedOptions['코팅 종류'] !== '없음' && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="grid grid-cols-2 gap-3 pt-2"
+                    >
+                      {['단면', '양면'].map(side => (
+                        <button
+                          key={side}
+                          onClick={() => handleOptionChange('코팅 면수', side)}
+                          className={`py-3 rounded-xl text-xs font-bold border transition-all ${
+                            selectedOptions['코팅 면수'] === side
+                              ? 'bg-emerald-600 border-emerald-600 text-white'
+                              : 'bg-white border-zinc-200 text-zinc-600 hover:border-emerald-200'
+                          }`}
+                        >
+                          {side}
+                        </button>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* 2. Corner Rounding (귀돌이) */}
+              <div className="space-y-4">
+                <label className="text-xs font-black text-zinc-400 uppercase tracking-widest block">귀돌이 (모서리 라운딩)</label>
+                <div className="grid grid-cols-2 gap-3">
+                  {['없음', '있음'].map(use => (
+                    <button
+                      key={use}
+                      onClick={() => handleOptionChange('귀돌이 사용', use)}
+                      className={`py-3 rounded-xl text-xs font-bold border transition-all ${
+                        selectedOptions['귀돌이 사용'] === use
+                          ? 'bg-zinc-900 border-zinc-900 text-white'
+                          : 'bg-white border-zinc-200 text-zinc-600 hover:border-zinc-400'
+                      }`}
+                    >
+                      {use}
+                    </button>
+                  ))}
+                </div>
+                <AnimatePresence>
+                  {selectedOptions['귀돌이 사용'] === '있음' && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="space-y-4 pt-2"
+                    >
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <span className="text-[10px] font-bold text-zinc-400 uppercase">크기</span>
+                          <div className="grid grid-cols-2 gap-2">
+                            {['4mm', '6mm'].map(size => (
+                              <button
+                                key={size}
+                                onClick={() => handleOptionChange('귀돌이 크기', size)}
+                                className={`py-2 rounded-lg text-xs font-bold border transition-all ${
+                                  selectedOptions['귀돌이 크기'] === size
+                                    ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
+                                    : 'bg-white border-zinc-200 text-zinc-500'
+                                }`}
+                              >
+                                {size}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <span className="text-[10px] font-bold text-zinc-400 uppercase">면수</span>
+                          <div className="grid grid-cols-2 gap-2">
+                            {['1면', '4면'].map(count => (
+                              <button
+                                key={count}
+                                onClick={() => handleOptionChange('귀돌이 면수', count)}
+                                className={`py-2 rounded-lg text-xs font-bold border transition-all ${
+                                  selectedOptions['귀돌이 면수'] === count
+                                    ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
+                                    : 'bg-white border-zinc-200 text-zinc-500'
+                                }`}
+                              >
+                                {count}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {selectedOptions['귀돌이 면수'] === '1면' && (
+                        <div className="space-y-2">
+                          <span className="text-[10px] font-bold text-zinc-400 uppercase">방향 선택</span>
+                          <div className="grid grid-cols-4 gap-2">
+                            {[
+                              { id: '상단좌', icon: 'rounded-tl-xl' },
+                              { id: '상단우', icon: 'rounded-tr-xl' },
+                              { id: '하단좌', icon: 'rounded-bl-xl' },
+                              { id: '하단우', icon: 'rounded-br-xl' }
+                            ].map(dir => (
+                              <button
+                                key={dir.id}
+                                onClick={() => handleOptionChange('귀돌이 방향', dir.id)}
+                                className={`aspect-square rounded-xl border-2 flex flex-col items-center justify-center gap-1 transition-all ${
+                                  selectedOptions['귀돌이 방향'] === dir.id
+                                    ? 'bg-emerald-50 border-emerald-500 text-emerald-700'
+                                    : 'bg-white border-zinc-100 text-zinc-400 hover:border-zinc-200'
+                                }`}
+                              >
+                                <div className={`w-6 h-4 border-2 border-current ${dir.icon}`} />
+                                <span className="text-[9px] font-black">{dir.id}</span>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* 3. Punching (타공) */}
+              <div className="space-y-4">
+                <label className="text-xs font-black text-zinc-400 uppercase tracking-widest block">타공</label>
+                <div className="grid grid-cols-2 gap-3">
+                  {['없음', '있음'].map(use => (
+                    <button
+                      key={use}
+                      onClick={() => handleOptionChange('타공 사용', use)}
+                      className={`py-3 rounded-xl text-xs font-bold border transition-all ${
+                        selectedOptions['타공 사용'] === use
+                          ? 'bg-zinc-900 border-zinc-900 text-white'
+                          : 'bg-white border-zinc-200 text-zinc-600 hover:border-zinc-400'
+                      }`}
+                    >
+                      {use}
+                    </button>
+                  ))}
+                </div>
+                <AnimatePresence>
+                  {selectedOptions['타공 사용'] === '있음' && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="space-y-4 pt-2"
+                    >
+                      <div className="space-y-2">
+                        <span className="text-[10px] font-bold text-zinc-400 uppercase">구멍 크기</span>
+                        <div className="grid grid-cols-3 gap-2">
+                          {['4mm', '6mm', '8mm'].map(size => (
+                            <button
+                              key={size}
+                              onClick={() => handleOptionChange('구멍 크기', size)}
+                              className={`py-2 rounded-lg text-xs font-bold border transition-all ${
+                                selectedOptions['구멍 크기'] === size
+                                  ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
+                                  : 'bg-white border-zinc-200 text-zinc-500'
+                              }`}
+                            >
+                              {size}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <span className="text-[10px] font-bold text-zinc-400 uppercase">타공 개수/위치 설명</span>
+                        <input
+                          type="text"
+                          value={selectedOptions['타공 설명']}
+                          onChange={(e) => handleOptionChange('타공 설명', e.target.value)}
+                          placeholder="예: 2공 / 좌측 상단 1개, 우측 상단 1개 / 간격 50mm"
+                          className="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none font-medium text-xs transition-colors"
+                        />
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* 4. Case */}
+              <div className="space-y-4">
+                <label className="text-xs font-black text-zinc-400 uppercase tracking-widest block">명함케이스</label>
+                <div className="grid grid-cols-1 gap-2">
+                  {['없음', '종이 케이스', '플라스틱 케이스'].map(item => (
+                    <button
+                      key={item}
+                      onClick={() => handleOptionChange('명함케이스', item)}
+                      className={`w-full py-3 px-4 rounded-xl text-xs font-bold border transition-all text-left flex items-center justify-between ${
+                        selectedOptions['명함케이스'] === item
+                          ? 'bg-emerald-50 border-emerald-500 text-emerald-900'
+                          : 'bg-white border-zinc-100 text-zinc-600 hover:border-zinc-300'
+                      }`}
+                    >
+                      <span>{item}</span>
+                      {selectedOptions['명함케이스'] === item && <CheckCircle2 className="w-4 h-4 text-emerald-500" />}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* 1. Material Selection (Special UI for Stickers) */}
           {pattern === 'STICKER' && product.options.filter(opt => opt.name.includes('재질') || opt.name.includes('용지')).map((option) => (
             <div key={option.name} className="space-y-4">
@@ -402,6 +730,15 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
             }
             if (pattern === 'POSTCARD') {
               return !opt.name.includes('용지') && 
+                     !['재단 방식', '코팅 유무', '후가공 옵션', '화이트 인쇄', '넘버링', '스코딕스', '포장 옵션', '부분 UV', '모양코팅'].includes(opt.name);
+            }
+            if (pattern === 'BUSINESS_CARD') {
+              return !opt.name.includes('용지') && 
+                     !opt.name.includes('코팅') && 
+                     !opt.name.includes('귀돌이') && 
+                     !opt.name.includes('타공') && 
+                     !opt.name.includes('구멍') && 
+                     !opt.name.includes('명함케이스') && 
                      !['재단 방식', '코팅 유무', '후가공 옵션', '화이트 인쇄', '넘버링', '스코딕스', '포장 옵션', '부분 UV', '모양코팅'].includes(opt.name);
             }
             return !['재단 방식', '코팅 유무', '후가공 옵션', '화이트 인쇄', '넘버링', '스코딕스', '포장 옵션', '부분 UV', '모양코팅'].includes(opt.name);
