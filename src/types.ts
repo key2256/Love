@@ -602,6 +602,125 @@ export const POSTCARD_MATERIALS: PostcardPaperMaterial[] = [
   }
 ];
 
+export const POSTCARD_COMMON_OPTIONS = {
+  SIZE: {
+    name: '사이즈',
+    type: 'select' as const,
+    values: [
+      { label: '100x148mm (기본)', priceModifier: 0 },
+      { label: '148x210mm (A5)', priceModifier: 3000 },
+      { label: '105x105mm (정사각형)', priceModifier: 1000 },
+      { label: '70x100mm (미니)', priceModifier: -1000 },
+      { label: '직접 입력', priceModifier: 0 },
+    ]
+  },
+  PAPER_GROUP: {
+    name: '용지 그룹',
+    type: 'radio' as const,
+    values: [
+      { label: '기본 대중형', priceModifier: 0 },
+      { label: '고급 감성형', priceModifier: 0 },
+      { label: '친환경/내추럴형', priceModifier: 0 },
+      { label: '컬러/특수지형', priceModifier: 0 },
+    ]
+  },
+  PAPER_SELECT_BASIC: {
+    name: '상세 용지 (기본)',
+    type: 'select' as const,
+    visibleIf: { optionName: '용지 그룹', value: '기본 대중형' },
+    values: POSTCARD_MATERIALS.filter(m => m.group === '기본 대중형').map(m => ({
+      label: `${m.name} ${m.weight}`,
+      priceModifier: 0
+    }))
+  },
+  PAPER_SELECT_PREMIUM: {
+    name: '상세 용지 (고급)',
+    type: 'select' as const,
+    visibleIf: { optionName: '용지 그룹', value: '고급 감성형' },
+    values: POSTCARD_MATERIALS.filter(m => m.group === '고급 감성형').map(m => ({
+      label: `${m.name} ${m.weight}`,
+      priceModifier: 1500
+    }))
+  },
+  PAPER_SELECT_ECO: {
+    name: '상세 용지 (친환경)',
+    type: 'select' as const,
+    visibleIf: { optionName: '용지 그룹', value: '친환경/내추럴형' },
+    values: POSTCARD_MATERIALS.filter(m => m.group === '친환경/내추럴형').map(m => ({
+      label: `${m.name} ${m.weight}`,
+      priceModifier: 2000
+    }))
+  },
+  PAPER_SELECT_SPECIAL: {
+    name: '상세 용지 (특수)',
+    type: 'select' as const,
+    visibleIf: { optionName: '용지 그룹', value: '컬러/특수지형' },
+    values: POSTCARD_MATERIALS.filter(m => m.group === '컬러/특수지형').map(m => ({
+      label: `${m.name} ${m.weight}`,
+      priceModifier: 2500
+    }))
+  },
+  PRINT_COLOR: {
+    name: '인쇄 도수',
+    type: 'radio' as const,
+    values: [
+      { label: '단면 칼라', priceModifier: 0 },
+      { label: '양면 칼라', priceModifier: 2000 },
+    ]
+  },
+  COATING: {
+    name: '코팅',
+    type: 'radio' as const,
+    values: [
+      { label: '없음', priceModifier: 0 },
+      { label: '무광 코팅', priceModifier: 1000 },
+      { label: '유광 코팅', priceModifier: 1000 },
+    ]
+  },
+  ROUNDING: {
+    name: '귀도리 (라운드)',
+    type: 'radio' as const,
+    values: [
+      { label: '없음', priceModifier: 0 },
+      { label: '있음', priceModifier: 1500 },
+    ]
+  },
+  PUNCHING: {
+    name: '타공 (구멍)',
+    type: 'radio' as const,
+    values: [
+      { label: '없음', priceModifier: 0 },
+      { label: '있음', priceModifier: 1000 },
+    ]
+  },
+  CREASING: {
+    name: '오시 (접는선)',
+    type: 'radio' as const,
+    values: [
+      { label: '없음', priceModifier: 0 },
+      { label: '있음', priceModifier: 1000 },
+    ]
+  },
+  EFFECT: {
+    name: '후가공 효과',
+    type: 'select' as const,
+    values: [
+      { label: '없음', priceModifier: 0 },
+      { label: '부분 UV (스코딕스)', priceModifier: 8000 },
+      { label: '금박', priceModifier: 15000 },
+      { label: '은박', priceModifier: 15000 },
+      { label: '형압/압인', priceModifier: 5000 },
+    ]
+  }
+};
+
+export const getPostcardMaterials = (groups: string[]) => {
+  return POSTCARD_MATERIALS.filter(m => groups.includes(m.group)).map(m => ({
+    label: `${m.name} ${m.weight}`,
+    priceModifier: m.group === '기본 대중형' ? 0 : m.group === '고급 감성형' ? 1500 : 2500
+  }));
+};
+
 export interface PaperMaterial {
   id: string;
   group: '일반/기본 용지' | '방수/합성지' | '투명/PET' | '메탈/광택 특수 재질' | '프리미엄 라벨(GMUND)';
@@ -2463,40 +2582,25 @@ export const PRODUCTS: Product[] = [
     minQuantity: 10,
     basePrice: 8000,
     options: [
+      POSTCARD_COMMON_OPTIONS.SIZE,
       {
-        name: '사이즈',
-        type: 'select',
+        ...POSTCARD_COMMON_OPTIONS.PAPER_GROUP,
         values: [
-          { label: '100x148mm (기본)', priceModifier: 0 },
-          { label: '148x210mm (A5)', priceModifier: 3000 },
-          { label: '105x105mm (정사각형)', priceModifier: 1000 },
-          { label: '70x100mm (미니)', priceModifier: -1000 },
-          { label: '직접 입력', priceModifier: 0 },
+          { label: '기본 대중형', priceModifier: 0 }
         ]
       },
+      POSTCARD_COMMON_OPTIONS.PAPER_SELECT_BASIC,
+      POSTCARD_COMMON_OPTIONS.PRINT_COLOR,
+      POSTCARD_COMMON_OPTIONS.COATING,
       {
-        name: '용지 선택',
+        name: '제작 수량',
         type: 'select',
-        values: POSTCARD_MATERIALS.filter(m => m.group === '기본 대중형').map(m => ({
-          label: `${m.name} ${m.weight}`,
-          priceModifier: 0
-        }))
-      },
-      {
-        name: '인쇄 도수',
-        type: 'radio',
         values: [
-          { label: '단면 칼라', priceModifier: 0 },
-          { label: '양면 칼라', priceModifier: 2000 },
-        ]
-      },
-      {
-        name: '코팅',
-        type: 'radio',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '무광 코팅', priceModifier: 1000 },
-          { label: '유광 코팅', priceModifier: 1000 },
+          { label: '10매', priceModifier: 0 },
+          { label: '50매', priceModifier: 5000 },
+          { label: '100매', priceModifier: 12000 },
+          { label: '200매', priceModifier: 22000 },
+          { label: '500매', priceModifier: 50000 },
         ]
       }
     ],
@@ -2515,11 +2619,9 @@ export const PRODUCTS: Product[] = [
     basePrice: 35000,
     options: [
       {
-        name: '사이즈',
+        name: '규격',
         type: 'radio',
-        values: [
-          { label: '100x148mm 고정', priceModifier: 0 },
-        ]
+        values: [{ label: '100x148mm (고정)', priceModifier: 0 }]
       },
       {
         name: '용지 선택',
@@ -2529,23 +2631,14 @@ export const PRODUCTS: Product[] = [
           { label: '스노우 250g', priceModifier: 0 },
         ]
       },
-      {
-        name: '인쇄 도수',
-        type: 'radio',
-        values: [
-          { label: '단면 칼라', priceModifier: 0 },
-          { label: '양면 칼라', priceModifier: 5000 },
-        ]
-      },
+      POSTCARD_COMMON_OPTIONS.PRINT_COLOR,
       {
         name: '제작 수량',
         type: 'select',
         values: [
           { label: '500매', priceModifier: 0 },
-          { label: '1,000매', priceModifier: 25000 },
-          { label: '2,000매', priceModifier: 70000 },
-          { label: '3,000매', priceModifier: 110000 },
-          { label: '5,000매', priceModifier: 180000 },
+          { label: '1000매', priceModifier: 25000 },
+          { label: '2000매', priceModifier: 65000 },
         ]
       }
     ],
@@ -2565,47 +2658,44 @@ export const PRODUCTS: Product[] = [
     options: [
       {
         name: '모양 선택',
-        type: 'select',
+        type: 'radio',
         values: [
-          { label: '라운드형 (귀도리)', priceModifier: 0 },
-          { label: '티켓형 (절취선)', priceModifier: 2000 },
-          { label: '원형', priceModifier: 5000 },
-          { label: '자유형 (칼선 제작)', priceModifier: 8000 },
+          { label: '라운드형', priceModifier: 0 },
+          { label: '티켓형', priceModifier: 1000 },
+          { label: '원형', priceModifier: 1500 },
+          { label: '자유형', priceModifier: 3000 },
         ]
       },
       {
         name: '사이즈',
         type: 'select',
         values: [
-          { label: '소 (90x50mm 내외)', priceModifier: 0 },
-          { label: '중 (100x148mm 내외)', priceModifier: 3000 },
-          { label: '대 (148x210mm 내외)', priceModifier: 7000 },
+          { label: '소 (90x140mm 이내)', priceModifier: 0 },
+          { label: '중 (120x170mm 이내)', priceModifier: 2000 },
+          { label: '대 (148x210mm 이내)', priceModifier: 4000 },
           { label: '직접 입력', priceModifier: 0 },
         ]
       },
       {
-        name: '용지 선택',
-        type: 'select',
-        values: POSTCARD_MATERIALS.filter(m => m.group !== '컬러/특수지형').map(m => ({
-          label: `${m.name} ${m.weight}`,
-          priceModifier: m.group === '기본 대중형' ? 0 : 2000
-        }))
-      },
-      {
-        name: '인쇄 도수',
-        type: 'radio',
+        ...POSTCARD_COMMON_OPTIONS.PAPER_GROUP,
         values: [
-          { label: '단면 칼라', priceModifier: 0 },
-          { label: '양면 칼라', priceModifier: 2000 },
+          { label: '기본 대중형', priceModifier: 0 },
+          { label: '고급 감성형', priceModifier: 0 },
+          { label: '친환경/내추럴형', priceModifier: 0 },
         ]
       },
+      POSTCARD_COMMON_OPTIONS.PAPER_SELECT_BASIC,
+      POSTCARD_COMMON_OPTIONS.PAPER_SELECT_PREMIUM,
+      POSTCARD_COMMON_OPTIONS.PAPER_SELECT_ECO,
+      POSTCARD_COMMON_OPTIONS.PRINT_COLOR,
+      POSTCARD_COMMON_OPTIONS.COATING,
       {
-        name: '코팅',
-        type: 'radio',
+        name: '제작 수량',
+        type: 'select',
         values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '무광 코팅', priceModifier: 1000 },
-          { label: '유광 코팅', priceModifier: 1000 },
+          { label: '10매', priceModifier: 0 },
+          { label: '50매', priceModifier: 8000 },
+          { label: '100매', priceModifier: 18000 },
         ]
       }
     ],
@@ -2623,38 +2713,29 @@ export const PRODUCTS: Product[] = [
     minQuantity: 10,
     basePrice: 12000,
     options: [
+      POSTCARD_COMMON_OPTIONS.SIZE,
       {
-        name: '사이즈',
-        type: 'select',
+        ...POSTCARD_COMMON_OPTIONS.PAPER_GROUP,
         values: [
-          { label: '100x148mm (기본)', priceModifier: 0 },
-          { label: '148x210mm (A5)', priceModifier: 3000 },
-          { label: '직접 입력', priceModifier: 0 },
+          { label: '고급 감성형', priceModifier: 0 },
+          { label: '친환경/내추럴형', priceModifier: 0 },
+          { label: '컬러/특수지형', priceModifier: 0 },
         ]
       },
+      POSTCARD_COMMON_OPTIONS.PAPER_SELECT_PREMIUM,
+      POSTCARD_COMMON_OPTIONS.PAPER_SELECT_ECO,
+      POSTCARD_COMMON_OPTIONS.PAPER_SELECT_SPECIAL,
+      POSTCARD_COMMON_OPTIONS.PRINT_COLOR,
+      POSTCARD_COMMON_OPTIONS.ROUNDING,
+      POSTCARD_COMMON_OPTIONS.PUNCHING,
+      POSTCARD_COMMON_OPTIONS.CREASING,
       {
-        name: '용지 선택',
+        name: '제작 수량',
         type: 'select',
-        values: POSTCARD_MATERIALS.filter(m => m.group !== '기본 대중형').map(m => ({
-          label: `${m.name} ${m.weight}`,
-          priceModifier: 0
-        }))
-      },
-      {
-        name: '인쇄 도수',
-        type: 'radio',
         values: [
-          { label: '단면 칼라', priceModifier: 0 },
-          { label: '양면 칼라', priceModifier: 2000 },
-        ]
-      },
-      {
-        name: '추가 후가공',
-        type: 'checkbox',
-        values: [
-          { label: '귀도리 (라운드)', priceModifier: 1000 },
-          { label: '타공 (구멍)', priceModifier: 1000 },
-          { label: '오시 (접는선)', priceModifier: 1000 },
+          { label: '10매', priceModifier: 0 },
+          { label: '50매', priceModifier: 12000 },
+          { label: '100매', priceModifier: 25000 },
         ]
       }
     ],
@@ -2672,29 +2753,25 @@ export const PRODUCTS: Product[] = [
     minQuantity: 100,
     basePrice: 25000,
     options: [
+      POSTCARD_COMMON_OPTIONS.EFFECT,
+      POSTCARD_COMMON_OPTIONS.SIZE,
       {
-        name: '후가공 효과',
-        type: 'select',
+        ...POSTCARD_COMMON_OPTIONS.PAPER_GROUP,
         values: [
-          { label: '부분 UV (스코딕스)', priceModifier: 8000 },
-          { label: '금박/은박', priceModifier: 0 },
-          { label: '형압/압인', priceModifier: 5000 },
+          { label: '기본 대중형', priceModifier: 0 },
+          { label: '고급 감성형', priceModifier: 0 },
         ]
       },
+      POSTCARD_COMMON_OPTIONS.PAPER_SELECT_BASIC,
+      POSTCARD_COMMON_OPTIONS.PAPER_SELECT_PREMIUM,
+      POSTCARD_COMMON_OPTIONS.PRINT_COLOR,
       {
-        name: '용지 선택',
+        name: '제작 수량',
         type: 'select',
-        values: POSTCARD_MATERIALS.filter(m => m.group !== '친환경/내추럴형').map(m => ({
-          label: `${m.name} ${m.weight}`,
-          priceModifier: m.group === '기본 대중형' ? 0 : 2000
-        }))
-      },
-      {
-        name: '인쇄 도수',
-        type: 'radio',
         values: [
-          { label: '단면 칼라', priceModifier: 0 },
-          { label: '양면 칼라', priceModifier: 2000 },
+          { label: '100매', priceModifier: 0 },
+          { label: '200매', priceModifier: 35000 },
+          { label: '500매', priceModifier: 85000 },
         ]
       }
     ],
