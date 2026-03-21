@@ -2518,7 +2518,7 @@ export const PRODUCTS: Product[] = [
         name: '사이즈',
         type: 'radio',
         values: [
-          { label: '100x148mm', priceModifier: 0 },
+          { label: '100x148mm 고정', priceModifier: 0 },
         ]
       },
       {
@@ -2536,11 +2536,22 @@ export const PRODUCTS: Product[] = [
           { label: '단면 칼라', priceModifier: 0 },
           { label: '양면 칼라', priceModifier: 5000 },
         ]
+      },
+      {
+        name: '제작 수량',
+        type: 'select',
+        values: [
+          { label: '500매', priceModifier: 0 },
+          { label: '1,000매', priceModifier: 25000 },
+          { label: '2,000매', priceModifier: 70000 },
+          { label: '3,000매', priceModifier: 110000 },
+          { label: '5,000매', priceModifier: 180000 },
+        ]
       }
     ],
-    features: ['대량 제작 특가', '규격 사이즈 고정', '경제적인 홍보물'],
+    features: ['대량 제작 특가', '복잡한 옵션 제거', '가장 경제적인 홍보물'],
     leadTime: '3~4 영업일',
-    badges: ['특가', '대량권장', '경제적']
+    badges: ['특가', '대량권장', '빠른주문']
   },
   {
     id: 'stk-postcard-shape',
@@ -2558,9 +2569,18 @@ export const PRODUCTS: Product[] = [
         values: [
           { label: '라운드형 (귀도리)', priceModifier: 0 },
           { label: '티켓형 (절취선)', priceModifier: 2000 },
-          { label: '자유형 (칼선 제작)', priceModifier: 8000 },
-          { label: '하트형', priceModifier: 5000 },
           { label: '원형', priceModifier: 5000 },
+          { label: '자유형 (칼선 제작)', priceModifier: 8000 },
+        ]
+      },
+      {
+        name: '사이즈',
+        type: 'select',
+        values: [
+          { label: '소 (90x50mm 내외)', priceModifier: 0 },
+          { label: '중 (100x148mm 내외)', priceModifier: 3000 },
+          { label: '대 (148x210mm 내외)', priceModifier: 7000 },
+          { label: '직접 입력', priceModifier: 0 },
         ]
       },
       {
@@ -2577,6 +2597,15 @@ export const PRODUCTS: Product[] = [
         values: [
           { label: '단면 칼라', priceModifier: 0 },
           { label: '양면 칼라', priceModifier: 2000 },
+        ]
+      },
+      {
+        name: '코팅',
+        type: 'radio',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '무광 코팅', priceModifier: 1000 },
+          { label: '유광 코팅', priceModifier: 1000 },
         ]
       }
     ],
@@ -2618,6 +2647,15 @@ export const PRODUCTS: Product[] = [
           { label: '단면 칼라', priceModifier: 0 },
           { label: '양면 칼라', priceModifier: 2000 },
         ]
+      },
+      {
+        name: '추가 후가공',
+        type: 'checkbox',
+        values: [
+          { label: '귀도리 (라운드)', priceModifier: 1000 },
+          { label: '타공 (구멍)', priceModifier: 1000 },
+          { label: '오시 (접는선)', priceModifier: 1000 },
+        ]
       }
     ],
     features: ['프리미엄 수입지', '풍부한 질감 표현', '작가/브랜드 굿즈 최적'],
@@ -2638,10 +2676,9 @@ export const PRODUCTS: Product[] = [
         name: '후가공 효과',
         type: 'select',
         values: [
+          { label: '부분 UV (스코딕스)', priceModifier: 8000 },
           { label: '금박/은박', priceModifier: 0 },
           { label: '형압/압인', priceModifier: 5000 },
-          { label: '부분 UV (스코딕스)', priceModifier: 8000 },
-          { label: '엠보싱', priceModifier: 6000 },
         ]
       },
       {
@@ -2663,7 +2700,12 @@ export const PRODUCTS: Product[] = [
     ],
     features: ['화려한 시각 효과', '입체적인 질감', 'VIP용 초대장 추천'],
     leadTime: '6~8 영업일',
-    badges: ['후가공', '프리미엄', '화려함']
+    badges: ['후가공', '프리미엄', '화려함'],
+    warnings: [
+      '후가공 위치는 재단선에서 3mm 이상 떨어져야 합니다.',
+      '너무 얇은 선이나 작은 글씨는 박 가공이 뭉칠 수 있습니다.',
+      '스코딕스는 배경색이 진할수록 효과가 돋보입니다.'
+    ]
   },
   {
     id: 'bc-standard',
