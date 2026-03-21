@@ -65,6 +65,86 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
 
   const pattern = getLayoutPattern(product);
 
+  const FoldedPreview = ({ type, direction }: { type: string, direction: string }) => {
+    const is3Fold = type === '3단 명함';
+    const isVertical = direction === '세로형';
+
+    return (
+      <motion.div 
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex flex-col items-center gap-4 p-6 bg-zinc-50 rounded-3xl border border-zinc-100"
+      >
+        <div className={`relative ${isVertical ? 'w-32 h-48' : 'w-48 h-32'} bg-white rounded-lg border-2 border-zinc-200 shadow-sm overflow-hidden flex transition-all duration-500`}>
+          {isVertical ? (
+            <div className="flex flex-col w-full h-full">
+              <div className="flex-1 border-b border-dashed border-emerald-400 relative">
+                 <span className="absolute top-1 left-1 text-[8px] font-bold text-zinc-300 uppercase">Panel 1</span>
+              </div>
+              {is3Fold && <div className="flex-1 border-b border-dashed border-emerald-400 relative">
+                 <span className="absolute top-1 left-1 text-[8px] font-bold text-zinc-300 uppercase">Panel 2</span>
+              </div>}
+              <div className="flex-1 relative">
+                 <span className="absolute top-1 left-1 text-[8px] font-bold text-zinc-300 uppercase">{is3Fold ? 'Panel 3' : 'Panel 2'}</span>
+              </div>
+            </div>
+          ) : (
+            <div className="flex w-full h-full">
+              <div className="flex-1 border-r border-dashed border-emerald-400 relative">
+                 <span className="absolute top-1 left-1 text-[8px] font-bold text-zinc-300 uppercase">Panel 1</span>
+              </div>
+              {is3Fold && <div className="flex-1 border-r border-dashed border-emerald-400 relative">
+                 <span className="absolute top-1 left-1 text-[8px] font-bold text-zinc-300 uppercase">Panel 2</span>
+              </div>}
+              <div className="flex-1 relative">
+                 <span className="absolute top-1 left-1 text-[8px] font-bold text-zinc-300 uppercase">{is3Fold ? 'Panel 3' : 'Panel 2'}</span>
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="text-center space-y-1">
+          <p className="text-xs font-black text-zinc-900">{type} {direction}</p>
+          <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">
+            {is3Fold ? '2개의 접는 선 (오시)' : '1개의 접는 선 (오시)'}
+          </p>
+        </div>
+      </motion.div>
+    );
+  };
+
+  const WorkPrecautions = () => (
+    <div className="mt-12 p-8 bg-zinc-900 rounded-[32px] text-white space-y-6">
+      <div className="flex items-center gap-3">
+        <div className="w-8 h-8 rounded-xl bg-emerald-500/20 flex items-center justify-center">
+          <FileText className="w-4 h-4 text-emerald-400" />
+        </div>
+        <div>
+          <h4 className="text-sm font-black tracking-tight">작업 유의사항 안내</h4>
+          <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Folded Card Work Guide</p>
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
+        {[
+          '모든 데이터는 작업 사이즈 기준으로 접수',
+          '상하좌우 2mm 재단 여유 포함',
+          '중요한 텍스트/로고는 재단선 안쪽 3mm 이상',
+          '재단 오차 1~2mm 가능',
+          '300dpi 이상 권장',
+          '오시는 템플릿 위치 기준 진행',
+          '접지 명함은 접힌 상태로 배송되지 않음'
+        ].map((text, i) => (
+          <div key={i} className="flex items-start gap-3 group">
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0 group-hover:scale-125 transition-transform" />
+            <span className="text-[11px] font-medium text-zinc-400 leading-relaxed group-hover:text-zinc-200 transition-colors">
+              {text}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
   // Initialize expanded group based on default selected material
   useEffect(() => {
     if (pattern === 'STICKER') {
@@ -897,6 +977,12 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                   </div>
                 </motion.div>
               )}
+              {pattern === 'FOLDED_BUSINESS_CARD' && option.name === '방향' && (
+                <FoldedPreview 
+                  type={selectedOptions['접지 형태'] || '2단 명함'} 
+                  direction={selectedOptions['방향'] || '가로형'} 
+                />
+              )}
               {(option.name === '사이즈' || option.name === '규격(mm)' || option.name === '작업 사이즈') && selectedOptions[option.name] === '직접입력' && (
                 <motion.div 
                   initial={{ opacity: 0, height: 0 }}
@@ -1086,6 +1172,8 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
               </div>
             );
           })()}
+          
+          {pattern === 'FOLDED_BUSINESS_CARD' && <WorkPrecautions />}
         </div>
 
         {/* Summary Box */}
