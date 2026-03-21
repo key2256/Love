@@ -96,7 +96,12 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
         if (material) {
           setSelectedBusinessCardGroup(material.group);
         } else {
-          setSelectedBusinessCardGroup('기본 대중형');
+          // Default to first available group for this product
+          const availableGroups = Array.from(new Set(product.options.find(opt => opt.name.includes('용지'))?.values?.map(v => {
+            const m = BUSINESS_CARD_MATERIALS.find(bm => `${bm.name} ${bm.weight}` === v.label);
+            return m?.group;
+          }).filter(Boolean)));
+          setSelectedBusinessCardGroup((availableGroups[0] as string) || '기본 대중형');
         }
       }
     }
@@ -393,235 +398,315 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
             </div>
           ))}
 
-          {/* Business Card Post-processing Options */}
+          {/* Business Card Post-processing Options (Icon Grid Pattern) */}
           {pattern === 'BUSINESS_CARD' && (
-            <div className="space-y-8 pt-4 border-t border-zinc-100">
-              <h3 className="text-sm font-black text-zinc-900 flex items-center gap-2">
-                <Scissors className="w-4 h-4 text-emerald-500" />
-                명함 후가공 옵션
-              </h3>
-
-              {/* 1. Coating */}
-              <div className="space-y-4">
-                <label className="text-xs font-black text-zinc-400 uppercase tracking-widest block">코팅</label>
-                <div className="grid grid-cols-3 gap-3">
-                  {['없음', '무광', '유광'].map(type => (
-                    <button
-                      key={type}
-                      onClick={() => {
-                        handleOptionChange('코팅 종류', type);
-                        if (type === '없음') handleOptionChange('코팅 면수', '단면');
-                      }}
-                      className={`py-3 rounded-xl text-xs font-bold border transition-all ${
-                        selectedOptions['코팅 종류'] === type
-                          ? 'bg-zinc-900 border-zinc-900 text-white'
-                          : 'bg-white border-zinc-200 text-zinc-600 hover:border-zinc-400'
-                      }`}
-                    >
-                      {type}
-                    </button>
-                  ))}
+            <div className="space-y-6 pt-4 border-t border-zinc-100">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-1 h-4 bg-emerald-500 rounded-full" />
+                  <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
+                    후가공 선택
+                  </label>
                 </div>
-                <AnimatePresence>
-                  {selectedOptions['코팅 종류'] !== '없음' && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="grid grid-cols-2 gap-3 pt-2"
-                    >
-                      {['단면', '양면'].map(side => (
-                        <button
-                          key={side}
-                          onClick={() => handleOptionChange('코팅 면수', side)}
-                          className={`py-3 rounded-xl text-xs font-bold border transition-all ${
-                            selectedOptions['코팅 면수'] === side
-                              ? 'bg-emerald-600 border-emerald-600 text-white'
-                              : 'bg-white border-zinc-200 text-zinc-600 hover:border-emerald-200'
-                          }`}
-                        >
-                          {side}
-                        </button>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
+                  아이콘을 클릭하여 상세 옵션 선택
+                </span>
               </div>
 
-              {/* 2. Corner Rounding (귀돌이) */}
-              <div className="space-y-4">
-                <label className="text-xs font-black text-zinc-400 uppercase tracking-widest block">귀돌이 (모서리 라운딩)</label>
-                <div className="grid grid-cols-2 gap-3">
-                  {['없음', '있음'].map(use => (
-                    <button
-                      key={use}
-                      onClick={() => handleOptionChange('귀돌이 사용', use)}
-                      className={`py-3 rounded-xl text-xs font-bold border transition-all ${
-                        selectedOptions['귀돌이 사용'] === use
-                          ? 'bg-zinc-900 border-zinc-900 text-white'
-                          : 'bg-white border-zinc-200 text-zinc-600 hover:border-zinc-400'
-                      }`}
-                    >
-                      {use}
-                    </button>
-                  ))}
-                </div>
-                <AnimatePresence>
-                  {selectedOptions['귀돌이 사용'] === '있음' && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="space-y-4 pt-2"
-                    >
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <span className="text-[10px] font-bold text-zinc-400 uppercase">크기</span>
-                          <div className="grid grid-cols-2 gap-2">
-                            {['4mm', '6mm'].map(size => (
-                              <button
-                                key={size}
-                                onClick={() => handleOptionChange('귀돌이 크기', size)}
-                                className={`py-2 rounded-lg text-xs font-bold border transition-all ${
-                                  selectedOptions['귀돌이 크기'] === size
-                                    ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
-                                    : 'bg-white border-zinc-200 text-zinc-500'
-                                }`}
-                              >
-                                {size}
-                              </button>
-                            ))}
-                          </div>
+              <div className="bg-zinc-50/50 rounded-[32px] p-6 border border-zinc-100 space-y-6">
+                {/* Icon Grid */}
+                <div className="grid grid-cols-4 gap-3">
+                  {[
+                    { id: 'coating', name: '코팅', icon: <Layers className="w-5 h-5" />, active: selectedOptions['코팅 종류'] !== '없음' },
+                    { id: 'rounding', name: '귀돌이', icon: <Scissors className="w-5 h-5" />, active: selectedOptions['귀돌이 사용'] === '있음' },
+                    { id: 'punching', name: '타공', icon: <Droplets className="w-5 h-5" />, active: selectedOptions['타공 사용'] === '있음' },
+                    { id: 'case', name: '케이스', icon: <Package className="w-5 h-5" />, active: selectedOptions['명함케이스'] !== '없음' }
+                  ].map(item => {
+                    const isExpanded = expandedPostOption === item.id;
+                    return (
+                      <button
+                        key={item.id}
+                        onClick={() => setExpandedPostOption(isExpanded ? null : item.id)}
+                        className={`flex flex-col items-center gap-2 group transition-all ${
+                          isExpanded ? 'scale-110' : 'hover:scale-105'
+                        }`}
+                      >
+                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all shadow-sm ${
+                          isExpanded 
+                            ? 'bg-emerald-600 text-white shadow-emerald-600/20' 
+                            : item.active
+                              ? 'bg-emerald-50 text-emerald-600 border border-emerald-100'
+                              : 'bg-white text-zinc-400 border border-zinc-100 group-hover:border-zinc-300'
+                        }`}>
+                          {item.icon}
                         </div>
-                        <div className="space-y-2">
-                          <span className="text-[10px] font-bold text-zinc-400 uppercase">면수</span>
-                          <div className="grid grid-cols-2 gap-2">
-                            {['1면', '4면'].map(count => (
+                        <span className={`text-[10px] font-black whitespace-nowrap transition-colors ${
+                          isExpanded ? 'text-emerald-600' : item.active ? 'text-zinc-900' : 'text-zinc-400'
+                        }`}>
+                          {item.name}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Expanded Sub-options */}
+                <AnimatePresence mode="wait">
+                  {expandedPostOption === 'coating' && (
+                    <motion.div
+                      key="coating"
+                      initial={{ opacity: 0, y: -10, height: 0 }}
+                      animate={{ opacity: 1, y: 0, height: 'auto' }}
+                      exit={{ opacity: 0, y: -10, height: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="pt-4 border-t border-zinc-200/50 space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-xs font-black text-zinc-900 uppercase tracking-widest">코팅 상세 설정</h4>
+                          <button onClick={() => setExpandedPostOption(null)} className="text-[10px] font-bold text-zinc-400 hover:text-zinc-600">닫기</button>
+                        </div>
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-3 gap-2">
+                            {['없음', '무광', '유광'].map(type => (
                               <button
-                                key={count}
-                                onClick={() => handleOptionChange('귀돌이 면수', count)}
-                                className={`py-2 rounded-lg text-xs font-bold border transition-all ${
-                                  selectedOptions['귀돌이 면수'] === count
-                                    ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
-                                    : 'bg-white border-zinc-200 text-zinc-500'
+                                key={type}
+                                onClick={() => {
+                                  handleOptionChange('코팅 종류', type);
+                                  if (type === '없음') handleOptionChange('코팅 면수', '단면');
+                                }}
+                                className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
+                                  selectedOptions['코팅 종류'] === type
+                                    ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
+                                    : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
                                 }`}
                               >
-                                {count}
+                                {type}
                               </button>
                             ))}
                           </div>
+                          {selectedOptions['코팅 종류'] !== '없음' && (
+                            <div className="grid grid-cols-2 gap-2 animate-in fade-in slide-in-from-top-1">
+                              {['단면', '양면'].map(side => (
+                                <button
+                                  key={side}
+                                  onClick={() => handleOptionChange('코팅 면수', side)}
+                                  className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
+                                    selectedOptions['코팅 면수'] === side
+                                      ? 'bg-emerald-600 border-emerald-600 text-white shadow-md'
+                                      : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
+                                  }`}
+                                >
+                                  {side}
+                                </button>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       </div>
+                    </motion.div>
+                  )}
 
-                      {selectedOptions['귀돌이 면수'] === '1면' && (
-                        <div className="space-y-2">
-                          <span className="text-[10px] font-bold text-zinc-400 uppercase">방향 선택</span>
-                          <div className="grid grid-cols-4 gap-2">
-                            {[
-                              { id: '상단좌', icon: 'rounded-tl-xl' },
-                              { id: '상단우', icon: 'rounded-tr-xl' },
-                              { id: '하단좌', icon: 'rounded-bl-xl' },
-                              { id: '하단우', icon: 'rounded-br-xl' }
-                            ].map(dir => (
+                  {expandedPostOption === 'rounding' && (
+                    <motion.div
+                      key="rounding"
+                      initial={{ opacity: 0, y: -10, height: 0 }}
+                      animate={{ opacity: 1, y: 0, height: 'auto' }}
+                      exit={{ opacity: 0, y: -10, height: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="pt-4 border-t border-zinc-200/50 space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-xs font-black text-zinc-900 uppercase tracking-widest">귀돌이 상세 설정</h4>
+                          <button onClick={() => setExpandedPostOption(null)} className="text-[10px] font-bold text-zinc-400 hover:text-zinc-600">닫기</button>
+                        </div>
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-2 gap-2">
+                            {['없음', '있음'].map(use => (
                               <button
-                                key={dir.id}
-                                onClick={() => handleOptionChange('귀돌이 방향', dir.id)}
-                                className={`aspect-square rounded-xl border-2 flex flex-col items-center justify-center gap-1 transition-all ${
-                                  selectedOptions['귀돌이 방향'] === dir.id
-                                    ? 'bg-emerald-50 border-emerald-500 text-emerald-700'
-                                    : 'bg-white border-zinc-100 text-zinc-400 hover:border-zinc-200'
+                                key={use}
+                                onClick={() => handleOptionChange('귀돌이 사용', use)}
+                                className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
+                                  selectedOptions['귀돌이 사용'] === use
+                                    ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
+                                    : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
                                 }`}
                               >
-                                <div className={`w-6 h-4 border-2 border-current ${dir.icon}`} />
-                                <span className="text-[9px] font-black">{dir.id}</span>
+                                {use}
                               </button>
                             ))}
                           </div>
+                          {selectedOptions['귀돌이 사용'] === '있음' && (
+                            <div className="space-y-4 animate-in fade-in slide-in-from-top-1">
+                              <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                  <span className="text-[10px] font-bold text-zinc-400 uppercase">크기</span>
+                                  <div className="grid grid-cols-2 gap-2">
+                                    {['4mm', '6mm'].map(size => (
+                                      <button
+                                        key={size}
+                                        onClick={() => handleOptionChange('귀돌이 크기', size)}
+                                        className={`py-2 rounded-lg text-[11px] font-bold border transition-all ${
+                                          selectedOptions['귀돌이 크기'] === size
+                                            ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
+                                            : 'bg-white border-zinc-200 text-zinc-500'
+                                        }`}
+                                      >
+                                        {size}
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                                <div className="space-y-2">
+                                  <span className="text-[10px] font-bold text-zinc-400 uppercase">면수</span>
+                                  <div className="grid grid-cols-2 gap-2">
+                                    {['1면', '4면'].map(count => (
+                                      <button
+                                        key={count}
+                                        onClick={() => handleOptionChange('귀돌이 면수', count)}
+                                        className={`py-2 rounded-lg text-[11px] font-bold border transition-all ${
+                                          selectedOptions['귀돌이 면수'] === count
+                                            ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
+                                            : 'bg-white border-zinc-200 text-zinc-500'
+                                        }`}
+                                      >
+                                        {count}
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                              {selectedOptions['귀돌이 면수'] === '1면' && (
+                                <div className="space-y-2">
+                                  <span className="text-[10px] font-bold text-zinc-400 uppercase">방향 선택</span>
+                                  <div className="grid grid-cols-4 gap-2">
+                                    {[
+                                      { id: '상단좌', icon: 'rounded-tl-xl' },
+                                      { id: '상단우', icon: 'rounded-tr-xl' },
+                                      { id: '하단좌', icon: 'rounded-bl-xl' },
+                                      { id: '하단우', icon: 'rounded-br-xl' }
+                                    ].map(dir => (
+                                      <button
+                                        key={dir.id}
+                                        onClick={() => handleOptionChange('귀돌이 방향', dir.id)}
+                                        className={`aspect-square rounded-xl border-2 flex flex-col items-center justify-center gap-1 transition-all ${
+                                          selectedOptions['귀돌이 방향'] === dir.id
+                                            ? 'bg-emerald-50 border-emerald-500 text-emerald-700'
+                                            : 'bg-white border-zinc-100 text-zinc-400 hover:border-zinc-200'
+                                        }`}
+                                      >
+                                        <div className={`w-6 h-4 border-2 border-current ${dir.icon}`} />
+                                        <span className="text-[9px] font-black">{dir.id}</span>
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )}
                         </div>
-                      )}
+                      </div>
                     </motion.div>
                   )}
-                </AnimatePresence>
-              </div>
 
-              {/* 3. Punching (타공) */}
-              <div className="space-y-4">
-                <label className="text-xs font-black text-zinc-400 uppercase tracking-widest block">타공</label>
-                <div className="grid grid-cols-2 gap-3">
-                  {['없음', '있음'].map(use => (
-                    <button
-                      key={use}
-                      onClick={() => handleOptionChange('타공 사용', use)}
-                      className={`py-3 rounded-xl text-xs font-bold border transition-all ${
-                        selectedOptions['타공 사용'] === use
-                          ? 'bg-zinc-900 border-zinc-900 text-white'
-                          : 'bg-white border-zinc-200 text-zinc-600 hover:border-zinc-400'
-                      }`}
-                    >
-                      {use}
-                    </button>
-                  ))}
-                </div>
-                <AnimatePresence>
-                  {selectedOptions['타공 사용'] === '있음' && (
+                  {expandedPostOption === 'punching' && (
                     <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="space-y-4 pt-2"
+                      key="punching"
+                      initial={{ opacity: 0, y: -10, height: 0 }}
+                      animate={{ opacity: 1, y: 0, height: 'auto' }}
+                      exit={{ opacity: 0, y: -10, height: 0 }}
+                      className="overflow-hidden"
                     >
-                      <div className="space-y-2">
-                        <span className="text-[10px] font-bold text-zinc-400 uppercase">구멍 크기</span>
-                        <div className="grid grid-cols-3 gap-2">
-                          {['4mm', '6mm', '8mm'].map(size => (
+                      <div className="pt-4 border-t border-zinc-200/50 space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-xs font-black text-zinc-900 uppercase tracking-widest">타공 상세 설정</h4>
+                          <button onClick={() => setExpandedPostOption(null)} className="text-[10px] font-bold text-zinc-400 hover:text-zinc-600">닫기</button>
+                        </div>
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-2 gap-2">
+                            {['없음', '있음'].map(use => (
+                              <button
+                                key={use}
+                                onClick={() => handleOptionChange('타공 사용', use)}
+                                className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
+                                  selectedOptions['타공 사용'] === use
+                                    ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
+                                    : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
+                                }`}
+                              >
+                                {use}
+                              </button>
+                            ))}
+                          </div>
+                          {selectedOptions['타공 사용'] === '있음' && (
+                            <div className="space-y-4 animate-in fade-in slide-in-from-top-1">
+                              <div className="space-y-2">
+                                <span className="text-[10px] font-bold text-zinc-400 uppercase">구멍 크기</span>
+                                <div className="grid grid-cols-3 gap-2">
+                                  {['4mm', '6mm', '8mm'].map(size => (
+                                    <button
+                                      key={size}
+                                      onClick={() => handleOptionChange('구멍 크기', size)}
+                                      className={`py-2 rounded-lg text-[11px] font-bold border transition-all ${
+                                        selectedOptions['구멍 크기'] === size
+                                          ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
+                                          : 'bg-white border-zinc-200 text-zinc-500'
+                                      }`}
+                                    >
+                                      {size}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+                              <div className="space-y-2">
+                                <span className="text-[10px] font-bold text-zinc-400 uppercase">타공 개수/위치 설명</span>
+                                <input
+                                  type="text"
+                                  value={selectedOptions['타공 설명']}
+                                  onChange={(e) => handleOptionChange('타공 설명', e.target.value)}
+                                  placeholder="예: 2공 / 좌측 상단 1개, 우측 상단 1개 / 간격 50mm"
+                                  className="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none font-medium text-[11px] transition-colors"
+                                />
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {expandedPostOption === 'case' && (
+                    <motion.div
+                      key="case"
+                      initial={{ opacity: 0, y: -10, height: 0 }}
+                      animate={{ opacity: 1, y: 0, height: 'auto' }}
+                      exit={{ opacity: 0, y: -10, height: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="pt-4 border-t border-zinc-200/50 space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-xs font-black text-zinc-900 uppercase tracking-widest">케이스 선택</h4>
+                          <button onClick={() => setExpandedPostOption(null)} className="text-[10px] font-bold text-zinc-400 hover:text-zinc-600">닫기</button>
+                        </div>
+                        <div className="grid grid-cols-1 gap-2">
+                          {['없음', '종이 케이스', '플라스틱 케이스'].map(item => (
                             <button
-                              key={size}
-                              onClick={() => handleOptionChange('구멍 크기', size)}
-                              className={`py-2 rounded-lg text-xs font-bold border transition-all ${
-                                selectedOptions['구멍 크기'] === size
-                                  ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
-                                  : 'bg-white border-zinc-200 text-zinc-500'
+                              key={item}
+                              onClick={() => handleOptionChange('명함케이스', item)}
+                              className={`w-full py-3 px-4 rounded-xl text-[11px] font-bold border transition-all text-left flex items-center justify-between ${
+                                selectedOptions['명함케이스'] === item
+                                  ? 'bg-emerald-50 border-emerald-500 text-emerald-900 shadow-sm'
+                                  : 'bg-white border-zinc-100 text-zinc-500 hover:border-zinc-300'
                               }`}
                             >
-                              {size}
+                              <span>{item}</span>
+                              {selectedOptions['명함케이스'] === item && <CheckCircle2 className="w-4 h-4 text-emerald-500" />}
                             </button>
                           ))}
                         </div>
                       </div>
-                      <div className="space-y-2">
-                        <span className="text-[10px] font-bold text-zinc-400 uppercase">타공 개수/위치 설명</span>
-                        <input
-                          type="text"
-                          value={selectedOptions['타공 설명']}
-                          onChange={(e) => handleOptionChange('타공 설명', e.target.value)}
-                          placeholder="예: 2공 / 좌측 상단 1개, 우측 상단 1개 / 간격 50mm"
-                          className="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none font-medium text-xs transition-colors"
-                        />
-                      </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </div>
-
-              {/* 4. Case */}
-              <div className="space-y-4">
-                <label className="text-xs font-black text-zinc-400 uppercase tracking-widest block">명함케이스</label>
-                <div className="grid grid-cols-1 gap-2">
-                  {['없음', '종이 케이스', '플라스틱 케이스'].map(item => (
-                    <button
-                      key={item}
-                      onClick={() => handleOptionChange('명함케이스', item)}
-                      className={`w-full py-3 px-4 rounded-xl text-xs font-bold border transition-all text-left flex items-center justify-between ${
-                        selectedOptions['명함케이스'] === item
-                          ? 'bg-emerald-50 border-emerald-500 text-emerald-900'
-                          : 'bg-white border-zinc-100 text-zinc-600 hover:border-zinc-300'
-                      }`}
-                    >
-                      <span>{item}</span>
-                      {selectedOptions['명함케이스'] === item && <CheckCircle2 className="w-4 h-4 text-emerald-500" />}
-                    </button>
-                  ))}
-                </div>
               </div>
             </div>
           )}

@@ -1019,7 +1019,7 @@ export const CATEGORIES: Category[] = [
     subCategories: [
       {
         groupName: '명함',
-        items: ['일반 명함', '프리미엄 명함', '접지 명함', '디자인 템플릿 명함']
+        items: ['일반 명함', '고급지 명함', '접지 명함', '디자인 템플릿 명함']
       },
       {
         groupName: '엽서',
@@ -2675,9 +2675,9 @@ export const PRODUCTS: Product[] = [
       {
         name: '용지 선택',
         type: 'select',
-        values: BUSINESS_CARD_MATERIALS.map(m => ({
+        values: BUSINESS_CARD_MATERIALS.filter(m => m.group === '기본 대중형').map(m => ({
           label: `${m.name} ${m.weight}`,
-          priceModifier: m.group === '기본 대중형' ? 0 : m.group === '고급 감성형' ? 2000 : 3000
+          priceModifier: 0
         }))
       },
       {
