@@ -86,6 +86,107 @@ export const DESIGN_CARD_TEMPLATES: Template[] = [
   { id: 'EC-02', name: '할인권 스타일', category: '이벤트/쿠폰형', image: 'https://picsum.photos/seed/ec02/400/250' },
 ];
 
+export const BUSINESS_CARD_METADATA = {
+  '일반 명함': {
+    tagline: '가장 대중적인 명함, 가성비 최우수.',
+    description: '다양한 용지와 규격으로 제작 가능한 표준 명함입니다.'
+  },
+  '고급지 명함': {
+    tagline: '고급 수입지와 후가공으로 완성하는 품격.',
+    description: '박, 형압 등 특별한 가공이 더해진 고급지 명함입니다.'
+  },
+  '접지 명함': {
+    tagline: '더 많은 정보를 담을 수 있는 접지형.',
+    description: '2단, 3단 접지로 명함 이상의 정보를 전달하기에 적합합니다.'
+  },
+  '디자인 템플릿 명함': {
+    tagline: '전문 디자이너의 템플릿으로 쉽고 빠르게.',
+    description: '업종별 템플릿을 선택하고 정보만 입력하면 완성되는 빠른 주문형 명함입니다.'
+  }
+};
+
+export const BUSINESS_CARD_COMMON_OPTIONS = {
+  SIZE: {
+    name: '규격(mm)',
+    type: 'select' as const,
+    values: [
+      { label: '90x50 (표준)', priceModifier: 0 },
+      { label: '85x55 (신용카드형)', priceModifier: 0 },
+      { label: '직접입력', priceModifier: 0 },
+    ]
+  },
+  PRINT_COLOR: {
+    name: '인쇄도수',
+    type: 'radio' as const,
+    values: [
+      { label: '단면 칼라', priceModifier: 0 },
+      { label: '양면 칼라', priceModifier: 2000 },
+    ]
+  },
+  ROUNDING: [
+    {
+      name: '귀돌이 사용',
+      type: 'radio' as const,
+      values: [
+        { label: '없음', priceModifier: 0 },
+        { label: '있음', priceModifier: 1500 },
+      ]
+    },
+    {
+      name: '귀돌이 크기',
+      type: 'radio' as const,
+      values: [
+        { label: '4mm', priceModifier: 0 },
+        { label: '6mm', priceModifier: 0 },
+      ]
+    },
+    {
+      name: '귀돌이 면수',
+      type: 'radio' as const,
+      values: [
+        { label: '1면', priceModifier: 0 },
+        { label: '4면', priceModifier: 1000 },
+      ]
+    },
+    {
+      name: '귀돌이 방향',
+      type: 'select' as const,
+      values: [
+        { label: '상단좌', priceModifier: 0 },
+        { label: '상단우', priceModifier: 0 },
+        { label: '하단좌', priceModifier: 0 },
+        { label: '하단우', priceModifier: 0 },
+      ]
+    }
+  ]
+};
+
+export const getBusinessCardMaterials = (type: 'standard' | 'premium' | 'template') => {
+  if (type === 'standard') {
+    return BUSINESS_CARD_MATERIALS.filter(m => m.group === '기본 대중형').map(m => ({
+      label: `${m.name} ${m.weight}`,
+      priceModifier: 0
+    }));
+  }
+  if (type === 'premium') {
+    return BUSINESS_CARD_MATERIALS.filter(m => m.group !== '기본 대중형').map(m => ({
+      label: `${m.name} ${m.weight}`,
+      priceModifier: m.group === '고급 감성형' ? 0 : 1500
+    }));
+  }
+  if (type === 'template') {
+    const templateMaterials = ['스노우 250g', '스노우 300g', '아트지 250g', '반누보화이트 250g'];
+    return BUSINESS_CARD_MATERIALS.filter(m => templateMaterials.includes(`${m.name} ${m.weight}`)).map(m => {
+       const label = `${m.name} ${m.weight}`;
+       let priceModifier = 0;
+       if (label === '스노우 300g') priceModifier = 500;
+       if (label === '반누보화이트 250g') priceModifier = 2000;
+       return { label, priceModifier };
+    });
+  }
+  return [];
+};
+
 export const BUSINESS_CARD_MATERIALS: BusinessCardPaperMaterial[] = [
   // A. 기본 대중형
   {
@@ -1212,18 +1313,10 @@ export const SUBCATEGORY_METADATA: Record<string, SubCategoryMetadata> = {
     tagline: '흔적 없이 깔끔하게, 떼었다 붙였다.',
     description: '제거 시 끈적임이 남지 않아 노트북이나 전자기기에 부착하기 좋습니다. 재부착이 가능하여 활용도가 높습니다.'
   },
-  '디자인 템플릿 명함': {
-    tagline: '전문 디자이너의 템플릿으로 쉽고 빠르게.',
-    description: '업종별 템플릿을 선택하고 정보만 입력하면 완성되는 빠른 주문형 명함입니다.'
-  },
-  '일반 명함': {
-    tagline: '가장 대중적인 명함, 가성비 최우수.',
-    description: '다양한 용지와 규격으로 제작 가능한 표준 명함입니다.'
-  },
-  '프리미엄 명함': {
-    tagline: '고급 수입지와 후가공으로 완성하는 품격.',
-    description: '박, 형압 등 특별한 가공이 더해진 프리미엄 명함입니다.'
-  },
+  '디자인 템플릿 명함': BUSINESS_CARD_METADATA['디자인 템플릿 명함'],
+  '일반 명함': BUSINESS_CARD_METADATA['일반 명함'],
+  '고급지 명함': BUSINESS_CARD_METADATA['고급지 명함'],
+  '접지 명함': BUSINESS_CARD_METADATA['접지 명함'],
   '일반 엽서': {
     tagline: '소중한 마음을 담는 클래식 엽서.',
     description: '표준 규격의 고품질 엽서 제작 서비스입니다.'
@@ -2696,37 +2789,18 @@ export const PRODUCTS: Product[] = [
     name: '일반 명함',
     category: 'card-paper',
     subCategory: '일반 명함',
-    tagline: '좋은 퀄리티로 빠르게 제작할 수 있어요.',
-    description: '가장 대중적인 90x50 규격은 물론, 원하는 규격으로도 제작이 가능해 명함 이외 다용도로 활용이 가능합니다.',
+    ...BUSINESS_CARD_METADATA['일반 명함'],
     image: 'https://picsum.photos/seed/bc-standard/800/800',
     minQuantity: 100,
     basePrice: 7000,
     options: [
-      {
-        name: '규격(mm)',
-        type: 'select',
-        values: [
-          { label: '90x50 (표준)', priceModifier: 0 },
-          { label: '85x55 (신용카드형)', priceModifier: 0 },
-          { label: '직접입력', priceModifier: 0 },
-        ]
-      },
+      BUSINESS_CARD_COMMON_OPTIONS.SIZE,
       {
         name: '용지 선택',
         type: 'select',
-        values: BUSINESS_CARD_MATERIALS.filter(m => m.group === '기본 대중형').map(m => ({
-          label: `${m.name} ${m.weight}`,
-          priceModifier: 0
-        }))
+        values: getBusinessCardMaterials('standard')
       },
-      {
-        name: '인쇄도수',
-        type: 'radio',
-        values: [
-          { label: '단면 칼라', priceModifier: 0 },
-          { label: '양면 칼라', priceModifier: 2000 },
-        ]
-      },
+      BUSINESS_CARD_COMMON_OPTIONS.PRINT_COLOR,
       {
         name: '코팅 종류',
         type: 'select',
@@ -2744,40 +2818,7 @@ export const PRODUCTS: Product[] = [
           { label: '양면', priceModifier: 500 },
         ]
       },
-      {
-        name: '귀돌이 사용',
-        type: 'radio',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '있음', priceModifier: 1500 },
-        ]
-      },
-      {
-        name: '귀돌이 크기',
-        type: 'radio',
-        values: [
-          { label: '4mm', priceModifier: 0 },
-          { label: '6mm', priceModifier: 0 },
-        ]
-      },
-      {
-        name: '귀돌이 면수',
-        type: 'radio',
-        values: [
-          { label: '1면', priceModifier: 0 },
-          { label: '4면', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '귀돌이 방향',
-        type: 'select',
-        values: [
-          { label: '상단좌', priceModifier: 0 },
-          { label: '상단우', priceModifier: 0 },
-          { label: '하단좌', priceModifier: 0 },
-          { label: '하단우', priceModifier: 0 },
-        ]
-      },
+      ...BUSINESS_CARD_COMMON_OPTIONS.ROUNDING,
       {
         name: '타공 사용',
         type: 'radio',
@@ -2829,71 +2870,19 @@ export const PRODUCTS: Product[] = [
     name: '고급지 명함',
     category: 'card-paper',
     subCategory: '고급지 명함',
-    tagline: '특별한 가공으로 품격을 더하세요.',
-    description: '다양한 고급 수입지와 후가공으로 제작하는 고품질 명함입니다.',
+    ...BUSINESS_CARD_METADATA['고급지 명함'],
     image: 'https://picsum.photos/seed/bc-premium/800/800',
     minQuantity: 100,
     basePrice: 15700,
     options: [
-      {
-        name: '규격(mm)',
-        type: 'select',
-        values: [
-          { label: '90x50 (표준)', priceModifier: 0 },
-          { label: '85x55 (신용카드형)', priceModifier: 0 },
-          { label: '직접입력', priceModifier: 0 },
-        ]
-      },
+      BUSINESS_CARD_COMMON_OPTIONS.SIZE,
       {
         name: '용지 선택',
         type: 'select',
-        values: BUSINESS_CARD_MATERIALS.filter(m => m.group !== '기본 대중형').map(m => ({
-          label: `${m.name} ${m.weight}`,
-          priceModifier: m.group === '고급 감성형' ? 0 : 1500
-        }))
+        values: getBusinessCardMaterials('premium')
       },
-      {
-        name: '인쇄도수',
-        type: 'radio',
-        values: [
-          { label: '단면 칼라', priceModifier: 0 },
-          { label: '양면 칼라', priceModifier: 2000 },
-        ]
-      },
-      {
-        name: '귀돌이 사용',
-        type: 'radio',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '있음', priceModifier: 1500 },
-        ]
-      },
-      {
-        name: '귀돌이 크기',
-        type: 'radio',
-        values: [
-          { label: '4mm', priceModifier: 0 },
-          { label: '6mm', priceModifier: 0 },
-        ]
-      },
-      {
-        name: '귀돌이 면수',
-        type: 'radio',
-        values: [
-          { label: '1면', priceModifier: 0 },
-          { label: '4면', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '귀돌이 방향',
-        type: 'select',
-        values: [
-          { label: '상단좌', priceModifier: 0 },
-          { label: '상단우', priceModifier: 0 },
-          { label: '하단좌', priceModifier: 0 },
-          { label: '하단우', priceModifier: 0 },
-        ]
-      },
+      BUSINESS_CARD_COMMON_OPTIONS.PRINT_COLOR,
+      ...BUSINESS_CARD_COMMON_OPTIONS.ROUNDING,
       {
         name: '타공 사용',
         type: 'radio',
@@ -2938,8 +2927,7 @@ export const PRODUCTS: Product[] = [
     name: '접지 명함',
     category: 'card-paper',
     subCategory: '접지 명함',
-    tagline: '더 많은 정보를 담을 수 있는 접지형.',
-    description: '2단, 3단 접지로 명함 이상의 정보를 전달하기에 적합합니다.',
+    ...BUSINESS_CARD_METADATA['접지 명함'],
     image: 'https://picsum.photos/seed/bc-folded/800/800',
     minQuantity: 100,
     basePrice: 14700,
@@ -2995,14 +2983,7 @@ export const PRODUCTS: Product[] = [
           { label: '골드시리오펄 300g', priceModifier: 4000 },
         ]
       },
-      {
-        name: '인쇄도수',
-        type: 'radio',
-        values: [
-          { label: '단면 칼라', priceModifier: 0 },
-          { label: '양면 칼라', priceModifier: 2000 },
-        ]
-      },
+      BUSINESS_CARD_COMMON_OPTIONS.PRINT_COLOR,
       {
         name: '코팅',
         type: 'radio',
@@ -3046,8 +3027,7 @@ export const PRODUCTS: Product[] = [
     name: '디자인 템플릿 명함',
     category: 'card-paper',
     subCategory: '디자인 템플릿 명함',
-    tagline: '전문 디자이너의 템플릿으로 쉽고 빠르게.',
-    description: '업종별 템플릿을 선택하고 정보만 입력하면 완성되는 빠른 주문형 명함입니다.',
+    ...BUSINESS_CARD_METADATA['디자인 템플릿 명함'],
     image: 'https://picsum.photos/seed/bc-design/800/800',
     minQuantity: 100,
     basePrice: 12000,
@@ -3068,32 +3048,13 @@ export const PRODUCTS: Product[] = [
         name: '템플릿 선택',
         type: 'text',
       },
-      {
-        name: '규격',
-        type: 'radio',
-        values: [
-          { label: '90x50 표준', priceModifier: 0 },
-          { label: '85x55 카드형', priceModifier: 0 },
-        ]
-      },
+      BUSINESS_CARD_COMMON_OPTIONS.SIZE,
       {
         name: '용지',
         type: 'select',
-        values: [
-          { label: '스노우 250g', priceModifier: 0 },
-          { label: '스노우 300g', priceModifier: 500 },
-          { label: '아트지 250g', priceModifier: 0 },
-          { label: '반누보화이트 250g', priceModifier: 2000 },
-        ]
+        values: getBusinessCardMaterials('template')
       },
-      {
-        name: '인쇄도수',
-        type: 'radio',
-        values: [
-          { label: '단면 칼라', priceModifier: 0 },
-          { label: '양면 칼라', priceModifier: 2000 },
-        ]
-      },
+      BUSINESS_CARD_COMMON_OPTIONS.PRINT_COLOR,
       {
         name: '수량',
         type: 'radio',
@@ -3112,40 +3073,7 @@ export const PRODUCTS: Product[] = [
           { label: '유광 코팅', priceModifier: 1000 },
         ]
       },
-      {
-        name: '귀돌이 사용',
-        type: 'radio',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '있음', priceModifier: 1500 },
-        ]
-      },
-      {
-        name: '귀돌이 크기',
-        type: 'radio',
-        values: [
-          { label: '4mm', priceModifier: 0 },
-          { label: '6mm', priceModifier: 0 },
-        ]
-      },
-      {
-        name: '귀돌이 면수',
-        type: 'radio',
-        values: [
-          { label: '1면', priceModifier: 0 },
-          { label: '4면', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '귀돌이 방향',
-        type: 'select',
-        values: [
-          { label: '상단좌', priceModifier: 0 },
-          { label: '상단우', priceModifier: 0 },
-          { label: '하단좌', priceModifier: 0 },
-          { label: '하단우', priceModifier: 0 },
-        ]
-      },
+      ...BUSINESS_CARD_COMMON_OPTIONS.ROUNDING,
       {
         name: '이름',
         type: 'text',
