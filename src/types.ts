@@ -1195,7 +1195,7 @@ export const CATEGORIES: Category[] = [
       },
       {
         groupName: '엽서',
-        items: ['일반 엽서', '미니 엽서', '아트지 엽서', '수입지 엽서']
+        items: ['일반 엽서', '특가 엽서', '모양 엽서', '고급지 엽서', '후가공 엽서']
       },
       {
         groupName: '포토카드',
@@ -1407,7 +1407,23 @@ export const SUBCATEGORY_METADATA: Record<string, SubCategoryMetadata> = {
   '접지 명함': BUSINESS_CARD_METADATA['접지 명함'],
   '일반 엽서': {
     tagline: '소중한 마음을 담는 클래식 엽서.',
-    description: '표준 규격의 고품질 엽서 제작 서비스입니다.'
+    description: '표준 규격 및 다양한 사이즈로 제작 가능한 고품질 엽서입니다.'
+  },
+  '특가 엽서': {
+    tagline: '가장 합리적인 선택, 빠른 주문.',
+    description: '선택지를 줄여 가격을 낮춘 가성비 중심의 빠른 제작 엽서입니다.'
+  },
+  '모양 엽서': {
+    tagline: '평범함을 거부하는 특별한 디자인.',
+    description: '라운드, 티켓형, 자유형 칼선 등 독특한 모양의 엽서입니다.'
+  },
+  '고급지 엽서': {
+    tagline: '종이 본연의 질감이 전하는 깊은 감동.',
+    description: '엄선된 수입지와 프리미엄 용지로 제작하는 품격 있는 엽서입니다.'
+  },
+  '후가공 엽서': {
+    tagline: '빛나는 디테일로 완성하는 프리미엄.',
+    description: '박, 형압, 스코딕스 등 화려한 효과를 더한 특별한 엽서입니다.'
   },
   '기본 포토카드': {
     tagline: '한 손에 쏙, 나만의 굿즈.',
@@ -2438,15 +2454,145 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
-    id: 'paper-postcard',
-    name: '엽서',
+    id: 'stk-postcard-standard',
+    name: '일반 엽서',
     category: 'card-paper',
     subCategory: '일반 엽서',
-    tagline: '소중한 마음을 담는 가장 클래식한 방법.',
-    description: '다양한 고급 수입지와 후가공으로 제작하는 고품질 엽서입니다.',
-    image: 'https://picsum.photos/seed/postcard/800/800',
+    ...SUBCATEGORY_METADATA['일반 엽서'],
+    image: 'https://picsum.photos/seed/postcard-standard/800/800',
     minQuantity: 10,
     basePrice: 8000,
+    options: [
+      {
+        name: '사이즈',
+        type: 'select',
+        values: [
+          { label: '100x148mm (기본)', priceModifier: 0 },
+          { label: '148x210mm (A5)', priceModifier: 3000 },
+          { label: '105x105mm (정사각형)', priceModifier: 1000 },
+          { label: '70x100mm (미니)', priceModifier: -1000 },
+          { label: '직접 입력', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '용지 선택',
+        type: 'select',
+        values: POSTCARD_MATERIALS.filter(m => m.group === '기본 대중형').map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: 0
+        }))
+      },
+      {
+        name: '인쇄 도수',
+        type: 'radio',
+        values: [
+          { label: '단면 칼라', priceModifier: 0 },
+          { label: '양면 칼라', priceModifier: 2000 },
+        ]
+      },
+      {
+        name: '코팅',
+        type: 'radio',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '무광 코팅', priceModifier: 1000 },
+          { label: '유광 코팅', priceModifier: 1000 },
+        ]
+      }
+    ],
+    features: ['표준/미니 사이즈 통합', '아트지/스노우지 기본', '가장 대중적인 선택'],
+    leadTime: '2~3 영업일',
+    badges: ['베스트', '가성비', '빠른제작']
+  },
+  {
+    id: 'stk-postcard-special',
+    name: '특가 엽서',
+    category: 'card-paper',
+    subCategory: '특가 엽서',
+    ...SUBCATEGORY_METADATA['특가 엽서'],
+    image: 'https://picsum.photos/seed/postcard-special/800/800',
+    minQuantity: 500,
+    basePrice: 35000,
+    options: [
+      {
+        name: '사이즈',
+        type: 'radio',
+        values: [
+          { label: '100x148mm', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '용지 선택',
+        type: 'radio',
+        values: [
+          { label: '아트지 250g', priceModifier: 0 },
+          { label: '스노우 250g', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '인쇄 도수',
+        type: 'radio',
+        values: [
+          { label: '단면 칼라', priceModifier: 0 },
+          { label: '양면 칼라', priceModifier: 5000 },
+        ]
+      }
+    ],
+    features: ['대량 제작 특가', '규격 사이즈 고정', '경제적인 홍보물'],
+    leadTime: '3~4 영업일',
+    badges: ['특가', '대량권장', '경제적']
+  },
+  {
+    id: 'stk-postcard-shape',
+    name: '모양 엽서',
+    category: 'card-paper',
+    subCategory: '모양 엽서',
+    ...SUBCATEGORY_METADATA['모양 엽서'],
+    image: 'https://picsum.photos/seed/postcard-shape/800/800',
+    minQuantity: 50,
+    basePrice: 15000,
+    options: [
+      {
+        name: '모양 선택',
+        type: 'select',
+        values: [
+          { label: '라운드형 (귀도리)', priceModifier: 0 },
+          { label: '티켓형 (절취선)', priceModifier: 2000 },
+          { label: '자유형 (칼선 제작)', priceModifier: 8000 },
+          { label: '하트형', priceModifier: 5000 },
+          { label: '원형', priceModifier: 5000 },
+        ]
+      },
+      {
+        name: '용지 선택',
+        type: 'select',
+        values: POSTCARD_MATERIALS.filter(m => m.group !== '컬러/특수지형').map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: m.group === '기본 대중형' ? 0 : 2000
+        }))
+      },
+      {
+        name: '인쇄 도수',
+        type: 'radio',
+        values: [
+          { label: '단면 칼라', priceModifier: 0 },
+          { label: '양면 칼라', priceModifier: 2000 },
+        ]
+      }
+    ],
+    features: ['독특한 실루엣', '브랜드 개성 강조', '정밀 도송 가공'],
+    leadTime: '5~7 영업일',
+    badges: ['모양제작', '디자인', '유니크']
+  },
+  {
+    id: 'stk-postcard-premium',
+    name: '고급지 엽서',
+    category: 'card-paper',
+    subCategory: '고급지 엽서',
+    ...SUBCATEGORY_METADATA['고급지 엽서'],
+    image: 'https://picsum.photos/seed/postcard-premium/800/800',
+    minQuantity: 10,
+    basePrice: 12000,
     options: [
       {
         name: '사이즈',
@@ -2460,9 +2606,9 @@ export const PRODUCTS: Product[] = [
       {
         name: '용지 선택',
         type: 'select',
-        values: POSTCARD_MATERIALS.map(m => ({
+        values: POSTCARD_MATERIALS.filter(m => m.group !== '기본 대중형').map(m => ({
           label: `${m.name} ${m.weight}`,
-          priceModifier: m.group === '기본 대중형' ? 0 : m.group === '고급 감성형' ? 1500 : 2500
+          priceModifier: 0
         }))
       },
       {
@@ -2474,18 +2620,50 @@ export const PRODUCTS: Product[] = [
         ]
       }
     ],
-    features: ['고급 수입지 사용', '선명한 색상 표현', '다양한 사이즈'],
-    leadTime: '3~4 영업일',
-    badges: ['수입지 4종~', '양면 인쇄', '파일 업로드'],
-    recommendation: '전시회나 작품 엽서용으로는 "랑데뷰 240g"을 추천합니다. 종이 본연의 질감이 살아나 작품의 깊이를 더해줍니다.',
-    warnings: [
-      '어두운 배경색은 재단 시 터짐 현상 발생 가능',
-      '수입지는 종이 결에 따라 인쇄 느낌이 다를 수 있음'
+    features: ['프리미엄 수입지', '풍부한 질감 표현', '작가/브랜드 굿즈 최적'],
+    leadTime: '4~5 영업일',
+    badges: ['고급지', '수입지', '감성']
+  },
+  {
+    id: 'stk-postcard-effect',
+    name: '후가공 엽서',
+    category: 'card-paper',
+    subCategory: '후가공 엽서',
+    ...SUBCATEGORY_METADATA['후가공 엽서'],
+    image: 'https://picsum.photos/seed/postcard-effect/800/800',
+    minQuantity: 100,
+    basePrice: 25000,
+    options: [
+      {
+        name: '후가공 효과',
+        type: 'select',
+        values: [
+          { label: '금박/은박', priceModifier: 0 },
+          { label: '형압/압인', priceModifier: 5000 },
+          { label: '부분 UV (스코딕스)', priceModifier: 8000 },
+          { label: '엠보싱', priceModifier: 6000 },
+        ]
+      },
+      {
+        name: '용지 선택',
+        type: 'select',
+        values: POSTCARD_MATERIALS.filter(m => m.group !== '친환경/내추럴형').map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: m.group === '기본 대중형' ? 0 : 2000
+        }))
+      },
+      {
+        name: '인쇄 도수',
+        type: 'radio',
+        values: [
+          { label: '단면 칼라', priceModifier: 0 },
+          { label: '양면 칼라', priceModifier: 2000 },
+        ]
+      }
     ],
-    notes: [
-      '엽서 뒷면 디자인 시 우표 칸이나 주소 줄 위치를 고려하세요.',
-      '대량 제작 시 별도 견적 문의 바랍니다.'
-    ]
+    features: ['화려한 시각 효과', '입체적인 질감', 'VIP용 초대장 추천'],
+    leadTime: '6~8 영업일',
+    badges: ['후가공', '프리미엄', '화려함']
   },
   {
     id: 'bc-standard',
