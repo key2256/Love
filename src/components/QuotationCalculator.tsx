@@ -323,19 +323,25 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                 1. 용지 그룹 선택
               </label>
               <div className="grid grid-cols-2 gap-3">
-                {['기본 대중형', '고급 감성형', '내추럴/친환경형', '특수지/프리미엄형'].map((group) => (
-                  <button
-                    key={group}
-                    onClick={() => setSelectedBusinessCardGroup(group)}
-                    className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all ${
-                      selectedBusinessCardGroup === group
-                        ? 'bg-zinc-900 border-zinc-900 text-white shadow-lg'
-                        : 'bg-white border-zinc-200 text-zinc-600 hover:border-zinc-400'
-                    }`}
-                  >
-                    {group}
-                  </button>
-                ))}
+                {['기본 대중형', '고급 감성형', '내추럴/친환경형', '특수지/프리미엄형']
+                  .filter(group => {
+                    if (product.id === 'bc-standard') return group === '기본 대중형';
+                    if (product.id === 'bc-premium') return group !== '기본 대중형';
+                    return true;
+                  })
+                  .map((group) => (
+                    <button
+                      key={group}
+                      onClick={() => setSelectedBusinessCardGroup(group)}
+                      className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all ${
+                        selectedBusinessCardGroup === group
+                          ? 'bg-zinc-900 border-zinc-900 text-white shadow-lg'
+                          : 'bg-white border-zinc-200 text-zinc-600 hover:border-zinc-400'
+                      }`}
+                    >
+                      {group}
+                    </button>
+                  ))}
               </div>
 
               {selectedBusinessCardGroup && (
@@ -1059,11 +1065,13 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
             <div className="flex items-center justify-between text-sm">
               <span className="text-zinc-500 font-medium">선택 옵션 요약</span>
               <div className="flex flex-wrap justify-end gap-2">
-                {Object.entries(selectedOptions).map(([key, val]) => (
-                  <span key={key} className="px-2 py-1 bg-white rounded-md text-[10px] font-bold text-zinc-400 border border-zinc-100">
-                    {val}
-                  </span>
-                ))}
+                {Object.entries(selectedOptions)
+                  .filter(([_, val]) => val && val !== '없음' && String(val).trim() !== '')
+                  .map(([key, val]) => (
+                    <span key={key} className="px-2 py-1 bg-white rounded-md text-[10px] font-bold text-zinc-400 border border-zinc-100">
+                      {val}
+                    </span>
+                  ))}
               </div>
             </div>
             <div className="flex items-center justify-between">
