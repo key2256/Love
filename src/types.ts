@@ -1122,27 +1122,27 @@ export const CATEGORIES: Category[] = [
     subCategories: [
       {
         groupName: '자유형 스티커',
-        items: ['일반 스티커']
+        items: ['자유형 스티커', '투명 자유형 스티커', '투명 후면인쇄', '홀로그램 스티커', '다양한 모양 스티커']
       },
       {
-        groupName: '투명 스티커',
-        items: ['투명 일반', '투명 후지']
+        groupName: '규격형 스티커',
+        items: ['사각형 스티커', '원형 스티커', '타원형 스티커', '정사각형 스티커']
       },
       {
-        groupName: '모양별 스티커',
-        items: ['사각형 스티커', '원형 스티커', '타원형 스티커', '사각라운드 스티커']
+        groupName: '용도형 스티커',
+        items: ['옥외용 스티커', '냉장·냉동 스티커', '카드 스티커', '자석 스티커', '스크래치 스티커', '롤 스티커', '리무버블 스티커']
       },
       {
-        groupName: '용도별 스티커',
-        items: ['리무버블', '옥외용', '냉장·냉동', '카드스티커', '스크래치', '자석스티커', '롤 스티커']
+        groupName: '프리미엄 재질',
+        items: ['금광 PET', '은광 PET', '은무 PET', '그문드 라벨', '금 라벨지', '은 라벨지', '동 라벨지']
       },
       {
-        groupName: '프리미엄 스티커',
-        items: ['홀로그램 스티커', '금광 PET', '은광 PET', '은무 PET', '그문드 라벨', '금 라벨지', '은 라벨지', '동 라벨지']
+        groupName: '조각형 스티커',
+        items: ['조각형 스티커']
       },
       {
-        groupName: '조각 스티커',
-        items: ['조각 스티커']
+        groupName: 'UV 스티커',
+        items: ['UV 스티커']
       }
     ]
   },
@@ -1261,7 +1261,7 @@ export const ORDER_STEPS: OrderStep[] = [
 
 export interface SubCategoryMetadata {
   description: string;
-  tagline?: string;
+  tagline: string;
 }
 
 export const SUBCATEGORY_METADATA: Record<string, SubCategoryMetadata> = {
@@ -1277,41 +1277,93 @@ export const SUBCATEGORY_METADATA: Record<string, SubCategoryMetadata> = {
     tagline: '유연한 타원형, 부드러운 디자인.',
     description: '가로 또는 세로로 긴 타원형 스티커입니다. 로고나 텍스트를 부드럽게 감싸는 디자인에 효과적입니다.'
   },
-  '사각라운드 스티커': {
-    tagline: '부드러운 모서리, 세련된 사각형.',
-    description: '모서리가 둥글게 처리된 사각형 스티커입니다. 일반 사각형보다 세련된 느낌을 주며 모서리 들뜸이 적습니다.'
-  },
-  '모양별 스티커': {
-    tagline: '규격화된 기본 도형 스티커',
-    description: '사각형, 원형, 타원형 등 가장 많이 쓰이는 기본 도형 규격 스티커입니다. 빠른 제작과 가성비가 장점입니다.'
+  '정사각형 스티커': {
+    tagline: '안정적인 정사각형, 균형 잡힌 디자인.',
+    description: '가로세로 비율이 동일한 정사각형 스티커입니다. 로고나 아이콘을 강조하기에 좋습니다.'
   },
   '자유형 스티커': {
     tagline: '원하는 모양 그대로, 자유로운 칼선.',
     description: '캐릭터나 로고 외곽선을 따라 자유롭게 컷팅되는 스티커입니다. 개성 있는 굿즈 제작에 필수적입니다.'
   },
-  '일반 스티커': {
-    tagline: '가장 대중적인 자유형 스티커.',
-    description: '아트지 라벨, 유포 스티커 등 일반적인 재질로 제작하는 자유형 스티커입니다.'
-  },
-  '투명 스티커': {
+  '투명 자유형 스티커': {
     tagline: '배경이 비치는 투명한 자유형 스티커.',
     description: '투명 PET 재질을 사용하여 배경이 비치는 독특한 느낌의 자유형 스티커입니다.'
   },
-  '투명 일반': {
-    tagline: '가장 기본적인 투명 자유형 스티커.',
-    description: '표준 투명 PET 재질로 제작되는 자유형 스티커입니다.'
+  '투명 후면인쇄': {
+    tagline: '유리 안쪽에서 부착하는 투명 스티커.',
+    description: '투명 재질의 뒷면에 인쇄하여 유리창 안쪽에서 부착 시 밖에서 정방향으로 보이게 제작합니다.'
   },
-  '투명 후지': {
-    tagline: '투명한 배경지까지 투명한 스티커.',
-    description: '스티커를 떼어낸 후의 배경지(후지)까지 투명하여 디자인 확인이 용이합니다.'
+  '홀로그램 스티커': {
+    tagline: '빛의 각도에 따라 무지갯빛으로 빛나는 특별함.',
+    description: '홀로그램 원단을 사용하여 신비롭고 화려한 효과를 주는 스티커입니다.'
   },
-  '조각 스티커': {
+  '다양한 모양 스티커': {
+    tagline: '한 장에 여러 디자인을 담는 실속형.',
+    description: '하나의 시트 안에 여러 가지 모양과 크기의 칼선을 자유롭게 배치할 수 있습니다.'
+  },
+  '옥외용 스티커': {
+    tagline: '비바람과 햇빛에도 끄떡없는 강력한 내구성.',
+    description: '내후성이 강한 소재와 잉크를 사용하여 외부 노출이 잦은 차량이나 시설물에 적합합니다.'
+  },
+  '냉장·냉동 스티커': {
+    tagline: '저온 환경에서도 떨어지지 않는 강력한 접착.',
+    description: '습기와 저온에 강한 특수 점착제를 사용하여 냉장/냉동 식품 패키지에 최적화되었습니다.'
+  },
+  '카드 스티커': {
+    tagline: '나만의 카드를 만드는 가장 쉬운 방법.',
+    description: '신용카드나 교통카드 규격에 딱 맞는 사이즈로 제작되는 굿즈용 스티커입니다.'
+  },
+  '자석 스티커': {
+    tagline: '뗐다 붙였다 자유로운 자석형 홍보물.',
+    description: '고무 자석판에 인쇄된 스티커를 합지하여 현관문이나 차량 등에 부착 가능합니다.'
+  },
+  '스크래치 스티커': {
+    tagline: '긁는 재미가 있는 이벤트 및 프로모션 필수템.',
+    description: '복권처럼 동전으로 긁으면 내용이 나타나는 이벤트용 특수 스티커입니다.'
+  },
+  '롤 스티커': {
+    tagline: '대량 부착 작업에 효율적인 롤 형태.',
+    description: '자동 라벨러 작업이나 대량 포장 작업 시 편리하게 사용할 수 있는 롤 타입 스티커입니다.'
+  },
+  '리무버블 스티커': {
+    tagline: '흔적 없이 깔끔하게 떼어지는 스티커.',
+    description: '노트북, 캐리어, 다이어리 등 부착 후 떼어낼 때 끈적임이 남지 않는 리무버블 재질입니다.'
+  },
+  '금광 PET': {
+    tagline: '거울처럼 빛나는 화려한 골드 메탈.',
+    description: '금색 광택이 뛰어난 PET 재질로 고급스러운 인증 라벨이나 장식에 적합합니다.'
+  },
+  '은광 PET': {
+    tagline: '세련된 실버 메탈의 강렬한 반사광.',
+    description: '은색 광택이 강한 메탈 느낌의 재질로 전자기기나 프리미엄 제품에 많이 사용됩니다.'
+  },
+  '은무 PET': {
+    tagline: '차분하고 고급스러운 무광 은색 메탈.',
+    description: '은색 무광 메탈 재질로 내구성이 강해 산업용 장비나 전자제품 명판에 최적입니다.'
+  },
+  '그문드 라벨': {
+    tagline: '독보적인 질감의 프리미엄 친환경 라벨.',
+    description: '독일 그문드사의 고급 용지를 사용한 프리미엄 라벨로 와인, 코스메틱 등에 추천합니다.'
+  },
+  '금 라벨지': {
+    tagline: '전통적인 고급스러움, 금색 포일 라벨.',
+    description: '종이 베이스에 금색 포일 가공을 더해 상장이나 명절 선물 세트에 품격을 더합니다.'
+  },
+  '은 라벨지': {
+    tagline: '깔끔하고 정갈한 은색 포일 라벨.',
+    description: '종이 베이스에 은색 포일 가공을 더해 보증서나 상품권 봉인 등에 적합합니다.'
+  },
+  '동 라벨지': {
+    tagline: '엔틱하고 빈티지한 브론즈 메탈 느낌.',
+    description: '동색 포일 가공으로 수제 맥주나 가죽 제품 등 엔틱한 디자인에 잘 어울립니다.'
+  },
+  '조각형 스티커': {
     tagline: '하나씩 낱개로, 배포용 최적.',
     description: '한 장씩 낱개로 재단되어 배포나 판매용으로 적합한 스티커입니다. 배경지까지 함께 재단되어 깔끔합니다.'
   },
-  '리무버블': {
-    tagline: '흔적 없이 깔끔하게, 떼었다 붙였다.',
-    description: '제거 시 끈적임이 남지 않아 노트북이나 전자기기에 부착하기 좋습니다. 재부착이 가능하여 활용도가 높습니다.'
+  'UV 스티커': {
+    tagline: '매끄러운 표면 어디든, 입체감 있는 UV 인쇄.',
+    description: '플라스틱, 유리, 금속 등 다양한 표면에 부착 가능한 고내구성 UV 전사 스티커입니다.'
   },
   '디자인 템플릿 명함': BUSINESS_CARD_METADATA['디자인 템플릿 명함'],
   '일반 명함': BUSINESS_CARD_METADATA['일반 명함'],
@@ -1359,14 +1411,73 @@ export const SUBCATEGORY_METADATA: Record<string, SubCategoryMetadata> = {
   }
 };
 
+export const STICKER_COMMON_OPTIONS = {
+  WHITE_INK: {
+    name: '화이트 인쇄',
+    type: 'radio' as const,
+    values: [
+      { label: '없음', priceModifier: 0 },
+      { label: '있음', priceModifier: 2000 },
+    ]
+  },
+  CUTTING_METHOD: {
+    name: '재단 방식',
+    type: 'radio' as const,
+    values: [
+      { label: '반칼 (시트형)', priceModifier: 0 },
+      { label: '완칼 (개별조각)', priceModifier: 1000 },
+    ]
+  },
+  COATING: {
+    name: '코팅 유무',
+    type: 'radio' as const,
+    values: [
+      { label: '무광 코팅', priceModifier: 0 },
+      { label: '유광 코팅', priceModifier: 0 },
+    ]
+  },
+  POST_PROCESSING: {
+    name: '후가공 옵션',
+    type: 'select' as const,
+    values: [
+      { label: '없음', priceModifier: 0 },
+    ]
+  }
+};
+
+/**
+ * 스티커 종류별 재질 리스트 반환
+ */
+export const getStickerMaterials = (type: 'standard' | 'free' | 'transparent' | 'premium' | 'special' | 'outdoor' | 'removable' | 'magnetic') => {
+  switch (type) {
+    case 'standard':
+      return PAPER_MATERIALS.filter(m => !m.premium && !m.transparent && !m.metal && !m.removable);
+    case 'free':
+      return PAPER_MATERIALS.filter(m => !m.premium && !m.metal);
+    case 'transparent':
+      return PAPER_MATERIALS.filter(m => m.transparent);
+    case 'premium':
+      return PAPER_MATERIALS.filter(m => m.premium);
+    case 'special':
+      return PAPER_MATERIALS.filter(m => m.metal);
+    case 'outdoor':
+      return PAPER_MATERIALS.filter(m => m.waterproof && m.tearResistant);
+    case 'removable':
+      return PAPER_MATERIALS.filter(m => m.removable);
+    case 'magnetic':
+      return PAPER_MATERIALS.filter(m => m.id === 'art-label' || m.id === 'yupo-sticker');
+    default:
+      return PAPER_MATERIALS;
+  }
+};
+
 export const PRODUCTS: Product[] = [
   {
     id: 'stk-rect',
     name: '사각형 스티커',
     category: 'sticker',
     subCategory: '사각형 스티커',
-    tagline: '가장 대중적인 사각형, 깔끔한 재단.',
-    description: '정해진 사각 규격으로 제작하는 가성비 좋은 스티커입니다. 홍보용, 박스 부착용으로 가장 많이 사용됩니다.',
+    ...SUBCATEGORY_METADATA['사각형 스티커'],
     image: 'https://picsum.photos/seed/sticker-rect/800/800',
     minQuantity: 100,
     basePrice: 3000,
@@ -1384,48 +1495,15 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: [
-          { label: '아트지 라벨', priceModifier: 0 },
-          { label: '아트지 라벨(초강접)', priceModifier: 500 },
-          { label: '유포 스티커', priceModifier: 500 },
-          { label: '투명 PET', priceModifier: 1500 },
-          { label: '은무 PET', priceModifier: 2000 },
-        ]
+        values: getStickerMaterials('standard').map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: m.group === '일반/기본 용지' ? 0 : 1500
+        }))
       },
-      {
-        name: '화이트 인쇄',
-        type: 'radio',
-        values: [
-          { label: '화이트 인쇄 없음', priceModifier: 0 },
-          { label: '화이트 인쇄 있음', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '재단 방식',
-        type: 'radio',
-        values: [
-          { label: '반칼 (시트형)', priceModifier: 0 },
-          { label: '완칼 (개별조각)', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '코팅 유무',
-        type: 'radio',
-        values: [
-          { label: '무광 코팅', priceModifier: 0 },
-          { label: '유광 코팅', priceModifier: 0 },
-          { label: '코팅 없음', priceModifier: -500 },
-        ]
-      },
-      {
-        name: '후가공 옵션',
-        type: 'select',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '금박', priceModifier: 5000 },
-          { label: '은박', priceModifier: 5000 },
-        ]
-      },
+      STICKER_COMMON_OPTIONS.WHITE_INK,
+      STICKER_COMMON_OPTIONS.CUTTING_METHOD,
+      STICKER_COMMON_OPTIONS.COATING,
+      STICKER_COMMON_OPTIONS.POST_PROCESSING,
       {
         name: '넘버링',
         type: 'radio',
@@ -1464,8 +1542,7 @@ export const PRODUCTS: Product[] = [
     name: '원형 스티커',
     category: 'sticker',
     subCategory: '원형 스티커',
-    tagline: '부드러운 원형, 패키지 봉인에 최적.',
-    description: '로고 강조나 패키지 마감에 적합한 원형 스티커입니다. 깔끔한 원형 칼선이 특징입니다.',
+    ...SUBCATEGORY_METADATA['원형 스티커'],
     image: 'https://picsum.photos/seed/sticker-circle/800/800',
     minQuantity: 100,
     basePrice: 3500,
@@ -1483,47 +1560,15 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: [
-          { label: '아트지 라벨', priceModifier: 0 },
-          { label: '유포 스티커', priceModifier: 500 },
-          { label: '투명 PET', priceModifier: 1500 },
-        ]
+        values: getStickerMaterials('standard').map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: m.group === '일반/기본 용지' ? 0 : 1500
+        }))
       },
-      {
-        name: '화이트 인쇄',
-        type: 'radio',
-        values: [
-          { label: '화이트 인쇄 없음', priceModifier: 0 },
-          { label: '화이트 인쇄 있음', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '재단 방식',
-        type: 'radio',
-        values: [
-          { label: '반칼 (시트형)', priceModifier: 0 },
-          { label: '완칼 (개별조각)', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '코팅 유무',
-        type: 'radio',
-        values: [
-          { label: '무광 코팅', priceModifier: 0 },
-          { label: '유광 코팅', priceModifier: 0 },
-          { label: '코팅 없음', priceModifier: -500 },
-        ]
-      },
-      {
-        name: '후가공 옵션',
-        type: 'select',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '금박', priceModifier: 5000 },
-          { label: '은박', priceModifier: 5000 },
-          { label: '부분 UV', priceModifier: 3000 },
-        ]
-      }
+      STICKER_COMMON_OPTIONS.WHITE_INK,
+      STICKER_COMMON_OPTIONS.CUTTING_METHOD,
+      STICKER_COMMON_OPTIONS.COATING,
+      STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['시트형 제작', '반칼 스티커 가공', '정교한 원형 칼선'],
     leadTime: '2~3 영업일',
@@ -1537,8 +1582,7 @@ export const PRODUCTS: Product[] = [
     name: '타원형 스티커',
     category: 'sticker',
     subCategory: '타원형 스티커',
-    tagline: '세련된 타원형으로 디자인의 완성도를 높이세요.',
-    description: '가로 또는 세로로 긴 타원형 모양의 스티커입니다. 제품 라벨이나 봉인용으로 인기가 많습니다.',
+    ...SUBCATEGORY_METADATA['타원형 스티커'],
     image: 'https://picsum.photos/seed/sticker-oval/800/800',
     minQuantity: 100,
     basePrice: 3800,
@@ -1555,47 +1599,15 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: [
-          { label: '아트지 라벨', priceModifier: 0 },
-          { label: '유포 스티커', priceModifier: 500 },
-          { label: '투명 PET', priceModifier: 1500 },
-        ]
+        values: getStickerMaterials('standard').map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: m.group === '일반/기본 용지' ? 0 : 1500
+        }))
       },
-      {
-        name: '화이트 인쇄',
-        type: 'radio',
-        values: [
-          { label: '화이트 인쇄 없음', priceModifier: 0 },
-          { label: '화이트 인쇄 있음', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '재단 방식',
-        type: 'radio',
-        values: [
-          { label: '반칼 (시트형)', priceModifier: 0 },
-          { label: '완칼 (개별조각)', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '코팅 유무',
-        type: 'radio',
-        values: [
-          { label: '무광 코팅', priceModifier: 0 },
-          { label: '유광 코팅', priceModifier: 0 },
-          { label: '코팅 없음', priceModifier: -500 },
-        ]
-      },
-      {
-        name: '후가공 옵션',
-        type: 'select',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '금박', priceModifier: 5000 },
-          { label: '은박', priceModifier: 5000 },
-          { label: '부분 UV', priceModifier: 3000 },
-        ]
-      }
+      STICKER_COMMON_OPTIONS.WHITE_INK,
+      STICKER_COMMON_OPTIONS.CUTTING_METHOD,
+      STICKER_COMMON_OPTIONS.COATING,
+      STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['시트형 제작', '반칼 스티커 가공', '세련된 타원 칼선'],
     leadTime: '2~3 영업일',
@@ -1606,11 +1618,10 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'stk-round-rect',
-    name: '사각라운드 스티커',
+    name: '정사각형 스티커',
     category: 'sticker',
-    subCategory: '사각라운드 스티커',
-    tagline: '부드러운 모서리, 안정감 있는 디자인.',
-    description: '사각형 모서리를 둥글게 처리하여 부드러운 느낌을 주는 스티커입니다. 명함형 스티커로도 많이 활용됩니다.',
+    subCategory: '정사각형 스티커',
+    ...SUBCATEGORY_METADATA['정사각형 스티커'],
     image: 'https://picsum.photos/seed/sticker-round-rect/800/800',
     minQuantity: 100,
     basePrice: 3500,
@@ -1619,53 +1630,29 @@ export const PRODUCTS: Product[] = [
         name: '작업 사이즈',
         type: 'select',
         values: [
-          { label: '90x50mm (명함사이즈)', priceModifier: 0 },
-          { label: '50x50mm 이내', priceModifier: 0 },
+          { label: '50x50mm', priceModifier: 0 },
+          { label: '70x70mm', priceModifier: 1000 },
           { label: '직접 입력', priceModifier: 0 },
         ]
       },
       {
         name: '재질 선택',
         type: 'select',
-        values: [
-          { label: '아트지 라벨', priceModifier: 0 },
-          { label: '유포 스티커', priceModifier: 500 },
-          { label: '크라프트 라벨', priceModifier: 1000 },
-        ]
+        values: getStickerMaterials('standard').map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: m.group === '일반/기본 용지' ? 0 : 1500
+        }))
       },
-      {
-        name: '재단 방식',
-        type: 'radio',
-        values: [
-          { label: '반칼 (시트형)', priceModifier: 0 },
-          { label: '완칼 (개별조각)', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '코팅 유무',
-        type: 'radio',
-        values: [
-          { label: '무광 코팅', priceModifier: 0 },
-          { label: '유광 코팅', priceModifier: 0 },
-          { label: '코팅 없음', priceModifier: -500 },
-        ]
-      },
-      {
-        name: '후가공 옵션',
-        type: 'select',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '금박', priceModifier: 5000 },
-          { label: '은박', priceModifier: 5000 },
-          { label: '부분 UV', priceModifier: 3000 },
-        ]
-      }
+      STICKER_COMMON_OPTIONS.WHITE_INK,
+      STICKER_COMMON_OPTIONS.CUTTING_METHOD,
+      STICKER_COMMON_OPTIONS.COATING,
+      STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
-    features: ['시트형 제작', '반칼 스티커 가공', '부드러운 라운드 처리'],
+    features: ['시트형 제작', '반칼 스티커 가공', '안정적인 정사각형'],
     leadTime: '2~3 영업일',
-    badges: ['시트형', '반칼 스티커', '명함형 스티커'],
+    badges: ['시트형', '반칼 스티커', '정사각형'],
     warnings: [
-      '라운드 값(R)은 기본 3mm로 제작됩니다.'
+      '재단 공정상 1~2mm 밀림 현상이 있을 수 있습니다.'
     ]
   },
   {
@@ -1673,8 +1660,7 @@ export const PRODUCTS: Product[] = [
     name: '다양한 모양 스티커',
     category: 'sticker',
     subCategory: '다양한 모양 스티커',
-    tagline: '한 장의 시트에 여러 모양을 담으세요.',
-    description: '사각형, 원형 등 여러 가지 모양을 한 장의 시트에 구성하여 제작하는 스티커입니다.',
+    ...SUBCATEGORY_METADATA['다양한 모양 스티커'],
     image: 'https://picsum.photos/seed/sticker-various/800/800',
     minQuantity: 100,
     basePrice: 4500,
@@ -1691,38 +1677,15 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: [
-          { label: '아트지 라벨', priceModifier: 0 },
-          { label: '유포 스티커', priceModifier: 500 },
-          { label: '유포 매트', priceModifier: 1500 },
-        ]
+        values: getStickerMaterials('free').map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: m.group === '일반/기본 용지' ? 0 : 1500
+        }))
       },
-      {
-        name: '재단 방식',
-        type: 'radio',
-        values: [
-          { label: '반칼 (시트형)', priceModifier: 0 },
-          { label: '완칼 (개별조각)', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '코팅 유무',
-        type: 'radio',
-        values: [
-          { label: '무광 코팅', priceModifier: 0 },
-          { label: '유광 코팅', priceModifier: 0 },
-          { label: '코팅 없음', priceModifier: -500 },
-        ]
-      },
-      {
-        name: '후가공 옵션',
-        type: 'select',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '금박', priceModifier: 5000 },
-          { label: '은박', priceModifier: 5000 },
-        ]
-      },
+      STICKER_COMMON_OPTIONS.WHITE_INK,
+      STICKER_COMMON_OPTIONS.CUTTING_METHOD,
+      STICKER_COMMON_OPTIONS.COATING,
+      STICKER_COMMON_OPTIONS.POST_PROCESSING,
       {
         name: '넘버링',
         type: 'radio',
@@ -1757,11 +1720,10 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'stk-free-normal',
-    name: '자유형 일반 스티커',
+    name: '자유형 스티커',
     category: 'sticker',
-    subCategory: '일반 스티커',
-    tagline: '가장 대중적인 자유형 스티커.',
-    description: '아트지 라벨, 유포 스티커 등 일반적인 재질로 제작하는 자유형 스티커입니다.',
+    subCategory: '자유형 스티커',
+    ...SUBCATEGORY_METADATA['자유형 스티커'],
     image: 'https://picsum.photos/seed/sticker-free-normal/800/800',
     minQuantity: 10,
     basePrice: 5000,
@@ -1769,38 +1731,15 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: [
-          { label: '아트지 라벨', priceModifier: 0 },
-          { label: '유포 스티커', priceModifier: 500 },
-        ]
+        values: getStickerMaterials('free').map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: m.group === '일반/기본 용지' ? 0 : 1500
+        }))
       },
-      {
-        name: '재단 방식',
-        type: 'radio',
-        values: [
-          { label: '반칼 (시트형)', priceModifier: 0 },
-          { label: '완칼 (개별조각)', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '코팅 유무',
-        type: 'radio',
-        values: [
-          { label: '무광 코팅', priceModifier: 0 },
-          { label: '유광 코팅', priceModifier: 0 },
-          { label: '코팅 없음', priceModifier: -500 },
-        ]
-      },
-      {
-        name: '후가공 옵션',
-        type: 'select',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '금박', priceModifier: 5000 },
-          { label: '은박', priceModifier: 5000 },
-          { label: '부분 UV', priceModifier: 3000 },
-        ]
-      }
+      STICKER_COMMON_OPTIONS.WHITE_INK,
+      STICKER_COMMON_OPTIONS.CUTTING_METHOD,
+      STICKER_COMMON_OPTIONS.COATING,
+      STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['자유로운 칼선', '고해상도 인쇄', '강력 접착'],
     leadTime: '3~5 영업일',
@@ -1809,11 +1748,10 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'stk-free-trans-normal',
-    name: '투명 일반 스티커',
+    name: '투명 자유형 스티커',
     category: 'sticker',
-    subCategory: '투명 일반',
-    tagline: '가장 기본적인 투명 자유형 스티커.',
-    description: '표준 투명 PET 재질로 제작되는 자유형 스티커입니다.',
+    subCategory: '투명 자유형 스티커',
+    ...SUBCATEGORY_METADATA['투명 자유형 스티커'],
     image: 'https://picsum.photos/seed/sticker-free-trans-normal/800/800',
     minQuantity: 10,
     basePrice: 7000,
@@ -1821,45 +1759,15 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: [
-          { label: '투명 PET', priceModifier: 0 },
-        ]
+        values: getStickerMaterials('transparent').map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: 0
+        }))
       },
-      {
-        name: '화이트 인쇄',
-        type: 'radio',
-        values: [
-          { label: '화이트 인쇄 없음', priceModifier: 0 },
-          { label: '화이트 인쇄 있음', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '재단 방식',
-        type: 'radio',
-        values: [
-          { label: '반칼 (시트형)', priceModifier: 0 },
-          { label: '완칼 (개별조각)', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '코팅 유무',
-        type: 'radio',
-        values: [
-          { label: '무광 코팅', priceModifier: 0 },
-          { label: '유광 코팅', priceModifier: 0 },
-          { label: '코팅 없음', priceModifier: -500 },
-        ]
-      },
-      {
-        name: '후가공 옵션',
-        type: 'select',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '금박', priceModifier: 5000 },
-          { label: '은박', priceModifier: 5000 },
-          { label: '부분 UV', priceModifier: 3000 },
-        ]
-      }
+      STICKER_COMMON_OPTIONS.WHITE_INK,
+      STICKER_COMMON_OPTIONS.CUTTING_METHOD,
+      STICKER_COMMON_OPTIONS.COATING,
+      STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['투명 재질', '자유로운 칼선', '방수 기능'],
     leadTime: '4~6 영업일',
@@ -1868,11 +1776,10 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'stk-free-trans-back',
-    name: '투명 후지 스티커',
+    name: '투명 배면 스티커',
     category: 'sticker',
-    subCategory: '투명 후지',
-    tagline: '투명한 배경지까지 투명한 스티커.',
-    description: '스티커를 떼어낸 후의 배경지(후지)까지 투명하여 디자인 확인이 용이합니다.',
+    subCategory: '투명 배면 스티커',
+    ...SUBCATEGORY_METADATA['투명 배면 스티커'],
     image: 'https://picsum.photos/seed/sticker-free-trans-back/800/800',
     minQuantity: 10,
     basePrice: 8000,
@@ -1880,45 +1787,15 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: [
-          { label: '고투명 PET 투명후지', priceModifier: 0 },
-        ]
+        values: getStickerMaterials('transparent').map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: 0
+        }))
       },
-      {
-        name: '화이트 인쇄',
-        type: 'radio',
-        values: [
-          { label: '화이트 인쇄 없음', priceModifier: 0 },
-          { label: '화이트 인쇄 있음', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '재단 방식',
-        type: 'radio',
-        values: [
-          { label: '반칼 (시트형)', priceModifier: 0 },
-          { label: '완칼 (개별조각)', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '코팅 유무',
-        type: 'radio',
-        values: [
-          { label: '무광 코팅', priceModifier: 0 },
-          { label: '유광 코팅', priceModifier: 0 },
-          { label: '코팅 없음', priceModifier: -500 },
-        ]
-      },
-      {
-        name: '후가공 옵션',
-        type: 'select',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '금박', priceModifier: 5000 },
-          { label: '은박', priceModifier: 5000 },
-          { label: '부분 UV', priceModifier: 3000 },
-        ]
-      }
+      STICKER_COMMON_OPTIONS.WHITE_INK,
+      STICKER_COMMON_OPTIONS.CUTTING_METHOD,
+      STICKER_COMMON_OPTIONS.COATING,
+      STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['고투명 재질', '투명 후지', '자유로운 칼선'],
     leadTime: '5~7 영업일',
@@ -1927,11 +1804,10 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'stk-free-hologram',
-    name: '자유형 홀로그램',
+    name: '홀로그램 스티커',
     category: 'sticker',
     subCategory: '홀로그램 스티커',
-    tagline: '빛에 따라 반짝이는 홀로그램 자유형.',
-    description: '화려한 홀로그램 효과가 적용된 자유형 스티커로 시선을 사로잡으세요.',
+    ...SUBCATEGORY_METADATA['홀로그램 스티커'],
     image: 'https://picsum.photos/seed/sticker-free-holo/800/800',
     minQuantity: 10,
     basePrice: 8500,
@@ -1946,32 +1822,16 @@ export const PRODUCTS: Product[] = [
         ]
       },
       {
-        name: '재단 방식',
-        type: 'radio',
-        values: [
-          { label: '반칼 (시트형)', priceModifier: 0 },
-          { label: '완칼 (개별조각)', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '코팅 유무',
-        type: 'radio',
-        values: [
-          { label: '무광 코팅', priceModifier: 0 },
-          { label: '유광 코팅', priceModifier: 0 },
-          { label: '코팅 없음', priceModifier: -500 },
-        ]
-      },
-      {
-        name: '후가공 옵션',
+        name: '재질 선택',
         type: 'select',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '금박', priceModifier: 5000 },
-          { label: '은박', priceModifier: 5000 },
-          { label: '부분 UV', priceModifier: 3000 },
-        ]
-      }
+        values: getStickerMaterials('special').filter(m => m.name.includes('홀로그램')).map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: 0
+        }))
+      },
+      STICKER_COMMON_OPTIONS.CUTTING_METHOD,
+      STICKER_COMMON_OPTIONS.COATING,
+      STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['홀로그램 효과', '자유로운 칼선', '강력 접착'],
     leadTime: '5~7 영업일',
@@ -1982,9 +1842,8 @@ export const PRODUCTS: Product[] = [
     id: 'stk-piece',
     name: '조각 스티커',
     category: 'sticker',
-    subCategory: '조각 스티커',
-    tagline: '하나씩 떼어 쓰는 개별 조각 스티커.',
-    description: '원하는 모양대로 하나씩 재단되어 배포하기 좋은 조각 스티커입니다.',
+    subCategory: '조각형 스티커',
+    ...SUBCATEGORY_METADATA['조각형 스티커'],
     image: 'https://picsum.photos/seed/sticker-piece/800/800',
     minQuantity: 50,
     basePrice: 8000,
@@ -2002,52 +1861,22 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: [
-          { label: '아트지 라벨', priceModifier: 0 },
-          { label: '아트지 라벨(초강접)', priceModifier: 500 },
-          { label: '유포 스티커', priceModifier: 500 },
-          { label: '투명 PET', priceModifier: 1500 },
-          { label: '은무 PET', priceModifier: 2000 },
-          { label: '금광 PET', priceModifier: 2500 },
-          { label: '(GMUND) 화이트우드', priceModifier: 3500 },
-        ]
+        values: getStickerMaterials('special').map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: m.group === '일반/기본 용지' ? 0 : 1500
+        }))
       },
-      {
-        name: '화이트 인쇄',
-        type: 'radio',
-        values: [
-          { label: '화이트 인쇄 없음', priceModifier: 0 },
-          { label: '화이트 인쇄 있음', priceModifier: 1000 },
-        ]
-      },
+      STICKER_COMMON_OPTIONS.WHITE_INK,
       {
         name: '재단 방식',
-        type: 'checkbox',
-        values: [
-          { label: '완칼 재단', priceModifier: 0 },
-          { label: '반칼 재단', priceModifier: 500 },
-        ]
-      },
-      {
-        name: '코팅 유무',
         type: 'radio',
         values: [
-          { label: '무광 코팅', priceModifier: 0 },
-          { label: '유광 코팅', priceModifier: 0 },
-          { label: '홀로그램 코팅', priceModifier: 2000 },
-          { label: '코팅 없음', priceModifier: -500 },
+          { label: '완칼 (개별조각)', priceModifier: 0 },
+          { label: '반칼 (시트형)', priceModifier: 500 },
         ]
       },
-      {
-        name: '후가공 옵션',
-        type: 'select',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '금박', priceModifier: 5000 },
-          { label: '은박', priceModifier: 5000 },
-          { label: '부분 UV', priceModifier: 3000 },
-        ]
-      }
+      STICKER_COMMON_OPTIONS.COATING,
+      STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['개별 재단', '고해상도 인쇄', '강력 접착'],
     leadTime: '3~5 영업일',
@@ -2062,9 +1891,8 @@ export const PRODUCTS: Product[] = [
     id: 'stk-roll',
     name: '롤 스티커',
     category: 'sticker',
-    subCategory: '롤 스티커',
-    tagline: '자동 라벨러 작업에 최적화된 롤 형태.',
-    description: '대량 제작 및 자동 부착 작업에 적합하도록 롤 형태로 말려있는 스티커입니다.',
+    subCategory: '용도형 스티커',
+    ...SUBCATEGORY_METADATA['롤 스티커'],
     image: 'https://picsum.photos/seed/sticker-roll/800/800',
     minQuantity: 1000,
     basePrice: 45000,
@@ -2072,11 +1900,10 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: [
-          { label: '아트지 라벨', priceModifier: 0 },
-          { label: '유포 스티커', priceModifier: 5000 },
-          { label: '은무 PET', priceModifier: 15000 },
-        ]
+        values: getStickerMaterials('standard').map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: 0
+        }))
       },
       {
         name: '롤 방향',
@@ -2102,25 +1929,8 @@ export const PRODUCTS: Product[] = [
           { label: '롤 재단', priceModifier: 0 },
         ]
       },
-      {
-        name: '코팅 유무',
-        type: 'radio',
-        values: [
-          { label: '무광 코팅', priceModifier: 0 },
-          { label: '유광 코팅', priceModifier: 0 },
-          { label: '코팅 없음', priceModifier: -500 },
-        ]
-      },
-      {
-        name: '후가공 옵션',
-        type: 'select',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '금박', priceModifier: 5000 },
-          { label: '은박', priceModifier: 5000 },
-          { label: '부분 UV', priceModifier: 3000 },
-        ]
-      }
+      STICKER_COMMON_OPTIONS.COATING,
+      STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['자동 라벨러 호환', '대량 제작 최적화', '다양한 재질'],
     leadTime: '7~10 영업일',
@@ -2132,11 +1942,10 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'stk-outdoor',
-    name: '옥외용/차량용 스티커',
+    name: '옥외용 스티커',
     category: 'sticker',
-    subCategory: '옥외용',
-    tagline: '햇빛과 비바람에도 끄떡없는 강력한 내구성.',
-    description: '특수 PVC 재질과 UV 코팅으로 외부 환경에서도 색바램과 변형이 적은 스티커입니다.',
+    subCategory: '옥외용 스티커',
+    ...SUBCATEGORY_METADATA['옥외용 스티커'],
     image: 'https://picsum.photos/seed/sticker-outdoor/800/800',
     minQuantity: 1,
     basePrice: 12000,
@@ -2144,46 +1953,15 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: [
-          { label: '옥외용 PVC 백색', priceModifier: 0 },
-          { label: '옥외용 PVC 투명', priceModifier: 2000 },
-          { label: '차량 전용 랩핑지', priceModifier: 5000 },
-        ]
+        values: getStickerMaterials('outdoor').map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: 0
+        }))
       },
-      {
-        name: '화이트 인쇄',
-        type: 'radio',
-        values: [
-          { label: '화이트 인쇄 없음', priceModifier: 0 },
-          { label: '화이트 인쇄 있음', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '재단 방식',
-        type: 'radio',
-        values: [
-          { label: '반칼 (시트형)', priceModifier: 0 },
-          { label: '완칼 (개별조각)', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '코팅 유무',
-        type: 'radio',
-        values: [
-          { label: 'UV 유광 코팅', priceModifier: 0 },
-          { label: 'UV 무광 코팅', priceModifier: 0 },
-        ]
-      },
-      {
-        name: '후가공 옵션',
-        type: 'select',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '금박', priceModifier: 5000 },
-          { label: '은박', priceModifier: 5000 },
-          { label: '부분 UV', priceModifier: 3000 },
-        ]
-      }
+      STICKER_COMMON_OPTIONS.WHITE_INK,
+      STICKER_COMMON_OPTIONS.CUTTING_METHOD,
+      STICKER_COMMON_OPTIONS.COATING,
+      STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['자외선 차단', '완벽 방수', '강력 접착'],
     leadTime: '4~5 영업일',
@@ -2197,9 +1975,8 @@ export const PRODUCTS: Product[] = [
     id: 'stk-magnetic',
     name: '자석 스티커',
     category: 'sticker',
-    subCategory: '자석스티커',
-    tagline: '뗐다 붙였다 자유로운 자석형 광고.',
-    description: '차량 광고나 현관문 전단지 등 금속 표면에 자유롭게 탈부착 가능한 자석 스티커입니다.',
+    subCategory: '자석 스티커',
+    ...SUBCATEGORY_METADATA['자석 스티커'],
     image: 'https://picsum.photos/seed/sticker-mag/800/800',
     minQuantity: 10,
     basePrice: 15000,
@@ -2207,10 +1984,10 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: [
-          { label: '자석 시트 + 아트지', priceModifier: 0 },
-          { label: '자석 시트 + 유포지', priceModifier: 2000 },
-        ]
+        values: getStickerMaterials('magnetic').map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: 0
+        }))
       },
       {
         name: '자석 두께',
@@ -2228,21 +2005,8 @@ export const PRODUCTS: Product[] = [
           { label: '모양 재단 (도송)', priceModifier: 5000 },
         ]
       },
-      {
-        name: '코팅 유무',
-        type: 'radio',
-        values: [
-          { label: '유광 코팅', priceModifier: 0 },
-          { label: '무광 코팅', priceModifier: 0 },
-        ]
-      },
-      {
-        name: '후가공 옵션',
-        type: 'select',
-        values: [
-          { label: '없음', priceModifier: 0 },
-        ]
-      }
+      STICKER_COMMON_OPTIONS.COATING,
+      STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['자유로운 탈부착', '반복 사용 가능', '강력한 자력'],
     leadTime: '5~6 영업일',
@@ -2256,9 +2020,8 @@ export const PRODUCTS: Product[] = [
     id: 'stk-removable',
     name: '리무버블 스티커',
     category: 'sticker',
-    subCategory: '리무버블',
-    tagline: '흔적 없이 깔끔하게 떼어지는 스티커.',
-    description: '노트북, 캐리어, 다이어리 등 부착 후 떼어낼 때 끈적임이 남지 않는 리무버블 재질입니다.',
+    subCategory: '리무버블 스티커',
+    ...SUBCATEGORY_METADATA['리무버블 스티커'],
     image: 'https://picsum.photos/seed/removable/800/800',
     minQuantity: 10,
     basePrice: 5500,
@@ -2266,46 +2029,15 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: [
-          { label: '유포 리무버블', priceModifier: 0 },
-          { label: '고투명 PET 리무버블', priceModifier: 1500 },
-        ]
+        values: getStickerMaterials('removable').map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: 0
+        }))
       },
-      {
-        name: '화이트 인쇄',
-        type: 'radio',
-        values: [
-          { label: '화이트 인쇄 없음', priceModifier: 0 },
-          { label: '화이트 인쇄 있음', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '재단 방식',
-        type: 'radio',
-        values: [
-          { label: '반칼 (시트형)', priceModifier: 0 },
-          { label: '완칼 (개별조각)', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '코팅 유무',
-        type: 'radio',
-        values: [
-          { label: '무광 코팅', priceModifier: 0 },
-          { label: '유광 코팅', priceModifier: 0 },
-          { label: '코팅 없음', priceModifier: -500 },
-        ]
-      },
-      {
-        name: '후가공 옵션',
-        type: 'select',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '금박', priceModifier: 5000 },
-          { label: '은박', priceModifier: 5000 },
-          { label: '부분 UV', priceModifier: 3000 },
-        ]
-      }
+      STICKER_COMMON_OPTIONS.WHITE_INK,
+      STICKER_COMMON_OPTIONS.CUTTING_METHOD,
+      STICKER_COMMON_OPTIONS.COATING,
+      STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['끈적임 없음', '재부착 가능', '방수 기능'],
     leadTime: '3~4 영업일',
@@ -2314,11 +2046,10 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'stk-cold',
-    name: '냉장/냉동용 스티커',
+    name: '냉장·냉동 스티커',
     category: 'sticker',
-    subCategory: '냉장·냉동',
-    tagline: '저온 환경에서도 떨어지지 않는 강력함.',
-    description: '냉장고나 냉동고 등 습기가 많고 온도가 낮은 환경에서도 접착력을 유지하는 특수 스티커입니다.',
+    subCategory: '냉장·냉동 스티커',
+    ...SUBCATEGORY_METADATA['냉장·냉동 스티커'],
     image: 'https://picsum.photos/seed/coldstk/800/800',
     minQuantity: 100,
     basePrice: 12000,
@@ -2326,38 +2057,15 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: [
-          { label: '냉동 전용 유포 스티커', priceModifier: 0 },
-          { label: '냉동 전용 아트지 라벨', priceModifier: -1000 },
-        ]
+        values: getStickerMaterials('special').filter(m => m.name.includes('냉동')).map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: 0
+        }))
       },
-      {
-        name: '재단 방식',
-        type: 'radio',
-        values: [
-          { label: '반칼 (시트형)', priceModifier: 0 },
-          { label: '완칼 (개별조각)', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '코팅 유무',
-        type: 'radio',
-        values: [
-          { label: '무광 코팅', priceModifier: 0 },
-          { label: '유광 코팅', priceModifier: 0 },
-          { label: '코팅 없음', priceModifier: -500 },
-        ]
-      },
-      {
-        name: '후가공 옵션',
-        type: 'select',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '금박', priceModifier: 5000 },
-          { label: '은박', priceModifier: 5000 },
-          { label: '부분 UV', priceModifier: 3000 },
-        ]
-      }
+      STICKER_COMMON_OPTIONS.WHITE_INK,
+      STICKER_COMMON_OPTIONS.CUTTING_METHOD,
+      STICKER_COMMON_OPTIONS.COATING,
+      STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['저온 접착력', '습기 강함', '식품 패키지용'],
     leadTime: '4~5 영업일',
@@ -2368,9 +2076,8 @@ export const PRODUCTS: Product[] = [
     id: 'stk-card',
     name: '카드 스티커',
     category: 'sticker',
-    subCategory: '카드스티커',
-    tagline: '교통카드, 출입카드를 나만의 스타일로.',
-    description: '신용카드나 교통카드 규격에 딱 맞는 사이즈로 제작되어 카드를 꾸미기에 최적화된 스티커입니다.',
+    subCategory: '카드 스티커',
+    ...SUBCATEGORY_METADATA['카드 스티커'],
     image: 'https://picsum.photos/seed/cardstk/800/800',
     minQuantity: 10,
     basePrice: 4000,
@@ -2378,34 +2085,14 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: [
-          { label: '유포 스티커', priceModifier: 0 },
-          { label: '아트지 라벨', priceModifier: 0 },
-        ]
+        values: getStickerMaterials('special').filter(m => m.name.includes('유포') || m.name.includes('PET')).map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: 0
+        }))
       },
-      {
-        name: '표면 마감',
-        type: 'radio',
-        values: [
-          { label: '무광 코팅', priceModifier: 0 },
-          { label: '유광 코팅', priceModifier: 0 },
-          { label: '홀로그램 코팅', priceModifier: 2000 },
-        ]
-      },
-      {
-        name: '재단 방식',
-        type: 'radio',
-        values: [
-          { label: '완칼 (개별조각)', priceModifier: 0 },
-        ]
-      },
-      {
-        name: '후가공 옵션',
-        type: 'select',
-        values: [
-          { label: '없음', priceModifier: 0 },
-        ]
-      }
+      STICKER_COMMON_OPTIONS.COATING,
+      STICKER_COMMON_OPTIONS.CUTTING_METHOD,
+      STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['카드 표준 규격', '얇은 두께', '고해상도 인쇄'],
     leadTime: '3~4 영업일',
@@ -2416,9 +2103,8 @@ export const PRODUCTS: Product[] = [
     id: 'stk-scratch',
     name: '스크래치 스티커',
     category: 'sticker',
-    subCategory: '스크래치',
-    tagline: '긁는 재미가 있는 이벤트용 스티커.',
-    description: '복권처럼 동전으로 긁으면 내용이 나타나는 이벤트 및 프로모션용 스티커입니다.',
+    subCategory: '스크래치 스티커',
+    ...SUBCATEGORY_METADATA['스크래치 스티커'],
     image: 'https://picsum.photos/seed/sticker-scratch/800/800',
     minQuantity: 100,
     basePrice: 25000,
@@ -2426,10 +2112,10 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: [
-          { label: '아트지 라벨', priceModifier: 0 },
-          { label: '유포 스티커', priceModifier: 2000 },
-        ]
+        values: getStickerMaterials('standard').map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: 0
+        }))
       },
       {
         name: '스크래치 모양',
@@ -2448,29 +2134,9 @@ export const PRODUCTS: Product[] = [
           { label: '금색', priceModifier: 2000 },
         ]
       },
-      {
-        name: '재단 방식',
-        type: 'radio',
-        values: [
-          { label: '반칼 (시트형)', priceModifier: 0 },
-          { label: '완칼 (개별조각)', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '코팅 유무',
-        type: 'radio',
-        values: [
-          { label: '무광 코팅', priceModifier: 0 },
-          { label: '유광 코팅', priceModifier: 0 },
-        ]
-      },
-      {
-        name: '후가공 옵션',
-        type: 'select',
-        values: [
-          { label: '없음', priceModifier: 0 },
-        ]
-      }
+      STICKER_COMMON_OPTIONS.CUTTING_METHOD,
+      STICKER_COMMON_OPTIONS.COATING,
+      STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['이벤트 최적화', '내용 보안', '간편한 부착'],
     leadTime: '6~8 영업일',
@@ -2482,11 +2148,10 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'stk-uv',
-    name: 'UV 자유형 스티커',
+    name: 'UV 스티커',
     category: 'sticker',
-    subCategory: 'UV스티커',
-    tagline: '매끄러운 표면 어디든, 강력한 UV 인쇄.',
-    description: '플라스틱, 유리, 금속 등 매끄러운 표면에 부착하기 적합한 고내구성 스티커입니다.',
+    subCategory: 'UV 스티커',
+    ...SUBCATEGORY_METADATA['UV 스티커'],
     image: 'https://picsum.photos/seed/uvstk/800/800',
     minQuantity: 50,
     basePrice: 15000,
@@ -2499,14 +2164,7 @@ export const PRODUCTS: Product[] = [
           { label: '50x50mm 이내', priceModifier: 5000 },
         ]
       },
-      {
-        name: '화이트 인쇄',
-        type: 'radio',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '있음', priceModifier: 2000 },
-        ]
-      },
+      STICKER_COMMON_OPTIONS.WHITE_INK,
       {
         name: '사용 목적',
         type: 'select',
@@ -3306,8 +2964,7 @@ export const PRODUCTS: Product[] = [
     name: '금광 PET',
     category: 'sticker',
     subCategory: '금광 PET',
-    tagline: '번쩍이는 금빛 광택으로 고급스러움 극대화',
-    description: '금색 광택이 흐르는 PET 재질로, 프리미엄 상품 라벨이나 봉인용 스티커로 인기가 높습니다.',
+    ...SUBCATEGORY_METADATA['금광 PET'],
     image: 'https://picsum.photos/seed/goldpet/800/800',
     minQuantity: 10,
     basePrice: 7500,
@@ -3315,34 +2972,14 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: [
-          { label: '금광 PET', priceModifier: 0 },
-        ]
+        values: getStickerMaterials('premium').filter(m => m.name === '금광 PET').map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: 0
+        }))
       },
-      {
-        name: '재단 방식',
-        type: 'radio',
-        values: [
-          { label: '반칼 (시트형)', priceModifier: 0 },
-          { label: '완칼 (개별조각)', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '코팅 유무',
-        type: 'radio',
-        values: [
-          { label: '무광 코팅', priceModifier: 0 },
-          { label: '유광 코팅', priceModifier: 0 },
-          { label: '코팅 없음', priceModifier: -500 },
-        ]
-      },
-      {
-        name: '후가공 옵션',
-        type: 'select',
-        values: [
-          { label: '없음', priceModifier: 0 },
-        ]
-      }
+      STICKER_COMMON_OPTIONS.CUTTING_METHOD,
+      STICKER_COMMON_OPTIONS.COATING,
+      STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['금색 광택', '내구성 우수', '방수 기능'],
     leadTime: '4-5일',
@@ -3353,8 +2990,7 @@ export const PRODUCTS: Product[] = [
     name: '은광 PET',
     category: 'sticker',
     subCategory: '은광 PET',
-    tagline: '세련된 은빛 광택의 메탈릭 스티커',
-    description: '은색 광택이 돋보이는 재질로, 전자제품 라벨이나 세련된 디자인의 굿즈 제작에 적합합니다.',
+    ...SUBCATEGORY_METADATA['은광 PET'],
     image: 'https://picsum.photos/seed/silverpet/800/800',
     minQuantity: 10,
     basePrice: 7000,
@@ -3362,34 +2998,14 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: [
-          { label: '은광 PET', priceModifier: 0 },
-        ]
+        values: getStickerMaterials('premium').filter(m => m.name === '은광 PET').map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: 0
+        }))
       },
-      {
-        name: '재단 방식',
-        type: 'radio',
-        values: [
-          { label: '반칼 (시트형)', priceModifier: 0 },
-          { label: '완칼 (개별조각)', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '코팅 유무',
-        type: 'radio',
-        values: [
-          { label: '무광 코팅', priceModifier: 0 },
-          { label: '유광 코팅', priceModifier: 0 },
-          { label: '코팅 없음', priceModifier: -500 },
-        ]
-      },
-      {
-        name: '후가공 옵션',
-        type: 'select',
-        values: [
-          { label: '없음', priceModifier: 0 },
-        ]
-      }
+      STICKER_COMMON_OPTIONS.CUTTING_METHOD,
+      STICKER_COMMON_OPTIONS.COATING,
+      STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['은색 광택', '메탈릭 질감', '방수 기능'],
     leadTime: '4-5일',
@@ -3400,8 +3016,7 @@ export const PRODUCTS: Product[] = [
     name: '은무 PET',
     category: 'sticker',
     subCategory: '은무 PET',
-    tagline: '차분하고 고급스러운 무광 은빛',
-    description: '광택이 없는 은색 재질로, 차분하면서도 전문적인 느낌을 주어 산업용 라벨이나 고급 패키지에 사용됩니다.',
+    ...SUBCATEGORY_METADATA['은무 PET'],
     image: 'https://picsum.photos/seed/mattesilver/800/800',
     minQuantity: 10,
     basePrice: 7000,
@@ -3409,34 +3024,14 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: [
-          { label: '은무 PET', priceModifier: 0 },
-        ]
+        values: getStickerMaterials('premium').filter(m => m.name === '은무 PET').map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: 0
+        }))
       },
-      {
-        name: '재단 방식',
-        type: 'radio',
-        values: [
-          { label: '반칼 (시트형)', priceModifier: 0 },
-          { label: '완칼 (개별조각)', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '코팅 유무',
-        type: 'radio',
-        values: [
-          { label: '무광 코팅', priceModifier: 0 },
-          { label: '유광 코팅', priceModifier: 0 },
-          { label: '코팅 없음', priceModifier: -500 },
-        ]
-      },
-      {
-        name: '후가공 옵션',
-        type: 'select',
-        values: [
-          { label: '없음', priceModifier: 0 },
-        ]
-      }
+      STICKER_COMMON_OPTIONS.CUTTING_METHOD,
+      STICKER_COMMON_OPTIONS.COATING,
+      STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['무광 은색', '내열성/내구성', '방수 기능'],
     leadTime: '4-5일',
@@ -3447,8 +3042,7 @@ export const PRODUCTS: Product[] = [
     name: '그문드 라벨',
     category: 'sticker',
     subCategory: '그문드 라벨',
-    tagline: '독일 명품 종이, 그문드의 질감을 스티커로',
-    description: '세계적인 고급지 브랜드 그문드(GMUND)의 원단을 사용한 라벨 스티커입니다. 독보적인 질감과 색감을 자랑합니다.',
+    ...SUBCATEGORY_METADATA['그문드 라벨'],
     image: 'https://picsum.photos/seed/gmund/800/800',
     minQuantity: 10,
     basePrice: 9500,
@@ -3456,36 +3050,14 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: [
-          { label: '그문드 화이트우드' },
-          { label: '그문드 코튼', priceModifier: 1000 },
-          { label: '그문드 골드', priceModifier: 2000 }
-        ]
+        values: getStickerMaterials('premium').filter(m => m.name.includes('그문드')).map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: m.name === '그문드 화이트우드' ? 0 : 1000
+        }))
       },
-      {
-        name: '재단 방식',
-        type: 'radio',
-        values: [
-          { label: '반칼 (시트형)', priceModifier: 0 },
-          { label: '완칼 (개별조각)', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '코팅 유무',
-        type: 'radio',
-        values: [
-          { label: '무광 코팅', priceModifier: 0 },
-          { label: '유광 코팅', priceModifier: 0 },
-          { label: '코팅 없음', priceModifier: -500 },
-        ]
-      },
-      {
-        name: '후가공 옵션',
-        type: 'select',
-        values: [
-          { label: '없음', priceModifier: 0 },
-        ]
-      }
+      STICKER_COMMON_OPTIONS.CUTTING_METHOD,
+      STICKER_COMMON_OPTIONS.COATING,
+      STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['명품 수입지', '독보적 질감', '친환경 인증'],
     leadTime: '5-7일',
@@ -3496,8 +3068,7 @@ export const PRODUCTS: Product[] = [
     name: '금 라벨지',
     category: 'sticker',
     subCategory: '금 라벨지',
-    tagline: '은은한 금색 종이 질감의 라벨',
-    description: '광택이 강하지 않은 은은한 금색 종이 재질로, 전통적인 느낌이나 고급스러운 답례품 등에 잘 어울립니다.',
+    ...SUBCATEGORY_METADATA['금 라벨지'],
     image: 'https://picsum.photos/seed/goldlabel/800/800',
     minQuantity: 10,
     basePrice: 6000,
@@ -3505,34 +3076,14 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: [
-          { label: '금 라벨지', priceModifier: 0 },
-        ]
+        values: getStickerMaterials('premium').filter(m => m.name === '금 라벨지').map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: 0
+        }))
       },
-      {
-        name: '재단 방식',
-        type: 'radio',
-        values: [
-          { label: '반칼 (시트형)', priceModifier: 0 },
-          { label: '완칼 (개별조각)', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '코팅 유무',
-        type: 'radio',
-        values: [
-          { label: '무광 코팅', priceModifier: 0 },
-          { label: '유광 코팅', priceModifier: 0 },
-          { label: '코팅 없음', priceModifier: -500 },
-        ]
-      },
-      {
-        name: '후가공 옵션',
-        type: 'select',
-        values: [
-          { label: '없음', priceModifier: 0 },
-        ]
-      }
+      STICKER_COMMON_OPTIONS.CUTTING_METHOD,
+      STICKER_COMMON_OPTIONS.COATING,
+      STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['은은한 금색', '종이 질감', '가성비 고급'],
     leadTime: '3-4일',
@@ -3543,8 +3094,7 @@ export const PRODUCTS: Product[] = [
     name: '은 라벨지',
     category: 'sticker',
     subCategory: '은 라벨지',
-    tagline: '차분한 은색 종이 질감의 라벨',
-    description: '은은한 은색 종이 재질로 깔끔하고 정갈한 느낌을 줍니다. 다양한 용도의 라벨로 활용 가능합니다.',
+    ...SUBCATEGORY_METADATA['은 라벨지'],
     image: 'https://picsum.photos/seed/silverlabel/800/800',
     minQuantity: 10,
     basePrice: 6000,
@@ -3552,34 +3102,14 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: [
-          { label: '은 라벨지', priceModifier: 0 },
-        ]
+        values: getStickerMaterials('premium').filter(m => m.name === '은 라벨지').map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: 0
+        }))
       },
-      {
-        name: '재단 방식',
-        type: 'radio',
-        values: [
-          { label: '반칼 (시트형)', priceModifier: 0 },
-          { label: '완칼 (개별조각)', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '코팅 유무',
-        type: 'radio',
-        values: [
-          { label: '무광 코팅', priceModifier: 0 },
-          { label: '유광 코팅', priceModifier: 0 },
-          { label: '코팅 없음', priceModifier: -500 },
-        ]
-      },
-      {
-        name: '후가공 옵션',
-        type: 'select',
-        values: [
-          { label: '없음', priceModifier: 0 },
-        ]
-      }
+      STICKER_COMMON_OPTIONS.CUTTING_METHOD,
+      STICKER_COMMON_OPTIONS.COATING,
+      STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['은은한 은색', '종이 질감', '깔끔한 마감'],
     leadTime: '3-4일',
@@ -3590,8 +3120,7 @@ export const PRODUCTS: Product[] = [
     name: '동 라벨지',
     category: 'sticker',
     subCategory: '동 라벨지',
-    tagline: '빈티지한 동색(브론즈) 종이 라벨',
-    description: '독특한 동색(브론즈) 빛이 도는 종이 재질로, 빈티지하거나 앤티크한 디자인에 매우 잘 어울립니다.',
+    ...SUBCATEGORY_METADATA['동 라벨지'],
     image: 'https://picsum.photos/seed/bronzelabel/800/800',
     minQuantity: 10,
     basePrice: 6000,
@@ -3599,34 +3128,14 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: [
-          { label: '동 라벨지', priceModifier: 0 },
-        ]
+        values: getStickerMaterials('premium').filter(m => m.name === '동 라벨지').map(m => ({
+          label: `${m.name} ${m.weight}`,
+          priceModifier: 0
+        }))
       },
-      {
-        name: '재단 방식',
-        type: 'radio',
-        values: [
-          { label: '반칼 (시트형)', priceModifier: 0 },
-          { label: '완칼 (개별조각)', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '코팅 유무',
-        type: 'radio',
-        values: [
-          { label: '무광 코팅', priceModifier: 0 },
-          { label: '유광 코팅', priceModifier: 0 },
-          { label: '코팅 없음', priceModifier: -500 },
-        ]
-      },
-      {
-        name: '후가공 옵션',
-        type: 'select',
-        values: [
-          { label: '없음', priceModifier: 0 },
-        ]
-      }
+      STICKER_COMMON_OPTIONS.CUTTING_METHOD,
+      STICKER_COMMON_OPTIONS.COATING,
+      STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['빈티지 브론즈', '종이 질감', '유니크 색상'],
     leadTime: '3-4일',
@@ -3671,7 +3180,7 @@ export const PORTFOLIO_ITEMS: PortfolioItem[] = [
     id: 'p1',
     title: '캐릭터 브랜드 자유형 스티커',
     category: 'sticker',
-    subCategory: '자유형',
+    subCategory: '자유형 스티커',
     material: '유포 스티커',
     finishing: '무광 코팅',
     image: 'https://picsum.photos/seed/port1/800/1000',
@@ -3681,7 +3190,7 @@ export const PORTFOLIO_ITEMS: PortfolioItem[] = [
     id: 'p2',
     title: '카페 로고 사각형 스티커',
     category: 'sticker',
-    subCategory: '사각형',
+    subCategory: '사각형 스티커',
     material: '아트지 라벨',
     finishing: '유광 코팅',
     image: 'https://picsum.photos/seed/port2/800/1000',
