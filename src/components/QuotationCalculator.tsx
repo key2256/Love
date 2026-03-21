@@ -54,7 +54,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
 
   const getLayoutPattern = (product: Product) => {
     if (product.category === 'sticker') return 'STICKER';
-    if (product.id.startsWith('stk-postcard-')) return 'POSTCARD';
+    if (product.id === 'paper-postcard') return 'POSTCARD';
     if (product.id === 'bc-template') return 'DESIGN_CARD';
     if (product.id === 'bc-standard' || product.id === 'bc-premium') return 'BUSINESS_CARD';
     if (product.id === 'bc-folded') return 'FOLDED_BUSINESS_CARD';
@@ -337,41 +337,31 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
           {/* Postcard Material Selection */}
           {pattern === 'POSTCARD' && product.options.filter(opt => opt.name.includes('용지')).map((option) => (
             <div key={option.name} className="space-y-6">
-              <div className="flex items-center gap-2">
-                <div className="w-1 h-4 bg-emerald-500 rounded-full" />
-                <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
-                  용지 선택
-                </label>
+              <label className="text-xs font-black text-zinc-900 uppercase tracking-widest block">
+                1. 용지 그룹 선택
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                {['기본 대중형', '고급 감성형', '친환경/내추럴형', '컬러/특수지형'].map((group) => (
+                  <button
+                    key={group}
+                    onClick={() => setSelectedPostcardGroup(group)}
+                    className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all ${
+                      selectedPostcardGroup === group
+                        ? 'bg-zinc-900 border-zinc-900 text-white shadow-lg'
+                        : 'bg-white border-zinc-200 text-zinc-600 hover:border-zinc-400'
+                    }`}
+                  >
+                    {group}
+                  </button>
+                ))}
               </div>
-              
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  {['기본 대중형', '고급 감성형', '친환경/내추럴형', '컬러/특수지형']
-                    .filter(group => {
-                      if (product.id === 'stk-postcard-standard') return group === '기본 대중형';
-                      if (product.id === 'stk-postcard-premium') return group !== '기본 대중형';
-                      if (product.id === 'stk-postcard-shape') return group !== '컬러/특수지형';
-                      if (product.id === 'stk-postcard-effect') return group === '기본 대중형' || group === '고급 감성형';
-                      if (product.id === 'stk-postcard-special') return false;
-                      return true;
-                    })
-                    .map((group) => (
-                      <button
-                        key={group}
-                        onClick={() => setSelectedPostcardGroup(group)}
-                        className={`py-3 px-4 rounded-xl text-[11px] font-black border transition-all uppercase tracking-widest ${
-                          selectedPostcardGroup === group
-                            ? 'bg-zinc-900 border-zinc-900 text-white shadow-lg'
-                            : 'bg-white border-zinc-100 text-zinc-400 hover:border-zinc-300'
-                        }`}
-                      >
-                        {group}
-                      </button>
-                    ))}
-                </div>
 
-                {selectedPostcardGroup && (
-                  <div className="grid grid-cols-1 gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
+              {selectedPostcardGroup && (
+                <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                  <label className="text-xs font-black text-zinc-900 uppercase tracking-widest block">
+                    2. 세부 용지 선택
+                  </label>
+                  <div className="grid grid-cols-1 gap-3">
                     {POSTCARD_MATERIALS.filter(m => m.group === selectedPostcardGroup).map((material) => {
                       const isSelected = selectedOptions[option.name] === `${material.name} ${material.weight}`;
                       return (
@@ -421,8 +411,8 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                       );
                     })}
                   </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           ))}
 
@@ -514,8 +504,8 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
             </div>
           ))}
 
-          {/* Post-processing Section (후가공) */}
-          {(pattern === 'BUSINESS_CARD' || pattern === 'DESIGN_CARD' || pattern === 'POSTCARD') && (
+          {/* Business Card & Design Card Post-processing Options (Icon Grid Pattern) */}
+          {(pattern === 'BUSINESS_CARD' || pattern === 'DESIGN_CARD') && (
             <div className="space-y-6 pt-4 border-t border-zinc-100">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -533,12 +523,10 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                 {/* Icon Grid */}
                 <div className="grid grid-cols-4 gap-3">
                   {[
-                    { id: 'coating', name: '코팅', icon: <Layers className="w-5 h-5" />, active: pattern === 'DESIGN_CARD' ? selectedOptions['코팅'] !== '없음' : (selectedOptions['코팅 종류'] !== '없음' || selectedOptions['코팅'] !== '없음'), hidden: !product.options.some(o => o.name === '코팅' || o.name === '코팅 종류') },
-                    { id: 'rounding', name: '귀돌이', icon: <Scissors className="w-5 h-5" />, active: selectedOptions['귀돌이 사용'] === '있음', hidden: !product.options.some(o => o.name === '귀돌이 사용') },
-                    { id: 'punching', name: '타공', icon: <Droplets className="w-5 h-5" />, active: selectedOptions['타공 사용'] === '있음', hidden: !product.options.some(o => o.name === '타공 사용') },
-                    { id: 'creasing', name: '오시', icon: <FileText className="w-5 h-5" />, active: selectedOptions['오시 사용'] === '있음', hidden: !product.options.some(o => o.name === '오시 사용') },
-                    { id: 'effect', name: '효과', icon: <Sparkles className="w-5 h-5" />, active: selectedOptions['후가공 효과'] !== '없음', hidden: !product.options.some(o => o.name === '후가공 효과') },
-                    { id: 'case', name: '케이스', icon: <Package className="w-5 h-5" />, active: selectedOptions['명함케이스'] !== '없음', hidden: !product.options.some(o => o.name === '명함케이스') }
+                    { id: 'coating', name: '코팅', icon: <Layers className="w-5 h-5" />, active: pattern === 'DESIGN_CARD' ? selectedOptions['코팅'] !== '없음' : selectedOptions['코팅 종류'] !== '없음', hidden: product.id === 'bc-premium' },
+                    { id: 'rounding', name: '귀돌이', icon: <Scissors className="w-5 h-5" />, active: selectedOptions['귀돌이 사용'] === '있음' },
+                    { id: 'punching', name: '타공', icon: <Droplets className="w-5 h-5" />, active: selectedOptions['타공 사용'] === '있음', hidden: pattern === 'DESIGN_CARD' },
+                    { id: 'case', name: '케이스', icon: <Package className="w-5 h-5" />, active: selectedOptions['명함케이스'] !== '없음', hidden: pattern === 'DESIGN_CARD' }
                   ].filter(item => !item.hidden).map(item => {
                     const isExpanded = expandedPostOption === item.id;
                     return (
@@ -584,7 +572,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                           <button onClick={() => setExpandedPostOption(null)} className="text-[10px] font-bold text-zinc-400 hover:text-zinc-600">닫기</button>
                         </div>
                         <div className="space-y-4">
-                          {pattern === 'DESIGN_CARD' || pattern === 'POSTCARD' ? (
+                          {pattern === 'DESIGN_CARD' ? (
                             <div className="grid grid-cols-3 gap-2">
                               {['없음', '무광 코팅', '유광 코팅'].map(type => (
                                 <button
@@ -812,92 +800,6 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                     </motion.div>
                   )}
 
-                  {expandedPostOption === 'creasing' && (
-                    <motion.div
-                      key="creasing"
-                      initial={{ opacity: 0, y: -10, height: 0 }}
-                      animate={{ opacity: 1, y: 0, height: 'auto' }}
-                      exit={{ opacity: 0, y: -10, height: 0 }}
-                      className="overflow-hidden"
-                    >
-                      <div className="pt-4 border-t border-zinc-200/50 space-y-4">
-                        <div className="flex items-center justify-between">
-                          <h4 className="text-xs font-black text-zinc-900 uppercase tracking-widest">오시 상세 설정</h4>
-                          <button onClick={() => setExpandedPostOption(null)} className="text-[10px] font-bold text-zinc-400 hover:text-zinc-600">닫기</button>
-                        </div>
-                        <div className="space-y-4">
-                          <div className="grid grid-cols-2 gap-2">
-                            {['없음', '있음'].map(use => (
-                              <button
-                                key={use}
-                                onClick={() => handleOptionChange('오시 사용', use)}
-                                className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
-                                  selectedOptions['오시 사용'] === use
-                                    ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
-                                    : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
-                                }`}
-                              >
-                                {use}
-                              </button>
-                            ))}
-                          </div>
-                          {selectedOptions['오시 사용'] === '있음' && (
-                            <div className="space-y-2 animate-in fade-in slide-in-from-top-1">
-                              <span className="text-[10px] font-bold text-zinc-400 uppercase">줄수 선택</span>
-                              <div className="grid grid-cols-2 gap-2">
-                                {['1줄', '2줄'].map(line => (
-                                  <button
-                                    key={line}
-                                    onClick={() => handleOptionChange('오시 줄수', line)}
-                                    className={`py-2 rounded-lg text-[11px] font-bold border transition-all ${
-                                      selectedOptions['오시 줄수'] === line
-                                        ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
-                                        : 'bg-white border-zinc-200 text-zinc-500'
-                                    }`}
-                                  >
-                                    {line}
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {expandedPostOption === 'effect' && (
-                    <motion.div
-                      key="effect"
-                      initial={{ opacity: 0, y: -10, height: 0 }}
-                      animate={{ opacity: 1, y: 0, height: 'auto' }}
-                      exit={{ opacity: 0, y: -10, height: 0 }}
-                      className="overflow-hidden"
-                    >
-                      <div className="pt-4 border-t border-zinc-200/50 space-y-4">
-                        <div className="flex items-center justify-between">
-                          <h4 className="text-xs font-black text-zinc-900 uppercase tracking-widest">후가공 효과 선택</h4>
-                          <button onClick={() => setExpandedPostOption(null)} className="text-[10px] font-bold text-zinc-400 hover:text-zinc-600">닫기</button>
-                        </div>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                          {['없음', '부분 UV (스코딕스)', '금박', '은박', '형압/압인'].map(item => (
-                            <button
-                              key={item}
-                              onClick={() => handleOptionChange('후가공 효과', item)}
-                              className={`py-3 px-4 rounded-xl text-[11px] font-bold border transition-all text-center flex flex-col items-center justify-center gap-1 ${
-                                selectedOptions['후가공 효과'] === item
-                                  ? 'bg-emerald-600 border-emerald-600 text-white shadow-md shadow-emerald-600/20'
-                                  : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
-                              }`}
-                            >
-                              <span>{item}</span>
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-
                   {expandedPostOption === 'case' && (
                     <motion.div
                       key="case"
@@ -1049,13 +951,8 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                      !['재단 방식', '코팅 유무', '후가공 옵션', '화이트 인쇄', '넘버링', '스코딕스', '포장 옵션', '부분 UV', '모양코팅'].includes(opt.name);
             }
             if (pattern === 'POSTCARD') {
-              const hasPaperGroup = product.options.some(o => o.name === '용지 그룹');
-              return (hasPaperGroup ? !opt.name.includes('용지') : !['용지 그룹'].includes(opt.name)) && 
-                     !opt.name.includes('코팅') && 
-                     !opt.name.includes('귀돌이') && 
-                     !opt.name.includes('타공') && 
-                     !opt.name.includes('오시') && 
-                     !['재단 방식', '코팅 유무', '후가공 옵션', '화이트 인쇄', '넘버링', '스코딕스', '포장 옵션', '부분 UV', '모양코팅', '후가공 효과'].includes(opt.name);
+              return !opt.name.includes('용지') && 
+                     !['재단 방식', '코팅 유무', '후가공 옵션', '화이트 인쇄', '넘버링', '스코딕스', '포장 옵션', '부분 UV', '모양코팅'].includes(opt.name);
             }
             if (pattern === 'BUSINESS_CARD') {
               return !opt.name.includes('용지') && 
@@ -1432,7 +1329,6 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                       '귀돌이 방향': '귀돌이 사용',
                       '구멍 크기': '타공 사용',
                       '타공 설명': '타공 사용',
-                      '오시 줄수': '오시 사용',
                     };
 
                     const parentKey = dependencies[key];
