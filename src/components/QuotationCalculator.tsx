@@ -423,11 +423,11 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                 {/* Icon Grid */}
                 <div className="grid grid-cols-4 gap-3">
                   {[
-                    { id: 'coating', name: '코팅', icon: <Layers className="w-5 h-5" />, active: selectedOptions['코팅 종류'] !== '없음' },
+                    { id: 'coating', name: '코팅', icon: <Layers className="w-5 h-5" />, active: selectedOptions['코팅 종류'] !== '없음', hidden: product.id === 'bc-premium' },
                     { id: 'rounding', name: '귀돌이', icon: <Scissors className="w-5 h-5" />, active: selectedOptions['귀돌이 사용'] === '있음' },
                     { id: 'punching', name: '타공', icon: <Droplets className="w-5 h-5" />, active: selectedOptions['타공 사용'] === '있음' },
                     { id: 'case', name: '케이스', icon: <Package className="w-5 h-5" />, active: selectedOptions['명함케이스'] !== '없음' }
-                  ].map(item => {
+                  ].filter(item => !item.hidden).map(item => {
                     const isExpanded = expandedPostOption === item.id;
                     return (
                       <button
@@ -1066,7 +1066,31 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
               <span className="text-zinc-500 font-medium">선택 옵션 요약</span>
               <div className="flex flex-wrap justify-end gap-2">
                 {Object.entries(selectedOptions)
-                  .filter(([_, val]) => val && val !== '없음' && String(val).trim() !== '')
+                  .filter(([key, val]) => {
+                    // 1. Basic filtering (empty or 'none')
+                    if (!val || val === '없음' || String(val).trim() === '') return false;
+
+                    // 2. Parent-Child dependency filtering
+                    const dependencies: Record<string, string> = {
+                      '코팅 면수': '코팅 종류',
+                      '귀돌이 크기': '귀돌이 사용',
+                      '귀돌이 면수': '귀돌이 사용',
+                      '귀돌이 방향': '귀돌이 사용',
+                      '구멍 크기': '타공 사용',
+                      '타공 설명': '타공 사용',
+                    };
+
+                    const parentKey = dependencies[key];
+                    if (parentKey) {
+                      const parentVal = selectedOptions[parentKey];
+                      if (!parentVal || parentVal === '없음') return false;
+                      
+                      // Special case for 귀돌이 방향
+                      if (key === '귀돌이 방향' && selectedOptions['귀돌이 면수'] !== '1면') return false;
+                    }
+
+                    return true;
+                  })
                   .map(([key, val]) => (
                     <span key={key} className="px-2 py-1 bg-white rounded-md text-[10px] font-bold text-zinc-400 border border-zinc-100">
                       {val}

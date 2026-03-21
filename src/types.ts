@@ -2822,23 +2822,6 @@ export const PRODUCTS: Product[] = [
         ]
       },
       {
-        name: '코팅 종류',
-        type: 'select',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '무광', priceModifier: 1000 },
-          { label: '유광', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '코팅 면수',
-        type: 'radio',
-        values: [
-          { label: '단면', priceModifier: 0 },
-          { label: '양면', priceModifier: 500 },
-        ]
-      },
-      {
         name: '귀돌이 사용',
         type: 'radio',
         values: [
