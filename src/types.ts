@@ -1494,7 +1494,7 @@ export const getStickerMaterials = (type: 'standard' | 'free' | 'transparent' | 
     case 'standard':
       return PAPER_MATERIALS.filter(m => !m.premium && !m.transparent && !m.metal && !m.removable && !m.name.includes('냉동'));
     case 'free':
-      return PAPER_MATERIALS.filter(m => !m.premium && !m.metal);
+      return PAPER_MATERIALS.filter(m => !m.premium && !m.metal && !m.transparent && !m.removable && !m.name.includes('냉동'));
     case 'transparent':
       return PAPER_MATERIALS.filter(m => m.transparent);
     case 'premium':
@@ -1906,7 +1906,7 @@ export const PRODUCTS: Product[] = [
       {
         name: '재질 선택',
         type: 'select',
-        values: PAPER_MATERIALS.filter(m => !m.premium && !m.transparent).map(m => ({
+        values: PAPER_MATERIALS.filter(m => !m.premium && !m.transparent && !m.removable && !m.name.includes('냉동')).map(m => ({
           label: `${m.name} ${m.weight}`,
           priceModifier: m.group === '일반/기본 용지' ? 0 : 1500
         }))
