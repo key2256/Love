@@ -1212,6 +1212,10 @@ export const SUBCATEGORY_METADATA: Record<string, SubCategoryMetadata> = {
     tagline: '흔적 없이 깔끔하게, 떼었다 붙였다.',
     description: '제거 시 끈적임이 남지 않아 노트북이나 전자기기에 부착하기 좋습니다. 재부착이 가능하여 활용도가 높습니다.'
   },
+  '디자인 템플릿 명함': {
+    tagline: '전문 디자이너의 템플릿으로 쉽고 빠르게.',
+    description: '업종별 템플릿을 선택하고 정보만 입력하면 완성되는 빠른 주문형 명함입니다.'
+  },
   '일반 명함': {
     tagline: '가장 대중적인 명함, 가성비 최우수.',
     description: '다양한 용지와 규격으로 제작 가능한 표준 명함입니다.'
@@ -3039,9 +3043,9 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'bc-template',
-    name: '디자인 명함',
+    name: '디자인 템플릿 명함',
     category: 'card-paper',
-    subCategory: '디자인 명함',
+    subCategory: '디자인 템플릿 명함',
     tagline: '전문 디자이너의 템플릿으로 쉽고 빠르게.',
     description: '업종별 템플릿을 선택하고 정보만 입력하면 완성되는 빠른 주문형 명함입니다.',
     image: 'https://picsum.photos/seed/bc-design/800/800',
@@ -3100,12 +3104,46 @@ export const PRODUCTS: Product[] = [
         ]
       },
       {
-        name: '후가공',
-        type: 'checkbox',
+        name: '코팅',
+        type: 'select',
         values: [
+          { label: '없음', priceModifier: 0 },
           { label: '무광 코팅', priceModifier: 1000 },
           { label: '유광 코팅', priceModifier: 1000 },
-          { label: '귀돌이', priceModifier: 1500 },
+        ]
+      },
+      {
+        name: '귀돌이 사용',
+        type: 'radio',
+        values: [
+          { label: '없음', priceModifier: 0 },
+          { label: '있음', priceModifier: 1500 },
+        ]
+      },
+      {
+        name: '귀돌이 크기',
+        type: 'radio',
+        values: [
+          { label: '4mm', priceModifier: 0 },
+          { label: '6mm', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '귀돌이 면수',
+        type: 'radio',
+        values: [
+          { label: '1면', priceModifier: 0 },
+          { label: '4면', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '귀돌이 방향',
+        type: 'select',
+        values: [
+          { label: '상단좌', priceModifier: 0 },
+          { label: '상단우', priceModifier: 0 },
+          { label: '하단좌', priceModifier: 0 },
+          { label: '하단우', priceModifier: 0 },
         ]
       },
       {
