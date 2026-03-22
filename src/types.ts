@@ -702,7 +702,6 @@ export const POSTCARD_COMMON_OPTIONS = {
       values: [
         { label: '4mm', priceModifier: 0 },
         { label: '6mm', priceModifier: 0 },
-        { label: '10mm', priceModifier: 0 },
       ]
     },
     {
@@ -710,8 +709,6 @@ export const POSTCARD_COMMON_OPTIONS = {
       type: 'radio' as const,
       values: [
         { label: '1면', priceModifier: 0 },
-        { label: '2면', priceModifier: 500 },
-        { label: '3면', priceModifier: 700 },
         { label: '4면', priceModifier: 1000 },
       ]
     },
@@ -739,9 +736,7 @@ export const POSTCARD_COMMON_OPTIONS = {
       name: '타공 크기',
       type: 'radio' as const,
       values: [
-        { label: '3mm', priceModifier: 0 },
         { label: '4mm', priceModifier: 0 },
-        { label: '5mm', priceModifier: 0 },
         { label: '6mm', priceModifier: 0 },
         { label: '8mm', priceModifier: 0 },
       ]
@@ -752,14 +747,107 @@ export const POSTCARD_COMMON_OPTIONS = {
       placeholder: '예: 중앙 상단 1개 / 좌측 상단 1개 등'
     }
   ],
-  CREASING: {
-    name: '오시 (접는선)',
-    type: 'radio' as const,
-    values: [
-      { label: '없음', priceModifier: 0 },
-      { label: '있음', priceModifier: 1000 },
-    ]
-  },
+  CREASING: [
+    {
+      name: '오시',
+      type: 'radio' as const,
+      values: [
+        { label: '없음', priceModifier: 0 },
+        { label: '있음', priceModifier: 1000 },
+      ]
+    },
+    {
+      name: '오시 줄 수',
+      type: 'radio' as const,
+      values: [
+        { label: '1줄', priceModifier: 0 },
+        { label: '2줄', priceModifier: 500 },
+        { label: '3줄', priceModifier: 1000 },
+      ]
+    },
+    {
+      name: '오시 설명',
+      type: 'text' as const,
+      placeholder: '예: 중앙 세로 1줄 / 상단 20mm 지점 가로 1줄 등'
+    }
+  ],
+  PERFORATION: [
+    {
+      name: '미싱',
+      type: 'radio' as const,
+      values: [
+        { label: '없음', priceModifier: 0 },
+        { label: '있음', priceModifier: 1000 },
+      ]
+    },
+    {
+      name: '미싱 줄 수',
+      type: 'radio' as const,
+      values: [
+        { label: '1줄', priceModifier: 0 },
+        { label: '2줄', priceModifier: 500 },
+        { label: '3줄', priceModifier: 1000 },
+      ]
+    },
+    {
+      name: '미싱 설명',
+      type: 'text' as const,
+      placeholder: '예: 중앙 세로 1줄 / 우측 30mm 지점 세로 1줄 등'
+    }
+  ],
+  FOLDING: [
+    {
+      name: '접지',
+      type: 'radio' as const,
+      values: [
+        { label: '없음', priceModifier: 0 },
+        { label: '있음', priceModifier: 1500 },
+      ]
+    },
+    {
+      name: '접지 방향',
+      type: 'radio' as const,
+      values: [
+        { label: '가로형', priceModifier: 0 },
+        { label: '세로형', priceModifier: 0 },
+      ]
+    },
+    {
+      name: '접지 형태',
+      type: 'select' as const,
+      values: [
+        { label: '2단접지', priceModifier: 0 },
+        { label: '3단접지', priceModifier: 500 },
+        { label: '4단접지', priceModifier: 1000 },
+        { label: '대문접지', priceModifier: 1000 },
+        { label: '반대문접지', priceModifier: 1000 },
+        { label: '4단 병풍접지', priceModifier: 1500 },
+        { label: 'N모양 3단접지', priceModifier: 1000 },
+      ]
+    }
+  ],
+  PACKAGING: [
+    {
+      name: '폴리백 개별포장',
+      type: 'radio' as const,
+      values: [
+        { label: '없음', priceModifier: 0 },
+        { label: '있음', priceModifier: 500 },
+      ]
+    },
+    {
+      name: '폴리백 사이즈',
+      type: 'select' as const,
+      values: [
+        { label: '60x90', priceModifier: 0 },
+        { label: '100x130', priceModifier: 0 },
+        { label: '110x160', priceModifier: 0 },
+        { label: '130x180', priceModifier: 0 },
+        { label: '160x300', priceModifier: 0 },
+        { label: '220x300', priceModifier: 0 },
+      ]
+    }
+  ],
   EFFECT: {
     name: '후가공 효과',
     type: 'select' as const,
@@ -2653,6 +2741,10 @@ export const PRODUCTS: Product[] = [
       ...POSTCARD_COMMON_OPTIONS.COATING,
       ...POSTCARD_COMMON_OPTIONS.ROUNDING,
       ...POSTCARD_COMMON_OPTIONS.PUNCHING,
+      ...POSTCARD_COMMON_OPTIONS.CREASING,
+      ...POSTCARD_COMMON_OPTIONS.PERFORATION,
+      ...POSTCARD_COMMON_OPTIONS.FOLDING,
+      ...POSTCARD_COMMON_OPTIONS.PACKAGING,
       {
         name: '제작 수량',
         type: 'select',
@@ -2695,6 +2787,10 @@ export const PRODUCTS: Product[] = [
       POSTCARD_COMMON_OPTIONS.PRINT_COLOR,
       ...POSTCARD_COMMON_OPTIONS.ROUNDING,
       ...POSTCARD_COMMON_OPTIONS.PUNCHING,
+      ...POSTCARD_COMMON_OPTIONS.CREASING,
+      ...POSTCARD_COMMON_OPTIONS.PERFORATION,
+      ...POSTCARD_COMMON_OPTIONS.FOLDING,
+      ...POSTCARD_COMMON_OPTIONS.PACKAGING,
       {
         name: '제작 수량',
         type: 'select',
@@ -2754,6 +2850,10 @@ export const PRODUCTS: Product[] = [
       ...POSTCARD_COMMON_OPTIONS.COATING,
       ...POSTCARD_COMMON_OPTIONS.ROUNDING,
       ...POSTCARD_COMMON_OPTIONS.PUNCHING,
+      ...POSTCARD_COMMON_OPTIONS.CREASING,
+      ...POSTCARD_COMMON_OPTIONS.PERFORATION,
+      ...POSTCARD_COMMON_OPTIONS.FOLDING,
+      ...POSTCARD_COMMON_OPTIONS.PACKAGING,
       {
         name: '제작 수량',
         type: 'select',
@@ -2793,7 +2893,10 @@ export const PRODUCTS: Product[] = [
       POSTCARD_COMMON_OPTIONS.PRINT_COLOR,
       ...POSTCARD_COMMON_OPTIONS.ROUNDING,
       ...POSTCARD_COMMON_OPTIONS.PUNCHING,
-      POSTCARD_COMMON_OPTIONS.CREASING,
+      ...POSTCARD_COMMON_OPTIONS.CREASING,
+      ...POSTCARD_COMMON_OPTIONS.PERFORATION,
+      ...POSTCARD_COMMON_OPTIONS.FOLDING,
+      ...POSTCARD_COMMON_OPTIONS.PACKAGING,
       {
         name: '제작 수량',
         type: 'select',
@@ -2832,6 +2935,10 @@ export const PRODUCTS: Product[] = [
       POSTCARD_COMMON_OPTIONS.PRINT_COLOR,
       ...POSTCARD_COMMON_OPTIONS.ROUNDING,
       ...POSTCARD_COMMON_OPTIONS.PUNCHING,
+      ...POSTCARD_COMMON_OPTIONS.CREASING,
+      ...POSTCARD_COMMON_OPTIONS.PERFORATION,
+      ...POSTCARD_COMMON_OPTIONS.FOLDING,
+      ...POSTCARD_COMMON_OPTIONS.PACKAGING,
       {
         name: '제작 수량',
         type: 'select',

@@ -174,7 +174,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
         setSelectedPostcardGroup('기본 대중형');
         // Ensure a material from '기본 대중형' is selected
         const materialOption = product.options.find(opt => opt.name === '상세 용지 (기본)') || 
-                               product.options.find(opt => opt.name.includes('용지'));
+                               product.options.find(opt => opt.name.includes('용지') && opt.name !== '용지 그룹');
         if (materialOption) {
           const currentVal = selectedOptions[materialOption.name];
           const currentMaterial = POSTCARD_MATERIALS.find(m => `${m.name} ${m.weight}` === currentVal);
@@ -290,7 +290,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
     // Automatically select the first material in the group
     // For general postcards, we specifically target '상세 용지 (기본)'
     const materialOption = product.options.find(opt => opt.name === '상세 용지 (기본)') || 
-                           product.options.find(opt => opt.name.includes('용지'));
+                           product.options.find(opt => opt.name.includes('용지') && opt.name !== '용지 그룹');
     
     if (materialOption) {
       const firstMaterial = POSTCARD_MATERIALS.find(m => m.group === group);
@@ -597,6 +597,34 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                       hidden: pattern === 'DESIGN_CARD' 
                     },
                     { 
+                      id: 'creasing', 
+                      name: '오시', 
+                      icon: <Paintbrush className="w-5 h-5" />, 
+                      active: selectedOptions['오시'] === '있음', 
+                      hidden: pattern !== 'POSTCARD'
+                    },
+                    { 
+                      id: 'perforation', 
+                      name: '미싱', 
+                      icon: <Scissors className="w-5 h-5" />, 
+                      active: selectedOptions['미싱'] === '있음', 
+                      hidden: pattern !== 'POSTCARD'
+                    },
+                    { 
+                      id: 'folding', 
+                      name: '접지', 
+                      icon: <FileUp className="w-5 h-5" />, 
+                      active: selectedOptions['접지'] === '있음', 
+                      hidden: pattern !== 'POSTCARD'
+                    },
+                    { 
+                      id: 'packaging', 
+                      name: '포장', 
+                      icon: <ShoppingCart className="w-5 h-5" />, 
+                      active: selectedOptions['폴리백 개별포장'] === '있음', 
+                      hidden: pattern !== 'POSTCARD'
+                    },
+                    { 
                       id: 'case', 
                       name: '케이스', 
                       icon: <Package className="w-5 h-5" />, 
@@ -746,7 +774,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                                 <div className="space-y-2">
                                   <span className="text-[10px] font-bold text-zinc-400 uppercase">크기</span>
                                   <div className="grid grid-cols-2 gap-2">
-                                    {(pattern === 'POSTCARD' ? ['4mm', '6mm', '10mm'] : ['4mm', '6mm']).map(size => (
+                                    {['4mm', '6mm'].map(size => (
                                       <button
                                         key={size}
                                         onClick={() => handleOptionChange('귀돌이 크기', size)}
@@ -764,7 +792,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                                 <div className="space-y-2">
                                   <span className="text-[10px] font-bold text-zinc-400 uppercase">면수</span>
                                   <div className="grid grid-cols-2 gap-2">
-                                    {(pattern === 'POSTCARD' ? ['1면', '2면', '3면', '4면'] : ['1면', '4면']).map(count => (
+                                    {['1면', '4면'].map(count => (
                                       <button
                                         key={count}
                                         onClick={() => handleOptionChange('귀돌이 면수', count)}
@@ -780,7 +808,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                                   </div>
                                 </div>
                               </div>
-                              {((pattern === 'POSTCARD' && selectedOptions['귀돌이 면수'] !== '4면') || (pattern !== 'POSTCARD' && selectedOptions['귀돌이 면수'] === '1면')) && (
+                              {selectedOptions['귀돌이 면수'] === '1면' && (
                                 <div className="space-y-2">
                                   <span className="text-[10px] font-bold text-zinc-400 uppercase">방향 선택</span>
                                   <div className="grid grid-cols-4 gap-2">
@@ -846,8 +874,8 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                             <div className="space-y-4 animate-in fade-in slide-in-from-top-1">
                               <div className="space-y-2">
                                 <span className="text-[10px] font-bold text-zinc-400 uppercase">구멍 크기</span>
-                                <div className="grid grid-cols-5 gap-2">
-                                  {(pattern === 'POSTCARD' ? ['3mm', '4mm', '5mm', '6mm', '8mm'] : ['4mm', '6mm', '8mm']).map(size => (
+                                <div className="grid grid-cols-3 gap-2">
+                                  {['4mm', '6mm', '8mm'].map(size => (
                                     <button
                                       key={size}
                                       onClick={() => handleOptionChange(pattern === 'POSTCARD' ? '타공 크기' : '구멍 크기', size)}
@@ -879,7 +907,270 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                     </motion.div>
                   )}
 
-                  {expandedPostOption === 'case' && (
+                    {expandedPostOption === 'creasing' && (
+                      <motion.div
+                        key="creasing"
+                        initial={{ opacity: 0, y: -10, height: 0 }}
+                        animate={{ opacity: 1, y: 0, height: 'auto' }}
+                        exit={{ opacity: 0, y: -10, height: 0 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="pt-4 border-t border-zinc-200/50 space-y-4">
+                          <div className="flex items-center justify-between">
+                            <h4 className="text-xs font-black text-zinc-900 uppercase tracking-widest">오시 상세 설정</h4>
+                            <button onClick={() => setExpandedPostOption(null)} className="text-[10px] font-bold text-zinc-400 hover:text-zinc-600">닫기</button>
+                          </div>
+                          <div className="space-y-4">
+                            <div className="grid grid-cols-2 gap-2">
+                              {['없음', '있음'].map(use => (
+                                <button
+                                  key={use}
+                                  onClick={() => handleOptionChange('오시', use)}
+                                  className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
+                                    selectedOptions['오시'] === use
+                                      ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
+                                      : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
+                                  }`}
+                                >
+                                  {use}
+                                </button>
+                              ))}
+                            </div>
+                            {selectedOptions['오시'] === '있음' && (
+                              <div className="space-y-4 animate-in fade-in slide-in-from-top-1">
+                                <div className="space-y-2">
+                                  <span className="text-[10px] font-bold text-zinc-400 uppercase">줄 수</span>
+                                  <div className="grid grid-cols-3 gap-2">
+                                    {['1줄', '2줄', '3줄'].map(line => (
+                                      <button
+                                        key={line}
+                                        onClick={() => handleOptionChange('오시 줄 수', line)}
+                                        className={`py-2 rounded-lg text-[11px] font-bold border transition-all ${
+                                          selectedOptions['오시 줄 수'] === line
+                                            ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
+                                            : 'bg-white border-zinc-200 text-zinc-500'
+                                        }`}
+                                      >
+                                        {line}
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                                <div className="space-y-2">
+                                  <span className="text-[10px] font-bold text-zinc-400 uppercase">오시 위치 설명</span>
+                                  <input
+                                    type="text"
+                                    value={selectedOptions['오시 설명'] || ''}
+                                    onChange={(e) => handleOptionChange('오시 설명', e.target.value)}
+                                    placeholder="예: 중앙 세로 1줄 / 상단 20mm 지점 가로 1줄 등"
+                                    className="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none font-medium text-[11px] transition-colors"
+                                  />
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {expandedPostOption === 'perforation' && (
+                      <motion.div
+                        key="perforation"
+                        initial={{ opacity: 0, y: -10, height: 0 }}
+                        animate={{ opacity: 1, y: 0, height: 'auto' }}
+                        exit={{ opacity: 0, y: -10, height: 0 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="pt-4 border-t border-zinc-200/50 space-y-4">
+                          <div className="flex items-center justify-between">
+                            <h4 className="text-xs font-black text-zinc-900 uppercase tracking-widest">미싱 상세 설정</h4>
+                            <button onClick={() => setExpandedPostOption(null)} className="text-[10px] font-bold text-zinc-400 hover:text-zinc-600">닫기</button>
+                          </div>
+                          <div className="space-y-4">
+                            <div className="grid grid-cols-2 gap-2">
+                              {['없음', '있음'].map(use => (
+                                <button
+                                  key={use}
+                                  onClick={() => handleOptionChange('미싱', use)}
+                                  className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
+                                    selectedOptions['미싱'] === use
+                                      ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
+                                      : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
+                                  }`}
+                                >
+                                  {use}
+                                </button>
+                              ))}
+                            </div>
+                            {selectedOptions['미싱'] === '있음' && (
+                              <div className="space-y-4 animate-in fade-in slide-in-from-top-1">
+                                <div className="space-y-2">
+                                  <span className="text-[10px] font-bold text-zinc-400 uppercase">줄 수</span>
+                                  <div className="grid grid-cols-3 gap-2">
+                                    {['1줄', '2줄', '3줄'].map(line => (
+                                      <button
+                                        key={line}
+                                        onClick={() => handleOptionChange('미싱 줄 수', line)}
+                                        className={`py-2 rounded-lg text-[11px] font-bold border transition-all ${
+                                          selectedOptions['미싱 줄 수'] === line
+                                            ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
+                                            : 'bg-white border-zinc-200 text-zinc-500'
+                                        }`}
+                                      >
+                                        {line}
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                                <div className="space-y-2">
+                                  <span className="text-[10px] font-bold text-zinc-400 uppercase">미싱 위치 설명</span>
+                                  <input
+                                    type="text"
+                                    value={selectedOptions['미싱 설명'] || ''}
+                                    onChange={(e) => handleOptionChange('미싱 설명', e.target.value)}
+                                    placeholder="예: 중앙 세로 1줄 / 우측 30mm 지점 세로 1줄 등"
+                                    className="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none font-medium text-[11px] transition-colors"
+                                  />
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {expandedPostOption === 'folding' && (
+                      <motion.div
+                        key="folding"
+                        initial={{ opacity: 0, y: -10, height: 0 }}
+                        animate={{ opacity: 1, y: 0, height: 'auto' }}
+                        exit={{ opacity: 0, y: -10, height: 0 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="pt-4 border-t border-zinc-200/50 space-y-4">
+                          <div className="flex items-center justify-between">
+                            <h4 className="text-xs font-black text-zinc-900 uppercase tracking-widest">접지 상세 설정</h4>
+                            <button onClick={() => setExpandedPostOption(null)} className="text-[10px] font-bold text-zinc-400 hover:text-zinc-600">닫기</button>
+                          </div>
+                          <div className="space-y-4">
+                            <div className="grid grid-cols-2 gap-2">
+                              {['없음', '있음'].map(use => (
+                                <button
+                                  key={use}
+                                  onClick={() => handleOptionChange('접지', use)}
+                                  className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
+                                    selectedOptions['접지'] === use
+                                      ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
+                                      : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
+                                  }`}
+                                >
+                                  {use}
+                                </button>
+                              ))}
+                            </div>
+                            {selectedOptions['접지'] === '있음' && (
+                              <div className="space-y-4 animate-in fade-in slide-in-from-top-1">
+                                <div className="space-y-2">
+                                  <span className="text-[10px] font-bold text-zinc-400 uppercase">접지 방향</span>
+                                  <div className="grid grid-cols-2 gap-2">
+                                    {['가로형', '세로형'].map(dir => (
+                                      <button
+                                        key={dir}
+                                        onClick={() => handleOptionChange('접지 방향', dir)}
+                                        className={`py-2 rounded-lg text-[11px] font-bold border transition-all ${
+                                          selectedOptions['접지 방향'] === dir
+                                            ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
+                                            : 'bg-white border-zinc-200 text-zinc-500'
+                                        }`}
+                                      >
+                                        {dir}
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                                <div className="space-y-2">
+                                  <span className="text-[10px] font-bold text-zinc-400 uppercase">접지 형태</span>
+                                  <div className="grid grid-cols-2 gap-2">
+                                    {['2단접지', '3단접지', '4단접지', '대문접지', '반대문접지', '4단 병풍접지', 'N모양 3단접지'].map(type => (
+                                      <button
+                                        key={type}
+                                        onClick={() => handleOptionChange('접지 형태', type)}
+                                        className={`py-2 rounded-lg text-[11px] font-bold border transition-all ${
+                                          selectedOptions['접지 형태'] === type
+                                            ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
+                                            : 'bg-white border-zinc-200 text-zinc-500'
+                                        }`}
+                                      >
+                                        {type}
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {expandedPostOption === 'packaging' && (
+                      <motion.div
+                        key="packaging"
+                        initial={{ opacity: 0, y: -10, height: 0 }}
+                        animate={{ opacity: 1, y: 0, height: 'auto' }}
+                        exit={{ opacity: 0, y: -10, height: 0 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="pt-4 border-t border-zinc-200/50 space-y-4">
+                          <div className="flex items-center justify-between">
+                            <h4 className="text-xs font-black text-zinc-900 uppercase tracking-widest">포장 상세 설정</h4>
+                            <button onClick={() => setExpandedPostOption(null)} className="text-[10px] font-bold text-zinc-400 hover:text-zinc-600">닫기</button>
+                          </div>
+                          <div className="space-y-4">
+                            <div className="grid grid-cols-2 gap-2">
+                              {['없음', '있음'].map(use => (
+                                <button
+                                  key={use}
+                                  onClick={() => handleOptionChange('폴리백 개별포장', use)}
+                                  className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
+                                    selectedOptions['폴리백 개별포장'] === use
+                                      ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
+                                      : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
+                                  }`}
+                                >
+                                  {use}
+                                </button>
+                              ))}
+                            </div>
+                            {selectedOptions['폴리백 개별포장'] === '있음' && (
+                              <div className="space-y-4 animate-in fade-in slide-in-from-top-1">
+                                <div className="space-y-2">
+                                  <span className="text-[10px] font-bold text-zinc-400 uppercase">폴리백 사이즈</span>
+                                  <div className="grid grid-cols-3 gap-2">
+                                    {['60x90', '100x130', '110x160', '130x180', '160x300', '220x300'].map(size => (
+                                      <button
+                                        key={size}
+                                        onClick={() => handleOptionChange('폴리백 사이즈', size)}
+                                        className={`py-2 rounded-lg text-[11px] font-bold border transition-all ${
+                                          selectedOptions['폴리백 사이즈'] === size
+                                            ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
+                                            : 'bg-white border-zinc-200 text-zinc-500'
+                                        }`}
+                                      >
+                                        {size}
+                                      </button>
+                                    ))}
+                                  </div>
+                                  <p className="text-[10px] text-zinc-400 mt-1">* 인쇄물 사이즈보다 큰 폴리백을 선택해주세요.</p>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {expandedPostOption === 'case' && (
                     <motion.div
                       key="case"
                       initial={{ opacity: 0, y: -10, height: 0 }}
@@ -1170,13 +1461,29 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
 
           {/* 3. Post-processing Section (후가공) */}
           {(() => {
+            // If handled by icon grid, skip standard list rendering for these specific options
+            const isIconGridPattern = pattern === 'BUSINESS_CARD' || pattern === 'DESIGN_CARD' || pattern === 'POSTCARD';
+
             const postProcessingOptions = product.options.filter(opt => {
               const normalizedName = opt.name.replace(/\s/g, '');
-              return [
+              const isPostProcessing = [
                 '재단방식', '코팅유무', '후가공옵션', '후가공', '화이트인쇄', '넘버링', '스코딕스', '포장옵션', 
                 '부분UV', '모양코팅', '표지코팅', '코팅방식', '코팅', '귀도리(라운드)', '귀돌이(라운드)', 
                 '타공(구멍)', '오시(접는선)', '후가공효과', '귀도리', '귀돌이', '타공'
               ].includes(normalizedName);
+
+              if (!isPostProcessing) return false;
+
+              if (isIconGridPattern) {
+                const handledByIconGrid = [
+                  '코팅', '코팅종류', '코팅면수', '귀돌이', '귀돌이사용', '귀돌이크기', '귀돌이면수', '귀돌이방향', 
+                  '타공', '타공사용', '구멍크기', '타공크기', '타공설명', '명함케이스',
+                  '오시', '오시줄수', '오시설명', '미싱', '미싱줄수', '미싱설명', '접지', '접지방향', '접지형태', '폴리백개별포장', '폴리백사이즈'
+                ].includes(normalizedName);
+                if (handledByIconGrid) return false;
+              }
+
+              return true;
             });
 
             // Special check for White Ink: only show if material is transparent
@@ -1418,12 +1725,20 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
 
                     // 3. Parent-Child dependency filtering
                     const dependencies: Record<string, string> = {
-                      '코팅 면수': '코팅 종류',
-                      '귀돌이 크기': '귀돌이 사용',
-                      '귀돌이 면수': '귀돌이 사용',
-                      '귀돌이 방향': '귀돌이 사용',
+                      '코팅 면수': (pattern === 'POSTCARD' || pattern === 'DESIGN_CARD') ? '코팅' : '코팅 종류',
+                      '귀돌이 크기': pattern === 'POSTCARD' ? '귀돌이' : '귀돌이 사용',
+                      '귀돌이 면수': pattern === 'POSTCARD' ? '귀돌이' : '귀돌이 사용',
+                      '귀돌이 방향': pattern === 'POSTCARD' ? '귀돌이' : '귀돌이 사용',
                       '구멍 크기': '타공 사용',
-                      '타공 설명': '타공 사용',
+                      '타공 크기': '타공',
+                      '타공 설명': pattern === 'POSTCARD' ? '타공' : '타공 사용',
+                      '오시 줄 수': '오시',
+                      '오시 설명': '오시',
+                      '미싱 줄 수': '미싱',
+                      '미싱 설명': '미싱',
+                      '접지 방향': '접지',
+                      '접지 형태': '접지',
+                      '폴리백 사이즈': '폴리백 개별포장',
                     };
 
                     const parentKey = dependencies[key];
