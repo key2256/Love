@@ -29,13 +29,13 @@ interface QuotationCalculatorProps {
 
 const FOLDING_DIRECTION_ICONS: Record<string, React.ReactNode> = {
   '가로형': (
-    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-zinc-900 fill-none" strokeWidth="1.2">
+    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-current fill-none" strokeWidth="1.5">
       <rect x="10" y="10" width="20" height="20" />
       <line x1="10" y1="20" x2="30" y2="20" />
     </svg>
   ),
   '세로형': (
-    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-zinc-900 fill-none" strokeWidth="1.2">
+    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-current fill-none" strokeWidth="1.5">
       <rect x="10" y="10" width="20" height="20" />
       <line x1="20" y1="10" x2="20" y2="30" />
     </svg>
@@ -44,20 +44,20 @@ const FOLDING_DIRECTION_ICONS: Record<string, React.ReactNode> = {
 
 const FOLDING_TYPE_ICONS: Record<string, React.ReactNode> = {
   '2단접지': (
-    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-zinc-900 fill-none" strokeWidth="1.2">
+    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-current fill-none" strokeWidth="1.5">
       <path d="M12 10 L28 10 L28 30 L12 30 Z" />
       <path d="M20 10 L20 30" />
     </svg>
   ),
   '3단접지': (
-    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-zinc-900 fill-none" strokeWidth="1.2">
+    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-current fill-none" strokeWidth="1.5">
       <path d="M10 10 L30 10 L30 30 L10 30 Z" />
       <path d="M16.6 10 L16.6 30" />
       <path d="M23.3 10 L23.3 30" />
     </svg>
   ),
   '4단접지': (
-    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-zinc-900 fill-none" strokeWidth="1.2">
+    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-current fill-none" strokeWidth="1.5">
       <path d="M8 10 L32 10 L32 30 L8 30 Z" />
       <path d="M14 10 L14 30" />
       <path d="M20 10 L20 30" />
@@ -65,25 +65,25 @@ const FOLDING_TYPE_ICONS: Record<string, React.ReactNode> = {
     </svg>
   ),
   '대문접지': (
-    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-zinc-900 fill-none" strokeWidth="1.2">
+    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-current fill-none" strokeWidth="1.5">
       <path d="M10 10 L30 10 L30 30 L10 30 Z" />
       <path d="M15 10 L15 30" />
       <path d="M25 10 L25 30" />
     </svg>
   ),
   '반대문접지': (
-    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-zinc-900 fill-none" strokeWidth="1.2">
+    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-current fill-none" strokeWidth="1.5">
       <path d="M10 10 L30 10 L30 30 L10 30 Z" />
       <path d="M15 10 L15 30" />
     </svg>
   ),
   '4단 병풍접지': (
-    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-zinc-900 fill-none" strokeWidth="1.2">
+    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-current fill-none" strokeWidth="1.5">
       <path d="M8 10 L14 10 L14 30 L8 30 Z M14 10 L20 10 L20 30 L14 30 Z M20 10 L26 10 L26 30 L20 30 Z M26 10 L32 10 L32 30 L26 30 Z" />
     </svg>
   ),
   'N모양 3단접지': (
-    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-zinc-900 fill-none" strokeWidth="1.2">
+    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-current fill-none" strokeWidth="1.5">
       <path d="M10 10 L16.6 10 L16.6 30 L10 30 Z M16.6 10 L23.3 10 L23.3 30 L16.6 30 Z M23.3 10 L30 10 L30 30 L23.3 30 Z" />
     </svg>
   )
@@ -730,47 +730,33 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                           <button onClick={() => setExpandedPostOption(null)} className="text-[10px] font-bold text-zinc-400 hover:text-zinc-600">닫기</button>
                         </div>
                         <div className="space-y-4">
-                          {pattern === 'DESIGN_CARD' ? (
-                            <div className="grid grid-cols-2 gap-2">
-                              {['유광 코팅', '무광 코팅', '홀로그램 코팅', '별무늬 코팅'].map(type => (
-                                <button
-                                  key={type}
-                                  onClick={() => handleOptionChange('코팅', type)}
-                                  className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
-                                    selectedOptions['코팅'] === type
-                                      ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
-                                      : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
-                                  }`}
-                                >
-                                  {type}
-                                </button>
-                              ))}
-                            </div>
-                          ) : (
-                            <>
-                              <div className="grid grid-cols-3 gap-2">
-                                {['없음', '무광', '유광'].map(type => (
+                          {(() => {
+                            const coatingOption = product.options.find(o => o.name === '코팅');
+                            if (!coatingOption) return null;
+                            return (
+                              <div className={`grid gap-2 ${coatingOption.values && coatingOption.values.length > 3 ? 'grid-cols-2' : 'grid-cols-3'}`}>
+                                {coatingOption.values?.map(v => (
                                   <button
-                                    key={type}
+                                    key={v.label}
                                     onClick={() => {
-                                      handleOptionChange('코팅', type);
-                                      if (type === '없음') handleOptionChange('코팅 면수', '단면');
+                                      handleOptionChange('코팅', v.label);
+                                      if (v.label === '없음') handleOptionChange('코팅 면수', '단면');
                                     }}
                                     className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
-                                      selectedOptions['코팅'] === type
+                                      selectedOptions['코팅'] === v.label
                                         ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
                                         : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
                                     }`}
                                   >
-                                    {type}
+                                    {v.label}
                                   </button>
                                 ))}
                               </div>
-                            </>
-                          )}
-                          {selectedOptions['코팅'] !== '없음' && pattern !== 'DESIGN_CARD' && (
+                            );
+                          })()}
+                          {selectedOptions['코팅'] !== '없음' && product.options.some(o => o.name === '코팅 면수') && (
                             <div className="grid grid-cols-2 gap-2 animate-in fade-in slide-in-from-top-1">
-                              {['단면', '양면'].map(side => (
+                              {product.options.find(o => o.name === '코팅 면수')?.values.map(side => (
                                 <button
                                   key={side}
                                   onClick={() => handleOptionChange('코팅 면수', side)}
@@ -805,7 +791,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                         </div>
                         <div className="space-y-4">
                           <div className="grid grid-cols-2 gap-2">
-                            {['없음', '있음'].map(use => (
+                            {product.options.find(o => o.name === '귀돌이')?.values.map(use => (
                               <button
                                 key={use}
                                 onClick={() => handleOptionChange('귀돌이', use)}
@@ -825,7 +811,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                                 <div className="space-y-2">
                                   <span className="text-[10px] font-bold text-zinc-400 uppercase">크기</span>
                                   <div className="grid grid-cols-2 gap-2">
-                                    {['4mm', '6mm'].map(size => (
+                                    {product.options.find(o => o.name === '귀돌이 크기')?.values.map(size => (
                                       <button
                                         key={size}
                                         onClick={() => handleOptionChange('귀돌이 크기', size)}
@@ -843,7 +829,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                                 <div className="space-y-2">
                                   <span className="text-[10px] font-bold text-zinc-400 uppercase">면수</span>
                                   <div className="grid grid-cols-2 gap-2">
-                                    {['1면', '4면'].map(count => (
+                                    {product.options.find(o => o.name === '귀돌이 면수')?.values.map(count => (
                                       <button
                                         key={count}
                                         onClick={() => handleOptionChange('귀돌이 면수', count)}
@@ -907,7 +893,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                         </div>
                         <div className="space-y-4">
                           <div className="grid grid-cols-2 gap-2">
-                            {['없음', '있음'].map(use => (
+                            {product.options.find(o => o.name === '타공')?.values.map(use => (
                               <button
                                 key={use}
                                 onClick={() => handleOptionChange('타공', use)}
@@ -926,7 +912,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                               <div className="space-y-2">
                                 <span className="text-[10px] font-bold text-zinc-400 uppercase">타공 크기</span>
                                 <div className="grid grid-cols-3 gap-2">
-                                  {['4mm', '6mm', '8mm'].map(size => (
+                                  {product.options.find(o => o.name === '타공 크기')?.values.map(size => (
                                     <button
                                       key={size}
                                       onClick={() => handleOptionChange('타공 크기', size)}
@@ -973,7 +959,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                           </div>
                           <div className="space-y-4">
                             <div className="grid grid-cols-2 gap-2">
-                              {['없음', '있음'].map(use => (
+                              {product.options.find(o => o.name === '오시')?.values.map(use => (
                                 <button
                                   key={use}
                                   onClick={() => handleOptionChange('오시', use)}
@@ -992,7 +978,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                                 <div className="space-y-2">
                                   <span className="text-[10px] font-bold text-zinc-400 uppercase">줄 수</span>
                                   <div className="grid grid-cols-3 gap-2">
-                                    {['1줄', '2줄', '3줄'].map(line => (
+                                    {product.options.find(o => o.name === '오시 줄 수')?.values.map(line => (
                                       <button
                                         key={line}
                                         onClick={() => handleOptionChange('오시 줄 수', line)}
@@ -1039,7 +1025,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                           </div>
                           <div className="space-y-4">
                             <div className="grid grid-cols-2 gap-2">
-                              {['없음', '있음'].map(use => (
+                              {product.options.find(o => o.name === '미싱')?.values.map(use => (
                                 <button
                                   key={use}
                                   onClick={() => handleOptionChange('미싱', use)}
@@ -1058,7 +1044,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                                 <div className="space-y-2">
                                   <span className="text-[10px] font-bold text-zinc-400 uppercase">줄 수</span>
                                   <div className="grid grid-cols-3 gap-2">
-                                    {['1줄', '2줄', '3줄'].map(line => (
+                                    {product.options.find(o => o.name === '미싱 줄 수')?.values.map(line => (
                                       <button
                                         key={line}
                                         onClick={() => handleOptionChange('미싱 줄 수', line)}
@@ -1105,7 +1091,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                           </div>
                           <div className="space-y-4">
                             <div className="grid grid-cols-2 gap-2">
-                              {['없음', '있음'].map(use => (
+                              {product.options.find(o => o.name === '접지')?.values.map(use => (
                                 <button
                                   key={use}
                                   onClick={() => handleOptionChange('접지', use)}
@@ -1121,50 +1107,54 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                             </div>
                             {selectedOptions['접지'] === '있음' && (
                               <div className="space-y-6 animate-in fade-in slide-in-from-top-1">
-                                <div className="space-y-3">
-                                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">접지 방향</span>
-                                  <div className="flex gap-4">
-                                    {['가로형', '세로형'].map(dir => (
-                                      <div key={dir} className="flex flex-col items-center gap-2">
-                                        <button
-                                          onClick={() => handleOptionChange('접지 방향', dir)}
-                                          className={`w-16 h-16 rounded-2xl border-2 flex items-center justify-center transition-all ${
-                                            selectedOptions['접지 방향'] === dir
-                                              ? 'bg-emerald-500 border-emerald-500 shadow-lg shadow-emerald-500/20'
-                                              : 'bg-zinc-50 border-zinc-100 hover:border-zinc-200'
-                                          }`}
-                                        >
-                                          <div className={`transition-colors ${selectedOptions['접지 방향'] === dir ? 'text-zinc-900' : 'text-zinc-900'}`}>
-                                            {FOLDING_DIRECTION_ICONS[dir]}
-                                          </div>
-                                        </button>
-                                        <span className="text-[10px] font-bold text-zinc-500">{dir === '가로형' ? '가로접지방향' : '세로접지방향'}</span>
-                                      </div>
-                                    ))}
+                                  <div className="space-y-3">
+                                    <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">접지 방향</span>
+                                    <div className="flex gap-4">
+                                      {product.options.find(o => o.name === '접지 방향')?.values.map(dir => (
+                                        <div key={dir} className="flex flex-col items-center gap-2">
+                                          <button
+                                            onClick={() => handleOptionChange('접지 방향', dir)}
+                                            className={`w-16 h-16 rounded-2xl border-2 flex items-center justify-center transition-all ${
+                                              selectedOptions['접지 방향'] === dir
+                                                ? 'bg-emerald-500 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)] scale-110'
+                                                : 'bg-zinc-50 border-zinc-100 hover:border-zinc-200'
+                                            }`}
+                                          >
+                                            <div className={`transition-colors ${selectedOptions['접지 방향'] === dir ? 'text-white' : 'text-zinc-900'}`}>
+                                              {FOLDING_DIRECTION_ICONS[dir]}
+                                            </div>
+                                          </button>
+                                          <span className={`text-[10px] font-bold transition-colors ${selectedOptions['접지 방향'] === dir ? 'text-emerald-700' : 'text-zinc-500'}`}>
+                                            {dir === '가로형' ? '가로접지방향' : '세로접지방향'}
+                                          </span>
+                                        </div>
+                                      ))}
+                                    </div>
                                   </div>
-                                </div>
-                                <div className="space-y-3">
-                                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">접지 형태</span>
-                                  <div className="grid grid-cols-4 gap-y-4 gap-x-2">
-                                    {['2단접지', '3단접지', '4단접지', '대문접지', '반대문접지', '4단 병풍접지', 'N모양 3단접지'].map(type => (
-                                      <div key={type} className="flex flex-col items-center gap-2">
-                                        <button
-                                          onClick={() => handleOptionChange('접지 형태', type)}
-                                          className={`w-14 h-14 rounded-2xl border-2 flex items-center justify-center transition-all ${
-                                            selectedOptions['접지 형태'] === type
-                                              ? 'bg-emerald-500 border-emerald-500 shadow-lg shadow-emerald-500/20'
-                                              : 'bg-zinc-50 border-zinc-100 hover:border-zinc-200'
-                                          }`}
-                                        >
-                                          <div className={`transition-colors ${selectedOptions['접지 형태'] === type ? 'text-zinc-900' : 'text-zinc-900'}`}>
-                                            {FOLDING_TYPE_ICONS[type]}
-                                          </div>
-                                        </button>
-                                        <span className="text-[9px] font-bold text-zinc-500 text-center leading-tight px-1">{type}</span>
-                                      </div>
-                                    ))}
+                                  <div className="space-y-3">
+                                    <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">접지 형태</span>
+                                    <div className="flex flex-wrap gap-x-2 gap-y-4 justify-start">
+                                      {product.options.find(o => o.name === '접지 형태')?.values.map(type => (
+                                        <div key={type} className="flex flex-col items-center gap-2 w-[calc(25%-8px)] min-w-[60px]">
+                                          <button
+                                            onClick={() => handleOptionChange('접지 형태', type)}
+                                            className={`w-14 h-14 rounded-2xl border-2 flex items-center justify-center transition-all ${
+                                              selectedOptions['접지 형태'] === type
+                                                ? 'bg-emerald-500 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)] scale-110'
+                                                : 'bg-zinc-50 border-zinc-100 hover:border-zinc-200'
+                                            }`}
+                                          >
+                                            <div className={`transition-colors ${selectedOptions['접지 형태'] === type ? 'text-white' : 'text-zinc-900'}`}>
+                                              {FOLDING_TYPE_ICONS[type]}
+                                            </div>
+                                          </button>
+                                          <span className={`text-[9px] font-bold text-center leading-tight px-1 transition-colors ${selectedOptions['접지 형태'] === type ? 'text-emerald-700' : 'text-zinc-500'}`}>
+                                            {type}
+                                          </span>
+                                        </div>
+                                      ))}
+                                    </div>
                                   </div>
-                                </div>
 
                                 <div className="mt-6 space-y-4">
                                   <div className="p-3 rounded-2xl bg-red-50/50 border border-red-100/50">
@@ -1199,7 +1189,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                           </div>
                           <div className="space-y-4">
                             <div className="grid grid-cols-2 gap-2">
-                              {['없음', '있음'].map(use => (
+                              {product.options.find(o => o.name === '폴리백 개별포장')?.values.map(use => (
                                 <button
                                   key={use}
                                   onClick={() => handleOptionChange('폴리백 개별포장', use)}
@@ -1218,7 +1208,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                                 <div className="space-y-2">
                                   <span className="text-[10px] font-bold text-zinc-400 uppercase">폴리백 사이즈</span>
                                   <div className="grid grid-cols-3 gap-2">
-                                    {['60x90', '100x130', '110x160', '130x180', '160x300', '220x300'].map(size => (
+                                    {product.options.find(o => o.name === '폴리백 사이즈')?.values.map(size => (
                                       <button
                                         key={size}
                                         onClick={() => handleOptionChange('폴리백 사이즈', size)}
@@ -1255,7 +1245,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                           <button onClick={() => setExpandedPostOption(null)} className="text-[10px] font-bold text-zinc-400 hover:text-zinc-600">닫기</button>
                         </div>
                         <div className="grid grid-cols-1 gap-2">
-                          {['없음', '종이 케이스', '플라스틱 케이스'].map(item => (
+                          {product.options.find(o => o.name === '명함케이스')?.values.map(item => (
                             <button
                               key={item}
                               onClick={() => handleOptionChange('명함케이스', item)}
