@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { ChevronLeft, Download, Printer, Send, FileText, CheckCircle2, Clock, AlertTriangle } from 'lucide-react';
+import { ChevronLeft, Download, Printer, Send, FileText, CheckCircle2, Clock, AlertTriangle, ShoppingCart, Layers, Sparkles } from 'lucide-react';
 import { Quotation, POSTCARD_MATERIALS, BUSINESS_CARD_MATERIALS } from '../types';
 
 interface QuotationDocumentProps {
@@ -86,17 +86,17 @@ export const QuotationDocument: React.FC<QuotationDocumentProps> = ({ quotation,
 
           <div className="p-12 space-y-12">
             {/* Customer Info & Summary */}
-            <div className="grid grid-cols-2 gap-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
               <div className="space-y-4">
                 <h3 className="text-xs font-black text-zinc-400 uppercase tracking-widest">To. Customer</h3>
-                <div className="p-6 rounded-2xl bg-zinc-50 border border-zinc-100">
+                <div className="p-8 rounded-[32px] bg-zinc-50/50 border border-zinc-100">
                   <p className="text-lg font-black text-zinc-900 mb-1">고객님 (귀하)</p>
                   <p className="text-sm text-zinc-500">견적 요청일: {new Date(quotation.createdAt).toLocaleDateString()}</p>
                 </div>
               </div>
               <div className="space-y-4">
                 <h3 className="text-xs font-black text-zinc-400 uppercase tracking-widest">Summary</h3>
-                <div className="p-6 rounded-2xl bg-emerald-50 border border-emerald-100">
+                <div className="p-8 rounded-[32px] bg-emerald-50/50 border border-emerald-100">
                   <p className="text-xs text-emerald-600 font-bold uppercase tracking-widest mb-1">Total Amount</p>
                   <p className="text-3xl font-black text-emerald-700 tracking-tight">
                     {quotation.totalPrice.toLocaleString()}원
@@ -109,14 +109,15 @@ export const QuotationDocument: React.FC<QuotationDocumentProps> = ({ quotation,
             <div className="space-y-8">
               <div className="flex items-center gap-2">
                 <div className="w-1 h-4 bg-emerald-500 rounded-full" />
+                <ShoppingCart className="w-4 h-4 text-zinc-400" />
                 <h3 className="text-sm font-black text-zinc-900 uppercase tracking-tight">Item Details</h3>
               </div>
               
-              <div className="grid grid-cols-1 gap-6">
+              <div className="grid grid-cols-1 gap-8">
                 {/* 1. Product Info */}
                 <div className="p-8 rounded-[32px] bg-zinc-50/50 border border-zinc-100">
                   <div className="flex items-center gap-2 mb-6">
-                    <div className="w-1 h-3 bg-emerald-500/50 rounded-full" />
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                     <h4 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">상품 정보</h4>
                   </div>
                   <div className="flex justify-between items-end">
@@ -134,11 +135,11 @@ export const QuotationDocument: React.FC<QuotationDocumentProps> = ({ quotation,
                 {/* 2. Paper Info */}
                 <div className="p-8 rounded-[32px] bg-white border border-zinc-100 shadow-sm">
                   <div className="flex items-center gap-2 mb-6">
-                    <div className="w-1 h-3 bg-emerald-500/50 rounded-full" />
+                    <Layers className="w-4 h-4 text-emerald-500" />
                     <h4 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">용지 정보</h4>
                   </div>
                   {selectedPaper ? (
-                    <div className="grid grid-cols-2 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       <div className="space-y-4">
                         <div>
                           <p className="text-xs text-zinc-400 font-bold mb-1">용지명 / 평량</p>
@@ -170,10 +171,10 @@ export const QuotationDocument: React.FC<QuotationDocumentProps> = ({ quotation,
                 </div>
 
                 {/* 3. Print & Post-processing */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="p-8 rounded-[32px] bg-zinc-50/50 border border-zinc-100">
                     <div className="flex items-center gap-2 mb-6">
-                      <div className="w-1 h-3 bg-emerald-500/50 rounded-full" />
+                      <Printer className="w-4 h-4 text-emerald-500" />
                       <h4 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">인쇄 정보</h4>
                     </div>
                     <div className="space-y-2">
@@ -189,7 +190,7 @@ export const QuotationDocument: React.FC<QuotationDocumentProps> = ({ quotation,
                   </div>
                   <div className="p-8 rounded-[32px] bg-zinc-50/50 border border-zinc-100">
                     <div className="flex items-center gap-2 mb-6">
-                      <div className="w-1 h-3 bg-emerald-500/50 rounded-full" />
+                      <Sparkles className="w-4 h-4 text-emerald-500" />
                       <h4 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">후가공 정보</h4>
                     </div>
                     <div className="flex flex-wrap gap-2">
@@ -251,8 +252,8 @@ export const QuotationDocument: React.FC<QuotationDocumentProps> = ({ quotation,
                 <div className="w-1 h-4 bg-emerald-500 rounded-full" />
                 <h3 className="text-sm font-black text-zinc-900 uppercase tracking-tight">Amount Details</h3>
               </div>
-              <div className="overflow-hidden rounded-[32px] border border-zinc-100 shadow-sm">
-                <div className="p-8 bg-zinc-900 text-white flex justify-between items-center">
+              <div className="overflow-hidden rounded-[32px] border border-zinc-100 shadow-xl shadow-zinc-200/50">
+                <div className="p-10 bg-zinc-900 text-white flex justify-between items-center">
                   <span className="text-sm font-bold uppercase tracking-widest opacity-60">Total Amount (VAT Included)</span>
                   <span className="text-4xl font-black tracking-tighter text-emerald-400">
                     {quotation.totalPrice.toLocaleString()}원
