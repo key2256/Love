@@ -709,7 +709,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                   <div className="flex items-center gap-2">
                     <div className="w-1 h-4 bg-emerald-500 rounded-full" />
                     <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
-                      {/* 후가공 선택 - Removed as per user request */}
+                      후가공 선택
                     </label>
                   </div>
                   <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
@@ -726,7 +726,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                         name: '모양커팅', 
                         icon: <Shapes className="w-5 h-5" />, 
                         active: true, 
-                        hidden: true // Always hidden as per user request for shaped postcards
+                        hidden: !config?.allowedPostProcessing?.includes('모양커팅')
                       },
                       { 
                         id: 'coating', 
@@ -1709,18 +1709,11 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
           {(() => {
             // If handled by icon grid, skip standard list rendering for these specific options
             const isIconGridPattern = pattern === 'BUSINESS_CARD' || pattern === 'DESIGN_CARD' || pattern === 'POSTCARD';
+            if (isIconGridPattern) return null;
 
             const postProcessingOptions = product.options.filter(opt => {
               const normalizedName = opt.name.replace(/\s/g, '');
               
-              // Filter based on POSTCARD_CONFIG if applicable
-              if (pattern === 'POSTCARD') {
-                const config = POSTCARD_CONFIG[product.id];
-                if (config?.allowedPostProcessing && !config.allowedPostProcessing.includes(opt.name)) {
-                  return false;
-                }
-              }
-
               const isPostProcessing = [
                 '재단방식', '코팅유무', '후가공옵션', '후가공', '화이트인쇄', '넘버링', '스코딕스', '포장옵션', 
                 '부분UV', '모양코팅', '표지코팅', '코팅방식', '코팅', '귀돌이', 
@@ -1728,15 +1721,6 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
               ].includes(normalizedName);
 
               if (!isPostProcessing) return false;
-
-              if (isIconGridPattern) {
-                const handledByIconGrid = [
-                  '코팅', '코팅종류', '코팅면수', '귀돌이', '귀돌이사용', '귀돌이크기', '귀돌이면수', '귀돌이방향', 
-                  '타공', '타공사용', '구멍크기', '타공크기', '타공설명', '명함케이스',
-                  '오시', '오시줄수', '오시설명', '미싱', '미싱줄수', '미싱설명', '접지', '접지방향', '접지형태', '폴리백개별포장', '폴리백사이즈'
-                ].includes(normalizedName);
-                if (handledByIconGrid) return false;
-              }
 
               return true;
             });
@@ -1751,11 +1735,6 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
               if (opt.name.includes('화이트 인쇄') && !isTransparent) return false;
               return true;
             });
-
-            // Add Shape Cutting for shaped postcards - REMOVED as per user request
-            // if (product.id === 'stk-postcard-shape') {
-            //   visiblePostOptions = [{ name: '모양커팅', type: 'radio', values: [] } as any, ...visiblePostOptions];
-            // }
 
             if (visiblePostOptions.length === 0) return null;
 
@@ -1801,7 +1780,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                   <div className="flex items-center gap-2">
                     <div className="w-1 h-4 bg-emerald-500 rounded-full" />
                     <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
-                      {/* 후가공 선택 - Removed as per user request */}
+                      후가공 선택
                     </label>
                   </div>
                   <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
@@ -1854,7 +1833,17 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                     })}
                   </div>
 
-                  {/* 모양커팅 info box removed as per user request */}
+                  {product.id === 'stk-postcard-shape' && (
+                    <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-100 mb-6">
+                      <div className="flex items-center gap-2 mb-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                        <span className="text-xs font-bold text-emerald-900">기본 포함 항목</span>
+                      </div>
+                      <p className="text-[11px] text-emerald-700 leading-relaxed">
+                        모양 엽서는 모양커팅 가공이 기본 포함됩니다.
+                      </p>
+                    </div>
+                  )}
 
                   {/* Expanded Sub-options */}
                   <AnimatePresence mode="wait">
