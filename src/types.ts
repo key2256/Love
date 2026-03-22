@@ -125,7 +125,7 @@ export const BUSINESS_CARD_COMMON_OPTIONS = {
   },
   ROUNDING: [
     {
-      name: '귀돌이 사용',
+      name: '귀돌이',
       type: 'radio' as const,
       values: [
         { label: '없음', priceModifier: 0 },
@@ -2976,7 +2976,7 @@ export const PRODUCTS: Product[] = [
       },
       BUSINESS_CARD_COMMON_OPTIONS.PRINT_COLOR,
       {
-        name: '코팅 종류',
+        name: '코팅',
         type: 'select',
         values: [
           { label: '없음', priceModifier: 0 },
@@ -2994,7 +2994,7 @@ export const PRODUCTS: Product[] = [
       },
       ...BUSINESS_CARD_COMMON_OPTIONS.ROUNDING,
       {
-        name: '타공 사용',
+        name: '타공',
         type: 'radio',
         values: [
           { label: '없음', priceModifier: 0 },
@@ -3002,7 +3002,7 @@ export const PRODUCTS: Product[] = [
         ]
       },
       {
-        name: '구멍 크기',
+        name: '타공 크기',
         type: 'radio',
         values: [
           { label: '4mm', priceModifier: 0 },
@@ -3058,7 +3058,7 @@ export const PRODUCTS: Product[] = [
       BUSINESS_CARD_COMMON_OPTIONS.PRINT_COLOR,
       ...BUSINESS_CARD_COMMON_OPTIONS.ROUNDING,
       {
-        name: '타공 사용',
+        name: '타공',
         type: 'radio',
         values: [
           { label: '없음', priceModifier: 0 },
@@ -3066,7 +3066,7 @@ export const PRODUCTS: Product[] = [
         ]
       },
       {
-        name: '구멍 크기',
+        name: '타공 크기',
         type: 'radio',
         values: [
           { label: '4mm', priceModifier: 0 },
@@ -3304,7 +3304,7 @@ export const PRODUCTS: Product[] = [
     basePrice: 12000,
     options: [
       {
-        name: '코팅 선택',
+        name: '코팅',
         type: 'select',
         values: [
           { label: '유광 코팅', priceModifier: 0 },
@@ -3314,7 +3314,7 @@ export const PRODUCTS: Product[] = [
         ]
       },
       {
-        name: '귀도리(라운드)',
+        name: '귀돌이',
         type: 'radio',
         values: [
           { label: '있음 (기본)', priceModifier: 0 },
@@ -3326,7 +3326,7 @@ export const PRODUCTS: Product[] = [
     leadTime: '4~5 영업일',
     recommendation: '아이돌 굿즈용 포토카드라면 "유광 코팅"을 추천합니다. 색감이 더욱 선명하고 화려하게 표현됩니다.',
     warnings: [
-      '코팅 종류에 따라 색감이 다르게 보일 수 있음',
+      '코팅에 따라 색감이 다르게 보일 수 있음',
       '재단 공정상 1~2mm 밀림 현상 발생 가능'
     ],
     notes: [

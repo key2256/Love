@@ -195,19 +195,19 @@ export const QuotationDocument: React.FC<QuotationDocumentProps> = ({ quotation,
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {/* Business Card Specific Formatting */}
-                      {quotation.options['코팅 종류'] && quotation.options['코팅 종류'] !== '없음' && (
+                      {quotation.options['코팅'] && quotation.options['코팅'] !== '없음' && (
                         <span className="px-3 py-1.5 bg-white border border-zinc-200 rounded-xl text-[10px] font-bold text-zinc-600">
-                          코팅: {quotation.options['코팅 종류']} / {quotation.options['코팅 면수']}
+                          코팅: {quotation.options['코팅']} / {quotation.options['코팅 면수']}
                         </span>
                       )}
-                      {quotation.options['귀돌이 사용'] === '있음' && (
+                      {quotation.options['귀돌이'] === '있음' && (
                         <span className="px-3 py-1.5 bg-white border border-zinc-200 rounded-xl text-[10px] font-bold text-zinc-600">
                           귀돌이: {quotation.options['귀돌이 크기']} / {quotation.options['귀돌이 면수']} {quotation.options['귀돌이 면수'] === '1면' ? `/ ${quotation.options['귀돌이 방향']}` : ''}
                         </span>
                       )}
-                      {quotation.options['타공 사용'] === '있음' && (
+                      {quotation.options['타공'] === '있음' && (
                         <span className="px-3 py-1.5 bg-white border border-zinc-200 rounded-xl text-[10px] font-bold text-zinc-600">
-                          타공: {quotation.options['구멍 크기']} / {quotation.options['타공 설명']}
+                          타공: {quotation.options['타공 크기']} / {quotation.options['타공 설명']}
                         </span>
                       )}
                       {quotation.options['명함케이스'] && quotation.options['명함케이스'] !== '없음' && (
@@ -224,7 +224,7 @@ export const QuotationDocument: React.FC<QuotationDocumentProps> = ({ quotation,
                           !key.includes('도수') && 
                           !key.includes('사이즈') && 
                           !key.includes('규격') &&
-                          !['코팅 종류', '코팅 면수', '귀돌이 사용', '귀돌이 크기', '귀돌이 면수', '귀돌이 방향', '타공 사용', '구멍 크기', '타공 설명', '명함케이스'].includes(key)
+                          !['코팅', '코팅 면수', '귀돌이', '귀돌이 크기', '귀돌이 면수', '귀돌이 방향', '타공', '타공 크기', '타공 설명', '명함케이스'].includes(key)
                         )
                         .map(([key, val]) => (
                           <span key={key} className="px-3 py-1.5 bg-white border border-zinc-200 rounded-xl text-[10px] font-bold text-zinc-600">

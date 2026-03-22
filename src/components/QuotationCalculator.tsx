@@ -634,28 +634,20 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                       id: 'coating', 
                       name: '코팅', 
                       icon: <Layers className="w-5 h-5" />, 
-                      active: pattern === 'POSTCARD' 
-                        ? selectedOptions['코팅'] !== '없음' 
-                        : pattern === 'DESIGN_CARD' 
-                          ? selectedOptions['코팅'] !== '없음' 
-                          : selectedOptions['코팅 종류'] !== '없음', 
+                      active: selectedOptions['코팅'] !== '없음', 
                       hidden: product.id === 'bc-premium' 
                     },
                     { 
                       id: 'rounding', 
                       name: '귀돌이', 
                       icon: <Scissors className="w-5 h-5" />, 
-                      active: pattern === 'POSTCARD' 
-                        ? selectedOptions['귀돌이'] === '있음' 
-                        : selectedOptions['귀돌이 사용'] === '있음' 
+                      active: selectedOptions['귀돌이'] === '있음' 
                     },
                     { 
                       id: 'punching', 
                       name: '타공', 
                       icon: <Droplets className="w-5 h-5" />, 
-                      active: pattern === 'POSTCARD' 
-                        ? selectedOptions['타공'] === '있음' 
-                        : selectedOptions['타공 사용'] === '있음', 
+                      active: selectedOptions['타공'] === '있음', 
                       hidden: pattern === 'DESIGN_CARD' 
                     },
                     { 
@@ -738,15 +730,12 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                           <button onClick={() => setExpandedPostOption(null)} className="text-[10px] font-bold text-zinc-400 hover:text-zinc-600">닫기</button>
                         </div>
                         <div className="space-y-4">
-                          {pattern === 'DESIGN_CARD' || pattern === 'POSTCARD' ? (
-                            <div className="grid grid-cols-3 gap-2">
-                              {['없음', '무광 코팅', '유광 코팅'].map(type => (
+                          {pattern === 'DESIGN_CARD' ? (
+                            <div className="grid grid-cols-2 gap-2">
+                              {['유광 코팅', '무광 코팅', '홀로그램 코팅', '별무늬 코팅'].map(type => (
                                 <button
                                   key={type}
-                                  onClick={() => {
-                                    handleOptionChange('코팅', type);
-                                    if (type === '없음') handleOptionChange('코팅 면수', '단면');
-                                  }}
+                                  onClick={() => handleOptionChange('코팅', type)}
                                   className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
                                     selectedOptions['코팅'] === type
                                       ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
@@ -764,11 +753,11 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                                   <button
                                     key={type}
                                     onClick={() => {
-                                      handleOptionChange('코팅 종류', type);
+                                      handleOptionChange('코팅', type);
                                       if (type === '없음') handleOptionChange('코팅 면수', '단면');
                                     }}
                                     className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
-                                      selectedOptions['코팅 종류'] === type
+                                      selectedOptions['코팅'] === type
                                         ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
                                         : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
                                     }`}
@@ -779,7 +768,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                               </div>
                             </>
                           )}
-                          {((pattern === 'POSTCARD' || pattern === 'DESIGN_CARD' ? selectedOptions['코팅'] : selectedOptions['코팅 종류']) !== '없음') && (
+                          {selectedOptions['코팅'] !== '없음' && pattern !== 'DESIGN_CARD' && (
                             <div className="grid grid-cols-2 gap-2 animate-in fade-in slide-in-from-top-1">
                               {['단면', '양면'].map(side => (
                                 <button
@@ -819,9 +808,9 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                             {['없음', '있음'].map(use => (
                               <button
                                 key={use}
-                                onClick={() => handleOptionChange(pattern === 'POSTCARD' ? '귀돌이' : '귀돌이 사용', use)}
+                                onClick={() => handleOptionChange('귀돌이', use)}
                                 className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
-                                  (pattern === 'POSTCARD' ? selectedOptions['귀돌이'] : selectedOptions['귀돌이 사용']) === use
+                                  selectedOptions['귀돌이'] === use
                                     ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
                                     : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
                                 }`}
@@ -830,7 +819,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                               </button>
                             ))}
                           </div>
-                          {(pattern === 'POSTCARD' ? selectedOptions['귀돌이'] === '있음' : selectedOptions['귀돌이 사용'] === '있음') && (
+                          {selectedOptions['귀돌이'] === '있음' && (
                             <div className="space-y-4 animate-in fade-in slide-in-from-top-1">
                               <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
@@ -921,9 +910,9 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                             {['없음', '있음'].map(use => (
                               <button
                                 key={use}
-                                onClick={() => handleOptionChange(pattern === 'POSTCARD' ? '타공' : '타공 사용', use)}
+                                onClick={() => handleOptionChange('타공', use)}
                                 className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
-                                  (pattern === 'POSTCARD' ? selectedOptions['타공'] : selectedOptions['타공 사용']) === use
+                                  selectedOptions['타공'] === use
                                     ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
                                     : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
                                 }`}
@@ -932,17 +921,17 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                               </button>
                             ))}
                           </div>
-                          {(pattern === 'POSTCARD' ? selectedOptions['타공'] === '있음' : selectedOptions['타공 사용'] === '있음') && (
+                          {selectedOptions['타공'] === '있음' && (
                             <div className="space-y-4 animate-in fade-in slide-in-from-top-1">
                               <div className="space-y-2">
-                                <span className="text-[10px] font-bold text-zinc-400 uppercase">구멍 크기</span>
+                                <span className="text-[10px] font-bold text-zinc-400 uppercase">타공 크기</span>
                                 <div className="grid grid-cols-3 gap-2">
                                   {['4mm', '6mm', '8mm'].map(size => (
                                     <button
                                       key={size}
-                                      onClick={() => handleOptionChange(pattern === 'POSTCARD' ? '타공 크기' : '구멍 크기', size)}
+                                      onClick={() => handleOptionChange('타공 크기', size)}
                                       className={`py-2 rounded-lg text-[11px] font-bold border transition-all ${
-                                        (pattern === 'POSTCARD' ? selectedOptions['타공 크기'] : selectedOptions['구멍 크기']) === size
+                                        selectedOptions['타공 크기'] === size
                                           ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
                                           : 'bg-white border-zinc-200 text-zinc-500'
                                       }`}
@@ -1408,7 +1397,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
 
             if (pattern === 'DESIGN_CARD') {
               // Only show basic specs in standard list, user info and finishing handled specially
-              return !['코팅', '귀돌이 사용', '귀돌이 크기', '귀돌이 면수', '귀돌이 방향', '템플릿 선택', '이름', '직함', '연락처', '이메일', '주소/SNS', '로고 업로드', '요청사항'].includes(opt.name);
+              return !['코팅', '귀돌이', '귀돌이 크기', '귀돌이 면수', '귀돌이 방향', '템플릿 선택', '이름', '직함', '연락처', '이메일', '주소/SNS', '로고 업로드', '요청사항'].includes(opt.name);
             }
 
             if (pattern === 'STICKER') {
@@ -1420,8 +1409,10 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
             // General exclusions for all patterns
             const generalExclusions = [
               '재단방식', '코팅유무', '후가공옵션', '후가공', '화이트인쇄', '넘버링', '스코딕스', '포장옵션', 
-              '부분UV', '모양코팅', '표지코팅', '코팅방식', '코팅', '귀도리(라운드)', '귀돌이(라운드)', 
-              '타공(구멍)', '오시(접는선)', '후가공효과', '귀도리', '귀돌이', '타공', '제작수량', '수량', '주문수량'
+              '부분UV', '모양코팅', '표지코팅', '코팅방식', '코팅', '코팅면수', '귀돌이', '귀돌이크기', '귀돌이면수', '귀돌이방향',
+              '타공', '타공크기', '타공설명', '오시', '오시줄수', '오시설명', '미싱', '미싱줄수', '미싱설명',
+              '접지', '접지방향', '접지형태', '폴리백개별포장', '폴리백사이즈', '명함케이스',
+              '후가공효과', '제작수량', '수량', '주문수량'
             ];
             if (generalExclusions.includes(normalizedName)) return false;
             if (opt.name.includes('용지')) return false;
@@ -1561,8 +1552,8 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
               const normalizedName = opt.name.replace(/\s/g, '');
               const isPostProcessing = [
                 '재단방식', '코팅유무', '후가공옵션', '후가공', '화이트인쇄', '넘버링', '스코딕스', '포장옵션', 
-                '부분UV', '모양코팅', '표지코팅', '코팅방식', '코팅', '귀도리(라운드)', '귀돌이(라운드)', 
-                '타공(구멍)', '오시(접는선)', '후가공효과', '귀도리', '귀돌이', '타공'
+                '부분UV', '모양코팅', '표지코팅', '코팅방식', '코팅', '귀돌이', 
+                '타공', '오시', '후가공효과'
               ].includes(normalizedName);
 
               if (!isPostProcessing) return false;
@@ -1818,13 +1809,12 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
 
                     // 3. Parent-Child dependency filtering
                     const dependencies: Record<string, string> = {
-                      '코팅 면수': (pattern === 'POSTCARD' || pattern === 'DESIGN_CARD') ? '코팅' : '코팅 종류',
-                      '귀돌이 크기': pattern === 'POSTCARD' ? '귀돌이' : '귀돌이 사용',
-                      '귀돌이 면수': pattern === 'POSTCARD' ? '귀돌이' : '귀돌이 사용',
-                      '귀돌이 방향': pattern === 'POSTCARD' ? '귀돌이' : '귀돌이 사용',
-                      '구멍 크기': '타공 사용',
+                      '코팅 면수': '코팅',
+                      '귀돌이 크기': '귀돌이',
+                      '귀돌이 면수': '귀돌이',
+                      '귀돌이 방향': '귀돌이',
                       '타공 크기': '타공',
-                      '타공 설명': pattern === 'POSTCARD' ? '타공' : '타공 사용',
+                      '타공 설명': '타공',
                       '오시 줄 수': '오시',
                       '오시 설명': '오시',
                       '미싱 줄 수': '미싱',
