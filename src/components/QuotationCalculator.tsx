@@ -18,7 +18,8 @@ import {
   Paintbrush,
   Droplets,
   HelpCircle,
-  Check
+  Check,
+  Info
 } from 'lucide-react';
 import { Product, Quotation, PAPER_MATERIALS, POSTCARD_MATERIALS, BUSINESS_CARD_MATERIALS, BusinessCardPaperMaterial, DESIGN_CARD_TEMPLATES, Template } from '../types';
 
@@ -87,6 +88,30 @@ const FOLDING_TYPE_ICONS: Record<string, React.ReactNode> = {
       <path d="M10 10 L16.6 10 L16.6 30 L10 30 Z M16.6 10 L23.3 10 L23.3 30 L16.6 30 Z M23.3 10 L30 10 L30 30 L23.3 30 Z" />
     </svg>
   )
+};
+
+const POSTCARD_CONFIG: Record<string, {
+  allowedGroups?: string[];
+  allowedMaterials?: string[];
+  allowedPostProcessing?: string[];
+}> = {
+  'stk-postcard-standard': {
+    allowedGroups: ['기본 대중형', '고급 감성형', '친환경/내추럴형', '컬러/특수지형'],
+  },
+  'stk-postcard-special': {
+    allowedMaterials: ['아트지 250g', '스노우 250g'],
+    allowedPostProcessing: ['인쇄 도수', '귀돌이', '타공', '오시', '미싱', '접지', '폴리백 개별포장'],
+  },
+  'stk-postcard-shape': {
+    allowedGroups: ['기본 대중형', '고급 감성형', '친환경/내추럴형'],
+    allowedPostProcessing: ['인쇄 도수', '코팅', '귀돌이', '타공', '오시', '미싱', '접지', '폴리백 개별포장'],
+  },
+  'stk-postcard-premium': {
+    allowedGroups: ['고급 감성형', '친환경/내추럴형', '컬러/특수지형'],
+  },
+  'stk-postcard-effect': {
+    allowedGroups: ['기본 대중형', '고급 감성형'],
+  }
 };
 
 export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ product, onGenerateQuotation }) => {
@@ -232,28 +257,30 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
         }
       }
     } else if (pattern === 'POSTCARD') {
-      if (product.id === 'stk-postcard-standard') {
-        setSelectedPostcardGroup('기본 대중형');
-        // Ensure a material from '기본 대중형' is selected
+      const config = POSTCARD_CONFIG[product.id];
+      
+      if (product.id === 'stk-postcard-special') {
+        setSelectedPostcardGroup(null);
+        const materialOption = product.options.find(opt => opt.name.includes('용지'));
+        if (materialOption && !selectedOptions[materialOption.name]) {
+          handleOptionChange(materialOption.name, '아트지 250g');
+        }
+      } else if (config) {
+        const currentGroup = selectedOptions['용지 그룹'] || config.allowedGroups?.[0] || '기본 대중형';
+        setSelectedPostcardGroup(currentGroup);
+        
         const materialOption = product.options.find(opt => opt.name === '상세 용지 (기본)') || 
                                product.options.find(opt => opt.name.includes('용지') && opt.name !== '용지 그룹');
         if (materialOption) {
           const currentVal = selectedOptions[materialOption.name];
           const currentMaterial = POSTCARD_MATERIALS.find(m => `${m.name} ${m.weight}` === currentVal);
           
-          if (!currentVal || !currentMaterial || currentMaterial.group !== '기본 대중형') {
-            const firstMaterial = POSTCARD_MATERIALS.find(m => m.group === '기본 대중형');
+          if (!currentVal || !currentMaterial || !config.allowedGroups?.includes(currentMaterial.group)) {
+            const firstMaterial = POSTCARD_MATERIALS.find(m => m.group === currentGroup);
             if (firstMaterial) {
               handleOptionChange(materialOption.name, `${firstMaterial.name} ${firstMaterial.weight}`);
             }
           }
-        }
-      } else {
-        const groupVal = selectedOptions['용지 그룹'];
-        if (groupVal) {
-          setSelectedPostcardGroup(groupVal);
-        } else {
-          setSelectedPostcardGroup('기본 대중형');
         }
       }
     } else if (pattern === 'BUSINESS_CARD') {
@@ -431,96 +458,132 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
         {/* Options */}
         <div className="space-y-8">
           {/* Postcard Material Selection */}
-          {pattern === 'POSTCARD' && (
-            <div className="space-y-6">
-              <div className="flex items-center gap-2">
-                <div className="w-1 h-4 bg-emerald-500 rounded-full" />
-                <Layers className="w-4 h-4 text-zinc-400" />
-                <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
-                  {product.options.find(opt => opt.name === '상세 용지 (기본)')?.name || 
-                   product.options.find(opt => opt.name.includes('용지'))?.name || '용지 선택'}
-                </label>
-              </div>
-              
-              <div className="space-y-6">
-                {/* Only show group selection for non-standard postcards if needed, 
-                    but per request, general postcards (stk-postcard-standard) skip this. */}
-                {product.id !== 'stk-postcard-standard' && (
-                  <div className="grid grid-cols-2 gap-3">
-                    {['기본 대중형', '고급 감성형', '친환경/내추럴형', '컬러/특수지형'].map((group) => (
-                      <button
-                        key={group}
-                        onClick={() => handlePostcardGroupChange(group)}
-                        className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all ${
-                          selectedPostcardGroup === group
-                            ? 'bg-zinc-900 border-zinc-900 text-white shadow-lg'
-                            : 'bg-white border-zinc-200 text-zinc-600 hover:border-zinc-400'
-                        }`}
-                      >
-                        {group}
-                      </button>
-                    ))}
+          {pattern === 'POSTCARD' && (() => {
+            const config = POSTCARD_CONFIG[product.id];
+            const materialOptionName = product.options.find(opt => opt.name === '상세 용지 (기본)')?.name || 
+                                     product.options.find(opt => opt.name.includes('용지') && opt.name !== '용지 그룹')?.name || '용지 선택';
+            
+            if (product.id === 'stk-postcard-special') {
+              return (
+                <div className="space-y-6">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1 h-4 bg-emerald-500 rounded-full" />
+                    <Layers className="w-4 h-4 text-zinc-400" />
+                    <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">용지 선택</label>
                   </div>
-                )}
-
-                {selectedPostcardGroup && (
-                  <div className="grid grid-cols-1 gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
-                    {POSTCARD_MATERIALS.filter(m => m.group === selectedPostcardGroup).map((material) => {
-                      const materialOptionName = product.options.find(opt => opt.name === '상세 용지 (기본)')?.name || 
-                                               product.options.find(opt => opt.name.includes('용지'))?.name || '';
-                      const isSelected = selectedOptions[materialOptionName] === `${material.name} ${material.weight}`;
-                      
+                  <div className="grid grid-cols-2 gap-3">
+                    {['아트지 250g', '스노우 250g'].map((label) => {
+                      const isSelected = selectedOptions[materialOptionName] === label;
                       return (
                         <button
-                          key={material.id}
-                          onClick={() => handleOptionChange(materialOptionName, `${material.name} ${material.weight}`)}
-                          className={`p-5 rounded-2xl border text-left transition-all relative group ${
+                          key={label}
+                          onClick={() => handleOptionChange(materialOptionName, label)}
+                          className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all ${
                             isSelected
-                              ? 'bg-emerald-50 border-emerald-500 ring-1 ring-emerald-500'
-                              : 'bg-white border-zinc-100 hover:border-zinc-300'
+                              ? 'bg-zinc-900 border-zinc-900 text-white shadow-lg'
+                              : 'bg-white border-zinc-200 text-zinc-600 hover:border-zinc-400'
                           }`}
                         >
-                          <div className="flex justify-between items-start mb-2">
-                            <div>
-                              <span className={`text-sm font-black ${isSelected ? 'text-emerald-900' : 'text-zinc-900'}`}>
-                                {material.name}
-                              </span>
-                              <span className="ml-2 text-xs text-zinc-400 font-bold">{material.weight}</span>
-                            </div>
-                            <span className={`px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-tighter ${
-                              isSelected ? 'bg-emerald-200 text-emerald-700' : 'bg-zinc-100 text-zinc-500'
-                            }`}>
-                              {material.recommendationLabel}
-                            </span>
-                          </div>
-                          <p className={`text-[11px] leading-relaxed ${isSelected ? 'text-emerald-700/70' : 'text-zinc-500'}`}>
-                            {material.features}
-                          </p>
-                          
-                          {isSelected && (
-                            <motion.div 
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: 'auto' }}
-                              className="mt-4 pt-4 border-t border-emerald-100 space-y-2"
-                            >
-                              <div className="flex gap-2">
-                                <span className="text-[10px] font-black text-emerald-600 uppercase shrink-0">추천용도:</span>
-                                <span className="text-[10px] text-emerald-800/70">{material.recommendedUse}</span>
-                              </div>
-                              <div className="flex gap-2">
-                                <span className="text-[10px] font-black text-amber-600 uppercase shrink-0">주의사항:</span>
-                                <span className="text-[10px] text-amber-800/70">{material.precautions}</span>
-                              </div>
-                            </motion.div>
-                          )}
+                          {label}
                         </button>
                       );
                     })}
                   </div>
-                )}
+                </div>
+              );
+            }
+
+            if (!config) return null;
+
+            const availableGroups = config.allowedGroups || ['기본 대중형'];
+
+            return (
+              <div className="space-y-6">
+                <div className="flex items-center gap-2">
+                  <div className="w-1 h-4 bg-emerald-500 rounded-full" />
+                  <Layers className="w-4 h-4 text-zinc-400" />
+                  <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
+                    {materialOptionName}
+                  </label>
+                </div>
+                
+                <div className="space-y-6">
+                  {/* Show group selection if more than one group is allowed */}
+                  {availableGroups.length > 1 && (
+                    <div className="grid grid-cols-2 gap-3">
+                      {availableGroups.map((group) => (
+                        <button
+                          key={group}
+                          onClick={() => handlePostcardGroupChange(group)}
+                          className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all ${
+                            selectedPostcardGroup === group
+                              ? 'bg-zinc-900 border-zinc-900 text-white shadow-lg'
+                              : 'bg-white border-zinc-200 text-zinc-600 hover:border-zinc-400'
+                          }`}
+                        >
+                          {group}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {selectedPostcardGroup && (
+                    <div className="grid grid-cols-1 gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
+                      {POSTCARD_MATERIALS.filter(m => m.group === selectedPostcardGroup).map((material) => {
+                        const isSelected = selectedOptions[materialOptionName] === `${material.name} ${material.weight}`;
+                        
+                        return (
+                          <button
+                            key={material.id}
+                            onClick={() => handleOptionChange(materialOptionName, `${material.name} ${material.weight}`)}
+                            className={`p-5 rounded-2xl border text-left transition-all relative group ${
+                              isSelected
+                                ? 'bg-emerald-50 border-emerald-500 ring-1 ring-emerald-500'
+                                : 'bg-white border-zinc-100 hover:border-zinc-300'
+                            }`}
+                          >
+                            <div className="flex justify-between items-start mb-2">
+                              <div>
+                                <span className={`text-sm font-black ${isSelected ? 'text-emerald-900' : 'text-zinc-900'}`}>
+                                  {material.name}
+                                </span>
+                                <span className="ml-2 text-xs text-zinc-400 font-bold">{material.weight}</span>
+                              </div>
+                              <span className={`px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-tighter ${
+                                isSelected ? 'bg-emerald-200 text-emerald-700' : 'bg-zinc-100 text-zinc-500'
+                              }`}>
+                                {material.recommendationLabel}
+                              </span>
+                            </div>
+                            <p className={`text-[11px] leading-relaxed ${isSelected ? 'text-emerald-700/70' : 'text-zinc-500'}`}>
+                              {material.features}
+                            </p>
+                            
+                            {isSelected && (
+                              <motion.div 
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                className="mt-4 pt-4 border-t border-emerald-100 space-y-2"
+                              >
+                                <div className="flex gap-2">
+                                  <span className="text-[10px] font-black text-emerald-600 uppercase shrink-0">추천용도:</span>
+                                  <span className="text-[10px] text-emerald-800/70">{material.recommendedUse}</span>
+                                </div>
+                                <div className="flex gap-2">
+                                  <span className="text-[10px] font-black text-amber-600 uppercase shrink-0">주의사항:</span>
+                                  <span className="text-[10px] text-amber-800/70">{material.precautions}</span>
+                                </div>
+                              </motion.div>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
 
           {/* Business Card Material Selection */}
           {pattern === 'BUSINESS_CARD' && product.options.filter(opt => opt.name.includes('용지')).map((option) => (
@@ -1540,6 +1603,15 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
 
             const postProcessingOptions = product.options.filter(opt => {
               const normalizedName = opt.name.replace(/\s/g, '');
+              
+              // Filter based on POSTCARD_CONFIG if applicable
+              if (pattern === 'POSTCARD') {
+                const config = POSTCARD_CONFIG[product.id];
+                if (config?.allowedPostProcessing && !config.allowedPostProcessing.includes(opt.name)) {
+                  return false;
+                }
+              }
+
               const isPostProcessing = [
                 '재단방식', '코팅유무', '후가공옵션', '후가공', '화이트인쇄', '넘버링', '스코딕스', '포장옵션', 
                 '부분UV', '모양코팅', '표지코팅', '코팅방식', '코팅', '귀돌이', 
@@ -1566,16 +1638,21 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
             const selectedMaterial = PAPER_MATERIALS.find(m => m.name === selectedMaterialName);
             const isTransparent = selectedMaterial?.transparent || false;
 
-            const visiblePostOptions = postProcessingOptions.filter(opt => {
+            let visiblePostOptions = postProcessingOptions.filter(opt => {
               if (opt.name.includes('화이트 인쇄') && !isTransparent) return false;
               return true;
             });
+
+            // Add Shape Cutting for shaped postcards
+            if (product.id === 'stk-postcard-shape') {
+              visiblePostOptions = [{ name: '모양커팅', type: 'radio', values: [] } as any, ...visiblePostOptions];
+            }
 
             if (visiblePostOptions.length === 0) return null;
 
             const getIcon = (name: string) => {
               const n = name.replace(/\s/g, '');
-              if (n === '재단방식') return <Scissors className="w-5 h-5" />;
+              if (n === '재단방식' || n === '모양커팅') return <Scissors className="w-5 h-5" />;
               if (n === '코팅유무' || n === '표지코팅' || n === '코팅방식' || n === '코팅') return <Layers className="w-5 h-5" />;
               if (n === '후가공옵션' || n === '후가공' || n === '부분UV' || n === '후가공효과') return <Sparkles className="w-5 h-5" />;
               if (n === '화이트인쇄') return <Paintbrush className="w-5 h-5" />;
@@ -1591,6 +1668,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
             const getDisplayName = (name: string) => {
               const n = name.replace(/\s/g, '');
               if (n === '재단방식') return '재단';
+              if (n === '모양커팅') return '모양커팅';
               if (n === '코팅유무' || n === '표지코팅' || n === '코팅방식' || n === '코팅') return '코팅';
               if (n === '후가공옵션' || n === '후가공' || n === '후가공효과') return '후가공';
               if (n === '화이트인쇄') return '화이트인쇄';
@@ -1626,35 +1704,55 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                   {/* Icon Grid */}
                   <div className="grid grid-cols-4 sm:grid-cols-7 gap-3">
                     {visiblePostOptions.map(option => {
-                      const isActive = isOptionActive(option.name);
+                      const isShapeCutting = option.name === '모양커팅';
+                      const isActive = isShapeCutting ? true : isOptionActive(option.name);
                       const isExpanded = expandedPostOption === option.name;
                       
                       return (
                         <button
                           key={option.name}
-                          onClick={() => setExpandedPostOption(isExpanded ? null : option.name)}
+                          onClick={() => {
+                            if (isShapeCutting) return;
+                            setExpandedPostOption(isExpanded ? null : option.name);
+                          }}
                           className={`flex flex-col items-center gap-2 group transition-all ${
-                            isExpanded ? 'scale-110' : 'hover:scale-105'
+                            isShapeCutting ? 'cursor-default' : isExpanded ? 'scale-110' : 'hover:scale-105'
                           }`}
                         >
                           <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all shadow-sm ${
-                            isExpanded 
-                              ? 'bg-emerald-600 text-white shadow-emerald-600/20' 
-                              : isActive
-                                ? 'bg-emerald-50 text-emerald-600 border border-emerald-100'
-                                : 'bg-white text-zinc-400 border border-zinc-100 group-hover:border-zinc-300'
+                            isShapeCutting
+                              ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
+                              : isExpanded 
+                                ? 'bg-emerald-600 text-white shadow-emerald-600/20' 
+                                : isActive
+                                  ? 'bg-emerald-50 text-emerald-600 border border-emerald-100'
+                                  : 'bg-white text-zinc-400 border border-zinc-100 group-hover:border-zinc-300'
                           }`}>
                             {getIcon(option.name)}
                           </div>
-                          <span className={`text-[10px] font-black whitespace-nowrap transition-colors ${
-                            isExpanded ? 'text-emerald-600' : isActive ? 'text-zinc-900' : 'text-zinc-400'
-                          }`}>
-                            {getDisplayName(option.name)}
-                          </span>
+                          <div className="flex flex-col items-center">
+                            <span className={`text-[10px] font-black whitespace-nowrap transition-colors ${
+                              isShapeCutting ? 'text-emerald-600' : isExpanded ? 'text-emerald-600' : isActive ? 'text-zinc-900' : 'text-zinc-400'
+                            }`}>
+                              {getDisplayName(option.name)}
+                            </span>
+                            {isShapeCutting && (
+                              <span className="text-[8px] font-bold text-emerald-500/80 leading-none mt-0.5">기본 포함</span>
+                            )}
+                          </div>
                         </button>
                       );
                     })}
                   </div>
+
+                  {product.id === 'stk-postcard-shape' && (
+                    <div className="bg-emerald-50/50 rounded-2xl p-4 border border-emerald-100/50">
+                      <p className="text-[11px] font-bold text-emerald-700 flex items-center gap-2">
+                        <Info className="w-3.5 h-3.5" />
+                        모양 엽서는 모양커팅 가공이 기본 포함됩니다.
+                      </p>
+                    </div>
+                  )}
 
                   {/* Expanded Sub-options */}
                   <AnimatePresence mode="wait">
