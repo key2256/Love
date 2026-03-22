@@ -20,7 +20,8 @@ import {
   HelpCircle,
   Check,
   Info,
-  Shapes
+  Shapes,
+  AlertCircle
 } from 'lucide-react';
 import { Product, Quotation, PAPER_MATERIALS, POSTCARD_MATERIALS, BUSINESS_CARD_MATERIALS, BusinessCardPaperMaterial, DESIGN_CARD_TEMPLATES, Template } from '../types';
 
@@ -171,7 +172,8 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
     if (product.id === 'bc-template') return 'DESIGN_CARD';
     if (product.id === 'bc-standard' || product.id === 'bc-premium') return 'BUSINESS_CARD';
     if (product.id === 'bc-folded') return 'FOLDED_BUSINESS_CARD';
-    if (product.category === 'card-paper' || product.id === 'memo-standard') return 'PAPER_GOODS';
+    if (product.id === 'memo-standard') return 'MEMO_PAD';
+    if (product.category === 'card-paper') return 'PAPER_GOODS';
     if (product.category === 'binding-booklet' || product.id === 'note-spring') return 'BINDING_GOODS';
     if (product.category === 'poster-promo') return 'LARGE_FORMAT';
     if (product.category === 'package-supply') return 'PACKAGE';
@@ -1538,9 +1540,21 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
               '부분UV', '모양코팅', '표지코팅', '코팅방식', '코팅', '코팅면수', '귀돌이', '귀돌이크기', '귀돌이면수', '귀돌이방향',
               '타공', '타공크기', '타공설명', '오시', '오시줄수', '오시설명', '미싱', '미싱줄수', '미싱설명',
               '접지', '접지방향', '접지형태', '폴리백개별포장', '폴리백사이즈', '명함케이스',
-              '후가공효과', '제작수량', '수량', '주문수량', '후가공선택', '모양커팅'
+              '후가공효과', '제작수량', '수량', '주문수량', '후가공선택', '모양커팅',
+              '낱장 접착', '측면 인쇄', '엣지디자인', '거치대', '케이스'
             ];
             if (generalExclusions.includes(normalizedName)) return false;
+
+            if (pattern === 'MEMO_PAD') {
+              const memoExclusions = [
+                '후가공', '낱장 접착', '측면 인쇄', '엣지디자인', '거치대', '케이스',
+                '제작수량', '수량', '주문수량'
+              ];
+              if (memoExclusions.includes(normalizedName)) return false;
+              if (normalizedName === '용지') return false;
+              return true;
+            }
+
             if (opt.name.includes('용지')) return false;
 
             return true;
@@ -1618,6 +1632,77 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                   ))}
                 </div>
               )}
+
+              {pattern === 'MEMO_PAD' && option.name === '사이즈' && selectedOptions['사이즈'] === '직접입력' && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  className="space-y-4 pt-2"
+                >
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">가로 (mm)</label>
+                      <input
+                        type="number"
+                        value={customSize.width}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setCustomSize(prev => ({ ...prev, width: val }));
+                        }}
+                        placeholder="최대 90"
+                        className={`w-full px-4 py-3 rounded-xl bg-white border font-bold text-sm outline-none transition-all ${
+                          parseInt(customSize.width) > 90 ? 'border-red-500 text-red-600' : 'border-zinc-200 focus:border-emerald-500'
+                        }`}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">세로 (mm)</label>
+                      <input
+                        type="number"
+                        value={customSize.height}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setCustomSize(prev => ({ ...prev, height: val }));
+                        }}
+                        placeholder="최대 90"
+                        className={`w-full px-4 py-3 rounded-xl bg-white border font-bold text-sm outline-none transition-all ${
+                          parseInt(customSize.height) > 90 ? 'border-red-500 text-red-600' : 'border-zinc-200 focus:border-emerald-500'
+                        }`}
+                      />
+                    </div>
+                  </div>
+                  {(parseInt(customSize.width) > 90 || parseInt(customSize.height) > 90) && (
+                    <p className="text-[10px] font-bold text-red-500 flex items-center gap-1.5 ml-1">
+                      <AlertCircle className="w-3 h-3" />
+                      직접입력은 최대 90 x 90mm 이하만 가능합니다.
+                    </p>
+                  )}
+                  <p className="text-[10px] font-bold text-zinc-400 italic ml-1">
+                    * 90 x 90mm 이내로 입력해주세요.
+                  </p>
+                </motion.div>
+              )}
+
+              {pattern === 'MEMO_PAD' && option.name === '두께' && (
+                <div className="space-y-4 pt-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1 h-4 bg-emerald-500 rounded-full" />
+                    <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
+                      용지 사양
+                    </label>
+                  </div>
+                  <div className="p-6 rounded-3xl bg-zinc-50 border border-zinc-100 flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-white border border-zinc-200 flex items-center justify-center shadow-sm">
+                      <FileText className="w-6 h-6 text-zinc-400" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-black text-zinc-900">모조지 70g</p>
+                      <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-0.5">Fixed Specification</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {option.name === '용도' && selectedOptions['용도'] === '도장 쿠폰용' && (
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
@@ -1732,6 +1817,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
             const isTransparent = selectedMaterial?.transparent || false;
 
             let visiblePostOptions = postProcessingOptions.filter(opt => {
+              if (pattern === 'MEMO_PAD') return false;
               if (opt.name.includes('화이트 인쇄') && !isTransparent) return false;
               return true;
             });
@@ -2014,11 +2100,17 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
 
                     return true;
                   })
-                  .map(([key, val]) => (
-                    <span key={key} className="px-2 py-1 bg-white rounded-md text-[10px] font-bold text-zinc-400 border border-zinc-100">
-                      {val}
-                    </span>
-                  ))}
+                  .map(([key, val]) => {
+                    let displayVal = val;
+                    if (pattern === 'MEMO_PAD' && key === '사이즈' && val === '직접입력') {
+                      displayVal = `직접입력 (${customSize.width || 0}x${customSize.height || 0}mm)`;
+                    }
+                    return (
+                      <span key={key} className="px-2 py-1 bg-white rounded-md text-[10px] font-bold text-zinc-400 border border-zinc-100">
+                        {displayVal}
+                      </span>
+                    );
+                  })}
               </div>
             </div>
             <div className="flex items-center justify-between">

@@ -2536,32 +2536,33 @@ export const PRODUCTS: Product[] = [
         name: '사이즈',
         type: 'select',
         values: [
-          { label: '80x80mm', priceModifier: 0 },
-          { label: '90x90mm', priceModifier: 1000 },
-          { label: '100x140mm', priceModifier: 3000 },
+          { label: '90 x 90', priceModifier: 0 },
+          { label: '90 x 60', priceModifier: 0 },
+          { label: '40 x 90', priceModifier: 0 },
+          { label: '직접입력', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '두께',
+        type: 'radio',
+        values: [
+          { label: '얇음 · 80매', priceModifier: 0 },
+          { label: '보통 · 160매', priceModifier: 2000 },
+          { label: '두꺼움 · 240매', priceModifier: 4000 },
         ]
       },
       {
         name: '용지',
         type: 'select',
         values: [
-          { label: '모조지 80g', priceModifier: 0 },
-          { label: '모조지 100g', priceModifier: 1000 },
-          { label: '색지 (파스텔)', priceModifier: 2000 },
-        ]
-      },
-      {
-        name: '매수',
-        type: 'radio',
-        values: [
-          { label: '100매', priceModifier: 0 },
+          { label: '모조지 70g', priceModifier: 0 },
         ]
       }
     ],
-    features: ['부드러운 상단 풀바름', '백색 모조지 80g', '풀컬러 인쇄'],
-    leadTime: '4~6 영업일',
+    features: ['부드러운 상단 풀바름', '백색 모조지 70g', '단면 풀컬러 인쇄'],
+    leadTime: '3~5일',
     badges: ['사무용', '가성비', '선물용'],
-    recommendation: '가장 많이 쓰이는 사이즈는 "80x80mm"입니다. 메모하기 적당하며 휴대성도 좋습니다.',
+    recommendation: '가장 많이 쓰이는 사이즈는 "90x90mm"입니다. 메모하기 적당하며 휴대성도 좋습니다.',
     warnings: [
       '한 장씩 떼어 쓰는 떡제본 방식으로, 실제 제본 부위는 인쇄가 되지 않습니다.',
       '모조지 특성상 잉크 흡수율이 높아 색상이 다소 차분하게 나올 수 있습니다.'
