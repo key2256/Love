@@ -54,7 +54,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
 
   const getLayoutPattern = (product: Product) => {
     if (product.category === 'sticker') return 'STICKER';
-    if (product.id === 'paper-postcard') return 'POSTCARD';
+    if (product.category === 'card-paper' && product.subCategory.includes('엽서')) return 'POSTCARD';
     if (product.id === 'bc-template') return 'DESIGN_CARD';
     if (product.id === 'bc-standard' || product.id === 'bc-premium') return 'BUSINESS_CARD';
     if (product.id === 'bc-folded') return 'FOLDED_BUSINESS_CARD';
@@ -170,15 +170,11 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
         }
       }
     } else if (pattern === 'POSTCARD') {
-      const materialOption = product.options.find(opt => opt.name.includes('용지'));
-      if (materialOption) {
-        const selectedValue = selectedOptions[materialOption.name];
-        const material = POSTCARD_MATERIALS.find(m => `${m.name} ${m.weight}` === selectedValue);
-        if (material) {
-          setSelectedPostcardGroup(material.group);
-        } else {
-          setSelectedPostcardGroup('기본 대중형');
-        }
+      const groupVal = selectedOptions['용지 그룹'];
+      if (groupVal) {
+        setSelectedPostcardGroup(groupVal);
+      } else {
+        setSelectedPostcardGroup('기본 대중형');
       }
     } else if (pattern === 'BUSINESS_CARD') {
       const materialOption = product.options.find(opt => opt.name.includes('용지'));
@@ -270,6 +266,19 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
     }
   };
 
+  const handlePostcardGroupChange = (group: string) => {
+    setSelectedPostcardGroup(group);
+    
+    // Automatically select the first material in the group
+    const materialOption = product.options.find(opt => opt.name.includes('용지'));
+    if (materialOption) {
+      const firstMaterial = POSTCARD_MATERIALS.find(m => m.group === group);
+      if (firstMaterial) {
+        handleOptionChange(materialOption.name, `${firstMaterial.name} ${firstMaterial.weight}`);
+      }
+    }
+  };
+
   const handleGenerate = () => {
     const quotation: Quotation = {
       id: `Q-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
@@ -306,7 +315,11 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
         {pattern !== 'DESIGN_CARD' && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-black text-zinc-900 uppercase tracking-widest">주문 수량</label>
+              <div className="flex items-center gap-2">
+                <div className="w-1 h-4 bg-emerald-500 rounded-full" />
+                <Hash className="w-4 h-4 text-zinc-400" />
+                <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">주문 수량</label>
+              </div>
               <span className="text-xs font-bold text-emerald-600">최소 {product.minQuantity}개부터</span>
             </div>
             <div className="flex items-center gap-4">
@@ -315,14 +328,14 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                 min={product.minQuantity}
                 value={quantity}
                 onChange={(e) => setQuantity(Math.max(product.minQuantity, parseInt(e.target.value) || 0))}
-                className="flex-1 px-6 py-4 rounded-2xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none font-bold text-lg transition-colors"
+                className="flex-1 px-6 py-4 rounded-2xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none font-bold text-lg transition-colors h-[64px]"
               />
-              <div className="flex gap-2">
+              <div className="flex gap-2 h-[64px]">
                 {[10, 50, 100].map(add => (
                   <button 
                     key={add}
                     onClick={() => setQuantity(prev => prev + add)}
-                    className="px-4 py-4 rounded-xl bg-zinc-100 text-zinc-600 text-xs font-bold hover:bg-zinc-200 transition-colors"
+                    className="px-4 py-4 rounded-xl bg-zinc-100 text-zinc-600 text-xs font-bold hover:bg-zinc-200 transition-colors h-full"
                   >
                     +{add}
                   </button>
@@ -337,170 +350,190 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
           {/* Postcard Material Selection */}
           {pattern === 'POSTCARD' && product.options.filter(opt => opt.name.includes('용지')).map((option) => (
             <div key={option.name} className="space-y-6">
-              <label className="text-xs font-black text-zinc-900 uppercase tracking-widest block">
-                1. 용지 그룹 선택
-              </label>
-              <div className="grid grid-cols-2 gap-3">
-                {['기본 대중형', '고급 감성형', '친환경/내추럴형', '컬러/특수지형'].map((group) => (
-                  <button
-                    key={group}
-                    onClick={() => setSelectedPostcardGroup(group)}
-                    className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all ${
-                      selectedPostcardGroup === group
-                        ? 'bg-zinc-900 border-zinc-900 text-white shadow-lg'
-                        : 'bg-white border-zinc-200 text-zinc-600 hover:border-zinc-400'
-                    }`}
-                  >
-                    {group}
-                  </button>
-                ))}
+              <div className="flex items-center gap-2">
+                <div className="w-1 h-4 bg-emerald-500 rounded-full" />
+                <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
+                  {option.name}
+                </label>
               </div>
-
-              {selectedPostcardGroup && (
-                <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
-                  <label className="text-xs font-black text-zinc-900 uppercase tracking-widest block">
-                    2. 세부 용지 선택
+              <div className="space-y-6 pl-3 border-l border-zinc-100 ml-0.5">
+                <div className="space-y-4">
+                  <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest block">
+                    1. 용지 그룹 선택
                   </label>
-                  <div className="grid grid-cols-1 gap-3">
-                    {POSTCARD_MATERIALS.filter(m => m.group === selectedPostcardGroup).map((material) => {
-                      const isSelected = selectedOptions[option.name] === `${material.name} ${material.weight}`;
-                      return (
-                        <button
-                          key={material.id}
-                          onClick={() => handleOptionChange(option.name, `${material.name} ${material.weight}`)}
-                          className={`p-5 rounded-2xl border text-left transition-all relative group ${
-                            isSelected
-                              ? 'bg-emerald-50 border-emerald-500 ring-1 ring-emerald-500'
-                              : 'bg-white border-zinc-100 hover:border-zinc-300'
-                          }`}
-                        >
-                          <div className="flex justify-between items-start mb-2">
-                            <div>
-                              <span className={`text-sm font-black ${isSelected ? 'text-emerald-900' : 'text-zinc-900'}`}>
-                                {material.name}
-                              </span>
-                              <span className="ml-2 text-xs text-zinc-400 font-bold">{material.weight}</span>
-                            </div>
-                            <span className={`px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-tighter ${
-                              isSelected ? 'bg-emerald-200 text-emerald-700' : 'bg-zinc-100 text-zinc-500'
-                            }`}>
-                              {material.recommendationLabel}
-                            </span>
-                          </div>
-                          <p className={`text-[11px] leading-relaxed ${isSelected ? 'text-emerald-700/70' : 'text-zinc-500'}`}>
-                            {material.features}
-                          </p>
-                          
-                          {isSelected && (
-                            <motion.div 
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: 'auto' }}
-                              className="mt-4 pt-4 border-t border-emerald-100 space-y-2"
-                            >
-                              <div className="flex gap-2">
-                                <span className="text-[10px] font-black text-emerald-600 uppercase shrink-0">추천용도:</span>
-                                <span className="text-[10px] text-emerald-800/70">{material.recommendedUse}</span>
-                              </div>
-                              <div className="flex gap-2">
-                                <span className="text-[10px] font-black text-amber-600 uppercase shrink-0">주의사항:</span>
-                                <span className="text-[10px] text-amber-800/70">{material.precautions}</span>
-                              </div>
-                            </motion.div>
-                          )}
-                        </button>
-                      );
-                    })}
+                  <div className="grid grid-cols-2 gap-3">
+                    {['기본 대중형', '고급 감성형', '친환경/내추럴형', '컬러/특수지형'].map((group) => (
+                      <button
+                        key={group}
+                        onClick={() => handlePostcardGroupChange(group)}
+                        className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all ${
+                          selectedPostcardGroup === group
+                            ? 'bg-zinc-900 border-zinc-900 text-white shadow-lg'
+                            : 'bg-white border-zinc-200 text-zinc-600 hover:border-zinc-400'
+                        }`}
+                      >
+                        {group}
+                      </button>
+                    ))}
                   </div>
                 </div>
-              )}
+
+                {selectedPostcardGroup && (
+                  <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                    <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest block">
+                      2. 세부 용지 선택
+                    </label>
+                    <div className="grid grid-cols-1 gap-3">
+                      {POSTCARD_MATERIALS.filter(m => m.group === selectedPostcardGroup).map((material) => {
+                        const isSelected = selectedOptions[option.name] === `${material.name} ${material.weight}`;
+                        return (
+                          <button
+                            key={material.id}
+                            onClick={() => handleOptionChange(option.name, `${material.name} ${material.weight}`)}
+                            className={`p-5 rounded-2xl border text-left transition-all relative group ${
+                              isSelected
+                                ? 'bg-emerald-50 border-emerald-500 ring-1 ring-emerald-500'
+                                : 'bg-white border-zinc-100 hover:border-zinc-300'
+                            }`}
+                          >
+                            <div className="flex justify-between items-start mb-2">
+                              <div>
+                                <span className={`text-sm font-black ${isSelected ? 'text-emerald-900' : 'text-zinc-900'}`}>
+                                  {material.name}
+                                </span>
+                                <span className="ml-2 text-xs text-zinc-400 font-bold">{material.weight}</span>
+                              </div>
+                              <span className={`px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-tighter ${
+                                isSelected ? 'bg-emerald-200 text-emerald-700' : 'bg-zinc-100 text-zinc-500'
+                              }`}>
+                                {material.recommendationLabel}
+                              </span>
+                            </div>
+                            <p className={`text-[11px] leading-relaxed ${isSelected ? 'text-emerald-700/70' : 'text-zinc-500'}`}>
+                              {material.features}
+                            </p>
+                            
+                            {isSelected && (
+                              <motion.div 
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                className="mt-4 pt-4 border-t border-emerald-100 space-y-2"
+                              >
+                                <div className="flex gap-2">
+                                  <span className="text-[10px] font-black text-emerald-600 uppercase shrink-0">추천용도:</span>
+                                  <span className="text-[10px] text-emerald-800/70">{material.recommendedUse}</span>
+                                </div>
+                                <div className="flex gap-2">
+                                  <span className="text-[10px] font-black text-amber-600 uppercase shrink-0">주의사항:</span>
+                                  <span className="text-[10px] text-amber-800/70">{material.precautions}</span>
+                                </div>
+                              </motion.div>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           ))}
 
           {/* Business Card Material Selection */}
           {pattern === 'BUSINESS_CARD' && product.options.filter(opt => opt.name.includes('용지')).map((option) => (
             <div key={option.name} className="space-y-6">
-              <label className="text-xs font-black text-zinc-900 uppercase tracking-widest block">
-                1. 용지 그룹 선택
-              </label>
-              <div className="grid grid-cols-2 gap-3">
-                {['기본 대중형', '고급 감성형', '내추럴/친환경형', '특수지/프리미엄형']
-                  .filter(group => {
-                    if (product.id === 'bc-standard') return group === '기본 대중형';
-                    if (product.id === 'bc-premium') return group !== '기본 대중형';
-                    return true;
-                  })
-                  .map((group) => (
-                    <button
-                      key={group}
-                      onClick={() => setSelectedBusinessCardGroup(group)}
-                      className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all ${
-                        selectedBusinessCardGroup === group
-                          ? 'bg-zinc-900 border-zinc-900 text-white shadow-lg'
-                          : 'bg-white border-zinc-200 text-zinc-600 hover:border-zinc-400'
-                      }`}
-                    >
-                      {group}
-                    </button>
-                  ))}
+              <div className="flex items-center gap-2">
+                <div className="w-1 h-4 bg-emerald-500 rounded-full" />
+                <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
+                  {option.name}
+                </label>
               </div>
-
-              {selectedBusinessCardGroup && (
-                <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
-                  <label className="text-xs font-black text-zinc-900 uppercase tracking-widest block">
-                    2. 세부 용지 선택
+              <div className="space-y-6 pl-3 border-l border-zinc-100 ml-0.5">
+                <div className="space-y-4">
+                  <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest block">
+                    1. 용지 그룹 선택
                   </label>
-                  <div className="grid grid-cols-1 gap-3">
-                    {BUSINESS_CARD_MATERIALS.filter(m => m.group === selectedBusinessCardGroup).map((material) => {
-                      const isSelected = selectedOptions[option.name] === `${material.name} ${material.weight}`;
-                      return (
+                  <div className="grid grid-cols-2 gap-3">
+                    {['기본 대중형', '고급 감성형', '내추럴/친환경형', '특수지/프리미엄형']
+                      .filter(group => {
+                        if (product.id === 'bc-standard') return group === '기본 대중형';
+                        if (product.id === 'bc-premium') return group !== '기본 대중형';
+                        return true;
+                      })
+                      .map((group) => (
                         <button
-                          key={material.id}
-                          onClick={() => handleOptionChange(option.name, `${material.name} ${material.weight}`)}
-                          className={`p-5 rounded-2xl border text-left transition-all relative group ${
-                            isSelected
-                              ? 'bg-emerald-50 border-emerald-500 ring-1 ring-emerald-500'
-                              : 'bg-white border-zinc-100 hover:border-zinc-300'
+                          key={group}
+                          onClick={() => setSelectedBusinessCardGroup(group)}
+                          className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all ${
+                            selectedBusinessCardGroup === group
+                              ? 'bg-zinc-900 border-zinc-900 text-white shadow-lg'
+                              : 'bg-white border-zinc-200 text-zinc-600 hover:border-zinc-400'
                           }`}
                         >
-                          <div className="flex justify-between items-start mb-2">
-                            <div>
-                              <span className={`text-sm font-black ${isSelected ? 'text-emerald-900' : 'text-zinc-900'}`}>
-                                {material.name}
-                              </span>
-                              <span className="ml-2 text-xs text-zinc-400 font-bold">{material.weight}</span>
-                            </div>
-                            <span className={`px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-tighter ${
-                              isSelected ? 'bg-emerald-200 text-emerald-700' : 'bg-zinc-100 text-zinc-500'
-                            }`}>
-                              {material.recommendationLabel}
-                            </span>
-                          </div>
-                          <p className={`text-[11px] leading-relaxed ${isSelected ? 'text-emerald-700/70' : 'text-zinc-500'}`}>
-                            {material.features}
-                          </p>
-                          
-                          {isSelected && (
-                            <motion.div 
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: 'auto' }}
-                              className="mt-4 pt-4 border-t border-emerald-100 space-y-2"
-                            >
-                              <div className="flex gap-2">
-                                <span className="text-[10px] font-black text-emerald-600 uppercase shrink-0">추천용도:</span>
-                                <span className="text-[10px] text-emerald-800/70">{material.recommendedUse}</span>
-                              </div>
-                              <div className="flex gap-2">
-                                <span className="text-[10px] font-black text-amber-600 uppercase shrink-0">주의사항:</span>
-                                <span className="text-[10px] text-amber-800/70">{material.precautions}</span>
-                              </div>
-                            </motion.div>
-                          )}
+                          {group}
                         </button>
-                      );
-                    })}
+                      ))}
                   </div>
                 </div>
-              )}
+
+                {selectedBusinessCardGroup && (
+                  <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                    <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest block">
+                      2. 세부 용지 선택
+                    </label>
+                    <div className="grid grid-cols-1 gap-3">
+                      {BUSINESS_CARD_MATERIALS.filter(m => m.group === selectedBusinessCardGroup).map((material) => {
+                        const isSelected = selectedOptions[option.name] === `${material.name} ${material.weight}`;
+                        return (
+                          <button
+                            key={material.id}
+                            onClick={() => handleOptionChange(option.name, `${material.name} ${material.weight}`)}
+                            className={`p-5 rounded-2xl border text-left transition-all relative group ${
+                              isSelected
+                                ? 'bg-emerald-50 border-emerald-500 ring-1 ring-emerald-500'
+                                : 'bg-white border-zinc-100 hover:border-zinc-300'
+                            }`}
+                          >
+                            <div className="flex justify-between items-start mb-2">
+                              <div>
+                                <span className={`text-sm font-black ${isSelected ? 'text-emerald-900' : 'text-zinc-900'}`}>
+                                  {material.name}
+                                </span>
+                                <span className="ml-2 text-xs text-zinc-400 font-bold">{material.weight}</span>
+                              </div>
+                              <span className={`px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-tighter ${
+                                isSelected ? 'bg-emerald-200 text-emerald-700' : 'bg-zinc-100 text-zinc-500'
+                              }`}>
+                                {material.recommendationLabel}
+                              </span>
+                            </div>
+                            <p className={`text-[11px] leading-relaxed ${isSelected ? 'text-emerald-700/70' : 'text-zinc-500'}`}>
+                              {material.features}
+                            </p>
+                            
+                            {isSelected && (
+                              <motion.div 
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                className="mt-4 pt-4 border-t border-emerald-100 space-y-2"
+                              >
+                                <div className="flex gap-2">
+                                  <span className="text-[10px] font-black text-emerald-600 uppercase shrink-0">추천용도:</span>
+                                  <span className="text-[10px] text-emerald-800/70">{material.recommendedUse}</span>
+                                </div>
+                                <div className="flex gap-2">
+                                  <span className="text-[10px] font-black text-amber-600 uppercase shrink-0">주의사항:</span>
+                                  <span className="text-[10px] text-amber-800/70">{material.precautions}</span>
+                                </div>
+                              </motion.div>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           ))}
 
@@ -966,9 +999,12 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
             return !['재단 방식', '코팅 유무', '후가공 옵션', '화이트 인쇄', '넘버링', '스코딕스', '포장 옵션', '부분 UV', '모양코팅'].includes(opt.name);
           }).map((option) => (
             <div key={option.name} className="space-y-4">
-              <label className="text-xs font-black text-zinc-900 uppercase tracking-widest block">
-                {option.name}
-              </label>
+              <div className="flex items-center gap-2">
+                <div className="w-1 h-4 bg-emerald-500 rounded-full" />
+                <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
+                  {option.name}
+                </label>
+              </div>
               {option.type === 'text' ? (
                 <input
                   type="text"
@@ -1401,9 +1437,10 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
 
         {/* Order Title */}
         <div className="space-y-4">
-          <label className="text-xs font-black text-zinc-900 uppercase tracking-widest block">
-            주문제목
-          </label>
+          <div className="flex items-center gap-2">
+            <div className="w-1 h-4 bg-emerald-500 rounded-full" />
+            <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">주문제목</label>
+          </div>
           <input 
             type="text" 
             placeholder="제목을 입력해 주세요."
@@ -1413,9 +1450,10 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
 
         {/* File Upload */}
         <div className="space-y-4">
-          <label className="text-xs font-black text-zinc-900 uppercase tracking-widest block">
-            파일 업로드
-          </label>
+          <div className="flex items-center gap-2">
+            <div className="w-1 h-4 bg-emerald-500 rounded-full" />
+            <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">파일 업로드</label>
+          </div>
           <div className="p-8 rounded-2xl border-2 border-dashed border-zinc-200 bg-zinc-50 flex flex-col items-center justify-center gap-4 group hover:border-emerald-500 transition-all cursor-pointer">
             <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center text-zinc-400 group-hover:text-emerald-500 transition-colors">
               <FileUp className="w-6 h-6" />
