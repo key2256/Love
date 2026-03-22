@@ -791,17 +791,17 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                         </div>
                         <div className="space-y-4">
                           <div className="grid grid-cols-2 gap-2">
-                            {product.options.find(o => o.name === '귀돌이')?.values.map(use => (
+                            {product.options.find(o => o.name === '귀돌이')?.values.map(v => (
                               <button
-                                key={use}
-                                onClick={() => handleOptionChange('귀돌이', use)}
+                                key={v.label}
+                                onClick={() => handleOptionChange('귀돌이', v.label)}
                                 className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
-                                  selectedOptions['귀돌이'] === use
+                                  selectedOptions['귀돌이'] === v.label
                                     ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
                                     : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
                                 }`}
                               >
-                                {use}
+                                {v.label}
                               </button>
                             ))}
                           </div>
@@ -811,17 +811,17 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                                 <div className="space-y-2">
                                   <span className="text-[10px] font-bold text-zinc-400 uppercase">크기</span>
                                   <div className="grid grid-cols-2 gap-2">
-                                    {product.options.find(o => o.name === '귀돌이 크기')?.values.map(size => (
+                                    {product.options.find(o => o.name === '귀돌이 크기')?.values.map(v => (
                                       <button
-                                        key={size}
-                                        onClick={() => handleOptionChange('귀돌이 크기', size)}
+                                        key={v.label}
+                                        onClick={() => handleOptionChange('귀돌이 크기', v.label)}
                                         className={`py-2 rounded-lg text-[11px] font-bold border transition-all ${
-                                          selectedOptions['귀돌이 크기'] === size
+                                          selectedOptions['귀돌이 크기'] === v.label
                                             ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
                                             : 'bg-white border-zinc-200 text-zinc-500'
                                         }`}
                                       >
-                                        {size}
+                                        {v.label}
                                       </button>
                                     ))}
                                   </div>
@@ -829,17 +829,17 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                                 <div className="space-y-2">
                                   <span className="text-[10px] font-bold text-zinc-400 uppercase">면수</span>
                                   <div className="grid grid-cols-2 gap-2">
-                                    {product.options.find(o => o.name === '귀돌이 면수')?.values.map(count => (
+                                    {product.options.find(o => o.name === '귀돌이 면수')?.values.map(v => (
                                       <button
-                                        key={count}
-                                        onClick={() => handleOptionChange('귀돌이 면수', count)}
+                                        key={v.label}
+                                        onClick={() => handleOptionChange('귀돌이 면수', v.label)}
                                         className={`py-2 rounded-lg text-[11px] font-bold border transition-all ${
-                                          selectedOptions['귀돌이 면수'] === count
+                                          selectedOptions['귀돌이 면수'] === v.label
                                             ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
                                             : 'bg-white border-zinc-200 text-zinc-500'
                                         }`}
                                       >
-                                        {count}
+                                        {v.label}
                                       </button>
                                     ))}
                                   </div>
@@ -893,17 +893,17 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                         </div>
                         <div className="space-y-4">
                           <div className="grid grid-cols-2 gap-2">
-                            {product.options.find(o => o.name === '타공')?.values.map(use => (
+                            {product.options.find(o => o.name === '타공')?.values.map(v => (
                               <button
-                                key={use}
-                                onClick={() => handleOptionChange('타공', use)}
+                                key={v.label}
+                                onClick={() => handleOptionChange('타공', v.label)}
                                 className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
-                                  selectedOptions['타공'] === use
+                                  selectedOptions['타공'] === v.label
                                     ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
                                     : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
                                 }`}
                               >
-                                {use}
+                                {v.label}
                               </button>
                             ))}
                           </div>
@@ -912,17 +912,17 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                               <div className="space-y-2">
                                 <span className="text-[10px] font-bold text-zinc-400 uppercase">타공 크기</span>
                                 <div className="grid grid-cols-3 gap-2">
-                                  {product.options.find(o => o.name === '타공 크기')?.values.map(size => (
+                                  {product.options.find(o => o.name === '타공 크기')?.values.map(v => (
                                     <button
-                                      key={size}
-                                      onClick={() => handleOptionChange('타공 크기', size)}
+                                      key={v.label}
+                                      onClick={() => handleOptionChange('타공 크기', v.label)}
                                       className={`py-2 rounded-lg text-[11px] font-bold border transition-all ${
-                                        selectedOptions['타공 크기'] === size
+                                        selectedOptions['타공 크기'] === v.label
                                           ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
                                           : 'bg-white border-zinc-200 text-zinc-500'
                                       }`}
                                     >
-                                      {size}
+                                      {v.label}
                                     </button>
                                   ))}
                                 </div>
@@ -959,17 +959,17 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                           </div>
                           <div className="space-y-4">
                             <div className="grid grid-cols-2 gap-2">
-                              {product.options.find(o => o.name === '오시')?.values.map(use => (
+                              {product.options.find(o => o.name === '오시')?.values.map(v => (
                                 <button
-                                  key={use}
-                                  onClick={() => handleOptionChange('오시', use)}
+                                  key={v.label}
+                                  onClick={() => handleOptionChange('오시', v.label)}
                                   className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
-                                    selectedOptions['오시'] === use
+                                    selectedOptions['오시'] === v.label
                                       ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
                                       : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
                                   }`}
                                 >
-                                  {use}
+                                  {v.label}
                                 </button>
                               ))}
                             </div>
@@ -978,17 +978,17 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                                 <div className="space-y-2">
                                   <span className="text-[10px] font-bold text-zinc-400 uppercase">줄 수</span>
                                   <div className="grid grid-cols-3 gap-2">
-                                    {product.options.find(o => o.name === '오시 줄 수')?.values.map(line => (
+                                    {product.options.find(o => o.name === '오시 줄 수')?.values.map(v => (
                                       <button
-                                        key={line}
-                                        onClick={() => handleOptionChange('오시 줄 수', line)}
+                                        key={v.label}
+                                        onClick={() => handleOptionChange('오시 줄 수', v.label)}
                                         className={`py-2 rounded-lg text-[11px] font-bold border transition-all ${
-                                          selectedOptions['오시 줄 수'] === line
+                                          selectedOptions['오시 줄 수'] === v.label
                                             ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
                                             : 'bg-white border-zinc-200 text-zinc-500'
                                         }`}
                                       >
-                                        {line}
+                                        {v.label}
                                       </button>
                                     ))}
                                   </div>
@@ -1025,17 +1025,17 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                           </div>
                           <div className="space-y-4">
                             <div className="grid grid-cols-2 gap-2">
-                              {product.options.find(o => o.name === '미싱')?.values.map(use => (
+                              {product.options.find(o => o.name === '미싱')?.values.map(v => (
                                 <button
-                                  key={use}
-                                  onClick={() => handleOptionChange('미싱', use)}
+                                  key={v.label}
+                                  onClick={() => handleOptionChange('미싱', v.label)}
                                   className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
-                                    selectedOptions['미싱'] === use
+                                    selectedOptions['미싱'] === v.label
                                       ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
                                       : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
                                   }`}
                                 >
-                                  {use}
+                                  {v.label}
                                 </button>
                               ))}
                             </div>
@@ -1044,17 +1044,17 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                                 <div className="space-y-2">
                                   <span className="text-[10px] font-bold text-zinc-400 uppercase">줄 수</span>
                                   <div className="grid grid-cols-3 gap-2">
-                                    {product.options.find(o => o.name === '미싱 줄 수')?.values.map(line => (
+                                    {product.options.find(o => o.name === '미싱 줄 수')?.values.map(v => (
                                       <button
-                                        key={line}
-                                        onClick={() => handleOptionChange('미싱 줄 수', line)}
+                                        key={v.label}
+                                        onClick={() => handleOptionChange('미싱 줄 수', v.label)}
                                         className={`py-2 rounded-lg text-[11px] font-bold border transition-all ${
-                                          selectedOptions['미싱 줄 수'] === line
+                                          selectedOptions['미싱 줄 수'] === v.label
                                             ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
                                             : 'bg-white border-zinc-200 text-zinc-500'
                                         }`}
                                       >
-                                        {line}
+                                        {v.label}
                                       </button>
                                     ))}
                                   </div>
@@ -1091,17 +1091,17 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                           </div>
                           <div className="space-y-4">
                             <div className="grid grid-cols-2 gap-2">
-                              {product.options.find(o => o.name === '접지')?.values.map(use => (
+                              {product.options.find(o => o.name === '접지')?.values.map(v => (
                                 <button
-                                  key={use}
-                                  onClick={() => handleOptionChange('접지', use)}
+                                  key={v.label}
+                                  onClick={() => handleOptionChange('접지', v.label)}
                                   className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
-                                    selectedOptions['접지'] === use
+                                    selectedOptions['접지'] === v.label
                                       ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
                                       : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
                                   }`}
                                 >
-                                  {use}
+                                  {v.label}
                                 </button>
                               ))}
                             </div>
@@ -1110,22 +1110,22 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                                   <div className="space-y-3">
                                     <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">접지 방향</span>
                                     <div className="flex gap-4">
-                                      {product.options.find(o => o.name === '접지 방향')?.values.map(dir => (
-                                        <div key={dir} className="flex flex-col items-center gap-2">
+                                      {product.options.find(o => o.name === '접지 방향')?.values.map(v => (
+                                        <div key={v.label} className="flex flex-col items-center gap-2">
                                           <button
-                                            onClick={() => handleOptionChange('접지 방향', dir)}
+                                            onClick={() => handleOptionChange('접지 방향', v.label)}
                                             className={`w-16 h-16 rounded-2xl border-2 flex items-center justify-center transition-all ${
-                                              selectedOptions['접지 방향'] === dir
+                                              selectedOptions['접지 방향'] === v.label
                                                 ? 'bg-emerald-500 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)] scale-110'
                                                 : 'bg-zinc-50 border-zinc-100 hover:border-zinc-200'
                                             }`}
                                           >
-                                            <div className={`transition-colors ${selectedOptions['접지 방향'] === dir ? 'text-white' : 'text-zinc-900'}`}>
-                                              {FOLDING_DIRECTION_ICONS[dir]}
+                                            <div className={`transition-colors ${selectedOptions['접지 방향'] === v.label ? 'text-white' : 'text-zinc-900'}`}>
+                                              {FOLDING_DIRECTION_ICONS[v.label]}
                                             </div>
                                           </button>
-                                          <span className={`text-[10px] font-bold transition-colors ${selectedOptions['접지 방향'] === dir ? 'text-emerald-700' : 'text-zinc-500'}`}>
-                                            {dir === '가로형' ? '가로접지방향' : '세로접지방향'}
+                                          <span className={`text-[10px] font-bold transition-colors ${selectedOptions['접지 방향'] === v.label ? 'text-emerald-700' : 'text-zinc-500'}`}>
+                                            {v.label === '가로형' ? '가로접지방향' : '세로접지방향'}
                                           </span>
                                         </div>
                                       ))}
@@ -1134,22 +1134,22 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                                   <div className="space-y-3">
                                     <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">접지 형태</span>
                                     <div className="flex flex-wrap gap-x-2 gap-y-4 justify-start">
-                                      {product.options.find(o => o.name === '접지 형태')?.values.map(type => (
-                                        <div key={type} className="flex flex-col items-center gap-2 w-[calc(25%-8px)] min-w-[60px]">
+                                      {product.options.find(o => o.name === '접지 형태')?.values.map(v => (
+                                        <div key={v.label} className="flex flex-col items-center gap-2 w-[calc(25%-8px)] min-w-[60px]">
                                           <button
-                                            onClick={() => handleOptionChange('접지 형태', type)}
+                                            onClick={() => handleOptionChange('접지 형태', v.label)}
                                             className={`w-14 h-14 rounded-2xl border-2 flex items-center justify-center transition-all ${
-                                              selectedOptions['접지 형태'] === type
+                                              selectedOptions['접지 형태'] === v.label
                                                 ? 'bg-emerald-500 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)] scale-110'
                                                 : 'bg-zinc-50 border-zinc-100 hover:border-zinc-200'
                                             }`}
                                           >
-                                            <div className={`transition-colors ${selectedOptions['접지 형태'] === type ? 'text-white' : 'text-zinc-900'}`}>
-                                              {FOLDING_TYPE_ICONS[type]}
+                                            <div className={`transition-colors ${selectedOptions['접지 형태'] === v.label ? 'text-white' : 'text-zinc-900'}`}>
+                                              {FOLDING_TYPE_ICONS[v.label]}
                                             </div>
                                           </button>
-                                          <span className={`text-[9px] font-bold text-center leading-tight px-1 transition-colors ${selectedOptions['접지 형태'] === type ? 'text-emerald-700' : 'text-zinc-500'}`}>
-                                            {type}
+                                          <span className={`text-[9px] font-bold text-center leading-tight px-1 transition-colors ${selectedOptions['접지 형태'] === v.label ? 'text-emerald-700' : 'text-zinc-500'}`}>
+                                            {v.label}
                                           </span>
                                         </div>
                                       ))}
@@ -1189,17 +1189,17 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                           </div>
                           <div className="space-y-4">
                             <div className="grid grid-cols-2 gap-2">
-                              {product.options.find(o => o.name === '폴리백 개별포장')?.values.map(use => (
+                              {product.options.find(o => o.name === '폴리백 개별포장')?.values.map(v => (
                                 <button
-                                  key={use}
-                                  onClick={() => handleOptionChange('폴리백 개별포장', use)}
+                                  key={v.label}
+                                  onClick={() => handleOptionChange('폴리백 개별포장', v.label)}
                                   className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
-                                    selectedOptions['폴리백 개별포장'] === use
+                                    selectedOptions['폴리백 개별포장'] === v.label
                                       ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
                                       : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
                                   }`}
                                 >
-                                  {use}
+                                  {v.label}
                                 </button>
                               ))}
                             </div>
@@ -1208,17 +1208,17 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                                 <div className="space-y-2">
                                   <span className="text-[10px] font-bold text-zinc-400 uppercase">폴리백 사이즈</span>
                                   <div className="grid grid-cols-3 gap-2">
-                                    {product.options.find(o => o.name === '폴리백 사이즈')?.values.map(size => (
+                                    {product.options.find(o => o.name === '폴리백 사이즈')?.values.map(v => (
                                       <button
-                                        key={size}
-                                        onClick={() => handleOptionChange('폴리백 사이즈', size)}
+                                        key={v.label}
+                                        onClick={() => handleOptionChange('폴리백 사이즈', v.label)}
                                         className={`py-2 rounded-lg text-[11px] font-bold border transition-all ${
-                                          selectedOptions['폴리백 사이즈'] === size
+                                          selectedOptions['폴리백 사이즈'] === v.label
                                             ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
                                             : 'bg-white border-zinc-200 text-zinc-500'
                                         }`}
                                       >
-                                        {size}
+                                        {v.label}
                                       </button>
                                     ))}
                                   </div>
@@ -1245,18 +1245,18 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                           <button onClick={() => setExpandedPostOption(null)} className="text-[10px] font-bold text-zinc-400 hover:text-zinc-600">닫기</button>
                         </div>
                         <div className="grid grid-cols-1 gap-2">
-                          {product.options.find(o => o.name === '명함케이스')?.values.map(item => (
+                          {product.options.find(o => o.name === '명함케이스')?.values.map(v => (
                             <button
-                              key={item}
-                              onClick={() => handleOptionChange('명함케이스', item)}
+                              key={v.label}
+                              onClick={() => handleOptionChange('명함케이스', v.label)}
                               className={`w-full py-3 px-4 rounded-xl text-[11px] font-bold border transition-all text-left flex items-center justify-between ${
-                                selectedOptions['명함케이스'] === item
+                                selectedOptions['명함케이스'] === v.label
                                   ? 'bg-emerald-50 border-emerald-500 text-emerald-900 shadow-sm'
                                   : 'bg-white border-zinc-100 text-zinc-500 hover:border-zinc-300'
                               }`}
                             >
-                              <span>{item}</span>
-                              {selectedOptions['명함케이스'] === item && <CheckCircle2 className="w-4 h-4 text-emerald-500" />}
+                              <span>{v.label}</span>
+                              {selectedOptions['명함케이스'] === v.label && <CheckCircle2 className="w-4 h-4 text-emerald-500" />}
                             </button>
                           ))}
                         </div>
