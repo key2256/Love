@@ -100,7 +100,7 @@ const POSTCARD_CONFIG: Record<string, {
   },
   'stk-postcard-special': {
     allowedMaterials: ['아트지 250g', '스노우 250g'],
-    allowedPostProcessing: ['인쇄 도수', '귀돌이', '타공', '오시', '미싱', '접지', '폴리백 개별포장'],
+    allowedPostProcessing: ['코팅', '귀돌이', '타공'],
   },
   'stk-postcard-shape': {
     allowedGroups: ['기본 대중형', '고급 감성형', '친환경/내추럴형'],
@@ -396,6 +396,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
       productName: product.name,
       options: {
         ...selectedOptions,
+        ...(product.id === 'stk-postcard-shape' ? { '모양커팅': '기본 포함' } : {}),
         ...((selectedOptions['사이즈'] === '직접입력' || selectedOptions['규격(mm)'] === '직접입력' || selectedOptions['작업 사이즈'] === '직접입력') 
           ? { '사이즈 상세': `${customSize.width}x${customSize.height}mm` } 
           : {})
@@ -821,15 +822,15 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                             <div className="grid grid-cols-2 gap-2 animate-in fade-in slide-in-from-top-1">
                               {product.options.find(o => o.name === '코팅 면수')?.values.map(side => (
                                 <button
-                                  key={side}
-                                  onClick={() => handleOptionChange('코팅 면수', side)}
+                                  key={side.label}
+                                  onClick={() => handleOptionChange('코팅 면수', side.label)}
                                   className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
-                                    selectedOptions['코팅 면수'] === side
+                                    selectedOptions['코팅 면수'] === side.label
                                       ? 'bg-emerald-600 border-emerald-600 text-white shadow-md'
                                       : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
                                   }`}
                                 >
-                                  {side}
+                                  {side.label}
                                 </button>
                               ))}
                             </div>
