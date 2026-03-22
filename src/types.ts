@@ -614,6 +614,52 @@ export const POSTCARD_COMMON_OPTIONS = {
       { label: '직접 입력', priceModifier: 0 },
     ]
   },
+  PAPER_GROUP: {
+    name: '용지 그룹',
+    type: 'radio' as const,
+    values: [
+      { label: '기본 대중형', priceModifier: 0 },
+      { label: '고급 감성형', priceModifier: 0 },
+      { label: '친환경/내추럴형', priceModifier: 0 },
+      { label: '컬러/특수지형', priceModifier: 0 },
+    ]
+  },
+  PAPER_SELECT_BASIC: {
+    name: '상세 용지 (기본)',
+    type: 'select' as const,
+    visibleIf: { optionName: '용지 그룹', value: '기본 대중형' },
+    values: POSTCARD_MATERIALS.filter(m => m.group === '기본 대중형').map(m => ({
+      label: `${m.name} ${m.weight}`,
+      priceModifier: 0
+    }))
+  },
+  PAPER_SELECT_PREMIUM: {
+    name: '상세 용지 (고급)',
+    type: 'select' as const,
+    visibleIf: { optionName: '용지 그룹', value: '고급 감성형' },
+    values: POSTCARD_MATERIALS.filter(m => m.group === '고급 감성형').map(m => ({
+      label: `${m.name} ${m.weight}`,
+      priceModifier: 1500
+    }))
+  },
+  PAPER_SELECT_ECO: {
+    name: '상세 용지 (친환경)',
+    type: 'select' as const,
+    visibleIf: { optionName: '용지 그룹', value: '친환경/내추럴형' },
+    values: POSTCARD_MATERIALS.filter(m => m.group === '친환경/내추럴형').map(m => ({
+      label: `${m.name} ${m.weight}`,
+      priceModifier: 2000
+    }))
+  },
+  PAPER_SELECT_SPECIAL: {
+    name: '상세 용지 (특수)',
+    type: 'select' as const,
+    visibleIf: { optionName: '용지 그룹', value: '컬러/특수지형' },
+    values: POSTCARD_MATERIALS.filter(m => m.group === '컬러/특수지형').map(m => ({
+      label: `${m.name} ${m.weight}`,
+      priceModifier: 2500
+    }))
+  },
   PRINT_COLOR: {
     name: '인쇄 도수',
     type: 'radio' as const,
@@ -632,7 +678,7 @@ export const POSTCARD_COMMON_OPTIONS = {
     ]
   },
   ROUNDING: {
-    name: '귀돌이 사용',
+    name: '귀도리 (라운드)',
     type: 'radio' as const,
     values: [
       { label: '없음', priceModifier: 0 },
@@ -640,7 +686,7 @@ export const POSTCARD_COMMON_OPTIONS = {
     ]
   },
   PUNCHING: {
-    name: '타공 사용',
+    name: '타공 (구멍)',
     type: 'radio' as const,
     values: [
       { label: '없음', priceModifier: 0 },
@@ -648,7 +694,7 @@ export const POSTCARD_COMMON_OPTIONS = {
     ]
   },
   CREASING: {
-    name: '오시 사용',
+    name: '오시 (접는선)',
     type: 'radio' as const,
     values: [
       { label: '없음', priceModifier: 0 },
@@ -2529,7 +2575,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'stk-postcard-standard',
     name: '일반 엽서',
-    category: 'postcard',
+    category: 'card-paper',
     subCategory: '일반 엽서',
     ...SUBCATEGORY_METADATA['일반 엽서'],
     image: 'https://picsum.photos/seed/postcard-standard/800/800',
@@ -2538,12 +2584,27 @@ export const PRODUCTS: Product[] = [
     options: [
       POSTCARD_COMMON_OPTIONS.SIZE,
       {
-        name: '용지 선택',
-        type: 'select',
-        values: getPostcardMaterials(['기본 대중형'])
+        ...POSTCARD_COMMON_OPTIONS.PAPER_GROUP,
+        values: [
+          { label: '기본 대중형', priceModifier: 0 }
+        ]
       },
+      POSTCARD_COMMON_OPTIONS.PAPER_SELECT_BASIC,
       POSTCARD_COMMON_OPTIONS.PRINT_COLOR,
       POSTCARD_COMMON_OPTIONS.COATING,
+      POSTCARD_COMMON_OPTIONS.ROUNDING,
+      POSTCARD_COMMON_OPTIONS.PUNCHING,
+      {
+        name: '제작 수량',
+        type: 'select',
+        values: [
+          { label: '10매', priceModifier: 0 },
+          { label: '50매', priceModifier: 5000 },
+          { label: '100매', priceModifier: 12000 },
+          { label: '200매', priceModifier: 22000 },
+          { label: '500매', priceModifier: 50000 },
+        ]
+      }
     ],
     features: ['표준/미니 사이즈 통합', '아트지/스노우지 기본', '가장 대중적인 선택'],
     leadTime: '2~3 영업일',
@@ -2552,7 +2613,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'stk-postcard-special',
     name: '특가 엽서',
-    category: 'postcard',
+    category: 'card-paper',
     subCategory: '특가 엽서',
     ...SUBCATEGORY_METADATA['특가 엽서'],
     image: 'https://picsum.photos/seed/postcard-special/800/800',
@@ -2573,6 +2634,17 @@ export const PRODUCTS: Product[] = [
         ]
       },
       POSTCARD_COMMON_OPTIONS.PRINT_COLOR,
+      POSTCARD_COMMON_OPTIONS.ROUNDING,
+      POSTCARD_COMMON_OPTIONS.PUNCHING,
+      {
+        name: '제작 수량',
+        type: 'select',
+        values: [
+          { label: '500매', priceModifier: 0 },
+          { label: '1000매', priceModifier: 25000 },
+          { label: '2000매', priceModifier: 65000 },
+        ]
+      }
     ],
     features: ['대량 제작 특가', '복잡한 옵션 제거', '가장 경제적인 홍보물'],
     leadTime: '3~4 영업일',
@@ -2581,7 +2653,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'stk-postcard-shape',
     name: '모양 엽서',
-    category: 'postcard',
+    category: 'card-paper',
     subCategory: '모양 엽서',
     ...SUBCATEGORY_METADATA['모양 엽서'],
     image: 'https://picsum.photos/seed/postcard-shape/800/800',
@@ -2598,14 +2670,40 @@ export const PRODUCTS: Product[] = [
           { label: '자유형', priceModifier: 3000 },
         ]
       },
-      POSTCARD_COMMON_OPTIONS.SIZE,
       {
-        name: '용지 선택',
+        name: '사이즈',
         type: 'select',
-        values: getPostcardMaterials(['기본 대중형', '고급 감성형', '친환경/내추럴형'])
+        values: [
+          { label: '소 (90x140mm 이내)', priceModifier: 0 },
+          { label: '중 (120x170mm 이내)', priceModifier: 2000 },
+          { label: '대 (148x210mm 이내)', priceModifier: 4000 },
+          { label: '직접 입력', priceModifier: 0 },
+        ]
       },
+      {
+        ...POSTCARD_COMMON_OPTIONS.PAPER_GROUP,
+        values: [
+          { label: '기본 대중형', priceModifier: 0 },
+          { label: '고급 감성형', priceModifier: 0 },
+          { label: '친환경/내추럴형', priceModifier: 0 },
+        ]
+      },
+      POSTCARD_COMMON_OPTIONS.PAPER_SELECT_BASIC,
+      POSTCARD_COMMON_OPTIONS.PAPER_SELECT_PREMIUM,
+      POSTCARD_COMMON_OPTIONS.PAPER_SELECT_ECO,
       POSTCARD_COMMON_OPTIONS.PRINT_COLOR,
       POSTCARD_COMMON_OPTIONS.COATING,
+      POSTCARD_COMMON_OPTIONS.ROUNDING,
+      POSTCARD_COMMON_OPTIONS.PUNCHING,
+      {
+        name: '제작 수량',
+        type: 'select',
+        values: [
+          { label: '10매', priceModifier: 0 },
+          { label: '50매', priceModifier: 8000 },
+          { label: '100매', priceModifier: 18000 },
+        ]
+      }
     ],
     features: ['독특한 실루엣', '브랜드 개성 강조', '정밀 도송 가공'],
     leadTime: '5~7 영업일',
@@ -2614,7 +2712,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'stk-postcard-premium',
     name: '고급지 엽서',
-    category: 'postcard',
+    category: 'card-paper',
     subCategory: '고급지 엽서',
     ...SUBCATEGORY_METADATA['고급지 엽서'],
     image: 'https://picsum.photos/seed/postcard-premium/800/800',
@@ -2623,14 +2721,29 @@ export const PRODUCTS: Product[] = [
     options: [
       POSTCARD_COMMON_OPTIONS.SIZE,
       {
-        name: '용지 선택',
-        type: 'select',
-        values: getPostcardMaterials(['고급 감성형', '친환경/내추럴형', '컬러/특수지형'])
+        ...POSTCARD_COMMON_OPTIONS.PAPER_GROUP,
+        values: [
+          { label: '고급 감성형', priceModifier: 0 },
+          { label: '친환경/내추럴형', priceModifier: 0 },
+          { label: '컬러/특수지형', priceModifier: 0 },
+        ]
       },
+      POSTCARD_COMMON_OPTIONS.PAPER_SELECT_PREMIUM,
+      POSTCARD_COMMON_OPTIONS.PAPER_SELECT_ECO,
+      POSTCARD_COMMON_OPTIONS.PAPER_SELECT_SPECIAL,
       POSTCARD_COMMON_OPTIONS.PRINT_COLOR,
       POSTCARD_COMMON_OPTIONS.ROUNDING,
       POSTCARD_COMMON_OPTIONS.PUNCHING,
       POSTCARD_COMMON_OPTIONS.CREASING,
+      {
+        name: '제작 수량',
+        type: 'select',
+        values: [
+          { label: '10매', priceModifier: 0 },
+          { label: '50매', priceModifier: 12000 },
+          { label: '100매', priceModifier: 25000 },
+        ]
+      }
     ],
     features: ['프리미엄 수입지', '풍부한 질감 표현', '작가/브랜드 굿즈 최적'],
     leadTime: '4~5 영업일',
@@ -2639,7 +2752,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'stk-postcard-effect',
     name: '후가공 엽서',
-    category: 'postcard',
+    category: 'card-paper',
     subCategory: '후가공 엽서',
     ...SUBCATEGORY_METADATA['후가공 엽서'],
     image: 'https://picsum.photos/seed/postcard-effect/800/800',
@@ -2649,11 +2762,26 @@ export const PRODUCTS: Product[] = [
       POSTCARD_COMMON_OPTIONS.EFFECT,
       POSTCARD_COMMON_OPTIONS.SIZE,
       {
-        name: '용지 선택',
-        type: 'select',
-        values: getPostcardMaterials(['기본 대중형', '고급 감성형'])
+        ...POSTCARD_COMMON_OPTIONS.PAPER_GROUP,
+        values: [
+          { label: '기본 대중형', priceModifier: 0 },
+          { label: '고급 감성형', priceModifier: 0 },
+        ]
       },
+      POSTCARD_COMMON_OPTIONS.PAPER_SELECT_BASIC,
+      POSTCARD_COMMON_OPTIONS.PAPER_SELECT_PREMIUM,
       POSTCARD_COMMON_OPTIONS.PRINT_COLOR,
+      POSTCARD_COMMON_OPTIONS.ROUNDING,
+      POSTCARD_COMMON_OPTIONS.PUNCHING,
+      {
+        name: '제작 수량',
+        type: 'select',
+        values: [
+          { label: '100매', priceModifier: 0 },
+          { label: '200매', priceModifier: 35000 },
+          { label: '500매', priceModifier: 85000 },
+        ]
+      }
     ],
     features: ['화려한 시각 효과', '입체적인 질감', 'VIP용 초대장 추천'],
     leadTime: '6~8 영업일',

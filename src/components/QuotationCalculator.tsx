@@ -997,7 +997,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
             }
             if (pattern === 'POSTCARD') {
               return !opt.name.includes('용지') && 
-                     !['재단 방식', '코팅 유무', '후가공 옵션', '화이트 인쇄', '넘버링', '스코딕스', '포장 옵션', '부분 UV', '모양코팅'].includes(opt.name);
+                     !['재단방식', '코팅유무', '후가공옵션', '후가공', '화이트인쇄', '넘버링', '스코딕스', '포장옵션', '부분UV', '모양코팅', '코팅', '귀도리(라운드)', '귀돌이(라운드)', '타공(구멍)', '오시(접는선)', '후가공효과', '귀도리', '귀돌이', '타공'].includes(opt.name.replace(/\s/g, ''));
             }
             if (pattern === 'BUSINESS_CARD') {
               return !opt.name.includes('용지') && 
@@ -1006,9 +1006,9 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                      !opt.name.includes('타공') && 
                      !opt.name.includes('구멍') && 
                      !opt.name.includes('명함케이스') && 
-                     !['재단 방식', '코팅 유무', '후가공 옵션', '화이트 인쇄', '넘버링', '스코딕스', '포장 옵션', '부분 UV', '모양코팅'].includes(opt.name);
+                     !['재단방식', '코팅유무', '후가공옵션', '화이트인쇄', '넘버링', '스코딕스', '포장옵션', '부분UV', '모양코팅'].includes(opt.name.replace(/\s/g, ''));
             }
-            return !['재단 방식', '코팅 유무', '후가공 옵션', '화이트 인쇄', '넘버링', '스코딕스', '포장 옵션', '부분 UV', '모양코팅'].includes(opt.name);
+            return !['재단방식', '코팅유무', '후가공옵션', '화이트인쇄', '넘버링', '스코딕스', '포장옵션', '부분UV', '모양코팅'].includes(opt.name.replace(/\s/g, ''));
           }).map((option) => (
             <div key={option.name} className="space-y-4">
               <div className="flex items-center gap-2">
@@ -1136,9 +1136,14 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
 
           {/* 3. Post-processing Section (후가공) */}
           {(() => {
-            const postProcessingOptions = product.options.filter(opt => 
-              ['재단 방식', '코팅 유무', '후가공 옵션', '후가공', '화이트 인쇄', '넘버링', '스코딕스', '포장 옵션', '부분 UV', '모양코팅', '표지 코팅', '코팅 방식'].includes(opt.name)
-            );
+            const postProcessingOptions = product.options.filter(opt => {
+              const normalizedName = opt.name.replace(/\s/g, '');
+              return [
+                '재단방식', '코팅유무', '후가공옵션', '후가공', '화이트인쇄', '넘버링', '스코딕스', '포장옵션', 
+                '부분UV', '모양코팅', '표지코팅', '코팅방식', '코팅', '귀도리(라운드)', '귀돌이(라운드)', 
+                '타공(구멍)', '오시(접는선)', '후가공효과', '귀도리', '귀돌이', '타공'
+              ].includes(normalizedName);
+            });
 
             // Special check for White Ink: only show if material is transparent
             const materialOption = product.options.find(opt => opt.name.includes('재질') || opt.name.includes('용지'));
@@ -1147,29 +1152,37 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
             const isTransparent = selectedMaterial?.transparent || false;
 
             const visiblePostOptions = postProcessingOptions.filter(opt => {
-              if (opt.name === '화이트 인쇄' && !isTransparent) return false;
+              if (opt.name.includes('화이트 인쇄') && !isTransparent) return false;
               return true;
             });
 
             if (visiblePostOptions.length === 0) return null;
 
             const getIcon = (name: string) => {
-              if (name === '재단 방식') return <Scissors className="w-5 h-5" />;
-              if (name === '코팅 유무' || name === '표지 코팅' || name === '코팅 방식') return <Layers className="w-5 h-5" />;
-              if (name === '후가공 옵션' || name === '후가공' || name === '부분 UV') return <Sparkles className="w-5 h-5" />;
-              if (name === '화이트 인쇄') return <Paintbrush className="w-5 h-5" />;
-              if (name === '넘버링') return <Hash className="w-5 h-5" />;
-              if (name === '스코딕스') return <Zap className="w-5 h-5" />;
-              if (name === '포장 옵션') return <Package className="w-5 h-5" />;
+              const n = name.replace(/\s/g, '');
+              if (n === '재단방식') return <Scissors className="w-5 h-5" />;
+              if (n === '코팅유무' || n === '표지코팅' || n === '코팅방식' || n === '코팅') return <Layers className="w-5 h-5" />;
+              if (n === '후가공옵션' || n === '후가공' || n === '부분UV' || n === '후가공효과') return <Sparkles className="w-5 h-5" />;
+              if (n === '화이트인쇄') return <Paintbrush className="w-5 h-5" />;
+              if (n === '넘버링') return <Hash className="w-5 h-5" />;
+              if (n === '스코딕스') return <Zap className="w-5 h-5" />;
+              if (n === '포장옵션') return <Package className="w-5 h-5" />;
+              if (n.includes('귀도리') || n.includes('귀돌이')) return <Scissors className="w-5 h-5" />;
+              if (n.includes('타공') || n.includes('구멍')) return <Droplets className="w-5 h-5" />;
+              if (n.includes('오시')) return <Layers className="w-5 h-5" />;
               return <Droplets className="w-5 h-5" />;
             };
 
             const getDisplayName = (name: string) => {
-              if (name === '재단 방식') return '재단';
-              if (name === '코팅 유무' || name === '표지 코팅' || name === '코팅 방식') return '코팅';
-              if (name === '후가공 옵션' || name === '후가공') return '후가공';
-              if (name === '화이트 인쇄') return '화이트인쇄';
-              if (name === '포장 옵션') return '개별포장';
+              const n = name.replace(/\s/g, '');
+              if (n === '재단방식') return '재단';
+              if (n === '코팅유무' || n === '표지코팅' || n === '코팅방식' || n === '코팅') return '코팅';
+              if (n === '후가공옵션' || n === '후가공' || n === '후가공효과') return '후가공';
+              if (n === '화이트인쇄') return '화이트인쇄';
+              if (n === '포장옵션') return '개별포장';
+              if (n.includes('귀도리') || n.includes('귀돌이')) return '귀도리';
+              if (n.includes('타공') || n.includes('구멍')) return '타공';
+              if (n.includes('오시')) return '오시';
               return name;
             };
 
