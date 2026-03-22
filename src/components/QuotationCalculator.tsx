@@ -27,6 +27,68 @@ interface QuotationCalculatorProps {
   onGenerateQuotation: (quotation: Quotation) => void;
 }
 
+const FOLDING_DIRECTION_ICONS: Record<string, React.ReactNode> = {
+  '가로형': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-zinc-900 fill-none" strokeWidth="1.2">
+      <rect x="10" y="10" width="20" height="20" />
+      <line x1="10" y1="20" x2="30" y2="20" />
+    </svg>
+  ),
+  '세로형': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-zinc-900 fill-none" strokeWidth="1.2">
+      <rect x="10" y="10" width="20" height="20" />
+      <line x1="20" y1="10" x2="20" y2="30" />
+    </svg>
+  )
+};
+
+const FOLDING_TYPE_ICONS: Record<string, React.ReactNode> = {
+  '2단접지': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-zinc-900 fill-none" strokeWidth="1.2">
+      <path d="M12 10 L28 10 L28 30 L12 30 Z" />
+      <path d="M20 10 L20 30" />
+    </svg>
+  ),
+  '3단접지': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-zinc-900 fill-none" strokeWidth="1.2">
+      <path d="M10 10 L30 10 L30 30 L10 30 Z" />
+      <path d="M16.6 10 L16.6 30" />
+      <path d="M23.3 10 L23.3 30" />
+    </svg>
+  ),
+  '4단접지': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-zinc-900 fill-none" strokeWidth="1.2">
+      <path d="M8 10 L32 10 L32 30 L8 30 Z" />
+      <path d="M14 10 L14 30" />
+      <path d="M20 10 L20 30" />
+      <path d="M26 10 L26 30" />
+    </svg>
+  ),
+  '대문접지': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-zinc-900 fill-none" strokeWidth="1.2">
+      <path d="M10 10 L30 10 L30 30 L10 30 Z" />
+      <path d="M15 10 L15 30" />
+      <path d="M25 10 L25 30" />
+    </svg>
+  ),
+  '반대문접지': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-zinc-900 fill-none" strokeWidth="1.2">
+      <path d="M10 10 L30 10 L30 30 L10 30 Z" />
+      <path d="M15 10 L15 30" />
+    </svg>
+  ),
+  '4단 병풍접지': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-zinc-900 fill-none" strokeWidth="1.2">
+      <path d="M8 10 L14 10 L14 30 L8 30 Z M14 10 L20 10 L20 30 L14 30 Z M20 10 L26 10 L26 30 L20 30 Z M26 10 L32 10 L32 30 L26 30 Z" />
+    </svg>
+  ),
+  'N모양 3단접지': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-zinc-900 fill-none" strokeWidth="1.2">
+      <path d="M10 10 L16.6 10 L16.6 30 L10 30 Z M16.6 10 L23.3 10 L23.3 30 L16.6 30 Z M23.3 10 L30 10 L30 30 L23.3 30 Z" />
+    </svg>
+  )
+};
+
 export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ product, onGenerateQuotation }) => {
   const [quantity, setQuantity] = useState(product.minQuantity);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>(() => {
@@ -1069,42 +1131,62 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                               ))}
                             </div>
                             {selectedOptions['접지'] === '있음' && (
-                              <div className="space-y-4 animate-in fade-in slide-in-from-top-1">
-                                <div className="space-y-2">
-                                  <span className="text-[10px] font-bold text-zinc-400 uppercase">접지 방향</span>
-                                  <div className="grid grid-cols-2 gap-2">
+                              <div className="space-y-6 animate-in fade-in slide-in-from-top-1">
+                                <div className="space-y-3">
+                                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">접지 방향</span>
+                                  <div className="flex gap-4">
                                     {['가로형', '세로형'].map(dir => (
-                                      <button
-                                        key={dir}
-                                        onClick={() => handleOptionChange('접지 방향', dir)}
-                                        className={`py-2 rounded-lg text-[11px] font-bold border transition-all ${
-                                          selectedOptions['접지 방향'] === dir
-                                            ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
-                                            : 'bg-white border-zinc-200 text-zinc-500'
-                                        }`}
-                                      >
-                                        {dir}
-                                      </button>
+                                      <div key={dir} className="flex flex-col items-center gap-2">
+                                        <button
+                                          onClick={() => handleOptionChange('접지 방향', dir)}
+                                          className={`w-16 h-16 rounded-2xl border-2 flex items-center justify-center transition-all ${
+                                            selectedOptions['접지 방향'] === dir
+                                              ? 'bg-emerald-500 border-emerald-500 shadow-lg shadow-emerald-500/20'
+                                              : 'bg-zinc-50 border-zinc-100 hover:border-zinc-200'
+                                          }`}
+                                        >
+                                          <div className={`transition-colors ${selectedOptions['접지 방향'] === dir ? 'text-zinc-900' : 'text-zinc-900'}`}>
+                                            {FOLDING_DIRECTION_ICONS[dir]}
+                                          </div>
+                                        </button>
+                                        <span className="text-[10px] font-bold text-zinc-500">{dir === '가로형' ? '가로접지방향' : '세로접지방향'}</span>
+                                      </div>
                                     ))}
                                   </div>
                                 </div>
-                                <div className="space-y-2">
-                                  <span className="text-[10px] font-bold text-zinc-400 uppercase">접지 형태</span>
-                                  <div className="grid grid-cols-2 gap-2">
+                                <div className="space-y-3">
+                                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">접지 형태</span>
+                                  <div className="grid grid-cols-4 gap-y-4 gap-x-2">
                                     {['2단접지', '3단접지', '4단접지', '대문접지', '반대문접지', '4단 병풍접지', 'N모양 3단접지'].map(type => (
-                                      <button
-                                        key={type}
-                                        onClick={() => handleOptionChange('접지 형태', type)}
-                                        className={`py-2 rounded-lg text-[11px] font-bold border transition-all ${
-                                          selectedOptions['접지 형태'] === type
-                                            ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
-                                            : 'bg-white border-zinc-200 text-zinc-500'
-                                        }`}
-                                      >
-                                        {type}
-                                      </button>
+                                      <div key={type} className="flex flex-col items-center gap-2">
+                                        <button
+                                          onClick={() => handleOptionChange('접지 형태', type)}
+                                          className={`w-14 h-14 rounded-2xl border-2 flex items-center justify-center transition-all ${
+                                            selectedOptions['접지 형태'] === type
+                                              ? 'bg-emerald-500 border-emerald-500 shadow-lg shadow-emerald-500/20'
+                                              : 'bg-zinc-50 border-zinc-100 hover:border-zinc-200'
+                                          }`}
+                                        >
+                                          <div className={`transition-colors ${selectedOptions['접지 형태'] === type ? 'text-zinc-900' : 'text-zinc-900'}`}>
+                                            {FOLDING_TYPE_ICONS[type]}
+                                          </div>
+                                        </button>
+                                        <span className="text-[9px] font-bold text-zinc-500 text-center leading-tight px-1">{type}</span>
+                                      </div>
                                     ))}
                                   </div>
+                                </div>
+
+                                <div className="mt-6 space-y-4">
+                                  <div className="p-3 rounded-2xl bg-red-50/50 border border-red-100/50">
+                                    <p className="text-[10px] text-red-500 font-medium leading-relaxed">
+                                      ※ 3단, 대문, 반대문 접지의 경우 반드시 접지 가이드를 다운로드하여 작업해주세요.<br />
+                                      ※ 대문, 반대문 접지 : 안쪽 면보다 접히는 면이 짧아, 접었을 때 안쪽 면이 보일 수 있습니다.
+                                    </p>
+                                  </div>
+                                  <button className="w-full py-3 rounded-full border border-zinc-200 text-[11px] font-bold text-zinc-600 hover:bg-zinc-50 transition-colors flex items-center justify-center gap-2">
+                                    접지가이드 다운로드
+                                  </button>
                                 </div>
                               </div>
                             )}
@@ -1304,10 +1386,24 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
 
           {/* 2. Standard Options */}
           {product.options.filter(opt => {
+            const normalizedName = opt.name.replace(/\s/g, '');
+            const isIconGridPattern = pattern === 'BUSINESS_CARD' || pattern === 'DESIGN_CARD' || pattern === 'POSTCARD';
+
             // Check conditional visibility
             if (opt.visibleIf) {
               const parentVal = selectedOptions[opt.visibleIf.optionName];
               if (parentVal !== opt.visibleIf.value) return false;
+            }
+
+            // Exclude options handled by icon grid or redundant quantity
+            if (isIconGridPattern) {
+              const handledByIconGrid = [
+                '코팅', '코팅종류', '코팅면수', '귀돌이', '귀돌이사용', '귀돌이크기', '귀돌이면수', '귀돌이방향', 
+                '타공', '타공사용', '구멍크기', '타공크기', '타공설명', '명함케이스',
+                '오시', '오시줄수', '오시설명', '미싱', '미싱줄수', '미싱설명', '접지', '접지방향', '접지형태', 
+                '폴리백개별포장', '폴리백사이즈', '제작수량', '수량', '주문수량'
+              ].includes(normalizedName);
+              if (handledByIconGrid) return false;
             }
 
             if (pattern === 'DESIGN_CARD') {
@@ -1318,22 +1414,19 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
             if (pattern === 'STICKER') {
               return !opt.name.includes('재질') && 
                      !opt.name.includes('용지') && 
-                     !['재단 방식', '코팅 유무', '후가공 옵션', '화이트 인쇄', '넘버링', '스코딕스', '포장 옵션', '부분 UV', '모양코팅'].includes(opt.name);
+                     !['재단방식', '코팅유무', '후가공옵션', '화이트인쇄', '넘버링', '스코딕스', '포장옵션', '부분UV', '모양코팅', '제작수량', '수량', '주문수량'].includes(normalizedName);
             }
-            if (pattern === 'POSTCARD') {
-              return !opt.name.includes('용지') && 
-                     !['재단방식', '코팅유무', '후가공옵션', '후가공', '화이트인쇄', '넘버링', '스코딕스', '포장옵션', '부분UV', '모양코팅', '코팅', '귀도리(라운드)', '귀돌이(라운드)', '타공(구멍)', '오시(접는선)', '후가공효과', '귀도리', '귀돌이', '타공'].includes(opt.name.replace(/\s/g, ''));
-            }
-            if (pattern === 'BUSINESS_CARD') {
-              return !opt.name.includes('용지') && 
-                     !opt.name.includes('코팅') && 
-                     !opt.name.includes('귀돌이') && 
-                     !opt.name.includes('타공') && 
-                     !opt.name.includes('구멍') && 
-                     !opt.name.includes('명함케이스') && 
-                     !['재단방식', '코팅유무', '후가공옵션', '화이트인쇄', '넘버링', '스코딕스', '포장옵션', '부분UV', '모양코팅'].includes(opt.name.replace(/\s/g, ''));
-            }
-            return !['재단방식', '코팅유무', '후가공옵션', '화이트인쇄', '넘버링', '스코딕스', '포장옵션', '부분UV', '모양코팅'].includes(opt.name.replace(/\s/g, ''));
+
+            // General exclusions for all patterns
+            const generalExclusions = [
+              '재단방식', '코팅유무', '후가공옵션', '후가공', '화이트인쇄', '넘버링', '스코딕스', '포장옵션', 
+              '부분UV', '모양코팅', '표지코팅', '코팅방식', '코팅', '귀도리(라운드)', '귀돌이(라운드)', 
+              '타공(구멍)', '오시(접는선)', '후가공효과', '귀도리', '귀돌이', '타공', '제작수량', '수량', '주문수량'
+            ];
+            if (generalExclusions.includes(normalizedName)) return false;
+            if (opt.name.includes('용지')) return false;
+
+            return true;
           }).map((option) => (
             <div key={option.name} className="space-y-4">
               <div className="flex items-center gap-2">
