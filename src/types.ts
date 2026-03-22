@@ -1487,7 +1487,7 @@ export const CATEGORIES: Category[] = [
     subCategories: [
       {
         groupName: '떡메모지',
-        items: ['일반 떡메모지', '디자인 떡메모지', '소량 떡메모지']
+        items: ['일반 떡메모지', '디자인 떡메모지']
       },
       {
         groupName: '노트',
@@ -2529,16 +2529,16 @@ export const PRODUCTS: Product[] = [
     tagline: '한 장씩 떼어 쓰는 편리한 메모지.',
     description: '다양한 디자인으로 제작 가능한 표준 떡메모지입니다. 사무용, 선물용으로 인기가 높습니다.',
     image: 'https://picsum.photos/seed/memo/800/800',
-    minQuantity: 40,
+    minQuantity: 1,
     basePrice: 15000,
     options: [
       {
         name: '사이즈',
         type: 'select',
         values: [
-          { label: '90 x 90', priceModifier: 0 },
-          { label: '90 x 60', priceModifier: 0 },
-          { label: '40 x 90', priceModifier: 0 },
+          { label: '90 x 90 mm', priceModifier: 0 },
+          { label: '90 x 60 mm', priceModifier: 0 },
+          { label: '40 x 90 mm', priceModifier: 0 },
           { label: '직접입력', priceModifier: 0 },
         ]
       },

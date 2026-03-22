@@ -117,6 +117,30 @@ const SHAPE_ICONS: Record<string, React.ReactNode> = {
   )
 };
 
+const MEMO_SIZE_ICONS: Record<string, React.ReactNode> = {
+  '90 x 90 mm': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 fill-current">
+      <rect x="10" y="10" width="20" height="20" rx="2" />
+    </svg>
+  ),
+  '90 x 60 mm': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 fill-current">
+      <rect x="8" y="13" width="24" height="14" rx="2" />
+    </svg>
+  ),
+  '40 x 90 mm': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 fill-current">
+      <rect x="15" y="8" width="10" height="24" rx="2" />
+    </svg>
+  ),
+  '직접입력': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 fill-current">
+      <path d="M10 10h20v20H10z" fill="none" stroke="currentColor" strokeWidth="2" strokeDasharray="4 2" />
+      <path d="M20 15v10M15 20h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  )
+};
+
 const POSTCARD_CONFIG: Record<string, {
   allowedGroups?: string[];
   allowedMaterials?: string[];
@@ -418,6 +442,15 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
   };
 
   const handleGenerate = () => {
+    if (pattern === 'MEMO_PAD' && selectedOptions['사이즈'] === '직접입력') {
+      const w = parseInt(customSize.width) || 0;
+      const h = parseInt(customSize.height) || 0;
+      if (w > 90 || h > 90) {
+        alert('직접입력 사이즈는 최대 90 x 90 mm 이하만 가능합니다.');
+        return;
+      }
+    }
+
     const quotation: Quotation = {
       id: `Q-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
       productId: product.id,
@@ -1560,6 +1593,25 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
             return true;
           }).map((option) => (
             <div key={option.name} className="space-y-4">
+              {pattern === 'MEMO_PAD' && option.name === '두께' && (
+                <div className="space-y-4 pb-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1 h-4 bg-emerald-500 rounded-full" />
+                    <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
+                      기본 용지 사양
+                    </label>
+                  </div>
+                  <div className="p-6 rounded-3xl bg-zinc-50 border border-zinc-100 flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-white border border-zinc-200 flex items-center justify-center shadow-sm">
+                      <FileText className="w-6 h-6 text-zinc-400" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-black text-zinc-900">백색 모조지 70g</p>
+                      <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-0.5">Fixed Specification</p>
+                    </div>
+                  </div>
+                </div>
+              )}
               <div className="flex items-center gap-2">
                 <div className="w-1 h-4 bg-emerald-500 rounded-full" />
                 <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
@@ -1606,6 +1658,35 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                             {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
                           </span>
                         )}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              ) : (pattern === 'MEMO_PAD' && option.name === '사이즈') ? (
+                <div className="grid grid-cols-2 gap-3">
+                  {option.values?.map((val) => (
+                    <button
+                      key={val.label}
+                      onClick={() => handleOptionChange(option.name, val.label)}
+                      className={`group p-4 rounded-[28px] border-2 transition-all flex flex-col items-center gap-3 ${
+                        selectedOptions[option.name] === val.label
+                          ? 'bg-emerald-50 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.1)]'
+                          : 'bg-white border-zinc-100 hover:border-zinc-200'
+                      }`}
+                    >
+                      <div className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all ${
+                        selectedOptions[option.name] === val.label
+                          ? 'bg-emerald-500 text-white scale-110 shadow-lg'
+                          : 'bg-zinc-50 text-zinc-400 group-hover:bg-zinc-100 group-hover:text-zinc-600'
+                      }`}>
+                        {MEMO_SIZE_ICONS[val.label]}
+                      </div>
+                      <div className="text-center">
+                        <span className={`text-[11px] font-black uppercase tracking-widest ${
+                          selectedOptions[option.name] === val.label ? 'text-emerald-900' : 'text-zinc-500'
+                        }`}>
+                          {val.label}
+                        </span>
                       </div>
                     </button>
                   ))}
@@ -1684,22 +1765,8 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
               )}
 
               {pattern === 'MEMO_PAD' && option.name === '두께' && (
-                <div className="space-y-4 pt-2">
-                  <div className="flex items-center gap-2">
-                    <div className="w-1 h-4 bg-emerald-500 rounded-full" />
-                    <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
-                      용지 사양
-                    </label>
-                  </div>
-                  <div className="p-6 rounded-3xl bg-zinc-50 border border-zinc-100 flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-white border border-zinc-200 flex items-center justify-center shadow-sm">
-                      <FileText className="w-6 h-6 text-zinc-400" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-black text-zinc-900">모조지 70g</p>
-                      <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-0.5">Fixed Specification</p>
-                    </div>
-                  </div>
+                <div className="pt-2">
+                  {/* Thickness options are already rendered by the standard loop above */}
                 </div>
               )}
 
