@@ -747,6 +747,15 @@ export const POSTCARD_COMMON_OPTIONS = {
       placeholder: '예: 중앙 상단 1개 / 좌측 상단 1개 등'
     }
   ],
+  SHAPE_CUTTING: [
+    {
+      name: '모양커팅',
+      type: 'radio' as const,
+      values: [
+        { label: '기본 포함', priceModifier: 0 },
+      ]
+    }
+  ],
   CREASING: [
     {
       name: '오시',
@@ -2785,12 +2794,9 @@ export const PRODUCTS: Product[] = [
         ]
       },
       POSTCARD_COMMON_OPTIONS.PRINT_COLOR,
+      ...POSTCARD_COMMON_OPTIONS.COATING,
       ...POSTCARD_COMMON_OPTIONS.ROUNDING,
       ...POSTCARD_COMMON_OPTIONS.PUNCHING,
-      ...POSTCARD_COMMON_OPTIONS.CREASING,
-      ...POSTCARD_COMMON_OPTIONS.PERFORATION,
-      ...POSTCARD_COMMON_OPTIONS.FOLDING,
-      ...POSTCARD_COMMON_OPTIONS.PACKAGING,
       {
         name: '제작 수량',
         type: 'select',
@@ -2847,6 +2853,7 @@ export const PRODUCTS: Product[] = [
       POSTCARD_COMMON_OPTIONS.PAPER_SELECT_PREMIUM,
       POSTCARD_COMMON_OPTIONS.PAPER_SELECT_ECO,
       POSTCARD_COMMON_OPTIONS.PRINT_COLOR,
+      ...POSTCARD_COMMON_OPTIONS.SHAPE_CUTTING,
       ...POSTCARD_COMMON_OPTIONS.COATING,
       ...POSTCARD_COMMON_OPTIONS.ROUNDING,
       ...POSTCARD_COMMON_OPTIONS.PUNCHING,

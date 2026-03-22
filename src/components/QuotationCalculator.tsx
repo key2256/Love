@@ -19,7 +19,8 @@ import {
   Droplets,
   HelpCircle,
   Check,
-  Info
+  Info,
+  Shapes
 } from 'lucide-react';
 import { Product, Quotation, PAPER_MATERIALS, POSTCARD_MATERIALS, BUSINESS_CARD_MATERIALS, BusinessCardPaperMaterial, DESIGN_CARD_TEMPLATES, Template } from '../types';
 
@@ -96,15 +97,15 @@ const POSTCARD_CONFIG: Record<string, {
   allowedPostProcessing?: string[];
 }> = {
   'stk-postcard-standard': {
-    allowedGroups: ['기본 대중형', '고급 감성형', '친환경/내추럴형', '컬러/특수지형'],
+    allowedGroups: ['기본 대중형'],
   },
   'stk-postcard-special': {
     allowedMaterials: ['아트지 250g', '스노우 250g'],
-    allowedPostProcessing: ['인쇄 도수', '귀돌이', '타공', '오시', '미싱', '접지', '폴리백 개별포장'],
+    allowedPostProcessing: ['인쇄 도수', '코팅', '귀돌이', '타공'],
   },
   'stk-postcard-shape': {
     allowedGroups: ['기본 대중형', '고급 감성형', '친환경/내추럴형'],
-    allowedPostProcessing: ['인쇄 도수', '코팅', '귀돌이', '타공', '오시', '미싱', '접지', '폴리백 개별포장'],
+    allowedPostProcessing: ['인쇄 도수', '모양커팅', '코팅', '귀돌이', '타공', '오시', '미싱', '접지', '폴리백 개별포장'],
   },
   'stk-postcard-premium': {
     allowedGroups: ['고급 감성형', '친환경/내추럴형', '컬러/특수지형'],
@@ -675,80 +676,90 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
           ))}
 
           {/* Business Card, Design Card & Postcard Post-processing Options (Icon Grid Pattern) */}
-          {(pattern === 'BUSINESS_CARD' || pattern === 'DESIGN_CARD' || pattern === 'POSTCARD') && (
-            <div className="space-y-6 pt-4 border-t border-zinc-100">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-1 h-4 bg-emerald-500 rounded-full" />
-                  <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
-                    후가공 선택
-                  </label>
+          {(pattern === 'BUSINESS_CARD' || pattern === 'DESIGN_CARD' || pattern === 'POSTCARD') && (() => {
+            const config = pattern === 'POSTCARD' ? POSTCARD_CONFIG[product.id] : null;
+            return (
+              <div className="space-y-6 pt-4 border-t border-zinc-100">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1 h-4 bg-emerald-500 rounded-full" />
+                    <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
+                      후가공 선택
+                    </label>
+                  </div>
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
+                    아이콘을 클릭하여 상세 옵션 선택
+                  </span>
                 </div>
-                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
-                  아이콘을 클릭하여 상세 옵션 선택
-                </span>
-              </div>
 
-              <div className="bg-zinc-50/50 rounded-[32px] p-6 border border-zinc-100 space-y-6">
-                {/* Icon Grid */}
-                <div className="grid grid-cols-4 gap-3">
-                  {[
-                    { 
-                      id: 'coating', 
-                      name: '코팅', 
-                      icon: <Layers className="w-5 h-5" />, 
-                      active: selectedOptions['코팅'] !== '없음', 
-                      hidden: product.id === 'bc-premium' 
-                    },
-                    { 
-                      id: 'rounding', 
-                      name: '귀돌이', 
-                      icon: <Scissors className="w-5 h-5" />, 
-                      active: selectedOptions['귀돌이'] === '있음' 
-                    },
-                    { 
-                      id: 'punching', 
-                      name: '타공', 
-                      icon: <Droplets className="w-5 h-5" />, 
-                      active: selectedOptions['타공'] === '있음', 
-                      hidden: pattern === 'DESIGN_CARD' 
-                    },
-                    { 
-                      id: 'creasing', 
-                      name: '오시', 
-                      icon: <Paintbrush className="w-5 h-5" />, 
-                      active: selectedOptions['오시'] === '있음', 
-                      hidden: pattern !== 'POSTCARD'
-                    },
-                    { 
-                      id: 'perforation', 
-                      name: '미싱', 
-                      icon: <Scissors className="w-5 h-5" />, 
-                      active: selectedOptions['미싱'] === '있음', 
-                      hidden: pattern !== 'POSTCARD'
-                    },
-                    { 
-                      id: 'folding', 
-                      name: '접지', 
-                      icon: <FileUp className="w-5 h-5" />, 
-                      active: selectedOptions['접지'] === '있음', 
-                      hidden: pattern !== 'POSTCARD'
-                    },
-                    { 
-                      id: 'packaging', 
-                      name: '포장', 
-                      icon: <ShoppingCart className="w-5 h-5" />, 
-                      active: selectedOptions['폴리백 개별포장'] === '있음', 
-                      hidden: pattern !== 'POSTCARD'
-                    },
-                    { 
-                      id: 'case', 
-                      name: '케이스', 
-                      icon: <Package className="w-5 h-5" />, 
-                      active: selectedOptions['명함케이스'] !== '없음', 
-                      hidden: pattern === 'DESIGN_CARD' || pattern === 'POSTCARD'
-                    }
-                  ].filter(item => !item.hidden).map(item => {
+                <div className="bg-zinc-50/50 rounded-[32px] p-6 border border-zinc-100 space-y-6">
+                  {/* Icon Grid */}
+                  <div className="grid grid-cols-4 gap-3">
+                    {[
+                      { 
+                        id: 'shape-cutting', 
+                        name: '모양커팅', 
+                        icon: <Shapes className="w-5 h-5" />, 
+                        active: true, 
+                        hidden: !config?.allowedPostProcessing?.includes('모양커팅')
+                      },
+                      { 
+                        id: 'coating', 
+                        name: '코팅', 
+                        icon: <Layers className="w-5 h-5" />, 
+                        active: selectedOptions['코팅'] !== '없음', 
+                        hidden: product.id === 'bc-premium' || (config?.allowedPostProcessing && !config.allowedPostProcessing.includes('코팅'))
+                      },
+                      { 
+                        id: 'rounding', 
+                        name: '귀돌이', 
+                        icon: <Scissors className="w-5 h-5" />, 
+                        active: selectedOptions['귀돌이'] === '있음',
+                        hidden: config?.allowedPostProcessing && !config.allowedPostProcessing.includes('귀돌이')
+                      },
+                      { 
+                        id: 'punching', 
+                        name: '타공', 
+                        icon: <Droplets className="w-5 h-5" />, 
+                        active: selectedOptions['타공'] === '있음', 
+                        hidden: pattern === 'DESIGN_CARD' || (config?.allowedPostProcessing && !config.allowedPostProcessing.includes('타공'))
+                      },
+                      { 
+                        id: 'creasing', 
+                        name: '오시', 
+                        icon: <Paintbrush className="w-5 h-5" />, 
+                        active: selectedOptions['오시'] === '있음', 
+                        hidden: pattern !== 'POSTCARD' || (config?.allowedPostProcessing && !config.allowedPostProcessing.includes('오시'))
+                      },
+                      { 
+                        id: 'perforation', 
+                        name: '미싱', 
+                        icon: <Scissors className="w-5 h-5" />, 
+                        active: selectedOptions['미싱'] === '있음', 
+                        hidden: pattern !== 'POSTCARD' || (config?.allowedPostProcessing && !config.allowedPostProcessing.includes('미싱'))
+                      },
+                      { 
+                        id: 'folding', 
+                        name: '접지', 
+                        icon: <FileUp className="w-5 h-5" />, 
+                        active: selectedOptions['접지'] === '있음', 
+                        hidden: pattern !== 'POSTCARD' || (config?.allowedPostProcessing && !config.allowedPostProcessing.includes('접지'))
+                      },
+                      { 
+                        id: 'packaging', 
+                        name: '포장', 
+                        icon: <ShoppingCart className="w-5 h-5" />, 
+                        active: selectedOptions['폴리백 개별포장'] === '있음', 
+                        hidden: pattern !== 'POSTCARD' || (config?.allowedPostProcessing && !config.allowedPostProcessing.includes('폴리백 개별포장'))
+                      },
+                      { 
+                        id: 'case', 
+                        name: '케이스', 
+                        icon: <Package className="w-5 h-5" />, 
+                        active: selectedOptions['명함케이스'] !== '없음', 
+                        hidden: pattern === 'DESIGN_CARD' || pattern === 'POSTCARD'
+                      }
+                    ].filter(item => !item.hidden).map(item => {
                     const isExpanded = expandedPostOption === item.id;
                     return (
                       <button
@@ -779,6 +790,42 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
 
                 {/* Expanded Sub-options */}
                 <AnimatePresence mode="wait">
+                  {expandedPostOption === 'shape-cutting' && (
+                    <motion.div
+                      key="shape-cutting"
+                      initial={{ opacity: 0, y: -10, height: 0 }}
+                      animate={{ opacity: 1, y: 0, height: 'auto' }}
+                      exit={{ opacity: 0, y: -10, height: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="pt-4 border-t border-zinc-200/50 space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-xs font-black text-zinc-900 uppercase tracking-widest">모양커팅 상세 설정</h4>
+                          <button onClick={() => setExpandedPostOption(null)} className="text-[10px] font-bold text-zinc-400 hover:text-zinc-600">닫기</button>
+                        </div>
+                        <div className="space-y-4">
+                          <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-100">
+                            <div className="flex items-center gap-2 mb-2">
+                              <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                              <span className="text-xs font-bold text-emerald-900">기본 포함 항목</span>
+                            </div>
+                            <p className="text-[11px] text-emerald-700 leading-relaxed">
+                              모양 엽서는 모양커팅 가공이 기본 포함됩니다.
+                            </p>
+                          </div>
+                          <div className="grid grid-cols-1 gap-2">
+                            <button
+                              disabled
+                              className="py-3 rounded-xl text-[11px] font-bold border bg-zinc-900 border-zinc-900 text-white shadow-md cursor-default"
+                            >
+                              기본 포함
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
                   {expandedPostOption === 'coating' && (
                     <motion.div
                       key="coating"
@@ -1329,7 +1376,8 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                 </AnimatePresence>
               </div>
             </div>
-          )}
+          );
+        })()}
 
           {/* 1. Material Selection (Special UI for Stickers) */}
           {pattern === 'STICKER' && product.options.filter(opt => opt.name.includes('재질') || opt.name.includes('용지')).map((option) => (
