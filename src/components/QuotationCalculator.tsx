@@ -1608,6 +1608,10 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                     <div>
                       <p className="text-sm font-black text-zinc-900">백색 모조지 70g</p>
                       <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-0.5">Fixed Specification</p>
+                      <p className="text-[10px] text-zinc-500 mt-1 leading-relaxed">
+                        필기감이 우수하고 잉크 번짐이 적어<br />
+                        메모지 제작에 가장 최적화된 용지입니다.
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -1664,32 +1668,110 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                 </div>
               ) : (pattern === 'MEMO_PAD' && option.name === '사이즈') ? (
                 <div className="grid grid-cols-2 gap-3">
-                  {option.values?.map((val) => (
-                    <button
-                      key={val.label}
-                      onClick={() => handleOptionChange(option.name, val.label)}
-                      className={`group p-4 rounded-[28px] border-2 transition-all flex flex-col items-center gap-3 ${
-                        selectedOptions[option.name] === val.label
-                          ? 'bg-emerald-50 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.1)]'
-                          : 'bg-white border-zinc-100 hover:border-zinc-200'
-                      }`}
-                    >
-                      <div className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all ${
-                        selectedOptions[option.name] === val.label
-                          ? 'bg-emerald-500 text-white scale-110 shadow-lg'
-                          : 'bg-zinc-50 text-zinc-400 group-hover:bg-zinc-100 group-hover:text-zinc-600'
-                      }`}>
-                        {MEMO_SIZE_ICONS[val.label]}
-                      </div>
-                      <div className="text-center">
-                        <span className={`text-[11px] font-black uppercase tracking-widest ${
-                          selectedOptions[option.name] === val.label ? 'text-emerald-900' : 'text-zinc-500'
+                  {option.values?.map((val) => {
+                    const isSelected = selectedOptions[option.name] === val.label;
+                    const [sizeText, unit] = val.label.split(' mm');
+                    const subLabel = val.label === '90 x 90 mm' ? '정사각형' :
+                                   val.label === '90 x 60 mm' ? '가로형' :
+                                   val.label === '40 x 90 mm' ? '세로형' :
+                                   val.label === '직접입력' ? '커스텀' : '';
+
+                    return (
+                      <button
+                        key={val.label}
+                        onClick={() => handleOptionChange(option.name, val.label)}
+                        className={`group p-4 rounded-[28px] border-2 transition-all flex flex-col items-center gap-3 ${
+                          isSelected
+                            ? 'bg-emerald-50 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.1)]'
+                            : 'bg-white border-zinc-100 hover:border-zinc-200'
+                        }`}
+                      >
+                        <div className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all ${
+                          isSelected
+                            ? 'bg-emerald-500 text-white scale-110 shadow-lg'
+                            : 'bg-zinc-50 text-zinc-400 group-hover:bg-zinc-100 group-hover:text-zinc-600'
                         }`}>
-                          {val.label}
-                        </span>
-                      </div>
-                    </button>
-                  ))}
+                          {MEMO_SIZE_ICONS[val.label]}
+                        </div>
+                        <div className="text-center">
+                          <p className={`text-[10px] font-black uppercase tracking-widest mb-0.5 ${
+                            isSelected ? 'text-emerald-600' : 'text-zinc-400'
+                          }`}>
+                            {subLabel}
+                          </p>
+                          <div className="flex items-baseline justify-center gap-0.5">
+                            <span className={`text-sm font-black ${
+                              isSelected ? 'text-emerald-900' : 'text-zinc-900'
+                            }`}>
+                              {sizeText}
+                            </span>
+                            {unit !== undefined && (
+                              <span className={`text-[10px] font-bold ${
+                                isSelected ? 'text-emerald-600' : 'text-zinc-400'
+                              }`}>
+                                mm
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (pattern === 'MEMO_PAD' && option.name === '두께') ? (
+                <div className="grid grid-cols-1 gap-3">
+                  {option.values?.map((val) => {
+                    const isSelected = selectedOptions[option.name] === val.label;
+                    const [title, sheets] = val.label.split(' · ');
+                    
+                    return (
+                      <button
+                        key={val.label}
+                        onClick={() => handleOptionChange(option.name, val.label)}
+                        className={`group p-5 rounded-3xl border-2 transition-all flex items-center justify-between ${
+                          isSelected
+                            ? 'bg-emerald-50 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.1)]'
+                            : 'bg-white border-zinc-100 hover:border-zinc-200'
+                        }`}
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${
+                            isSelected
+                              ? 'bg-emerald-500 text-white shadow-lg'
+                              : 'bg-zinc-50 text-zinc-400 group-hover:bg-zinc-100 group-hover:text-zinc-600'
+                          }`}>
+                            <Layers className="w-6 h-6" />
+                          </div>
+                          <div className="text-left">
+                            <p className={`text-sm font-black ${
+                              isSelected ? 'text-emerald-900' : 'text-zinc-900'
+                            }`}>
+                              {title}
+                            </p>
+                            <p className={`text-[10px] font-bold uppercase tracking-widest ${
+                              isSelected ? 'text-emerald-600' : 'text-zinc-400'
+                            }`}>
+                              {sheets}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          {val.priceModifier !== undefined && val.priceModifier !== 0 && (
+                            <p className={`text-xs font-black ${
+                              isSelected ? 'text-emerald-600' : 'text-zinc-400'
+                            }`}>
+                              {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
+                            </p>
+                          )}
+                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mt-1 transition-all ${
+                            isSelected ? 'border-emerald-500 bg-emerald-500' : 'border-zinc-200'
+                          }`}>
+                            {isSelected && <Check className="w-3 h-3 text-white" />}
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
               ) : (
                 <div className="grid grid-cols-2 gap-3">
