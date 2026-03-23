@@ -9,6 +9,7 @@ import { OrderTitleSection } from './shared/OrderTitleSection';
 import { ActionButtons } from './shared/ActionButtons';
 import { NotesSection } from './shared/NotesSection';
 import { PostProcessingSection } from './shared/PostProcessingSection';
+import { PRODUCT_CONFIG } from './shared/constants';
 
 interface BusinessCardCalculatorProps {
   product: Product;
@@ -37,20 +38,17 @@ export const BusinessCardCalculator: React.FC<BusinessCardCalculatorProps> = ({
 }) => {
   const [selectedBusinessCardGroup, setSelectedBusinessCardGroup] = useState<string>('기본 대중형');
   const [expandedPostOption, setExpandedPostOption] = useState<string | null>(null);
+  const config = PRODUCT_CONFIG[product.id];
 
   useEffect(() => {
-    const materialOption = product.options.find(opt => opt.name.includes('용지'));
-    if (materialOption) {
-      const selectedValue = selectedOptions[materialOption.name];
-      const material = BUSINESS_CARD_MATERIALS.find(m => `${m.name} ${m.weight}` === selectedValue);
-      if (material) {
-        setSelectedBusinessCardGroup(material.group);
-      } else {
-        const availableGroups = Array.from(new Set(product.options.find(opt => opt.name.includes('용지'))?.values?.map(v => {
-          const m = BUSINESS_CARD_MATERIALS.find(bm => `${bm.name} ${bm.weight}` === v.label);
-          return m?.group;
-        }).filter(Boolean)));
-        setSelectedBusinessCardGroup((availableGroups[0] as string) || '기본 대중형');
+    if (config) {
+      setSelectedBusinessCardGroup(config.defaultGroup);
+      const materialOption = product.options.find(opt => opt.name.includes('용지'));
+      if (materialOption && !selectedOptions[materialOption.name]) {
+        const defaultMaterial = BUSINESS_CARD_MATERIALS.find(m => m.group === config.defaultGroup);
+        if (defaultMaterial) {
+          handleOptionChange(materialOption.name, `${defaultMaterial.name} ${defaultMaterial.weight}`);
+        }
       }
     }
   }, [product.id]);
@@ -69,12 +67,7 @@ export const BusinessCardCalculator: React.FC<BusinessCardCalculatorProps> = ({
           </div>
           <div className="space-y-6">
             <div className="grid grid-cols-2 gap-3">
-              {['기본 대중형', '고급 감성형', '내추럴/친환경형', '특수지/프리미엄형']
-                .filter(group => {
-                  if (product.id === 'bc-standard') return group === '기본 대중형';
-                  if (product.id === 'bc-premium') return group !== '기본 대중형';
-                  return true;
-                })
+              {(config?.groups || ['기본 대중형', '고급 감성형', '내추럴/친환경형', '특수지/프리미엄형'])
                 .map((group) => (
                   <button
                     key={group}

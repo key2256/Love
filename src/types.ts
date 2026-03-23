@@ -1771,15 +1771,63 @@ export const STICKER_COMMON_OPTIONS = {
       { label: '완칼 (개별조각)', priceModifier: 1000 },
     ]
   },
-  COATING: {
-    name: '코팅 유무',
-    type: 'radio' as const,
-    values: [
-      { label: '없음', priceModifier: 0 },
-      { label: '무광 코팅', priceModifier: 0 },
-      { label: '유광 코팅', priceModifier: 0 },
-    ]
-  },
+  COATING: [
+    {
+      name: '코팅',
+      type: 'radio' as const,
+      values: [
+        { label: '없음', priceModifier: 0 },
+        { label: '무광 코팅', priceModifier: 0 },
+        { label: '유광 코팅', priceModifier: 0 },
+      ]
+    }
+  ],
+  ROUNDING: [
+    {
+      name: '귀돌이',
+      type: 'radio' as const,
+      values: [
+        { label: '없음', priceModifier: 0 },
+        { label: '있음', priceModifier: 5000 },
+      ]
+    },
+    {
+      name: '귀돌이 크기',
+      type: 'radio' as const,
+      values: [
+        { label: '4mm', priceModifier: 0 },
+        { label: '6mm', priceModifier: 0 },
+      ]
+    },
+    {
+      name: '귀돌이 면수',
+      type: 'radio' as const,
+      values: [
+        { label: '1면', priceModifier: 0 },
+        { label: '4면', priceModifier: 1000 },
+      ]
+    },
+    {
+      name: '귀돌이 방향',
+      type: 'select' as const,
+      values: [
+        { label: '상단좌', priceModifier: 0 },
+        { label: '상단우', priceModifier: 0 },
+        { label: '하단좌', priceModifier: 0 },
+        { label: '하단우', priceModifier: 0 },
+      ]
+    }
+  ],
+  PACKAGING: [
+    {
+      name: '폴리백 개별포장',
+      type: 'radio' as const,
+      values: [
+        { label: '없음', priceModifier: 0 },
+        { label: '있음', priceModifier: 500 },
+      ]
+    }
+  ],
   POST_PROCESSING: {
     name: '후가공 옵션',
     type: 'select' as const,
@@ -1788,7 +1836,6 @@ export const STICKER_COMMON_OPTIONS = {
       { label: '금박', priceModifier: 15000 },
       { label: '은박', priceModifier: 15000 },
       { label: '형압', priceModifier: 20000 },
-      { label: '귀도리', priceModifier: 5000 },
     ]
   }
 };
@@ -1854,7 +1901,9 @@ export const PRODUCTS: Product[] = [
       },
       STICKER_COMMON_OPTIONS.WHITE_INK,
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
-      STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING,
       {
         name: '넘버링',
@@ -1919,7 +1968,9 @@ export const PRODUCTS: Product[] = [
       },
       STICKER_COMMON_OPTIONS.WHITE_INK,
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
-      STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['시트형 제작', '반칼 스티커 가공', '정교한 원형 칼선'],
@@ -1958,7 +2009,9 @@ export const PRODUCTS: Product[] = [
       },
       STICKER_COMMON_OPTIONS.WHITE_INK,
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
-      STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['시트형 제작', '반칼 스티커 가공', '세련된 타원 칼선'],
@@ -1997,7 +2050,9 @@ export const PRODUCTS: Product[] = [
       },
       STICKER_COMMON_OPTIONS.WHITE_INK,
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
-      STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['시트형 제작', '반칼 스티커 가공', '안정적인 정사각형'],
@@ -2036,7 +2091,9 @@ export const PRODUCTS: Product[] = [
       },
       STICKER_COMMON_OPTIONS.WHITE_INK,
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
-      STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING,
       {
         name: '넘버링',
@@ -2090,7 +2147,9 @@ export const PRODUCTS: Product[] = [
       },
       STICKER_COMMON_OPTIONS.WHITE_INK,
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
-      STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['자유로운 칼선', '고해상도 인쇄', '강력 접착'],
@@ -2118,7 +2177,9 @@ export const PRODUCTS: Product[] = [
       },
       STICKER_COMMON_OPTIONS.WHITE_INK,
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
-      STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['투명 재질', '자유로운 칼선', '방수 기능'],
@@ -2146,7 +2207,9 @@ export const PRODUCTS: Product[] = [
       },
       STICKER_COMMON_OPTIONS.WHITE_INK,
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
-      STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['고투명 재질', '투명 후지', '자유로운 칼선'],
@@ -2182,7 +2245,9 @@ export const PRODUCTS: Product[] = [
         }))
       },
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
-      STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['홀로그램 효과', '자유로운 칼선', '강력 접착'],
@@ -2227,7 +2292,9 @@ export const PRODUCTS: Product[] = [
           { label: '반칼 (시트형)', priceModifier: 500 },
         ]
       },
-      STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['개별 재단', '고해상도 인쇄', '강력 접착'],
@@ -2281,7 +2348,9 @@ export const PRODUCTS: Product[] = [
           { label: '롤 재단', priceModifier: 0 },
         ]
       },
-      STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['자동 라벨러 호환', '대량 제작 최적화', '다양한 재질'],
@@ -2312,7 +2381,9 @@ export const PRODUCTS: Product[] = [
       },
       STICKER_COMMON_OPTIONS.WHITE_INK,
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
-      STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['자외선 차단', '완벽 방수', '강력 접착'],
@@ -2357,7 +2428,9 @@ export const PRODUCTS: Product[] = [
           { label: '모양 재단 (도송)', priceModifier: 5000 },
         ]
       },
-      STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['자유로운 탈부착', '반복 사용 가능', '강력한 자력'],
@@ -2388,7 +2461,9 @@ export const PRODUCTS: Product[] = [
       },
       STICKER_COMMON_OPTIONS.WHITE_INK,
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
-      STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['끈적임 없음', '재부착 가능', '방수 기능'],
@@ -2416,7 +2491,9 @@ export const PRODUCTS: Product[] = [
       },
       STICKER_COMMON_OPTIONS.WHITE_INK,
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
-      STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['저온 접착력', '습기 강함', '식품 패키지용'],
@@ -2442,8 +2519,10 @@ export const PRODUCTS: Product[] = [
           priceModifier: 0
         }))
       },
-      STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.COATING,
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
+      ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['카드 표준 규격', '얇은 두께', '고해상도 인쇄'],
@@ -2487,7 +2566,9 @@ export const PRODUCTS: Product[] = [
         ]
       },
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
-      STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['이벤트 최적화', '내용 보안', '간편한 부착'],

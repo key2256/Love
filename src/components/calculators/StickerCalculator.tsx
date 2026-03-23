@@ -9,7 +9,7 @@ import { OrderTitleSection } from './shared/OrderTitleSection';
 import { ActionButtons } from './shared/ActionButtons';
 import { NotesSection } from './shared/NotesSection';
 import { PostProcessingSection } from './shared/PostProcessingSection';
-import { SHAPE_ICONS } from './shared/constants';
+import { SHAPE_ICONS, PRODUCT_CONFIG } from './shared/constants';
 
 interface StickerCalculatorProps {
   product: Product;
@@ -38,14 +38,17 @@ export const StickerCalculator: React.FC<StickerCalculatorProps> = ({
 }) => {
   const [expandedGroup, setExpandedGroup] = useState<string | null>('일반/기본 용지');
   const [expandedPostOption, setExpandedPostOption] = useState<string | null>(null);
+  const config = PRODUCT_CONFIG[product.id];
 
   useEffect(() => {
-    const materialOption = product.options.find(opt => opt.name.includes('재질') || opt.name.includes('용지'));
-    if (materialOption) {
-      const selectedValue = selectedOptions[materialOption.name];
-      const material = PAPER_MATERIALS.find(m => m.name === selectedValue);
-      if (material) {
-        setExpandedGroup(material.group);
+    if (config) {
+      setExpandedGroup(config.defaultGroup);
+      const materialOption = product.options.find(opt => opt.name.includes('재질') || opt.name.includes('용지'));
+      if (materialOption && !selectedOptions[materialOption.name]) {
+        const defaultMaterial = PAPER_MATERIALS.find(m => m.group === config.defaultGroup);
+        if (defaultMaterial) {
+          handleOptionChange(materialOption.name, defaultMaterial.name);
+        }
       }
     }
   }, [product.id]);
@@ -63,7 +66,7 @@ export const StickerCalculator: React.FC<StickerCalculatorProps> = ({
             </label>
           </div>
           <div className="space-y-3">
-            {['일반/기본 용지', '방수/합성지', '투명/PET', '메탈/광택 특수 재질', '프리미엄 라벨(GMUND)'].map(group => {
+            {(config?.groups || ['일반/기본 용지', '방수/합성지', '투명/PET', '메탈/광택 특수 재질', '프리미엄 라벨(GMUND)']).map(group => {
               const materialsInGroup = PAPER_MATERIALS.filter(m => m.group === group);
               const isExpanded = expandedGroup === group;
               const hasSelectedInGroup = materialsInGroup.some(m => selectedOptions[option.name] === m.name);

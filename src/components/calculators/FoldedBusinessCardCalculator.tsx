@@ -9,6 +9,7 @@ import { OrderTitleSection } from './shared/OrderTitleSection';
 import { ActionButtons } from './shared/ActionButtons';
 import { NotesSection } from './shared/NotesSection';
 import { PostProcessingSection } from './shared/PostProcessingSection';
+import { PRODUCT_CONFIG } from './shared/constants';
 
 interface FoldedBusinessCardCalculatorProps {
   product: Product;
@@ -37,14 +38,17 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
 }) => {
   const [selectedBusinessCardGroup, setSelectedBusinessCardGroup] = useState<string>('기본 대중형');
   const [expandedPostOption, setExpandedPostOption] = useState<string | null>(null);
+  const config = PRODUCT_CONFIG[product.id];
 
   useEffect(() => {
-    const materialOption = product.options.find(opt => opt.name.includes('용지'));
-    if (materialOption) {
-      const selectedValue = selectedOptions[materialOption.name];
-      const material = BUSINESS_CARD_MATERIALS.find(m => `${m.name} ${m.weight}` === selectedValue);
-      if (material) {
-        setSelectedBusinessCardGroup(material.group);
+    if (config) {
+      setSelectedBusinessCardGroup(config.defaultGroup);
+      const materialOption = product.options.find(opt => opt.name.includes('용지'));
+      if (materialOption && !selectedOptions[materialOption.name]) {
+        const defaultMaterial = BUSINESS_CARD_MATERIALS.find(m => m.group === config.defaultGroup);
+        if (defaultMaterial) {
+          handleOptionChange(materialOption.name, `${defaultMaterial.name} ${defaultMaterial.weight}`);
+        }
       }
     }
   }, [product.id]);
@@ -62,7 +66,7 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
             </label>
           </div>
           <div className="flex flex-wrap gap-2 mb-4">
-            {['기본 대중형', '고급 감성형', '최고급 프리미엄'].map(group => (
+            {(config?.groups || ['기본 대중형', '고급 감성형', '최고급 프리미엄']).map(group => (
               <button
                 key={group}
                 onClick={() => setSelectedBusinessCardGroup(group)}

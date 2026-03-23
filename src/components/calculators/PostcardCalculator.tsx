@@ -9,7 +9,7 @@ import { OrderTitleSection } from './shared/OrderTitleSection';
 import { ActionButtons } from './shared/ActionButtons';
 import { NotesSection } from './shared/NotesSection';
 import { PostProcessingSection } from './shared/PostProcessingSection';
-import { POSTCARD_CONFIG } from './shared/constants';
+import { PRODUCT_CONFIG } from './shared/constants';
 
 interface PostcardCalculatorProps {
   product: Product;
@@ -38,15 +38,15 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
 }) => {
   const [selectedPostcardGroup, setSelectedPostcardGroup] = useState<string>('기본 대중형');
   const [expandedPostOption, setExpandedPostOption] = useState<string | null>(null);
+  const config = PRODUCT_CONFIG[product.id as keyof typeof PRODUCT_CONFIG];
 
   useEffect(() => {
-    const config = POSTCARD_CONFIG[product.id as keyof typeof POSTCARD_CONFIG];
     if (config) {
       setSelectedPostcardGroup(config.defaultGroup);
-      const materialOption = product.options.find(opt => opt.name.includes('용지'));
-      if (materialOption) {
+      const materialOption = product.options.find(opt => opt.name.includes('용지') && opt.name !== '용지 그룹');
+      if (materialOption && !selectedOptions[materialOption.name]) {
         const defaultMaterial = POSTCARD_MATERIALS.find(m => m.group === config.defaultGroup);
-        if (defaultMaterial && !selectedOptions[materialOption.name]) {
+        if (defaultMaterial) {
           handleOptionChange(materialOption.name, `${defaultMaterial.name} ${defaultMaterial.weight}`);
         }
       }
@@ -56,17 +56,18 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
   return (
     <div className="space-y-10">
       {/* 1. Material Selection (Grouped) */}
-      {product.options.filter(opt => opt.name.includes('용지')).map((option) => (
-        <div key={option.name} className="space-y-4">
-          <div className="flex items-center gap-2">
-            <div className="w-1 h-4 bg-emerald-500 rounded-full" />
-            <Layers className="w-4 h-4 text-zinc-400" />
-            <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
-              {option.name}
-            </label>
-          </div>
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <div className="w-1 h-4 bg-emerald-500 rounded-full" />
+          <Layers className="w-4 h-4 text-zinc-400" />
+          <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
+            용지 선택
+          </label>
+        </div>
+        
+        {config && config.groups.length > 1 && (
           <div className="flex flex-wrap gap-2 mb-4">
-            {POSTCARD_CONFIG[product.id as keyof typeof POSTCARD_CONFIG]?.groups.map(group => (
+            {config.groups.map(group => (
               <button
                 key={group}
                 onClick={() => setSelectedPostcardGroup(group)}
@@ -80,17 +81,24 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
               </button>
             ))}
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {option.values?.filter(val => {
+        )}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {product.options
+            .filter(opt => opt.name.includes('용지') && opt.name !== '용지 그룹')
+            .flatMap(option => option.values?.map(val => ({ ...val, optionName: option.name })) || [])
+            .filter(val => {
+              if (config?.allowedMaterials && !config.allowedMaterials.includes(val.label)) return false;
               const material = POSTCARD_MATERIALS.find(m => `${m.name} ${m.weight}` === val.label);
               return material?.group === selectedPostcardGroup;
-            }).map((val) => {
+            })
+            .map((val) => {
               const material = POSTCARD_MATERIALS.find(m => `${m.name} ${m.weight}` === val.label);
-              const isSelected = selectedOptions[option.name] === val.label;
+              const isSelected = selectedOptions[val.optionName] === val.label;
               return (
                 <button
-                  key={val.label}
-                  onClick={() => handleOptionChange(option.name, val.label)}
+                  key={`${val.optionName}-${val.label}`}
+                  onClick={() => handleOptionChange(val.optionName, val.label)}
                   className={`group p-5 rounded-2xl text-left border transition-all relative overflow-hidden ${
                     isSelected
                       ? 'bg-emerald-50 border-emerald-500 ring-1 ring-emerald-500'
@@ -118,9 +126,8 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
                 </button>
               );
             })}
-          </div>
         </div>
-      ))}
+      </div>
 
       {/* 2. Standard Options */}
       {product.options.filter(opt => {

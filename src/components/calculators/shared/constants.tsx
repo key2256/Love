@@ -194,21 +194,23 @@ export const getNoteGroup = (optionName: string) => {
   return null;
 };
 
-export const POSTCARD_CONFIG: Record<string, {
+export const PRODUCT_CONFIG: Record<string, {
   defaultGroup: string;
   groups: string[];
   allowedMaterials?: string[];
   allowedPostProcessing?: string[];
 }> = {
+  // Postcards
   'stk-postcard-standard': {
     defaultGroup: '기본 대중형',
     groups: ['기본 대중형'],
+    allowedPostProcessing: ['코팅', '귀돌이', '타공', '폴리백 개별포장'],
   },
   'stk-postcard-special': {
     defaultGroup: '기본 대중형',
     groups: ['기본 대중형'],
     allowedMaterials: ['아트지 250g', '스노우 250g'],
-    allowedPostProcessing: ['인쇄 도수', '코팅', '귀돌이', '타공'],
+    allowedPostProcessing: ['인쇄 도수', '코팅', '귀돌이', '타공', '폴리백 개별포장'],
   },
   'stk-postcard-shape': {
     defaultGroup: '기본 대중형',
@@ -218,9 +220,63 @@ export const POSTCARD_CONFIG: Record<string, {
   'stk-postcard-premium': {
     defaultGroup: '고급 감성형',
     groups: ['고급 감성형', '친환경/내추럴형', '컬러/특수지형'],
+    allowedPostProcessing: ['인쇄 도수', '코팅', '귀돌이', '타공', '폴리백 개별포장'],
   },
   'stk-postcard-effect': {
     defaultGroup: '기본 대중형',
     groups: ['기본 대중형', '고급 감성형'],
+    allowedPostProcessing: ['인쇄 도수', '코팅', '귀돌이', '타공', '폴리백 개별포장'],
+  },
+  // Stickers
+  'stk-rect': {
+    defaultGroup: '일반/기본 용지',
+    groups: ['일반/기본 용지', '방수/합성지', '투명/PET', '메탈/광택 특수 재질', '프리미엄 라벨(GMUND)'],
+    allowedPostProcessing: ['코팅', '귀돌이', '폴리백 개별포장'],
+  },
+  'stk-circle': {
+    defaultGroup: '일반/기본 용지',
+    groups: ['일반/기본 용지', '방수/합성지', '투명/PET', '메탈/광택 특수 재질', '프리미엄 라벨(GMUND)'],
+    allowedPostProcessing: ['코팅', '귀돌이', '폴리백 개별포장'],
+  },
+  'stk-oval': {
+    defaultGroup: '일반/기본 용지',
+    groups: ['일반/기본 용지', '방수/합성지', '투명/PET', '메탈/광택 특수 재질', '프리미엄 라벨(GMUND)'],
+    allowedPostProcessing: ['코팅', '귀돌이', '폴리백 개별포장'],
+  },
+  'stk-round-rect': {
+    defaultGroup: '일반/기본 용지',
+    groups: ['일반/기본 용지', '방수/합성지', '투명/PET', '메탈/광택 특수 재질', '프리미엄 라벨(GMUND)'],
+    allowedPostProcessing: ['코팅', '귀돌이', '폴리백 개별포장'],
+  },
+  'stk-various': {
+    defaultGroup: '일반/기본 용지',
+    groups: ['일반/기본 용지', '방수/합성지', '투명/PET', '메탈/광택 특수 재질', '프리미엄 라벨(GMUND)'],
+    allowedPostProcessing: ['코팅', '귀돌이', '폴리백 개별포장'],
+  },
+  'stk-free-normal': {
+    defaultGroup: '일반/기본 용지',
+    groups: ['일반/기본 용지', '방수/합성지', '투명/PET', '메탈/광택 특수 재질', '프리미엄 라벨(GMUND)'],
+    allowedPostProcessing: ['코팅', '귀돌이', '폴리백 개별포장'],
+  },
+  // Business Cards
+  'bc-standard': {
+    defaultGroup: '기본 대중형',
+    groups: ['기본 대중형'],
+    allowedPostProcessing: ['코팅', '귀돌이', '타공', '명함케이스'],
+  },
+  'bc-premium': {
+    defaultGroup: '고급 감성형',
+    groups: ['고급 감성형', '내추럴/친환경형', '특수지/프리미엄형'],
+    allowedPostProcessing: ['귀돌이', '타공', '명함케이스'],
+  },
+  'bc-template': {
+    defaultGroup: '기본 대중형',
+    groups: ['기본 대중형', '고급 감성형'],
+    allowedPostProcessing: ['코팅', '귀돌이', '타공', '명함케이스'],
+  },
+  'bc-folded': {
+    defaultGroup: '기본 대중형',
+    groups: ['기본 대중형', '고급 감성형', '최고급 프리미엄'],
+    allowedPostProcessing: ['코팅', '귀돌이', '타공', '오시', '접지', '명함케이스'],
   }
 };

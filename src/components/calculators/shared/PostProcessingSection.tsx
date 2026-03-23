@@ -15,7 +15,7 @@ import { Product } from '../../../types';
 import { 
   FOLDING_DIRECTION_ICONS, 
   FOLDING_TYPE_ICONS, 
-  POSTCARD_CONFIG 
+  PRODUCT_CONFIG 
 } from './constants';
 
 interface PostProcessingSectionProps {
@@ -35,7 +35,7 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
   expandedPostOption,
   setExpandedPostOption
 }) => {
-  const config = pattern === 'POSTCARD' ? POSTCARD_CONFIG[product.id] : null;
+  const config = PRODUCT_CONFIG[product.id];
 
   const postOptions = [
     { 
@@ -49,57 +49,57 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
       id: 'coating', 
       name: '코팅', 
       icon: <Layers className="w-5 h-5" />, 
-      active: selectedOptions['코팅'] !== '없음', 
-      hidden: product.id === 'bc-premium' || (config?.allowedPostProcessing && !config.allowedPostProcessing.includes('코팅'))
+      active: selectedOptions['코팅'] !== '없음' && selectedOptions['코팅'] !== undefined, 
+      hidden: !config?.allowedPostProcessing?.includes('코팅')
     },
     { 
       id: 'rounding', 
       name: '귀돌이', 
       icon: <Scissors className="w-5 h-5" />, 
       active: selectedOptions['귀돌이'] === '있음',
-      hidden: config?.allowedPostProcessing && !config.allowedPostProcessing.includes('귀돌이')
+      hidden: !config?.allowedPostProcessing?.includes('귀돌이')
     },
     { 
       id: 'punching', 
       name: '타공', 
       icon: <Droplets className="w-5 h-5" />, 
       active: selectedOptions['타공'] === '있음', 
-      hidden: pattern === 'DESIGN_CARD' || (config?.allowedPostProcessing && !config.allowedPostProcessing.includes('타공'))
+      hidden: !config?.allowedPostProcessing?.includes('타공')
     },
     { 
       id: 'creasing', 
       name: '오시', 
       icon: <Paintbrush className="w-5 h-5" />, 
       active: selectedOptions['오시'] === '있음', 
-      hidden: pattern !== 'POSTCARD' || (config?.allowedPostProcessing && !config.allowedPostProcessing.includes('오시'))
+      hidden: !config?.allowedPostProcessing?.includes('오시')
     },
     { 
       id: 'perforation', 
       name: '미싱', 
       icon: <Scissors className="w-5 h-5" />, 
       active: selectedOptions['미싱'] === '있음', 
-      hidden: pattern !== 'POSTCARD' || (config?.allowedPostProcessing && !config.allowedPostProcessing.includes('미싱'))
+      hidden: !config?.allowedPostProcessing?.includes('미싱')
     },
     { 
       id: 'folding', 
       name: '접지', 
       icon: <FileUp className="w-5 h-5" />, 
       active: selectedOptions['접지'] === '있음', 
-      hidden: pattern !== 'POSTCARD' || (config?.allowedPostProcessing && !config.allowedPostProcessing.includes('접지'))
+      hidden: !config?.allowedPostProcessing?.includes('접지')
     },
     { 
       id: 'packaging', 
       name: '포장', 
       icon: <ShoppingCart className="w-5 h-5" />, 
-      active: selectedOptions['폴리백 개별포장'] === '있음', 
-      hidden: pattern !== 'POSTCARD' || (config?.allowedPostProcessing && !config.allowedPostProcessing.includes('폴리백 개별포장'))
+      active: selectedOptions['폴리백 개별포장'] === '있음' || selectedOptions['폴리백 개별 포장'] === '있음', 
+      hidden: !config?.allowedPostProcessing?.includes('폴리백 개별포장') && !config?.allowedPostProcessing?.includes('폴리백 개별 포장')
     },
     { 
       id: 'case', 
       name: '케이스', 
       icon: <Package className="w-5 h-5" />, 
-      active: selectedOptions['명함케이스'] !== '없음', 
-      hidden: pattern === 'DESIGN_CARD' || pattern === 'POSTCARD'
+      active: selectedOptions['명함케이스'] !== '없음' && selectedOptions['명함케이스'] !== undefined, 
+      hidden: !config?.allowedPostProcessing?.includes('명함케이스')
     }
   ].filter(item => !item.hidden);
 
