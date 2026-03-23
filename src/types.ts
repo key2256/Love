@@ -1491,7 +1491,7 @@ export const CATEGORIES: Category[] = [
       },
       {
         groupName: '노트',
-        items: ['스프링 노트', '실제본 노트', '중철 노트', '하드커버 노트']
+        items: ['스프링 노트', '레더 노트', '중철 노트', '하드커버 노트']
       }
     ]
   },
@@ -2580,33 +2580,59 @@ export const PRODUCTS: Product[] = [
     tagline: '필기가 편한 스프링 제본 노트.',
     description: '튼튼한 스프링으로 마감되어 펼침이 좋은 노트입니다. 학원, 기업 홍보용으로 좋습니다.',
     image: 'https://picsum.photos/seed/note/800/800',
-    minQuantity: 50,
-    basePrice: 25000,
+    minQuantity: 1,
+    basePrice: 5000,
     options: [
       {
-        name: '사이즈',
+        name: '규격',
         type: 'select',
         values: [
           { label: 'A5 (148x210)', priceModifier: 0 },
-          { label: 'B5 (182x257)', priceModifier: 5000 },
-          { label: 'A4 (210x297)', priceModifier: 8000 },
+          { label: 'B5 (182x257)', priceModifier: 2000 },
+          { label: 'A4 (210x297)', priceModifier: 4000 },
         ]
       },
       {
-        name: '표지 코팅',
+        name: '표지 구성',
         type: 'radio',
         values: [
-          { label: '무광 코팅', priceModifier: 0 },
-          { label: '유광 코팅', priceModifier: 0 },
+          { label: '단단한 하드커버', priceModifier: 2000 },
+          { label: '유연한 소프트커버', priceModifier: 0 },
         ]
       },
       {
-        name: '내지 매수',
+        name: '내지 종류',
+        type: 'radio',
+        values: [
+          { label: '무지', priceModifier: 0 },
+          { label: '줄(라인)', priceModifier: 0 },
+          { label: '모눈(그리드)', priceModifier: 500 },
+        ]
+      },
+      {
+        name: '내지 색상',
+        type: 'radio',
+        values: [
+          { label: '백색', priceModifier: 0 },
+          { label: '미색', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '내지 장수',
         type: 'select',
         values: [
           { label: '40매', priceModifier: 0 },
-          { label: '60매', priceModifier: 3000 },
-          { label: '80매', priceModifier: 6000 },
+          { label: '60매', priceModifier: 1500 },
+          { label: '80매', priceModifier: 3000 },
+          { label: '100매', priceModifier: 4500 },
+        ]
+      },
+      {
+        name: '스프링 방향',
+        type: 'radio',
+        values: [
+          { label: '좌철 (옆으로 넘김)', priceModifier: 0 },
+          { label: '상철 (위로 넘김)', priceModifier: 0 },
         ]
       },
       {
@@ -2625,11 +2651,98 @@ export const PRODUCTS: Product[] = [
     recommendation: '학습용이나 업무용으로는 "B5" 사이즈를, 휴대용으로는 "A5" 사이즈를 추천합니다.',
     warnings: [
       '스프링 타공 부위에 중요한 디자인이나 텍스트가 걸리지 않도록 주의하세요.',
-      '표지 코팅은 내구성을 위해 무광/유광 중 하나를 반드시 선택하는 것이 좋습니다.'
+      '표지 디자인 시 제본 여백을 충분히 고려해야 합니다.'
     ],
     notes: [
-      '내지는 기본 무지(인쇄 없음) 기준이며, 내지 인쇄 필요 시 별도 문의 바랍니다.',
-      '스프링 색상은 기본 실버/화이트/블랙 중 선택 가능합니다.'
+      '내지는 기본 백색 모조지 80g 기준입니다.',
+      '대량 주문 시 별도 견적 문의 바랍니다.'
+    ]
+  },
+  {
+    id: 'note-leather',
+    name: '레더 노트',
+    category: 'memo-note',
+    subCategory: '레더 노트',
+    tagline: '고급스러운 가죽 질감의 프리미엄 노트.',
+    description: '부드러운 인조가죽 커버로 제작되어 품격 있는 기록을 선사합니다. 선물용으로 탁월합니다.',
+    image: 'https://picsum.photos/seed/leather-note/800/800',
+    minQuantity: 1,
+    basePrice: 12000,
+    options: [
+      {
+        name: '규격',
+        type: 'select',
+        values: [
+          { label: 'A5 (148x210)', priceModifier: 0 },
+          { label: 'B5 (182x257)', priceModifier: 3000 },
+        ]
+      },
+      {
+        name: '커버 스타일',
+        type: 'radio',
+        values: [
+          { label: '클래식 블랙', priceModifier: 0 },
+          { label: '빈티지 브라운', priceModifier: 0 },
+          { label: '네이비 블루', priceModifier: 0 },
+          { label: '포레스트 그린', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '커버 인쇄',
+        type: 'radio',
+        values: [
+          { label: '인쇄 없음', priceModifier: 0 },
+          { label: '불박(음각) 인쇄', priceModifier: 3000 },
+          { label: '박(금/은) 인쇄', priceModifier: 4000 },
+        ]
+      },
+      {
+        name: '엣지 마감',
+        type: 'radio',
+        values: [
+          { label: '기본 마감', priceModifier: 0 },
+          { label: '금박 엣지', priceModifier: 2000 },
+          { label: '은박 엣지', priceModifier: 2000 },
+        ]
+      },
+      {
+        name: '내지 종류',
+        type: 'radio',
+        values: [
+          { label: '무지', priceModifier: 0 },
+          { label: '줄(라인)', priceModifier: 0 },
+          { label: '도트', priceModifier: 500 },
+        ]
+      },
+      {
+        name: '내지 색상',
+        type: 'radio',
+        values: [
+          { label: '백색', priceModifier: 0 },
+          { label: '미색', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '내지 장수',
+        type: 'select',
+        values: [
+          { label: '80매', priceModifier: 0 },
+          { label: '100매', priceModifier: 2000 },
+          { label: '120매', priceModifier: 4000 },
+        ]
+      }
+    ],
+    features: ['프리미엄 인조가죽', '실제본 방식', '고급 미색 모조지'],
+    leadTime: '7~10 영업일',
+    badges: ['프리미엄', '선물용', '고급형'],
+    recommendation: '중요한 미팅이나 일기장용으로 "A5" 사이즈를 추천합니다.',
+    warnings: [
+      '가죽 재질 특성상 미세한 결 차이가 있을 수 있습니다.',
+      '불박 인쇄 시 너무 얇은 선은 표현이 어려울 수 있습니다.'
+    ],
+    notes: [
+      '내지는 기본 미색 모조지 80g 기준입니다.',
+      '개별 박스 포장 옵션은 별도 문의 바랍니다.'
     ]
   },
   {

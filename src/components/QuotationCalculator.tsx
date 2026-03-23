@@ -21,7 +21,12 @@ import {
   Check,
   Info,
   Shapes,
-  AlertCircle
+  AlertCircle,
+  BookOpen,
+  Palette,
+  Settings,
+  Type,
+  Layout
 } from 'lucide-react';
 import { Product, Quotation, PAPER_MATERIALS, POSTCARD_MATERIALS, BUSINESS_CARD_MATERIALS, BusinessCardPaperMaterial, DESIGN_CARD_TEMPLATES, Template } from '../types';
 
@@ -141,6 +146,64 @@ const MEMO_SIZE_ICONS: Record<string, React.ReactNode> = {
   )
 };
 
+const NOTE_SIZE_ICONS: Record<string, React.ReactNode> = {
+  'A5 (148x210)': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 fill-current">
+      <rect x="12" y="8" width="16" height="24" rx="1" />
+    </svg>
+  ),
+  'B5 (182x257)': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 fill-current">
+      <rect x="10" y="7" width="20" height="26" rx="1" />
+    </svg>
+  ),
+  'A4 (210x297)': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 fill-current">
+      <rect x="8" y="6" width="24" height="28" rx="1" />
+    </svg>
+  )
+};
+
+const NOTE_INNER_ICONS: Record<string, React.ReactNode> = {
+  '무지': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-current fill-none" strokeWidth="2">
+      <rect x="10" y="10" width="20" height="20" />
+    </svg>
+  ),
+  '줄(라인)': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-current fill-none" strokeWidth="2">
+      <rect x="10" y="10" width="20" height="20" />
+      <line x1="13" y1="15" x2="27" y2="15" />
+      <line x1="13" y1="20" x2="27" y2="20" />
+      <line x1="13" y1="25" x2="27" y2="25" />
+    </svg>
+  ),
+  '모눈(그리드)': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-current fill-none" strokeWidth="1.5">
+      <rect x="10" y="10" width="20" height="20" />
+      <line x1="15" y1="10" x2="15" y2="30" />
+      <line x1="20" y1="10" x2="20" y2="30" />
+      <line x1="25" y1="10" x2="25" y2="30" />
+      <line x1="10" y1="15" x2="30" y2="15" />
+      <line x1="10" y1="20" x2="30" y2="20" />
+      <line x1="10" y1="25" x2="30" y2="25" />
+    </svg>
+  ),
+  '도트': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 fill-current">
+      <circle cx="15" cy="15" r="1.5" />
+      <circle cx="20" cy="15" r="1.5" />
+      <circle cx="25" cy="15" r="1.5" />
+      <circle cx="15" cy="20" r="1.5" />
+      <circle cx="20" cy="20" r="1.5" />
+      <circle cx="25" cy="20" r="1.5" />
+      <circle cx="15" cy="25" r="1.5" />
+      <circle cx="20" cy="25" r="1.5" />
+      <circle cx="25" cy="25" r="1.5" />
+    </svg>
+  )
+};
+
 const POSTCARD_CONFIG: Record<string, {
   allowedGroups?: string[];
   allowedMaterials?: string[];
@@ -197,6 +260,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
     if (product.id === 'bc-standard' || product.id === 'bc-premium') return 'BUSINESS_CARD';
     if (product.id === 'bc-folded') return 'FOLDED_BUSINESS_CARD';
     if (product.id === 'memo-standard') return 'MEMO_PAD';
+    if (product.id === 'note-spring' || product.id === 'note-leather') return 'NOTE';
     if (product.category === 'card-paper') return 'PAPER_GOODS';
     if (product.category === 'binding-booklet' || product.id === 'note-spring') return 'BINDING_GOODS';
     if (product.category === 'poster-promo') return 'LARGE_FORMAT';
@@ -1588,9 +1652,23 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
               return true;
             }
 
+            if (pattern === 'NOTE') {
+              const noteExclusions = ['제작수량', '수량', '주문수량'];
+              if (noteExclusions.includes(normalizedName)) return false;
+              return true;
+            }
+
             if (opt.name.includes('용지')) return false;
 
             return true;
+          }).sort((a, b) => {
+            if (pattern === 'NOTE') {
+              const springOrder = ['규격', '표지 구성', '내지 종류', '내지 색상', '내지 장수', '스프링 방향', '스프링 색상'];
+              const leatherOrder = ['규격', '커버 스타일', '커버 인쇄', '엣지 마감', '내지 종류', '내지 색상', '내지 장수'];
+              const order = product.id === 'note-spring' ? springOrder : leatherOrder;
+              return order.indexOf(a.name) - order.indexOf(b.name);
+            }
+            return 0;
           }).map((option) => (
             <div key={option.name} className="space-y-4">
               {pattern === 'MEMO_PAD' && option.name === '두께' && (
@@ -1611,6 +1689,75 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                       <p className="text-[10px] text-zinc-500 mt-1 leading-relaxed">
                         필기감이 우수하고 잉크 번짐이 적어<br />
                         메모지 제작에 가장 최적화된 용지입니다.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {pattern === 'NOTE' && option.name === '표지 구성' && (
+                <div className="space-y-4 pb-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1 h-4 bg-emerald-500 rounded-full" />
+                    <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
+                      표지 기본 사양
+                    </label>
+                  </div>
+                  <div className="p-6 rounded-3xl bg-zinc-50 border border-zinc-100 flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-white border border-zinc-200 flex items-center justify-center shadow-sm">
+                      <BookOpen className="w-6 h-6 text-zinc-400" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-black text-zinc-900">스노우 300g + 단면 무광코팅</p>
+                      <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-0.5">Fixed Specification</p>
+                      <p className="text-[10px] text-zinc-500 mt-1 leading-relaxed">
+                        두툼한 두께감과 부드러운 질감으로<br />
+                        노트 표지에 가장 많이 사용되는 사양입니다.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {pattern === 'NOTE' && option.name === '커버 스타일' && (
+                <div className="space-y-4 pb-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1 h-4 bg-emerald-500 rounded-full" />
+                    <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
+                      커버 기본 사양
+                    </label>
+                  </div>
+                  <div className="p-6 rounded-3xl bg-zinc-50 border border-zinc-100 flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-white border border-zinc-200 flex items-center justify-center shadow-sm">
+                      <Palette className="w-6 h-6 text-zinc-400" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-black text-zinc-900">프리미엄 인조가죽</p>
+                      <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-0.5">Fixed Specification</p>
+                      <p className="text-[10px] text-zinc-500 mt-1 leading-relaxed">
+                        고급스러운 질감과 내구성을 갖춘<br />
+                        프리미엄 가죽 커버입니다.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {pattern === 'NOTE' && option.name === '내지 종류' && (
+                <div className="space-y-4 pb-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1 h-4 bg-emerald-500 rounded-full" />
+                    <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
+                      내지 기본 사양
+                    </label>
+                  </div>
+                  <div className="p-6 rounded-3xl bg-zinc-50 border border-zinc-100 flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-white border border-zinc-200 flex items-center justify-center shadow-sm">
+                      <FileText className="w-6 h-6 text-zinc-400" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-black text-zinc-900">{product.id === 'note-spring' ? '모조 80g' : '모조 100g'}</p>
+                      <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-0.5">Fixed Specification</p>
+                      <p className="text-[10px] text-zinc-500 mt-1 leading-relaxed">
+                        비침이 적고 필기감이 부드러운<br />
+                        노트 전용 고급 모조지입니다.
                       </p>
                     </div>
                   </div>
@@ -1713,6 +1860,246 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                               </span>
                             )}
                           </div>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (pattern === 'NOTE' && option.name === '규격') ? (
+                <div className="grid grid-cols-3 gap-3">
+                  {option.values?.map((val) => {
+                    const isSelected = selectedOptions[option.name] === val.label;
+                    return (
+                      <button
+                        key={val.label}
+                        onClick={() => handleOptionChange(option.name, val.label)}
+                        className={`group p-4 rounded-3xl border-2 transition-all flex flex-col items-center gap-3 ${
+                          isSelected
+                            ? 'bg-emerald-50 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.1)]'
+                            : 'bg-white border-zinc-100 hover:border-zinc-200'
+                        }`}
+                      >
+                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${
+                          isSelected
+                            ? 'bg-emerald-500 text-white shadow-lg'
+                            : 'bg-zinc-50 text-zinc-400 group-hover:bg-zinc-100 group-hover:text-zinc-600'
+                        }`}>
+                          {NOTE_SIZE_ICONS[val.label]}
+                        </div>
+                        <div className="text-center">
+                          <p className={`text-[11px] font-black uppercase tracking-widest ${
+                            isSelected ? 'text-emerald-900' : 'text-zinc-500'
+                          }`}>
+                            {val.label.split(' ')[0]}
+                          </p>
+                          <p className={`text-[9px] font-bold ${
+                            isSelected ? 'text-emerald-600' : 'text-zinc-400'
+                          }`}>
+                            {val.label.split(' ')[1]}
+                          </p>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (pattern === 'NOTE' && option.name === '내지 종류') ? (
+                <div className="grid grid-cols-2 gap-3">
+                  {option.values?.map((val) => {
+                    const isSelected = selectedOptions[option.name] === val.label;
+                    return (
+                      <button
+                        key={val.label}
+                        onClick={() => handleOptionChange(option.name, val.label)}
+                        className={`group p-4 rounded-3xl border-2 transition-all flex items-center gap-4 ${
+                          isSelected
+                            ? 'bg-emerald-50 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.1)]'
+                            : 'bg-white border-zinc-100 hover:border-zinc-200'
+                        }`}
+                      >
+                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${
+                          isSelected
+                            ? 'bg-emerald-500 text-white shadow-lg'
+                            : 'bg-zinc-50 text-zinc-400 group-hover:bg-zinc-100 group-hover:text-zinc-600'
+                        }`}>
+                          {NOTE_INNER_ICONS[val.label]}
+                        </div>
+                        <div className="text-left">
+                          <p className={`text-sm font-black ${
+                            isSelected ? 'text-emerald-900' : 'text-zinc-900'
+                          }`}>
+                            {val.label}
+                          </p>
+                          <p className={`text-[10px] font-bold uppercase tracking-widest ${
+                            isSelected ? 'text-emerald-600' : 'text-zinc-400'
+                          }`}>
+                            Inner Type
+                          </p>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (pattern === 'NOTE' && option.name === '내지 색상') ? (
+                <div className="grid grid-cols-2 gap-3">
+                  {option.values?.map((val) => {
+                    const isSelected = selectedOptions[option.name] === val.label;
+                    const colorHex = val.label === '백색' ? '#FFFFFF' : '#F5F5DC';
+                    return (
+                      <button
+                        key={val.label}
+                        onClick={() => handleOptionChange(option.name, val.label)}
+                        className={`group p-4 rounded-3xl border-2 transition-all flex items-center gap-4 ${
+                          isSelected
+                            ? 'bg-emerald-50 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.1)]'
+                            : 'bg-white border-zinc-100 hover:border-zinc-200'
+                        }`}
+                      >
+                        <div 
+                          className="w-10 h-10 rounded-full border border-zinc-200 shadow-inner"
+                          style={{ backgroundColor: colorHex }}
+                        />
+                        <div className="text-left">
+                          <p className={`text-sm font-black ${
+                            isSelected ? 'text-emerald-900' : 'text-zinc-900'
+                          }`}>
+                            {val.label}
+                          </p>
+                          <p className={`text-[10px] font-bold uppercase tracking-widest ${
+                            isSelected ? 'text-emerald-600' : 'text-zinc-400'
+                          }`}>
+                            Paper Color
+                          </p>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (pattern === 'NOTE' && option.name === '내지 장수') ? (
+                <div className="grid grid-cols-2 gap-3">
+                  {option.values?.map((val) => {
+                    const isSelected = selectedOptions[option.name] === val.label;
+                    return (
+                      <button
+                        key={val.label}
+                        onClick={() => handleOptionChange(option.name, val.label)}
+                        className={`group p-4 rounded-3xl border-2 transition-all flex items-center justify-between ${
+                          isSelected
+                            ? 'bg-emerald-50 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.1)]'
+                            : 'bg-white border-zinc-100 hover:border-zinc-200'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+                            isSelected
+                              ? 'bg-emerald-500 text-white shadow-lg'
+                              : 'bg-zinc-50 text-zinc-400 group-hover:bg-zinc-100 group-hover:text-zinc-600'
+                          }`}>
+                            <Layers className="w-5 h-5" />
+                          </div>
+                          <span className={`text-sm font-black ${
+                            isSelected ? 'text-emerald-900' : 'text-zinc-900'
+                          }`}>
+                            {val.label}
+                          </span>
+                        </div>
+                        {val.priceModifier !== undefined && val.priceModifier !== 0 && (
+                          <span className={`text-[11px] font-bold ${
+                            isSelected ? 'text-emerald-600' : 'text-zinc-400'
+                          }`}>
+                            {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (pattern === 'NOTE' && (option.name === '표지 구성' || option.name === '커버 스타일')) ? (
+                <div className="grid grid-cols-1 gap-3">
+                  {option.values?.map((val) => {
+                    const isSelected = selectedOptions[option.name] === val.label;
+                    return (
+                      <button
+                        key={val.label}
+                        onClick={() => handleOptionChange(option.name, val.label)}
+                        className={`group p-5 rounded-3xl border-2 transition-all flex items-center justify-between ${
+                          isSelected
+                            ? 'bg-emerald-50 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.1)]'
+                            : 'bg-white border-zinc-100 hover:border-zinc-200'
+                        }`}
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${
+                            isSelected
+                              ? 'bg-emerald-500 text-white shadow-lg'
+                              : 'bg-zinc-50 text-zinc-400 group-hover:bg-zinc-100 group-hover:text-zinc-600'
+                          }`}>
+                            <BookOpen className="w-6 h-6" />
+                          </div>
+                          <div className="text-left">
+                            <p className={`text-sm font-black ${
+                              isSelected ? 'text-emerald-900' : 'text-zinc-900'
+                            }`}>
+                              {val.label}
+                            </p>
+                            <p className={`text-[10px] font-bold uppercase tracking-widest ${
+                              isSelected ? 'text-emerald-600' : 'text-zinc-400'
+                            }`}>
+                              {option.name === '표지 구성' ? 'Cover Type' : 'Cover Style'}
+                            </p>
+                          </div>
+                        </div>
+                        {val.priceModifier !== undefined && val.priceModifier !== 0 && (
+                          <span className={`text-xs font-black ${
+                            isSelected ? 'text-emerald-600' : 'text-zinc-400'
+                          }`}>
+                            {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (pattern === 'NOTE' && (option.name === '스프링 방향' || option.name === '스프링 색상' || option.name === '커버 인쇄' || option.name === '엣지 마감')) ? (
+                <div className="grid grid-cols-2 gap-3">
+                  {option.values?.map((val) => {
+                    const isSelected = selectedOptions[option.name] === val.label;
+                    return (
+                      <button
+                        key={val.label}
+                        onClick={() => handleOptionChange(option.name, val.label)}
+                        className={`group p-4 rounded-3xl border-2 transition-all flex flex-col items-start gap-2 ${
+                          isSelected
+                            ? 'bg-emerald-50 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.1)]'
+                            : 'bg-white border-zinc-100 hover:border-zinc-200'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between w-full">
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
+                            isSelected
+                              ? 'bg-emerald-500 text-white'
+                              : 'bg-zinc-50 text-zinc-400 group-hover:bg-zinc-100 group-hover:text-zinc-600'
+                          }`}>
+                            {option.name.includes('스프링') ? <Zap className="w-4 h-4" /> : <Palette className="w-4 h-4" />}
+                          </div>
+                          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all ${
+                            isSelected ? 'border-emerald-500 bg-emerald-500' : 'border-zinc-200'
+                          }`}>
+                            {isSelected && <Check className="w-2.5 h-2.5 text-white" />}
+                          </div>
+                        </div>
+                        <div className="text-left">
+                          <p className={`text-xs font-black ${
+                            isSelected ? 'text-emerald-900' : 'text-zinc-900'
+                          }`}>
+                            {val.label}
+                          </p>
+                          {val.priceModifier !== undefined && val.priceModifier !== 0 && (
+                            <p className={`text-[10px] font-bold ${
+                              isSelected ? 'text-emerald-600' : 'text-zinc-400'
+                            }`}>
+                              {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
+                            </p>
+                          )}
                         </div>
                       </button>
                     );
