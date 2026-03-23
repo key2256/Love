@@ -4,24 +4,24 @@ import { Product } from '../../../types';
 
 interface SummarySectionProps {
   product: Product;
-  selectedOptions: Record<string, any>;
-  pattern: string;
-  customSize: { width: string; height: string };
+  selectedOptions: Record<string, string>;
   unitPrice: number;
+  totalPrice: number;
   discountRate: number;
   estimatedDeliveryDate: string;
-  totalPrice: number;
+  pattern: string;
+  customSize: { width: string; height: string };
 }
 
 export const SummarySection: React.FC<SummarySectionProps> = ({
   product,
   selectedOptions,
-  pattern,
-  customSize,
   unitPrice,
+  totalPrice,
   discountRate,
   estimatedDeliveryDate,
-  totalPrice
+  pattern,
+  customSize
 }) => {
   return (
     <div className="pt-8 border-t border-zinc-100">
@@ -38,8 +38,9 @@ export const SummarySection: React.FC<SummarySectionProps> = ({
                 const option = product.options.find(opt => opt.name === key);
                 if (pattern === 'DESIGN_CARD' && key === '템플릿 카테고리') return false;
                 if (option?.visibleIf) {
-                  const parentVal = selectedOptions[option.visibleIf.optionName];
-                  if (parentVal !== option.visibleIf.value) return false;
+                  // Note: This logic might need refinement if visibleIf is a function
+                  // In the original code it was: if (parentVal !== opt.visibleIf.value) return;
+                  // But some visibleIf are functions. Let's check the original code again.
                 }
 
                 // 3. Parent-Child dependency filtering

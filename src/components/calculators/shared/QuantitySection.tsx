@@ -5,10 +5,14 @@ import { Product } from '../../../types';
 interface QuantitySectionProps {
   product: Product;
   quantity: number;
-  setQuantity: (qty: number | ((prev: number) => number)) => void;
+  setQuantity: (q: number) => void;
 }
 
-export const QuantitySection: React.FC<QuantitySectionProps> = ({ product, quantity, setQuantity }) => {
+export const QuantitySection: React.FC<QuantitySectionProps> = ({ 
+  product, 
+  quantity, 
+  setQuantity 
+}) => {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
