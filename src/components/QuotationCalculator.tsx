@@ -163,11 +163,6 @@ const MEMO_SIZE_ICONS: Record<string, React.ReactNode> = {
 };
 
 const NOTE_SIZE_ICONS: Record<string, React.ReactNode> = {
-  'B6 (128x182)': (
-    <svg viewBox="0 0 40 40" className="w-8 h-8 fill-current">
-      <rect x="14" y="10" width="12" height="20" rx="1" />
-    </svg>
-  ),
   'A5 (148x210)': (
     <svg viewBox="0 0 40 40" className="w-8 h-8 fill-current">
       <rect x="12" y="8" width="16" height="24" rx="1" />
@@ -182,55 +177,13 @@ const NOTE_SIZE_ICONS: Record<string, React.ReactNode> = {
     <svg viewBox="0 0 40 40" className="w-8 h-8 fill-current">
       <rect x="8" y="6" width="24" height="28" rx="1" />
     </svg>
-  ),
-  'A3 (297x420)': (
-    <svg viewBox="0 0 40 40" className="w-8 h-8 fill-current">
-      <rect x="6" y="4" width="28" height="32" rx="1" />
-    </svg>
   )
-};
-
-const SPRING_COLOR_ICONS: Record<string, React.ReactNode> = {
-  '검정': (
-    <div className="w-8 h-8 rounded-full bg-zinc-900 border border-zinc-700" />
-  ),
-  '하양': (
-    <div className="w-8 h-8 rounded-full bg-white border border-zinc-200" />
-  ),
-  '은색': (
-    <div className="w-8 h-8 rounded-full bg-zinc-300 border border-zinc-400" />
-  )
-};
-
-const COVER_TYPE_ICONS: Record<string, React.ReactNode> = {
-  '소프트커버': <Book className="w-8 h-8" />,
-  '하드커버 2mm': <BookOpen className="w-8 h-8" />,
-  '하드커버': <BookOpen className="w-8 h-8" />
 };
 
 const NOTE_INNER_ICONS: Record<string, React.ReactNode> = {
   '무지': (
     <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-current fill-none" strokeWidth="2">
       <rect x="10" y="10" width="20" height="20" />
-    </svg>
-  ),
-  '드로잉용지 300g': (
-    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-current fill-none" strokeWidth="2">
-      <rect x="10" y="10" width="20" height="20" />
-      <path d="M15 15 L25 25 M25 15 L15 25" strokeWidth="1" opacity="0.3" />
-    </svg>
-  ),
-  '드로잉용지': (
-    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-current fill-none" strokeWidth="2">
-      <rect x="10" y="10" width="20" height="20" />
-    </svg>
-  ),
-  '필기용지': (
-    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-current fill-none" strokeWidth="2">
-      <rect x="10" y="10" width="20" height="20" />
-      <line x1="13" y1="15" x2="27" y2="15" strokeWidth="1" />
-      <line x1="13" y1="20" x2="27" y2="20" strokeWidth="1" />
-      <line x1="13" y1="25" x2="27" y2="25" strokeWidth="1" />
     </svg>
   ),
   '줄(라인)': (
@@ -324,7 +277,6 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
     if (product.id === 'bc-folded') return 'FOLDED_BUSINESS_CARD';
     if (product.id === 'memo-standard') return 'MEMO_PAD';
     if (product.id === 'note-spring' || product.id === 'note-leather' || product.id === 'note-saddle') return 'NOTE';
-    if (product.id.startsWith('drawing-')) return 'DRAWING_BOOK';
     if (product.category === 'card-paper') return 'PAPER_GOODS';
     if (product.category === 'binding-booklet' || product.id === 'note-spring') return 'BINDING_GOODS';
     if (product.category === 'poster-promo') return 'LARGE_FORMAT';
@@ -655,66 +607,6 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
 
         {/* Options */}
         <div className="space-y-8">
-          {/* Drawing Book Options */}
-          {pattern === 'DRAWING_BOOK' && (
-            <div className="space-y-10">
-              {product.options.map((option) => {
-                const isSelected = (val: string) => selectedOptions[option.name] === val;
-                
-                return (
-                  <div key={option.name} className="space-y-6">
-                    <div className="flex items-center gap-2">
-                      <div className="w-1 h-4 bg-emerald-500 rounded-full" />
-                      {option.name === '규격' && <Layout className="w-4 h-4 text-zinc-400" />}
-                      {option.name === '제본 방향' && <Settings className="w-4 h-4 text-zinc-400" />}
-                      {option.name === '커버 종류' && <Book className="w-4 h-4 text-zinc-400" />}
-                      {option.name === '표지 코팅' && <Sparkles className="w-4 h-4 text-zinc-400" />}
-                      {option.name === '용지' && <Layers className="w-4 h-4 text-zinc-400" />}
-                      {option.name === '스프링 색상' && <Palette className="w-4 h-4 text-zinc-400" />}
-                      <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">{option.name}</label>
-                    </div>
-
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                      {option.values?.map((val) => {
-                        const active = isSelected(val.label);
-                        const isSimpleButton = option.name === '표지 코팅';
-                        const icon = option.name === '규격' ? NOTE_SIZE_ICONS[val.label] : 
-                                     option.name === '제본 방향' ? FOLDING_DIRECTION_ICONS[val.label] :
-                                     option.name === '커버 종류' ? COVER_TYPE_ICONS[val.label] :
-                                     option.name === '용지' ? NOTE_INNER_ICONS[val.label] :
-                                     option.name === '스프링 색상' ? SPRING_COLOR_ICONS[val.label] : null;
-
-                        return (
-                          <button
-                            key={val.label}
-                            onClick={() => handleOptionChange(option.name, val.label)}
-                            className={`flex ${isSimpleButton ? 'flex-row justify-center py-4' : 'flex-col items-center gap-3 p-4'} rounded-2xl border-2 transition-all ${
-                              active
-                                ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg scale-[1.02]'
-                                : 'bg-white border-zinc-100 text-zinc-500 hover:border-zinc-200'
-                            }`}
-                          >
-                            {!isSimpleButton && icon && (
-                              <div className={`${active ? 'text-emerald-400' : 'text-zinc-300'}`}>
-                                {icon}
-                              </div>
-                            )}
-                            <span className="text-xs font-black">{val.label}</span>
-                            {val.priceModifier !== 0 && (
-                              <span className={`text-[10px] font-bold ${active ? 'text-emerald-400' : 'text-emerald-600'}`}>
-                                +{val.priceModifier.toLocaleString()}원
-                              </span>
-                            )}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-
           {/* Postcard Material Selection */}
           {pattern === 'POSTCARD' && (() => {
             const config = POSTCARD_CONFIG[product.id];
@@ -931,48 +823,6 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
               </div>
             </div>
           ))}
-
-          {/* Default Options */}
-          {pattern !== 'DRAWING_BOOK' && pattern !== 'POSTCARD' && pattern !== 'BUSINESS_CARD' && pattern !== 'DESIGN_CARD' && pattern !== 'NOTE' && (
-            <div className="space-y-8">
-              {product.options.map((option) => {
-                const isSelected = (val: string) => selectedOptions[option.name] === val;
-                
-                return (
-                  <div key={option.name} className="space-y-6">
-                    <div className="flex items-center gap-2">
-                      <div className="w-1 h-4 bg-emerald-500 rounded-full" />
-                      <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">{option.name}</label>
-                    </div>
-
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                      {option.values?.map((val) => {
-                        const active = isSelected(val.label);
-                        return (
-                          <button
-                            key={val.label}
-                            onClick={() => handleOptionChange(option.name, val.label)}
-                            className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all ${
-                              active
-                                ? 'bg-zinc-900 border-zinc-900 text-white shadow-lg scale-[1.02]'
-                                : 'bg-white border-zinc-100 text-zinc-600 hover:border-zinc-400'
-                            }`}
-                          >
-                            {val.label}
-                            {val.priceModifier !== 0 && (
-                              <span className={`ml-2 text-[10px] ${active ? 'text-emerald-400' : 'text-emerald-600'}`}>
-                                +{val.priceModifier.toLocaleString()}원
-                              </span>
-                            )}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
 
           {/* Business Card, Design Card & Postcard Post-processing Options (Icon Grid Pattern) */}
           {(pattern === 'BUSINESS_CARD' || pattern === 'DESIGN_CARD' || pattern === 'POSTCARD') && (() => {
@@ -1818,7 +1668,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
             </div>
           )}
 
-          {pattern !== 'DRAWING_BOOK' && (product.id === 'note-saddle' ? [...product.options, { name: '제본 안내', type: 'radio', values: [] }] : product.options).filter(opt => {
+          {(product.id === 'note-saddle' ? [...product.options, { name: '제본 안내', type: 'radio', values: [] }] : product.options).filter(opt => {
             const normalizedName = opt.name.replace(/\s/g, '');
             const isIconGridPattern = pattern === 'BUSINESS_CARD' || pattern === 'DESIGN_CARD' || pattern === 'POSTCARD';
 
@@ -1905,6 +1755,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                 const prevGroup = prevOption ? getNoteGroup(prevOption.name) : null;
                 
                 if (currentGroup && currentGroup !== prevGroup) {
+                  if (product.id === 'note-saddle' && (currentGroup === '후가공 선택' || currentGroup === '제본/마감')) return null;
                   return (
                     <div className="pt-12 pb-6 flex items-center gap-4">
                       <div className="h-px flex-1 bg-zinc-100" />
@@ -2478,7 +2329,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
           {(() => {
             // If handled by icon grid, skip standard list rendering for these specific options
             const isIconGridPattern = pattern === 'BUSINESS_CARD' || pattern === 'DESIGN_CARD' || pattern === 'POSTCARD';
-            if (isIconGridPattern || pattern === 'NOTE' || pattern === 'DRAWING_BOOK') return null;
+            if (isIconGridPattern || pattern === 'NOTE') return null;
 
             const postProcessingOptions = product.options.filter(opt => {
               const normalizedName = opt.name.replace(/\s/g, '');
