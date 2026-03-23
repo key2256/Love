@@ -3003,8 +3003,7 @@ export const PRODUCTS: Product[] = [
         name: '용지',
         type: 'radio',
         values: [
-          { label: '드로잉용지', priceModifier: 0 },
-          { label: '필기용지', priceModifier: 0 },
+          { label: '백색 모조 80g', priceModifier: 0 },
         ]
       },
       {
