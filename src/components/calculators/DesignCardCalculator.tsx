@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Check, FileUp, FileText } from 'lucide-react';
-import { Product, DESIGN_CARD_TEMPLATES } from '../../types';
+import { Layers } from 'lucide-react';
+import { Product, BUSINESS_CARD_MATERIALS } from '../../types';
 import { QuantitySection } from './shared/QuantitySection';
 import { SummarySection } from './shared/SummarySection';
 import { FileUploadSection } from './shared/FileUploadSection';
@@ -35,22 +35,94 @@ export const DesignCardCalculator: React.FC<DesignCardCalculatorProps> = ({
   estimatedDeliveryDate,
   onGenerate
 }) => {
+  const [selectedBusinessCardGroup, setSelectedBusinessCardGroup] = useState<string>('기본 대중형');
   const [expandedPostOption, setExpandedPostOption] = useState<string | null>(null);
 
-  React.useEffect(() => {
-    if (selectedOptions['수량']) {
-      const qty = parseInt(selectedOptions['수량'].replace('매', '')) || 100;
-      if (qty !== quantity) {
-        setQuantity(qty);
+  useEffect(() => {
+    const materialOption = product.options.find(opt => opt.name.includes('용지'));
+    if (materialOption) {
+      const selectedValue = selectedOptions[materialOption.name];
+      const material = BUSINESS_CARD_MATERIALS.find(m => `${m.name} ${m.weight}` === selectedValue);
+      if (material) {
+        setSelectedBusinessCardGroup(material.group);
       }
     }
-  }, [selectedOptions['수량'], quantity, setQuantity]);
+  }, [product.id]);
 
   return (
     <div className="space-y-10">
-      {/* 1. Standard Options */}
+      {/* 1. Material Selection (Grouped) */}
+      {product.options.filter(opt => opt.name.includes('용지')).map((option) => (
+        <div key={option.name} className="space-y-4">
+          <div className="flex items-center gap-2">
+            <div className="w-1 h-4 bg-emerald-500 rounded-full" />
+            <Layers className="w-4 h-4 text-zinc-400" />
+            <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
+              {option.name}
+            </label>
+          </div>
+          <div className="flex flex-wrap gap-2 mb-4">
+            {['기본 대중형', '고급 감성형', '최고급 프리미엄'].map(group => (
+              <button
+                key={group}
+                onClick={() => setSelectedBusinessCardGroup(group)}
+                className={`px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all ${
+                  selectedBusinessCardGroup === group
+                    ? 'bg-zinc-900 text-white shadow-lg'
+                    : 'bg-zinc-100 text-zinc-500 hover:bg-zinc-200'
+                }`}
+              >
+                {group}
+              </button>
+            ))}
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {option.values?.filter(val => {
+              const material = BUSINESS_CARD_MATERIALS.find(m => `${m.name} ${m.weight}` === val.label);
+              return material?.group === selectedBusinessCardGroup;
+            }).map((val) => {
+              const material = BUSINESS_CARD_MATERIALS.find(m => `${m.name} ${m.weight}` === val.label);
+              const isSelected = selectedOptions[option.name] === val.label;
+              return (
+                <button
+                  key={val.label}
+                  onClick={() => handleOptionChange(option.name, val.label)}
+                  className={`group p-5 rounded-2xl text-left border transition-all relative overflow-hidden ${
+                    isSelected
+                      ? 'bg-emerald-50 border-emerald-500 ring-1 ring-emerald-500'
+                      : 'bg-white border-zinc-100 hover:border-emerald-200 hover:bg-zinc-50'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className={`text-sm font-bold ${isSelected ? 'text-emerald-900' : 'text-zinc-900'}`}>
+                      {material?.name}
+                    </span>
+                    <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
+                      isSelected ? 'bg-emerald-200 text-emerald-700' : 'bg-zinc-100 text-zinc-500'
+                    }`}>
+                      {material?.weight}
+                    </span>
+                  </div>
+                  <p className={`text-[11px] leading-relaxed mb-3 ${isSelected ? 'text-emerald-700/70' : 'text-zinc-400'}`}>
+                    {material?.features}
+                  </p>
+                  {val.priceModifier !== undefined && val.priceModifier !== 0 && (
+                    <div className={`text-[10px] font-bold ${isSelected ? 'text-emerald-600' : 'text-zinc-400'}`}>
+                      {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+
+      {/* 2. Standard Options */}
       {product.options.filter(opt => {
         const normalizedName = opt.name.replace(/\s/g, '');
+        if (opt.name.includes('용지')) return false;
+        
         const handledByIconGrid = [
           '코팅', '코팅종류', '코팅면수', '귀돌이', '귀돌이사용', '귀돌이크기', '귀돌이면수', '귀돌이방향', 
           '타공', '타공사용', '구멍크기', '타공크기', '타공설명', '명함케이스',
@@ -58,9 +130,6 @@ export const DesignCardCalculator: React.FC<DesignCardCalculatorProps> = ({
           '폴리백개별포장', '폴리백사이즈', '제작수량', '수량', '주문수량'
         ].includes(normalizedName);
         if (handledByIconGrid) return false;
-
-        const infoFields = ['이름', '직함', '연락처', '이메일', '주소/SNS', '로고 업로드', '요청사항'];
-        if (infoFields.includes(opt.name)) return false;
 
         if (opt.visibleIf) {
           const parentVal = selectedOptions[opt.visibleIf.optionName];
@@ -76,89 +145,35 @@ export const DesignCardCalculator: React.FC<DesignCardCalculatorProps> = ({
               {option.name}
             </label>
           </div>
-
-          {option.name === '템플릿 카테고리' && (
-            <div className="space-y-6">
-              <div className="grid grid-cols-2 gap-3">
-                {option.values?.map((val) => (
-                  <button
-                    key={val.label}
-                    onClick={() => handleOptionChange(option.name, val.label)}
-                    className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden ${
-                      selectedOptions[option.name] === val.label
-                        ? 'bg-zinc-900 border-zinc-900 text-white shadow-lg'
-                        : 'bg-white border-zinc-200 text-zinc-600 hover:border-emerald-200'
-                    }`}
-                  >
-                    <span className="relative z-10">{val.label}</span>
-                  </button>
-                ))}
-              </div>
-
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
-                {DESIGN_CARD_TEMPLATES.filter(t => t.category === selectedOptions['템플릿 카테고리']).map((template) => (
-                  <button
-                    key={template.id}
-                    onClick={() => handleOptionChange('템플릿 선택', template.id)}
-                    className={`group relative aspect-square rounded-xl overflow-hidden border-2 transition-all ${
-                      selectedOptions['템플릿 선택'] === template.id
-                        ? 'border-emerald-500 ring-2 ring-emerald-500/10'
-                        : 'border-zinc-100 hover:border-emerald-200'
-                    }`}
-                  >
-                    <img 
-                      src={template.image} 
-                      alt={template.name}
-                      className="w-full h-full object-cover transition-transform group-hover:scale-105"
-                      referrerPolicy="no-referrer"
-                    />
-                    {selectedOptions['템플릿 선택'] === template.id && (
-                      <div className="absolute inset-0 bg-emerald-500/20 flex items-center justify-center">
-                        <div className="bg-emerald-500 text-white p-1 rounded-full shadow-lg">
-                          <Check className="w-4 h-4" />
-                        </div>
-                      </div>
-                    )}
-                    <div className="absolute bottom-0 left-0 right-0 p-1.5 bg-black/40 backdrop-blur-[2px]">
-                      <p className="text-[9px] font-black text-white truncate text-center uppercase tracking-tighter">{template.name}</p>
-                    </div>
-                  </button>
-                ))}
-              </div>
+          {option.type === 'text' ? (
+            <input
+              type="text"
+              value={selectedOptions[option.name]}
+              onChange={(e) => handleOptionChange(option.name, e.target.value)}
+              placeholder={option.placeholder || `${option.name}을 입력해주세요.`}
+              className="w-full px-6 py-4 rounded-2xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none font-bold text-sm transition-colors"
+            />
+          ) : (
+            <div className="grid grid-cols-2 gap-3">
+              {option.values?.map((val) => (
+                <button
+                  key={val.label}
+                  onClick={() => handleOptionChange(option.name, val.label)}
+                  className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden ${
+                    selectedOptions[option.name] === val.label
+                      ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/20'
+                      : 'bg-white border-zinc-200 text-zinc-600 hover:border-emerald-200'
+                  }`}
+                >
+                  <span className="relative z-10">{val.label}</span>
+                  {val.priceModifier !== undefined && val.priceModifier !== 0 && (
+                    <span className={`block text-[10px] mt-1 opacity-70 ${selectedOptions[option.name] === val.label ? 'text-white' : 'text-zinc-400'}`}>
+                      {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
+                    </span>
+                  )}
+                </button>
+              ))}
             </div>
-          )}
-
-          {option.name !== '템플릿 카테고리' && (
-            option.type === 'text' ? (
-              <input
-                type="text"
-                value={selectedOptions[option.name]}
-                onChange={(e) => handleOptionChange(option.name, e.target.value)}
-                placeholder={option.placeholder || `${option.name}을 입력해주세요.`}
-                className="w-full px-6 py-4 rounded-2xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none font-bold text-sm transition-colors"
-              />
-            ) : (
-              <div className="grid grid-cols-2 gap-3">
-                {option.values?.map((val) => (
-                  <button
-                    key={val.label}
-                    onClick={() => handleOptionChange(option.name, val.label)}
-                    className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden ${
-                      selectedOptions[option.name] === val.label
-                        ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/20'
-                        : 'bg-white border-zinc-200 text-zinc-600 hover:border-emerald-200'
-                    }`}
-                  >
-                    <span className="relative z-10">{val.label}</span>
-                    {val.priceModifier !== undefined && val.priceModifier !== 0 && (
-                      <span className={`block text-[10px] mt-1 opacity-70 ${selectedOptions[option.name] === val.label ? 'text-white' : 'text-zinc-400'}`}>
-                        {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
-                      </span>
-                    )}
-                  </button>
-                ))}
-              </div>
-            )
           )}
         </div>
       ))}
@@ -171,58 +186,6 @@ export const DesignCardCalculator: React.FC<DesignCardCalculatorProps> = ({
         expandedPostOption={expandedPostOption}
         setExpandedPostOption={setExpandedPostOption}
       />
-
-      <div className="space-y-8 pt-8 border-t border-zinc-100">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-xl bg-emerald-500/20 flex items-center justify-center">
-            <FileText className="w-4 h-4 text-emerald-400" />
-          </div>
-          <div>
-            <h4 className="text-sm font-black tracking-tight">명함 정보 입력</h4>
-            <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Business Card Information</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {product.options.filter(opt => 
-            ['이름', '직함', '연락처', '이메일', '주소/SNS', '로고 업로드', '요청사항'].includes(opt.name)
-          ).map((option) => (
-            <div key={option.name} className="space-y-2">
-              <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">{option.name}</label>
-              {option.name === '로고 업로드' ? (
-                <div className="relative group">
-                  <input
-                    type="file"
-                    id="logo-upload"
-                    className="hidden"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) handleOptionChange('로고 업로드', file.name);
-                    }}
-                  />
-                  <label 
-                    htmlFor="logo-upload"
-                    className="w-full px-6 py-4 rounded-2xl bg-zinc-50 border border-zinc-100 font-bold text-sm outline-none cursor-pointer group-hover:border-emerald-200 transition-all flex items-center justify-between"
-                  >
-                    <span className={selectedOptions['로고 업로드'] ? 'text-zinc-900' : 'text-zinc-400'}>
-                      {selectedOptions['로고 업로드'] || option.placeholder}
-                    </span>
-                    <FileUp className="w-4 h-4 text-zinc-400 group-hover:text-emerald-500 transition-colors" />
-                  </label>
-                </div>
-              ) : (
-                <input
-                  type="text"
-                  value={selectedOptions[option.name]}
-                  onChange={(e) => handleOptionChange(option.name, e.target.value)}
-                  placeholder={option.placeholder}
-                  className="w-full px-6 py-4 rounded-2xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none font-bold text-sm transition-colors"
-                />
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
 
       <QuantitySection product={product} quantity={quantity} setQuantity={setQuantity} />
       <SummarySection 

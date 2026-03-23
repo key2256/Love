@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { FileText } from 'lucide-react';
-import { Product } from '../../types';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'motion/react';
+import { Layers, Info } from 'lucide-react';
+import { Product, BUSINESS_CARD_MATERIALS } from '../../types';
 import { QuantitySection } from './shared/QuantitySection';
 import { SummarySection } from './shared/SummarySection';
 import { FileUploadSection } from './shared/FileUploadSection';
@@ -23,81 +23,6 @@ interface FoldedBusinessCardCalculatorProps {
   onGenerate: (customSize?: { width: string; height: string }) => void;
 }
 
-const FoldedPreview = ({ type, direction }: { type: string, direction: string }) => {
-  const is3Fold = type === '3단 명함';
-  const isVertical = direction === '세로형';
-
-  return (
-    <motion.div 
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="flex flex-col items-center gap-4 p-6 bg-zinc-50 rounded-3xl border border-zinc-100"
-    >
-      <div className={`relative ${isVertical ? 'w-32 h-48' : 'w-48 h-32'} bg-white rounded-lg border-2 border-zinc-200 shadow-sm overflow-hidden flex transition-all duration-500`}>
-        {isVertical ? (
-          <div className="flex flex-col w-full h-full">
-            <div className="flex-1 border-b border-dashed border-emerald-400 relative">
-               <span className="absolute top-1 left-1 text-[8px] font-bold text-zinc-300 uppercase">Panel 1</span>
-            </div>
-            {is3Fold && <div className="flex-1 border-b border-dashed border-emerald-400 relative">
-               <span className="absolute top-1 left-1 text-[8px] font-bold text-zinc-300 uppercase">Panel 2</span>
-            </div>}
-            <div className="flex-1 relative">
-               <span className="absolute top-1 left-1 text-[8px] font-bold text-zinc-300 uppercase">{is3Fold ? 'Panel 3' : 'Panel 2'}</span>
-            </div>
-          </div>
-        ) : (
-          <div className="flex w-full h-full">
-            <div className="flex-1 border-r border-dashed border-emerald-400 relative">
-               <span className="absolute top-1 left-1 text-[8px] font-bold text-zinc-300 uppercase">Panel 1</span>
-            </div>
-            {is3Fold && <div className="flex-1 border-r border-dashed border-emerald-400 relative">
-               <span className="absolute top-1 left-1 text-[8px] font-bold text-zinc-300 uppercase">Panel 2</span>
-            </div>}
-            <div className="flex-1 relative">
-               <span className="absolute top-1 left-1 text-[8px] font-bold text-zinc-300 uppercase">{is3Fold ? 'Panel 3' : 'Panel 2'}</span>
-            </div>
-          </div>
-        )}
-      </div>
-      <div className="text-center space-y-1">
-        <p className="text-xs font-black text-zinc-900">{type} {direction}</p>
-        <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">
-          {is3Fold ? '2개의 접는 선 (오시)' : '1개의 접는 선 (오시)'}
-        </p>
-      </div>
-    </motion.div>
-  );
-};
-
-const WorkPrecautions = () => (
-  <div className="mt-12 p-8 bg-zinc-900 rounded-[32px] text-white space-y-6">
-    <div className="flex items-center gap-3">
-      <div className="w-8 h-8 rounded-xl bg-emerald-500/20 flex items-center justify-center">
-        <FileText className="w-4 h-4 text-emerald-400" />
-      </div>
-      <div>
-        <h4 className="text-sm font-black tracking-tight">작업 시 주의사항</h4>
-        <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Design Guidelines</p>
-      </div>
-    </div>
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-      <div className="space-y-2">
-        <p className="text-[11px] font-black text-zinc-400 uppercase tracking-wider">안전 영역</p>
-        <p className="text-xs text-zinc-300 leading-relaxed">
-          재단선으로부터 <span className="text-emerald-400 font-bold">안쪽으로 3mm</span> 여유를 두고 디자인해 주세요.
-        </p>
-      </div>
-      <div className="space-y-2">
-        <p className="text-[11px] font-black text-zinc-400 uppercase tracking-wider">접지선 위치</p>
-        <p className="text-xs text-zinc-300 leading-relaxed">
-          접히는 부분에 중요한 텍스트나 로고가 걸리지 않도록 주의해 주세요.
-        </p>
-      </div>
-    </div>
-  </div>
-);
-
 export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculatorProps> = ({
   product,
   quantity,
@@ -110,12 +35,94 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
   estimatedDeliveryDate,
   onGenerate
 }) => {
+  const [selectedBusinessCardGroup, setSelectedBusinessCardGroup] = useState<string>('기본 대중형');
   const [expandedPostOption, setExpandedPostOption] = useState<string | null>(null);
+
+  useEffect(() => {
+    const materialOption = product.options.find(opt => opt.name.includes('용지'));
+    if (materialOption) {
+      const selectedValue = selectedOptions[materialOption.name];
+      const material = BUSINESS_CARD_MATERIALS.find(m => `${m.name} ${m.weight}` === selectedValue);
+      if (material) {
+        setSelectedBusinessCardGroup(material.group);
+      }
+    }
+  }, [product.id]);
 
   return (
     <div className="space-y-10">
+      {/* 1. Material Selection (Grouped) */}
+      {product.options.filter(opt => opt.name.includes('용지')).map((option) => (
+        <div key={option.name} className="space-y-4">
+          <div className="flex items-center gap-2">
+            <div className="w-1 h-4 bg-emerald-500 rounded-full" />
+            <Layers className="w-4 h-4 text-zinc-400" />
+            <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
+              {option.name}
+            </label>
+          </div>
+          <div className="flex flex-wrap gap-2 mb-4">
+            {['기본 대중형', '고급 감성형', '최고급 프리미엄'].map(group => (
+              <button
+                key={group}
+                onClick={() => setSelectedBusinessCardGroup(group)}
+                className={`px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all ${
+                  selectedBusinessCardGroup === group
+                    ? 'bg-zinc-900 text-white shadow-lg'
+                    : 'bg-zinc-100 text-zinc-500 hover:bg-zinc-200'
+                }`}
+              >
+                {group}
+              </button>
+            ))}
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {option.values?.filter(val => {
+              const material = BUSINESS_CARD_MATERIALS.find(m => `${m.name} ${m.weight}` === val.label);
+              return material?.group === selectedBusinessCardGroup;
+            }).map((val) => {
+              const material = BUSINESS_CARD_MATERIALS.find(m => `${m.name} ${m.weight}` === val.label);
+              const isSelected = selectedOptions[option.name] === val.label;
+              return (
+                <button
+                  key={val.label}
+                  onClick={() => handleOptionChange(option.name, val.label)}
+                  className={`group p-5 rounded-2xl text-left border transition-all relative overflow-hidden ${
+                    isSelected
+                      ? 'bg-emerald-50 border-emerald-500 ring-1 ring-emerald-500'
+                      : 'bg-white border-zinc-100 hover:border-emerald-200 hover:bg-zinc-50'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className={`text-sm font-bold ${isSelected ? 'text-emerald-900' : 'text-zinc-900'}`}>
+                      {material?.name}
+                    </span>
+                    <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
+                      isSelected ? 'bg-emerald-200 text-emerald-700' : 'bg-zinc-100 text-zinc-500'
+                    }`}>
+                      {material?.weight}
+                    </span>
+                  </div>
+                  <p className={`text-[11px] leading-relaxed mb-3 ${isSelected ? 'text-emerald-700/70' : 'text-zinc-400'}`}>
+                    {material?.features}
+                  </p>
+                  {val.priceModifier !== undefined && val.priceModifier !== 0 && (
+                    <div className={`text-[10px] font-bold ${isSelected ? 'text-emerald-600' : 'text-zinc-400'}`}>
+                      {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+
+      {/* 2. Standard Options */}
       {product.options.filter(opt => {
         const normalizedName = opt.name.replace(/\s/g, '');
+        if (opt.name.includes('용지')) return false;
+        
         const handledByIconGrid = [
           '코팅', '코팅종류', '코팅면수', '귀돌이', '귀돌이사용', '귀돌이크기', '귀돌이면수', '귀돌이방향', 
           '타공', '타공사용', '구멍크기', '타공크기', '타공설명', '명함케이스',
@@ -138,7 +145,6 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
               {option.name}
             </label>
           </div>
-
           {option.type === 'text' ? (
             <input
               type="text"
@@ -169,13 +175,6 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
               ))}
             </div>
           )}
-
-          {option.name === '방향' && (
-            <FoldedPreview 
-              type={selectedOptions['접지 형태'] || '2단 명함'} 
-              direction={selectedOptions['방향'] || '가로형'} 
-            />
-          )}
         </div>
       ))}
 
@@ -187,8 +186,6 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
         expandedPostOption={expandedPostOption}
         setExpandedPostOption={setExpandedPostOption}
       />
-
-      <WorkPrecautions />
 
       <QuantitySection product={product} quantity={quantity} setQuantity={setQuantity} />
       <SummarySection 

@@ -195,25 +195,32 @@ export const getNoteGroup = (optionName: string) => {
 };
 
 export const POSTCARD_CONFIG: Record<string, {
-  allowedGroups?: string[];
+  defaultGroup: string;
+  groups: string[];
   allowedMaterials?: string[];
   allowedPostProcessing?: string[];
 }> = {
   'stk-postcard-standard': {
-    allowedGroups: ['기본 대중형'],
+    defaultGroup: '기본 대중형',
+    groups: ['기본 대중형'],
   },
   'stk-postcard-special': {
+    defaultGroup: '기본 대중형',
+    groups: ['기본 대중형'],
     allowedMaterials: ['아트지 250g', '스노우 250g'],
     allowedPostProcessing: ['인쇄 도수', '코팅', '귀돌이', '타공'],
   },
   'stk-postcard-shape': {
-    allowedGroups: ['기본 대중형', '고급 감성형', '친환경/내추럴형'],
+    defaultGroup: '기본 대중형',
+    groups: ['기본 대중형', '고급 감성형', '친환경/내추럴형'],
     allowedPostProcessing: ['인쇄 도수', '모양커팅', '코팅', '귀돌이', '타공', '오시', '미싱', '접지', '폴리백 개별포장'],
   },
   'stk-postcard-premium': {
-    allowedGroups: ['고급 감성형', '친환경/내추럴형', '컬러/특수지형'],
+    defaultGroup: '고급 감성형',
+    groups: ['고급 감성형', '친환경/내추럴형', '컬러/특수지형'],
   },
   'stk-postcard-effect': {
-    allowedGroups: ['기본 대중형', '고급 감성형'],
+    defaultGroup: '기본 대중형',
+    groups: ['기본 대중형', '고급 감성형'],
   }
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Layers } from 'lucide-react';
 import { Product, BUSINESS_CARD_MATERIALS } from '../../types';
@@ -38,7 +38,7 @@ export const BusinessCardCalculator: React.FC<BusinessCardCalculatorProps> = ({
   const [selectedBusinessCardGroup, setSelectedBusinessCardGroup] = useState<string>('기본 대중형');
   const [expandedPostOption, setExpandedPostOption] = useState<string | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const materialOption = product.options.find(opt => opt.name.includes('용지'));
     if (materialOption) {
       const selectedValue = selectedOptions[materialOption.name];

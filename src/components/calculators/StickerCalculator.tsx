@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronDown, ChevronUp, FileText } from 'lucide-react';
+import { Layers, ChevronDown, ChevronUp, Info } from 'lucide-react';
 import { Product, PAPER_MATERIALS } from '../../types';
 import { QuantitySection } from './shared/QuantitySection';
 import { SummarySection } from './shared/SummarySection';
@@ -8,6 +8,8 @@ import { FileUploadSection } from './shared/FileUploadSection';
 import { OrderTitleSection } from './shared/OrderTitleSection';
 import { ActionButtons } from './shared/ActionButtons';
 import { NotesSection } from './shared/NotesSection';
+import { PostProcessingSection } from './shared/PostProcessingSection';
+import { SHAPE_ICONS } from './shared/constants';
 
 interface StickerCalculatorProps {
   product: Product;
@@ -34,9 +36,10 @@ export const StickerCalculator: React.FC<StickerCalculatorProps> = ({
   estimatedDeliveryDate,
   onGenerate
 }) => {
-  const [expandedGroup, setExpandedGroup] = React.useState<string | null>('일반/기본 용지');
+  const [expandedGroup, setExpandedGroup] = useState<string | null>('일반/기본 용지');
+  const [expandedPostOption, setExpandedPostOption] = useState<string | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const materialOption = product.options.find(opt => opt.name.includes('재질') || opt.name.includes('용지'));
     if (materialOption) {
       const selectedValue = selectedOptions[materialOption.name];
@@ -45,15 +48,16 @@ export const StickerCalculator: React.FC<StickerCalculatorProps> = ({
         setExpandedGroup(material.group);
       }
     }
-  }, [selectedOptions, product.options]);
+  }, [product.id]);
 
   return (
     <div className="space-y-10">
-      {/* 1. Material Selection (Special UI for Stickers) */}
+      {/* 1. Material Selection (Grouped) */}
       {product.options.filter(opt => opt.name.includes('재질') || opt.name.includes('용지')).map((option) => (
         <div key={option.name} className="space-y-4">
           <div className="flex items-center gap-2">
             <div className="w-1 h-4 bg-emerald-500 rounded-full" />
+            <Layers className="w-4 h-4 text-zinc-400" />
             <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
               {option.name}
             </label>
@@ -61,10 +65,10 @@ export const StickerCalculator: React.FC<StickerCalculatorProps> = ({
           <div className="space-y-3">
             {['일반/기본 용지', '방수/합성지', '투명/PET', '메탈/광택 특수 재질', '프리미엄 라벨(GMUND)'].map(group => {
               const materialsInGroup = PAPER_MATERIALS.filter(m => m.group === group);
-              if (materialsInGroup.length === 0) return null;
-
               const isExpanded = expandedGroup === group;
               const hasSelectedInGroup = materialsInGroup.some(m => selectedOptions[option.name] === m.name);
+
+              if (materialsInGroup.length === 0) return null;
 
               return (
                 <div key={group} className="border border-zinc-100 rounded-2xl overflow-hidden bg-zinc-50/50">
@@ -89,61 +93,33 @@ export const StickerCalculator: React.FC<StickerCalculatorProps> = ({
                     {isExpanded ? <ChevronUp className="w-4 h-4 text-zinc-400" /> : <ChevronDown className="w-4 h-4 text-zinc-400" />}
                   </button>
                   
-                  <AnimatePresence>
-                    {isExpanded && (
-                      <motion.div 
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        className="overflow-hidden"
-                      >
-                        <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-2 bg-white">
-                          {materialsInGroup.map((material) => {
-                            const isSelected = selectedOptions[option.name] === material.name;
-                            const productOptionValue = option.values?.find(v => v.label === material.name);
-                            
-                            let priceModifier = productOptionValue?.priceModifier;
-                            if (priceModifier === undefined) {
-                              if (group === '일반/기본 용지') priceModifier = 0;
-                              else if (group === '방수/합성지') priceModifier = 500;
-                              else if (group === '투명/PET') priceModifier = 1500;
-                              else if (group === '메탈/광택 특수 재질') priceModifier = 2000;
-                              else if (group === '프리미엄 라벨(GMUND)') priceModifier = 3000;
-                              else priceModifier = 0;
-                            }
-                            
-                            return (
-                              <button
-                                key={material.id}
-                                onClick={() => handleOptionChange(option.name, material.name)}
-                                className={`group p-4 rounded-xl text-left border transition-all ${
-                                  isSelected
-                                    ? 'bg-emerald-50 border-emerald-500 ring-1 ring-emerald-500'
-                                    : 'bg-white border-zinc-100 hover:border-emerald-200 hover:bg-zinc-50'
-                                }`}
-                              >
-                                <div className="flex items-center justify-between mb-1">
-                                  <span className={`text-sm font-bold ${isSelected ? 'text-emerald-900' : 'text-zinc-900'}`}>
-                                    {material.name}
-                                  </span>
-                                  {priceModifier !== 0 && (
-                                    <span className={`text-[10px] font-bold ${isSelected ? 'text-emerald-600' : 'text-zinc-400'}`}>
-                                      {priceModifier > 0 ? `+${priceModifier.toLocaleString()}원` : `${priceModifier.toLocaleString()}원`}
-                                    </span>
-                                  )}
-                                </div>
-                                {material.shortDescription && (
-                                  <p className={`text-[11px] leading-relaxed ${isSelected ? 'text-emerald-700/70' : 'text-zinc-400'}`}>
-                                    {material.shortDescription}
-                                  </p>
-                                )}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                  {isExpanded && (
+                    <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-2 bg-white">
+                      {materialsInGroup.map((material) => {
+                        const isSelected = selectedOptions[option.name] === material.name;
+                        return (
+                          <button
+                            key={material.id}
+                            onClick={() => handleOptionChange(option.name, material.name)}
+                            className={`group p-4 rounded-xl text-left border transition-all ${
+                              isSelected
+                                ? 'bg-emerald-50 border-emerald-500 ring-1 ring-emerald-500'
+                                : 'bg-white border-zinc-100 hover:border-emerald-200 hover:bg-zinc-50'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between mb-1">
+                              <span className={`text-sm font-bold ${isSelected ? 'text-emerald-900' : 'text-zinc-900'}`}>
+                                {material.name}
+                              </span>
+                            </div>
+                            <p className={`text-[11px] leading-relaxed ${isSelected ? 'text-emerald-700/70' : 'text-zinc-400'}`}>
+                              {material.shortDescription}
+                            </p>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -151,15 +127,58 @@ export const StickerCalculator: React.FC<StickerCalculatorProps> = ({
         </div>
       ))}
 
-      {/* 2. Standard Options */}
+      {/* 2. Shape Selection (Icon Grid) */}
+      {product.options.filter(opt => opt.name === '모양').map((option) => (
+        <div key={option.name} className="space-y-4">
+          <div className="flex items-center gap-2">
+            <div className="w-1 h-4 bg-emerald-500 rounded-full" />
+            <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
+              {option.name}
+            </label>
+          </div>
+          <div className="grid grid-cols-4 gap-3">
+            {option.values?.map((val) => {
+              const IconNode = SHAPE_ICONS[val.label] || <Info className="w-6 h-6" />;
+              const isSelected = selectedOptions[option.name] === val.label;
+              return (
+                <button
+                  key={val.label}
+                  onClick={() => handleOptionChange(option.name, val.label)}
+                  className={`flex flex-col items-center gap-3 p-4 rounded-2xl border transition-all ${
+                    isSelected
+                      ? 'bg-zinc-900 border-zinc-900 text-white shadow-lg'
+                      : 'bg-white border-zinc-100 text-zinc-400 hover:border-zinc-300'
+                  }`}
+                >
+                  <div className={`${isSelected ? 'text-emerald-400' : 'text-zinc-300'}`}>
+                    {IconNode}
+                  </div>
+                  <span className="text-[11px] font-black uppercase tracking-tight">{val.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+
+      {/* 3. Standard Options */}
       {product.options.filter(opt => {
         const normalizedName = opt.name.replace(/\s/g, '');
-        if (opt.name.includes('재질') || opt.name.includes('용지')) return false;
-        const exclusions = [
-          '재단방식', '코팅유무', '후가공옵션', '화이트인쇄', '넘버링', '스코딕스', '포장옵션', 
-          '부분UV', '모양코팅', '제작수량', '수량', '주문수량'
-        ];
-        if (exclusions.includes(normalizedName)) return false;
+        if (opt.name.includes('재질') || opt.name.includes('용지') || opt.name === '모양') return false;
+        
+        const handledByIconGrid = [
+          '코팅', '코팅종류', '코팅면수', '귀돌이', '귀돌이사용', '귀돌이크기', '귀돌이면수', '귀돌이방향', 
+          '타공', '타공사용', '구멍크기', '타공크기', '타공설명', '명함케이스',
+          '오시', '오시줄수', '오시설명', '미싱', '미싱줄수', '미싱설명', '접지', '접지방향', '접지형태', 
+          '폴리백개별포장', '폴리백사이즈', '제작수량', '수량', '주문수량'
+        ].includes(normalizedName);
+        if (handledByIconGrid) return false;
+
+        if (opt.visibleIf) {
+          const parentVal = selectedOptions[opt.visibleIf.optionName];
+          if (parentVal !== opt.visibleIf.value) return false;
+        }
+
         return true;
       }).map((option) => (
         <div key={option.name} className="space-y-4">
@@ -201,6 +220,15 @@ export const StickerCalculator: React.FC<StickerCalculatorProps> = ({
           )}
         </div>
       ))}
+
+      <PostProcessingSection 
+        product={product} 
+        selectedOptions={selectedOptions} 
+        handleOptionChange={handleOptionChange} 
+        pattern="STICKER"
+        expandedPostOption={expandedPostOption}
+        setExpandedPostOption={setExpandedPostOption}
+      />
 
       <QuantitySection product={product} quantity={quantity} setQuantity={setQuantity} />
       <SummarySection 

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'motion/react';
+import { Layers } from 'lucide-react';
 import { Product, POSTCARD_MATERIALS } from '../../types';
 import { QuantitySection } from './shared/QuantitySection';
 import { SummarySection } from './shared/SummarySection';
@@ -35,47 +36,18 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
   estimatedDeliveryDate,
   onGenerate
 }) => {
-  const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
+  const [selectedPostcardGroup, setSelectedPostcardGroup] = useState<string>('기본 대중형');
   const [expandedPostOption, setExpandedPostOption] = useState<string | null>(null);
-  const [selectedPostcardGroup, setSelectedPostcardGroup] = useState<string | null>(null);
 
-  const config = POSTCARD_CONFIG[product.id];
-
-  const handlePostcardGroupChange = (group: string) => {
-    setSelectedPostcardGroup(group);
-    const materialOption = product.options.find(opt => opt.name === '상세 용지 (기본)') || 
-                           product.options.find(opt => opt.name.includes('용지') && opt.name !== '용지 그룹');
-    
-    if (materialOption) {
-      const firstMaterial = POSTCARD_MATERIALS.find(m => m.group === group);
-      if (firstMaterial) {
-        handleOptionChange(materialOption.name, `${firstMaterial.name} ${firstMaterial.weight}`);
-      }
-    }
-  };
-
-  React.useEffect(() => {
-    if (product.id === 'stk-postcard-special') {
-      setSelectedPostcardGroup(null);
+  useEffect(() => {
+    const config = POSTCARD_CONFIG[product.id as keyof typeof POSTCARD_CONFIG];
+    if (config) {
+      setSelectedPostcardGroup(config.defaultGroup);
       const materialOption = product.options.find(opt => opt.name.includes('용지'));
-      if (materialOption && !selectedOptions[materialOption.name]) {
-        handleOptionChange(materialOption.name, '아트지 250g');
-      }
-    } else if (config) {
-      const currentGroup = selectedOptions['용지 그룹'] || config.allowedGroups?.[0] || '기본 대중형';
-      setSelectedPostcardGroup(currentGroup);
-      
-      const materialOption = product.options.find(opt => opt.name === '상세 용지 (기본)') || 
-                             product.options.find(opt => opt.name.includes('용지') && opt.name !== '용지 그룹');
       if (materialOption) {
-        const currentVal = selectedOptions[materialOption.name];
-        const currentMaterial = POSTCARD_MATERIALS.find(m => `${m.name} ${m.weight}` === currentVal);
-        
-        if (!currentVal || !currentMaterial || !config.allowedGroups?.includes(currentMaterial.group)) {
-          const firstMaterial = POSTCARD_MATERIALS.find(m => m.group === currentGroup);
-          if (firstMaterial) {
-            handleOptionChange(materialOption.name, `${firstMaterial.name} ${firstMaterial.weight}`);
-          }
+        const defaultMaterial = POSTCARD_MATERIALS.find(m => m.group === config.defaultGroup);
+        if (defaultMaterial && !selectedOptions[materialOption.name]) {
+          handleOptionChange(materialOption.name, `${defaultMaterial.name} ${defaultMaterial.weight}`);
         }
       }
     }
@@ -83,83 +55,67 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
 
   return (
     <div className="space-y-10">
-      {/* 1. Material Selection */}
-      {product.options.filter(opt => opt.name.includes('재질') || opt.name.includes('용지')).map((option) => (
+      {/* 1. Material Selection (Grouped) */}
+      {product.options.filter(opt => opt.name.includes('용지')).map((option) => (
         <div key={option.name} className="space-y-4">
           <div className="flex items-center gap-2">
             <div className="w-1 h-4 bg-emerald-500 rounded-full" />
+            <Layers className="w-4 h-4 text-zinc-400" />
             <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
               {option.name}
             </label>
           </div>
-          <div className="space-y-3">
-            {['기본 대중형', '고급 감성형', '친환경/내추럴형', '컬러/특수지형'].map(group => {
-              if (config?.allowedGroups && !config.allowedGroups.includes(group)) return null;
-              
-              const materialsInGroup = POSTCARD_MATERIALS.filter(m => {
-                if (m.group !== group) return false;
-                if (config?.allowedMaterials && !config.allowedMaterials.includes(m.name)) return false;
-                return true;
-              });
-
-              if (materialsInGroup.length === 0) return null;
-
-              const isExpanded = expandedGroup === group;
-              const hasSelectedInGroup = materialsInGroup.some(m => selectedOptions[option.name] === m.name);
-
+          <div className="flex flex-wrap gap-2 mb-4">
+            {POSTCARD_CONFIG[product.id as keyof typeof POSTCARD_CONFIG]?.groups.map(group => (
+              <button
+                key={group}
+                onClick={() => setSelectedPostcardGroup(group)}
+                className={`px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all ${
+                  selectedPostcardGroup === group
+                    ? 'bg-zinc-900 text-white shadow-lg'
+                    : 'bg-zinc-100 text-zinc-500 hover:bg-zinc-200'
+                }`}
+              >
+                {group}
+              </button>
+            ))}
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {option.values?.filter(val => {
+              const material = POSTCARD_MATERIALS.find(m => `${m.name} ${m.weight}` === val.label);
+              return material?.group === selectedPostcardGroup;
+            }).map((val) => {
+              const material = POSTCARD_MATERIALS.find(m => `${m.name} ${m.weight}` === val.label);
+              const isSelected = selectedOptions[option.name] === val.label;
               return (
-                <div key={group} className="border border-zinc-100 rounded-2xl overflow-hidden bg-zinc-50/50">
-                  <button
-                    onClick={() => setExpandedGroup(isExpanded ? null : group)}
-                    className={`w-full px-6 py-4 flex items-center justify-between transition-colors ${
-                      isExpanded ? 'bg-zinc-100' : 'hover:bg-zinc-100/50'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className={`text-xs font-black uppercase tracking-widest ${
-                        hasSelectedInGroup ? 'text-emerald-600' : 'text-zinc-500'
-                      }`}>
-                        {group}
-                      </span>
-                      {hasSelectedInGroup && !isExpanded && (
-                        <span className="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">
-                          {selectedOptions[option.name]}
-                        </span>
-                      )}
-                    </div>
-                    {isExpanded ? <ChevronUp className="w-4 h-4 text-zinc-400" /> : <ChevronDown className="w-4 h-4 text-zinc-400" />}
-                  </button>
-                  
-                  {isExpanded && (
-                    <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-2 bg-white">
-                      {materialsInGroup.map((material) => {
-                        const isSelected = selectedOptions[option.name] === material.name;
-                        return (
-                          <button
-                            key={material.id}
-                            onClick={() => handleOptionChange(option.name, material.name)}
-                            className={`group p-4 rounded-xl text-left border transition-all ${
-                              isSelected
-                                ? 'bg-emerald-50 border-emerald-500 ring-1 ring-emerald-500'
-                                : 'bg-white border-zinc-100 hover:border-emerald-200 hover:bg-zinc-50'
-                            }`}
-                          >
-                            <div className="flex items-center justify-between mb-1">
-                              <span className={`text-sm font-bold ${isSelected ? 'text-emerald-900' : 'text-zinc-900'}`}>
-                                {material.name}
-                              </span>
-                            </div>
-                            {material.features && (
-                              <p className={`text-[11px] leading-relaxed ${isSelected ? 'text-emerald-700/70' : 'text-zinc-400'}`}>
-                                {material.features}
-                              </p>
-                            )}
-                          </button>
-                        );
-                      })}
+                <button
+                  key={val.label}
+                  onClick={() => handleOptionChange(option.name, val.label)}
+                  className={`group p-5 rounded-2xl text-left border transition-all relative overflow-hidden ${
+                    isSelected
+                      ? 'bg-emerald-50 border-emerald-500 ring-1 ring-emerald-500'
+                      : 'bg-white border-zinc-100 hover:border-emerald-200 hover:bg-zinc-50'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className={`text-sm font-bold ${isSelected ? 'text-emerald-900' : 'text-zinc-900'}`}>
+                      {material?.name}
+                    </span>
+                    <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
+                      isSelected ? 'bg-emerald-200 text-emerald-700' : 'bg-zinc-100 text-zinc-500'
+                    }`}>
+                      {material?.weight}
+                    </span>
+                  </div>
+                  <p className={`text-[11px] leading-relaxed mb-3 ${isSelected ? 'text-emerald-700/70' : 'text-zinc-400'}`}>
+                    {material?.features}
+                  </p>
+                  {val.priceModifier !== undefined && val.priceModifier !== 0 && (
+                    <div className={`text-[10px] font-bold ${isSelected ? 'text-emerald-600' : 'text-zinc-400'}`}>
+                      {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
                     </div>
                   )}
-                </div>
+                </button>
               );
             })}
           </div>
@@ -169,7 +125,7 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
       {/* 2. Standard Options */}
       {product.options.filter(opt => {
         const normalizedName = opt.name.replace(/\s/g, '');
-        if (opt.name.includes('재질') || opt.name.includes('용지')) return false;
+        if (opt.name.includes('용지')) return false;
         
         const handledByIconGrid = [
           '코팅', '코팅종류', '코팅면수', '귀돌이', '귀돌이사용', '귀돌이크기', '귀돌이면수', '귀돌이방향', 
