@@ -277,6 +277,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
     if (product.id === 'bc-folded') return 'FOLDED_BUSINESS_CARD';
     if (product.id === 'memo-standard') return 'MEMO_PAD';
     if (product.id === 'note-spring' || product.id === 'note-leather' || product.id === 'note-saddle') return 'NOTE';
+    if (product.id === 'drawing-pro' || product.id === 'drawing-student') return 'DRAWING_BOOK';
     if (product.category === 'card-paper') return 'PAPER_GOODS';
     if (product.category === 'binding-booklet' || product.id === 'note-spring') return 'BINDING_GOODS';
     if (product.category === 'poster-promo') return 'LARGE_FORMAT';
@@ -823,6 +824,56 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
               </div>
             </div>
           ))}
+
+          {/* Drawing Book Specific Rendering */}
+          {pattern === 'DRAWING_BOOK' && (
+            <div className="space-y-10">
+              {product.options.filter(opt => {
+                if (opt.visibleIf && !opt.visibleIf(selectedOptions)) return false;
+                const normalizedName = opt.name.replace(/\s+/g, '');
+                const exclusions = ['제작수량', '수량', '주문수량'];
+                if (exclusions.includes(normalizedName)) return false;
+                return true;
+              }).map((option) => {
+                return (
+                  <div key={option.name} className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-1 h-4 bg-emerald-500 rounded-full" />
+                        <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
+                          {option.name}
+                        </label>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      {option.values?.map((val) => {
+                        const isValSelected = selectedOptions[option.name] === val.label;
+                        return (
+                          <button
+                            key={val.label}
+                            onClick={() => handleOptionChange(option.name, val.label)}
+                            className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden ${
+                              isValSelected
+                                ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/20'
+                                : 'bg-white border-zinc-200 text-zinc-600 hover:border-emerald-200'
+                            }`}
+                          >
+                            <span className="relative z-10">{val.label}</span>
+                            {val.priceModifier !== undefined && val.priceModifier !== 0 && (
+                              <span className={`block text-[10px] mt-1 opacity-70 ${isValSelected ? 'text-white' : 'text-zinc-400'}`}>
+                                {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
 
           {/* Business Card, Design Card & Postcard Post-processing Options (Icon Grid Pattern) */}
           {(pattern === 'BUSINESS_CARD' || pattern === 'DESIGN_CARD' || pattern === 'POSTCARD') && (() => {
@@ -1734,6 +1785,8 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
               if (noteExclusions.includes(normalizedName)) return false;
               return true;
             }
+
+            if (pattern === 'DRAWING_BOOK') return false;
 
             if (opt.name.includes('용지')) return false;
 
