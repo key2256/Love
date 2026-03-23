@@ -38,14 +38,14 @@ interface QuotationCalculatorProps {
 
 const NOTE_GROUPS = {
   '외부 구성': ['규격', '표지 구성', '커버 스타일'],
-  '후가공': ['표지 코팅', '커버 인쇄', '엣지 마감'],
+  '후가공 선택': ['표지 코팅', '커버 인쇄', '엣지 마감'],
   '내부 구성': ['내지 종류', '내지 색상', '내지 장수', '페이지 수'],
   '제본/마감': ['스프링 방향', '스프링 색상', '제본 안내']
 };
 
 const getNoteGroup = (optionName: string) => {
   if (NOTE_GROUPS['외부 구성'].includes(optionName)) return '외부 구성';
-  if (NOTE_GROUPS['후가공'].includes(optionName)) return '후가공';
+  if (NOTE_GROUPS['후가공 선택'].includes(optionName)) return '후가공 선택';
   if (NOTE_GROUPS['내부 구성'].includes(optionName)) return '내부 구성';
   if (NOTE_GROUPS['제본/마감'].includes(optionName)) return '제본/마감';
   return null;
@@ -1709,7 +1709,15 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
               '후가공효과', '제작수량', '수량', '주문수량', '후가공선택', '모양커팅',
               '낱장 접착', '측면 인쇄', '엣지디자인', '거치대', '케이스'
             ];
-            if (generalExclusions.includes(normalizedName)) return false;
+            
+            if (generalExclusions.includes(normalizedName)) {
+              // Special case: allow certain options for NOTE pattern
+              if (pattern === 'NOTE' && (normalizedName === '표지코팅' || normalizedName === '커버인쇄' || normalizedName === '엣지마감')) {
+                // Continue
+              } else {
+                return false;
+              }
+            }
 
             if (pattern === 'MEMO_PAD') {
               const memoExclusions = [
@@ -2320,7 +2328,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
           {(() => {
             // If handled by icon grid, skip standard list rendering for these specific options
             const isIconGridPattern = pattern === 'BUSINESS_CARD' || pattern === 'DESIGN_CARD' || pattern === 'POSTCARD';
-            if (isIconGridPattern) return null;
+            if (isIconGridPattern || pattern === 'NOTE') return null;
 
             const postProcessingOptions = product.options.filter(opt => {
               const normalizedName = opt.name.replace(/\s/g, '');
