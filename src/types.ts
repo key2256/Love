@@ -1492,6 +1492,10 @@ export const CATEGORIES: Category[] = [
       {
         groupName: '노트',
         items: ['스프링 노트', '레더 노트', '중철 노트', '하드커버 노트']
+      },
+      {
+        groupName: '드로잉북',
+        items: ['전문가용 드로잉북', '학생용 드로잉북', '세로형 종합장']
       }
     ]
   },
@@ -1735,6 +1739,18 @@ export const SUBCATEGORY_METADATA: Record<string, SubCategoryMetadata> = {
   '별도 상담 제작': {
     tagline: '상상하는 모든 것, 맞춤 상담 제작.',
     description: '규격 외 상품이나 복합 공정이 필요한 상품을 위한 전문가 상담 서비스입니다.'
+  },
+  '전문가용 드로잉북': {
+    tagline: '전문가를 위한 고품질 드로잉북.',
+    description: '300g의 두꺼운 드로잉 용지를 사용하여 수채화, 소묘 등 다양한 작업에 적합합니다.'
+  },
+  '학생용 드로잉북': {
+    tagline: '튼튼한 하드커버로 보호하는 학생용 드로잉북.',
+    description: '2mm 보드 하드커버로 내구성이 뛰어나며, 휴대가 간편한 드로잉북입니다.'
+  },
+  '세로형 종합장': {
+    tagline: '다용도로 활용 가능한 세로형 종합장.',
+    description: '드로잉과 필기를 동시에 할 수 있는 실용적인 종합장입니다.'
   }
 };
 
@@ -2824,6 +2840,194 @@ export const PRODUCTS: Product[] = [
     notes: [
       '페이지 수는 4의 배수 기준으로 제작됩니다.',
       '내지는 기본 모조지 80g 기준입니다.'
+    ]
+  },
+  {
+    id: 'drawing-pro',
+    name: '전문가용 드로잉북',
+    category: 'memo-note',
+    subCategory: '전문가용 드로잉북',
+    ...SUBCATEGORY_METADATA['전문가용 드로잉북'],
+    image: 'https://picsum.photos/seed/drawing-pro/800/800',
+    minQuantity: 1,
+    basePrice: 8000,
+    options: [
+      {
+        name: '규격',
+        type: 'select',
+        values: [
+          { label: 'B6 (128x182)', priceModifier: 0 },
+          { label: 'A5 (148x210)', priceModifier: 1000 },
+          { label: 'A4 (210x297)', priceModifier: 3000 },
+          { label: 'A3 (297x420)', priceModifier: 7000 },
+        ]
+      },
+      {
+        name: '표지 구성',
+        type: 'radio',
+        values: [
+          { label: '소프트커버', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '코팅 유무',
+        type: 'radio',
+        values: [
+          { label: '코팅 없음', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '내지 종류',
+        type: 'radio',
+        values: [
+          { label: '드로잉용지 300g', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '제본 방향',
+        type: 'radio',
+        values: [
+          { label: '세로형', priceModifier: 0 },
+          { label: '가로형', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '스프링 색상',
+        type: 'radio',
+        values: [
+          { label: '검정', priceModifier: 0 },
+          { label: '하양', priceModifier: 0 },
+        ]
+      }
+    ],
+    features: ['소프트커버', '드로잉용지 300g', '트윈 와이어 스프링'],
+    leadTime: '5~7 영업일',
+    badges: ['전문가용', '고평량', '드로잉 전용'],
+    warnings: [
+      '코팅이 없는 표지이므로 오염에 주의해 주세요.',
+      '스프링 타공 부위에 중요한 디자인이 걸리지 않도록 주의하세요.'
+    ]
+  },
+  {
+    id: 'drawing-student',
+    name: '학생용 드로잉북',
+    category: 'memo-note',
+    subCategory: '학생용 드로잉북',
+    ...SUBCATEGORY_METADATA['학생용 드로잉북'],
+    image: 'https://picsum.photos/seed/drawing-student/800/800',
+    minQuantity: 1,
+    basePrice: 12000,
+    options: [
+      {
+        name: '규격',
+        type: 'select',
+        values: [
+          { label: 'B6 (128x182)', priceModifier: 0 },
+          { label: 'A5 (148x210)', priceModifier: 1500 },
+          { label: 'A4 (210x297)', priceModifier: 4000 },
+        ]
+      },
+      {
+        name: '표지 구성',
+        type: 'radio',
+        values: [
+          { label: '하드커버 (2mm 보드)', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '표지 코팅',
+        type: 'radio',
+        values: [
+          { label: '무광코팅', priceModifier: 0 },
+          { label: '유광코팅', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '내지 종류',
+        type: 'radio',
+        values: [
+          { label: '드로잉용지 300g', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '제본 방향',
+        type: 'radio',
+        values: [
+          { label: '세로형', priceModifier: 0 },
+          { label: '가로형', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '스프링 색상',
+        type: 'radio',
+        values: [
+          { label: '검정', priceModifier: 0 },
+          { label: '하양', priceModifier: 0 },
+        ]
+      }
+    ],
+    features: ['하드커버 (2mm)', '드로잉용지 300g', '내구성 우수'],
+    leadTime: '7~10 영업일',
+    badges: ['학생용', '하드커버', '튼튼함'],
+    warnings: [
+      '하드커버 특성상 제작 기간이 다소 소요될 수 있습니다.',
+      '모서리 충격에 주의해 주세요.'
+    ]
+  },
+  {
+    id: 'drawing-general',
+    name: '세로형 종합장',
+    category: 'memo-note',
+    subCategory: '세로형 종합장',
+    ...SUBCATEGORY_METADATA['세로형 종합장'],
+    image: 'https://picsum.photos/seed/drawing-general/800/800',
+    minQuantity: 1,
+    basePrice: 4000,
+    options: [
+      {
+        name: '규격',
+        type: 'select',
+        values: [
+          { label: 'B5 (182x257)', priceModifier: 0 },
+          { label: 'A4 (210x297)', priceModifier: 1500 },
+        ]
+      },
+      {
+        name: '표지 구성',
+        type: 'radio',
+        values: [
+          { label: '소프트커버', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '제본 방향',
+        type: 'radio',
+        values: [
+          { label: '세로형 (상철)', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '내지 종류',
+        type: 'radio',
+        values: [
+          { label: '드로잉용지', priceModifier: 0 },
+          { label: '필기용지', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '스프링 색상',
+        type: 'radio',
+        values: [
+          { label: '검정', priceModifier: 0 },
+          { label: '하양', priceModifier: 0 },
+        ]
+      }
+    ],
+    features: ['소프트커버', '세로형 상철', '다양한 내지 선택'],
+    leadTime: '3~5 영업일',
+    badges: ['종합장', '실용적', '학교용'],
+    warnings: [
+      '세로형 제본으로 상단에 스프링이 위치합니다.'
     ]
   },
   {

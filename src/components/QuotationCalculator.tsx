@@ -1755,6 +1755,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                 const prevGroup = prevOption ? getNoteGroup(prevOption.name) : null;
                 
                 if (currentGroup && currentGroup !== prevGroup) {
+                  if (product.id === 'note-saddle' && (currentGroup === '후가공 선택' || currentGroup === '제본/마감')) return null;
                   return (
                     <div className="pt-12 pb-6 flex items-center gap-4">
                       <div className="h-px flex-1 bg-zinc-100" />
