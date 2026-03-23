@@ -23,7 +23,7 @@ interface NoteCalculatorProps {
   totalPrice: number;
   discountRate: number;
   estimatedDeliveryDate: string;
-  onGenerate: () => void;
+  onGenerate: (customSize?: { width: string; height: string }) => void;
   subPattern?: 'NOTE_SPIRAL' | 'NOTE_LEATHER' | 'NOTE_SADDLE';
 }
 

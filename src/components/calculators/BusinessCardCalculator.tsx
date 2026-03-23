@@ -20,7 +20,7 @@ interface BusinessCardCalculatorProps {
   totalPrice: number;
   discountRate: number;
   estimatedDeliveryDate: string;
-  onGenerate: () => void;
+  onGenerate: (customSize?: { width: string; height: string }) => void;
 }
 
 export const BusinessCardCalculator: React.FC<BusinessCardCalculatorProps> = ({
@@ -37,6 +37,23 @@ export const BusinessCardCalculator: React.FC<BusinessCardCalculatorProps> = ({
 }) => {
   const [selectedBusinessCardGroup, setSelectedBusinessCardGroup] = useState<string>('기본 대중형');
   const [expandedPostOption, setExpandedPostOption] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    const materialOption = product.options.find(opt => opt.name.includes('용지'));
+    if (materialOption) {
+      const selectedValue = selectedOptions[materialOption.name];
+      const material = BUSINESS_CARD_MATERIALS.find(m => `${m.name} ${m.weight}` === selectedValue);
+      if (material) {
+        setSelectedBusinessCardGroup(material.group);
+      } else {
+        const availableGroups = Array.from(new Set(product.options.find(opt => opt.name.includes('용지'))?.values?.map(v => {
+          const m = BUSINESS_CARD_MATERIALS.find(bm => `${bm.name} ${bm.weight}` === v.label);
+          return m?.group;
+        }).filter(Boolean)));
+        setSelectedBusinessCardGroup((availableGroups[0] as string) || '기본 대중형');
+      }
+    }
+  }, [product.id]);
 
   return (
     <div className="space-y-10">

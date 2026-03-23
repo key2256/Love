@@ -20,7 +20,7 @@ interface DesignCardCalculatorProps {
   totalPrice: number;
   discountRate: number;
   estimatedDeliveryDate: string;
-  onGenerate: () => void;
+  onGenerate: (customSize?: { width: string; height: string }) => void;
 }
 
 export const DesignCardCalculator: React.FC<DesignCardCalculatorProps> = ({
@@ -36,6 +36,15 @@ export const DesignCardCalculator: React.FC<DesignCardCalculatorProps> = ({
   onGenerate
 }) => {
   const [expandedPostOption, setExpandedPostOption] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (selectedOptions['수량']) {
+      const qty = parseInt(selectedOptions['수량'].replace('매', '')) || 100;
+      if (qty !== quantity) {
+        setQuantity(qty);
+      }
+    }
+  }, [selectedOptions['수량'], quantity, setQuantity]);
 
   return (
     <div className="space-y-10">

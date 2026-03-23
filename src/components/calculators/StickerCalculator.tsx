@@ -19,7 +19,7 @@ interface StickerCalculatorProps {
   totalPrice: number;
   discountRate: number;
   estimatedDeliveryDate: string;
-  onGenerate: () => void;
+  onGenerate: (customSize?: { width: string; height: string }) => void;
 }
 
 export const StickerCalculator: React.FC<StickerCalculatorProps> = ({
@@ -34,7 +34,18 @@ export const StickerCalculator: React.FC<StickerCalculatorProps> = ({
   estimatedDeliveryDate,
   onGenerate
 }) => {
-  const [expandedGroup, setExpandedGroup] = useState<string | null>('일반/기본 용지');
+  const [expandedGroup, setExpandedGroup] = React.useState<string | null>('일반/기본 용지');
+
+  React.useEffect(() => {
+    const materialOption = product.options.find(opt => opt.name.includes('재질') || opt.name.includes('용지'));
+    if (materialOption) {
+      const selectedValue = selectedOptions[materialOption.name];
+      const material = PAPER_MATERIALS.find(m => m.name === selectedValue);
+      if (material) {
+        setExpandedGroup(material.group);
+      }
+    }
+  }, [selectedOptions, product.options]);
 
   return (
     <div className="space-y-10">

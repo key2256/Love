@@ -20,7 +20,7 @@ interface PostcardCalculatorProps {
   totalPrice: number;
   discountRate: number;
   estimatedDeliveryDate: string;
-  onGenerate: () => void;
+  onGenerate: (customSize?: { width: string; height: string }) => void;
 }
 
 export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
@@ -37,8 +37,49 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
 }) => {
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
   const [expandedPostOption, setExpandedPostOption] = useState<string | null>(null);
+  const [selectedPostcardGroup, setSelectedPostcardGroup] = useState<string | null>(null);
 
   const config = POSTCARD_CONFIG[product.id];
+
+  const handlePostcardGroupChange = (group: string) => {
+    setSelectedPostcardGroup(group);
+    const materialOption = product.options.find(opt => opt.name === '상세 용지 (기본)') || 
+                           product.options.find(opt => opt.name.includes('용지') && opt.name !== '용지 그룹');
+    
+    if (materialOption) {
+      const firstMaterial = POSTCARD_MATERIALS.find(m => m.group === group);
+      if (firstMaterial) {
+        handleOptionChange(materialOption.name, `${firstMaterial.name} ${firstMaterial.weight}`);
+      }
+    }
+  };
+
+  React.useEffect(() => {
+    if (product.id === 'stk-postcard-special') {
+      setSelectedPostcardGroup(null);
+      const materialOption = product.options.find(opt => opt.name.includes('용지'));
+      if (materialOption && !selectedOptions[materialOption.name]) {
+        handleOptionChange(materialOption.name, '아트지 250g');
+      }
+    } else if (config) {
+      const currentGroup = selectedOptions['용지 그룹'] || config.allowedGroups?.[0] || '기본 대중형';
+      setSelectedPostcardGroup(currentGroup);
+      
+      const materialOption = product.options.find(opt => opt.name === '상세 용지 (기본)') || 
+                             product.options.find(opt => opt.name.includes('용지') && opt.name !== '용지 그룹');
+      if (materialOption) {
+        const currentVal = selectedOptions[materialOption.name];
+        const currentMaterial = POSTCARD_MATERIALS.find(m => `${m.name} ${m.weight}` === currentVal);
+        
+        if (!currentVal || !currentMaterial || !config.allowedGroups?.includes(currentMaterial.group)) {
+          const firstMaterial = POSTCARD_MATERIALS.find(m => m.group === currentGroup);
+          if (firstMaterial) {
+            handleOptionChange(materialOption.name, `${firstMaterial.name} ${firstMaterial.weight}`);
+          }
+        }
+      }
+    }
+  }, [product.id]);
 
   return (
     <div className="space-y-10">

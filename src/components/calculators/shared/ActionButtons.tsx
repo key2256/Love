@@ -2,7 +2,7 @@ import React from 'react';
 import { FileText, ShoppingCart, HelpCircle, CheckCircle2 } from 'lucide-react';
 
 interface ActionButtonsProps {
-  onGenerate: () => void;
+  onGenerate: (customSize?: { width: string; height: string }) => void;
 }
 
 export const ActionButtons: React.FC<ActionButtonsProps> = ({ onGenerate }) => {

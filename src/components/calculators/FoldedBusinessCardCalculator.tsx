@@ -20,7 +20,7 @@ interface FoldedBusinessCardCalculatorProps {
   totalPrice: number;
   discountRate: number;
   estimatedDeliveryDate: string;
-  onGenerate: () => void;
+  onGenerate: (customSize?: { width: string; height: string }) => void;
 }
 
 const FoldedPreview = ({ type, direction }: { type: string, direction: string }) => {

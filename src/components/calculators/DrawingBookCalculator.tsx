@@ -17,7 +17,7 @@ interface DrawingBookCalculatorProps {
   totalPrice: number;
   discountRate: number;
   estimatedDeliveryDate: string;
-  onGenerate: () => void;
+  onGenerate: (customSize?: { width: string; height: string }) => void;
 }
 
 export const DrawingBookCalculator: React.FC<DrawingBookCalculatorProps> = ({

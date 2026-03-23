@@ -20,7 +20,7 @@ interface MemoPadCalculatorProps {
   totalPrice: number;
   discountRate: number;
   estimatedDeliveryDate: string;
-  onGenerate: () => void;
+  onGenerate: (customSize?: { width: string; height: string }) => void;
 }
 
 export const MemoPadCalculator: React.FC<MemoPadCalculatorProps> = ({
@@ -310,7 +310,17 @@ export const MemoPadCalculator: React.FC<MemoPadCalculatorProps> = ({
       <OrderTitleSection />
       <FileUploadSection />
       <NotesSection product={product} />
-      <ActionButtons onGenerate={onGenerate} />
+      <ActionButtons onGenerate={() => {
+        if (selectedOptions['사이즈'] === '직접입력') {
+          const w = parseInt(customSize.width) || 0;
+          const h = parseInt(customSize.height) || 0;
+          if (w > 90 || h > 90) {
+            alert('직접입력 사이즈는 최대 90 x 90 mm 이하만 가능합니다.');
+            return;
+          }
+        }
+        onGenerate(customSize);
+      }} />
     </div>
   );
 };
