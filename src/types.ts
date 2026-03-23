@@ -2863,32 +2863,25 @@ export const PRODUCTS: Product[] = [
         ]
       },
       {
-        name: '표지 구성',
+        name: '제본 방향',
+        type: 'radio',
+        values: [
+          { label: '세로형', priceModifier: 0 },
+          { label: '가로형', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '커버 종류',
         type: 'radio',
         values: [
           { label: '소프트커버', priceModifier: 0 },
         ]
       },
       {
-        name: '코팅 유무',
-        type: 'radio',
-        values: [
-          { label: '코팅 없음', priceModifier: 0 },
-        ]
-      },
-      {
-        name: '내지 종류',
+        name: '용지',
         type: 'radio',
         values: [
           { label: '드로잉용지 300g', priceModifier: 0 },
-        ]
-      },
-      {
-        name: '제본 방향',
-        type: 'radio',
-        values: [
-          { label: '세로형', priceModifier: 0 },
-          { label: '가로형', priceModifier: 0 },
         ]
       },
       {
@@ -2928,7 +2921,15 @@ export const PRODUCTS: Product[] = [
         ]
       },
       {
-        name: '표지 구성',
+        name: '제본 방향',
+        type: 'radio',
+        values: [
+          { label: '세로형', priceModifier: 0 },
+          { label: '가로형', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '커버 종류',
         type: 'radio',
         values: [
           { label: '하드커버 (2mm 보드)', priceModifier: 0 },
@@ -2943,18 +2944,10 @@ export const PRODUCTS: Product[] = [
         ]
       },
       {
-        name: '내지 종류',
+        name: '용지',
         type: 'radio',
         values: [
           { label: '드로잉용지 300g', priceModifier: 0 },
-        ]
-      },
-      {
-        name: '제본 방향',
-        type: 'radio',
-        values: [
-          { label: '세로형', priceModifier: 0 },
-          { label: '가로형', priceModifier: 0 },
         ]
       },
       {
@@ -2993,13 +2986,6 @@ export const PRODUCTS: Product[] = [
         ]
       },
       {
-        name: '표지 구성',
-        type: 'radio',
-        values: [
-          { label: '소프트커버', priceModifier: 0 },
-        ]
-      },
-      {
         name: '제본 방향',
         type: 'radio',
         values: [
@@ -3007,7 +2993,14 @@ export const PRODUCTS: Product[] = [
         ]
       },
       {
-        name: '내지 종류',
+        name: '커버 종류',
+        type: 'radio',
+        values: [
+          { label: '소프트커버', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '용지',
         type: 'radio',
         values: [
           { label: '드로잉용지', priceModifier: 0 },
