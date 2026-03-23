@@ -37,13 +37,15 @@ interface QuotationCalculatorProps {
 }
 
 const NOTE_GROUPS = {
-  '외부 구성': ['규격', '표지 구성', '커버 스타일', '표지 코팅'],
+  '외부 구성': ['규격', '표지 구성', '커버 스타일'],
+  '후가공': ['표지 코팅', '커버 인쇄', '엣지 마감'],
   '내부 구성': ['내지 종류', '내지 색상', '내지 장수', '페이지 수'],
-  '제본/마감': ['스프링 방향', '스프링 색상', '커버 인쇄', '엣지 마감', '제본 안내']
+  '제본/마감': ['스프링 방향', '스프링 색상', '제본 안내']
 };
 
 const getNoteGroup = (optionName: string) => {
   if (NOTE_GROUPS['외부 구성'].includes(optionName)) return '외부 구성';
+  if (NOTE_GROUPS['후가공'].includes(optionName)) return '후가공';
   if (NOTE_GROUPS['내부 구성'].includes(optionName)) return '내부 구성';
   if (NOTE_GROUPS['제본/마감'].includes(optionName)) return '제본/마감';
   return null;
@@ -1730,8 +1732,8 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
             return true;
           }).sort((a, b) => {
             if (pattern === 'NOTE') {
-              const springOrder = ['규격', '표지 구성', '내지 종류', '내지 색상', '내지 장수', '스프링 방향', '스프링 색상'];
-              const leatherOrder = ['규격', '커버 스타일', '내지 종류', '내지 색상', '내지 장수', '커버 인쇄', '엣지 마감'];
+              const springOrder = ['규격', '표지 구성', '표지 코팅', '내지 종류', '내지 색상', '내지 장수', '스프링 방향', '스프링 색상'];
+              const leatherOrder = ['규격', '커버 스타일', '커버 인쇄', '엣지 마감', '내지 종류', '내지 색상', '내지 장수'];
               const saddleOrder = ['규격', '표지 구성', '표지 코팅', '내지 종류', '내지 색상', '페이지 수', '제본 안내'];
               const order = product.id === 'note-spring' ? springOrder : product.id === 'note-saddle' ? saddleOrder : leatherOrder;
               return order.indexOf(a.name) - order.indexOf(b.name);
