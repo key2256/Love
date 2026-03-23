@@ -2774,6 +2774,14 @@ export const PRODUCTS: Product[] = [
         ]
       },
       {
+        name: '표지 코팅',
+        type: 'radio',
+        values: [
+          { label: '무광코팅', priceModifier: 0 },
+          { label: '유광코팅', priceModifier: 0 },
+        ]
+      },
+      {
         name: '내지 종류',
         type: 'radio',
         values: [

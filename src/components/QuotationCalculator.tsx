@@ -37,7 +37,7 @@ interface QuotationCalculatorProps {
 }
 
 const NOTE_GROUPS = {
-  '외부 구성': ['규격', '표지 구성', '커버 스타일'],
+  '외부 구성': ['규격', '표지 구성', '커버 스타일', '표지 코팅'],
   '내부 구성': ['내지 종류', '내지 색상', '내지 장수', '페이지 수'],
   '제본/마감': ['스프링 방향', '스프링 색상', '커버 인쇄', '엣지 마감', '제본 안내']
 };
@@ -1641,7 +1641,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                   <div>
                     <p className="text-[11px] font-bold text-zinc-400 mb-1 uppercase tracking-widest">표지/커버</p>
                     <p className="text-sm font-black text-zinc-900 leading-tight">
-                      {product.id === 'note-spring' ? '스노우 300g + 무광코팅' : product.id === 'note-saddle' ? '스노우 200g + 무광코팅' : '프리미엄 인조가죽'}
+                      {product.id === 'note-spring' ? '스노우 300g + 무광코팅' : product.id === 'note-saddle' ? `스노우 200g + ${selectedOptions['표지 코팅'] || '무광코팅'}` : '프리미엄 인조가죽'}
                     </p>
                     <p className="text-[10px] text-zinc-500 mt-1 leading-relaxed">
                       {product.id === 'note-spring' ? '두툼하고 부드러운 질감' : product.id === 'note-saddle' ? '가볍고 유연한 표지' : '고급스러운 질감과 내구성'}
@@ -1732,7 +1732,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
             if (pattern === 'NOTE') {
               const springOrder = ['규격', '표지 구성', '내지 종류', '내지 색상', '내지 장수', '스프링 방향', '스프링 색상'];
               const leatherOrder = ['규격', '커버 스타일', '내지 종류', '내지 색상', '내지 장수', '커버 인쇄', '엣지 마감'];
-              const saddleOrder = ['규격', '표지 구성', '내지 종류', '내지 색상', '페이지 수', '제본 안내'];
+              const saddleOrder = ['규격', '표지 구성', '표지 코팅', '내지 종류', '내지 색상', '페이지 수', '제본 안내'];
               const order = product.id === 'note-spring' ? springOrder : product.id === 'note-saddle' ? saddleOrder : leatherOrder;
               return order.indexOf(a.name) - order.indexOf(b.name);
             }
@@ -2022,7 +2022,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                     </p>
                   )}
                 </div>
-              ) : (pattern === 'NOTE' && (option.name === '표지 구성' || option.name === '커버 스타일')) ? (
+              ) : (pattern === 'NOTE' && (option.name === '표지 구성' || option.name === '커버 스타일' || option.name === '표지 코팅')) ? (
                 <div className="grid grid-cols-2 gap-3">
                   {option.values?.map((val) => {
                     const isSelected = selectedOptions[option.name] === val.label;
