@@ -11,8 +11,10 @@ import { Footer } from './components/Footer';
 import { Portfolio } from './components/Portfolio';
 import { InquiryForm } from './components/InquiryForm';
 import { PRODUCTS, CATEGORIES, Product, Quotation, ORDER_STEPS, PORTFOLIO_ITEMS, SUBCATEGORY_METADATA, SubCategoryGroup } from './types';
-import { FileUp, Send, CheckCircle2, MessageSquare, ArrowRight, Box, Search, Star, Zap, Calculator, MapPin } from 'lucide-react';
+import { FileUp, Send, CheckCircle2, MessageSquare, ArrowRight, Box, Search, Star, Zap, Calculator, MapPin, Phone, Mail } from 'lucide-react';
 import { APIProvider, Map, AdvancedMarker, Pin } from '@vis.gl/react-google-maps';
+
+const center = { lat: 37.6438, lng: 126.7868 }; // Approximate coordinates for Ilsan-donggu, Goyang-si
 
 const API_KEY = 
   process.env.GOOGLE_MAPS_PLATFORM_KEY || 
@@ -246,6 +248,7 @@ function App() {
         isScrolled={isScrolled}
         searchQuery={searchQuery}
         onSearchChange={handleSearchChange}
+        currentView={view}
       />
 
       <AnimatePresence mode="wait">
@@ -256,7 +259,7 @@ function App() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <Hero onExplore={() => handleCategorySelect('all')} />
+            <Hero onExplore={() => handleCategorySelect('all')} onNavigate={onNavigate} />
             
             {/* Hero Info Block */}
             <section className="relative z-10 -mt-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -354,7 +357,7 @@ function App() {
               </div>
             </section>
 
-            <TrustSection />
+            <TrustSection onNavigate={onNavigate} />
 
             {/* Portfolio Section */}
             <section className="py-24 bg-white overflow-hidden">
@@ -638,64 +641,120 @@ function App() {
           </motion.div>
         )}
 
+        {view === 'inquiry' && (
+          <motion.div
+            key="inquiry"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="pt-32 pb-24"
+          >
+            <div className="max-w-3xl mx-auto px-4">
+              <div className="text-center mb-12">
+                <h1 className="text-4xl font-black mb-4 tracking-tight">견적 문의</h1>
+                <p className="text-zinc-500">원하시는 제작 사양을 남겨주시면 전문가가 확인 후 연락드립니다.</p>
+              </div>
+              <div className="bg-white rounded-[40px] border border-zinc-100 p-8 md:p-12 shadow-xl shadow-zinc-100/50">
+                <InquiryForm />
+              </div>
+            </div>
+          </motion.div>
+        )}
+
         {view === 'location' && (
           <motion.div
             key="location"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="pt-32 pb-24 max-w-7xl mx-auto px-4"
+            className="pt-32 pb-24"
           >
-            <div className="flex items-center justify-between mb-12">
-              <div>
-                <h1 className="text-4xl font-black mb-4 tracking-tight">오시는 길</h1>
-                <p className="text-zinc-500">완두프린트 오프라인 매장 및 사무실 안내입니다.</p>
+            <div className="max-w-7xl mx-auto px-4">
+              <div className="text-center mb-16">
+                <h1 className="text-5xl font-black mb-6 tracking-tight">오시는 길</h1>
+                <p className="text-lg text-zinc-500">완두프린트 오프라인 매장 및 작업실 위치를 안내해 드립니다.</p>
               </div>
-              <button 
-                onClick={() => setView('home')}
-                className="px-6 py-2 rounded-xl bg-zinc-100 text-zinc-900 font-bold text-sm hover:bg-zinc-200 transition-all"
-              >
-                돌아가기
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-              <div className="lg:col-span-1 space-y-8">
-                <div className="p-8 rounded-[32px] bg-zinc-50 border border-zinc-100">
-                  <div className="w-12 h-12 rounded-2xl bg-white text-emerald-600 flex items-center justify-center mb-6 shadow-sm">
-                    <MapPin className="w-6 h-6" />
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                <div className="space-y-8">
+                  <div className="bg-zinc-50 rounded-[40px] p-10 border border-zinc-100">
+                    <h2 className="text-2xl font-bold mb-8">연락처 및 주소</h2>
+                    <div className="space-y-6">
+                      <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center shrink-0">
+                          <MapPin className="w-6 h-6 text-emerald-600" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold text-zinc-400 mb-1 uppercase tracking-wider">Address</p>
+                          <p className="text-lg font-bold text-zinc-900">서울특별시 중구 을지로 123 완두빌딩 4층</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-blue-100 flex items-center justify-center shrink-0">
+                          <Phone className="w-6 h-6 text-blue-600" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold text-zinc-400 mb-1 uppercase tracking-wider">Phone</p>
+                          <p className="text-lg font-bold text-zinc-900">02-1234-5678</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-purple-100 flex items-center justify-center shrink-0">
+                          <Mail className="w-6 h-6 text-purple-600" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold text-zinc-400 mb-1 uppercase tracking-wider">Email</p>
+                          <p className="text-lg font-bold text-zinc-900">contact@wandooprint.com</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-bold mb-4">주소 안내</h3>
-                  <p className="text-zinc-600 text-sm leading-relaxed">
-                    서울특별시 강남구 테헤란로 123<br />
-                    완두빌딩 5층 (역삼역 3번 출구 도보 5분)
-                  </p>
+
+                  <div className="bg-emerald-600 rounded-[40px] p-10 text-white shadow-2xl shadow-emerald-600/20">
+                    <h2 className="text-2xl font-bold mb-4">운영 시간</h2>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center py-2 border-b border-white/10">
+                        <span className="font-medium opacity-80">평일 (Mon - Fri)</span>
+                        <span className="font-bold">09:00 - 18:00</span>
+                      </div>
+                      <div className="flex justify-between items-center py-2 border-b border-white/10">
+                        <span className="font-medium opacity-80">점심 시간 (Lunch)</span>
+                        <span className="font-bold">12:00 - 13:00</span>
+                      </div>
+                      <div className="flex justify-between items-center py-2 opacity-60">
+                        <span className="font-medium">주말 및 공휴일</span>
+                        <span className="font-bold">Closed</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="p-8 rounded-[32px] bg-zinc-50 border border-zinc-100">
-                  <div className="w-12 h-12 rounded-2xl bg-white text-blue-600 flex items-center justify-center mb-6 shadow-sm">
-                    <Send className="w-6 h-6" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-4">연락처</h3>
-                  <p className="text-zinc-600 text-sm leading-relaxed">
-                    T. 1588-0000<br />
-                    E. help@wandooprint.com
-                  </p>
+                <div className="aspect-square lg:aspect-auto lg:h-full min-h-[500px] rounded-[40px] overflow-hidden border border-zinc-100 shadow-xl relative bg-zinc-100">
+                  {hasValidKey ? (
+                    <APIProvider apiKey={API_KEY}>
+                      <Map
+                        defaultCenter={center}
+                        defaultZoom={17}
+                        mapId="DEMO_MAP_ID"
+                        className="w-full h-full"
+                      >
+                        <AdvancedMarker position={center}>
+                          <Pin background={'#10b981'} glyphColor={'#fff'} borderColor={'#059669'} />
+                        </AdvancedMarker>
+                      </Map>
+                    </APIProvider>
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center p-12 text-center">
+                      <div className="w-16 h-16 bg-zinc-100 rounded-3xl flex items-center justify-center text-zinc-400 mb-6">
+                        <MapPin className="w-8 h-8" />
+                      </div>
+                      <h3 className="text-xl font-bold text-zinc-900 mb-2">지도를 불러올 수 없습니다</h3>
+                      <p className="text-zinc-500 max-w-sm">
+                        Google Maps API 키가 설정되지 않았거나 유효하지 않습니다.
+                      </p>
+                    </div>
+                  )}
                 </div>
-              </div>
-
-              <div className="lg:col-span-2 h-[500px] rounded-[40px] overflow-hidden border border-zinc-100 shadow-xl relative">
-                <Map
-                  defaultCenter={{ lat: 37.498, lng: 127.027 }} // Gangnam area
-                  defaultZoom={15}
-                  mapId="DEMO_MAP_ID"
-                  internalUsageAttributionIds={['gmp_mcp_codeassist_v1_aistudio']}
-                  style={{ width: '100%', height: '100%' }}
-                >
-                  <AdvancedMarker position={{ lat: 37.498, lng: 127.027 }}>
-                    <Pin background="#10b981" glyphColor="#fff" borderColor="#059669" />
-                  </AdvancedMarker>
-                </Map>
               </div>
             </div>
           </motion.div>

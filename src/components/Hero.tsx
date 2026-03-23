@@ -4,9 +4,10 @@ import { ArrowRight, FileText, MessageSquare, ShoppingBag } from 'lucide-react';
 
 interface HeroProps {
   onExplore: () => void;
+  onNavigate: (view: 'home' | 'detail' | 'category' | 'guide' | 'inquiry' | 'custom_inquiry' | 'portfolio' | 'location') => void;
 }
 
-export const Hero: React.FC<HeroProps> = ({ onExplore }) => {
+export const Hero: React.FC<HeroProps> = ({ onExplore, onNavigate }) => {
   return (
     <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-zinc-900">
       {/* Background Pattern */}
@@ -44,12 +45,18 @@ export const Hero: React.FC<HeroProps> = ({ onExplore }) => {
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
               
-              <button className="px-8 py-4 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-xl transition-all flex items-center gap-2 border border-zinc-700">
+              <button 
+                onClick={() => onNavigate('inquiry')}
+                className="px-8 py-4 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-xl transition-all flex items-center gap-2 border border-zinc-700"
+              >
                 <MessageSquare className="w-5 h-5" />
                 견적 문의
               </button>
 
-              <button className="px-8 py-4 bg-transparent hover:bg-white/5 text-white font-bold rounded-xl transition-all flex items-center gap-2 border border-white/10">
+              <button 
+                onClick={() => onNavigate('guide')}
+                className="px-8 py-4 bg-transparent hover:bg-white/5 text-white font-bold rounded-xl transition-all flex items-center gap-2 border border-white/10"
+              >
                 <FileText className="w-5 h-5" />
                 파일 가이드
               </button>

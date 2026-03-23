@@ -244,6 +244,15 @@ const POSTCARD_CONFIG: Record<string, {
   }
 };
 
+import { StickerCalculator } from './calculators/StickerCalculator';
+import { PostcardCalculator } from './calculators/PostcardCalculator';
+import { BusinessCardCalculator } from './calculators/BusinessCardCalculator';
+import { DesignCardCalculator } from './calculators/DesignCardCalculator';
+import { MemoPadCalculator } from './calculators/MemoPadCalculator';
+import { NoteCalculator } from './calculators/NoteCalculator';
+import { DrawingBookCalculator } from './calculators/DrawingBookCalculator';
+import { DefaultCalculator } from './calculators/DefaultCalculator';
+
 export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ product, onGenerateQuotation }) => {
   const [quantity, setQuantity] = useState(product.minQuantity);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>(() => {

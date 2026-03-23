@@ -4073,6 +4073,158 @@ export const PRODUCTS: Product[] = [
     features: ['대량 제작 최적화', '롤 형태 공급', '다양한 재질'],
     leadTime: '7-10일',
     badges: ['대량특화', '자동부착용', '가성비']
+  },
+  {
+    id: 'binding-wireless',
+    name: '무선제본 책자',
+    category: 'binding-booklet',
+    subCategory: '무선제본',
+    tagline: '가장 일반적인 책 제본 방식.',
+    description: '강력한 접착제로 고정하는 방식으로 두꺼운 책자 제작에 적합합니다. 소설, 문제집, 보고서 등에 추천합니다.',
+    image: 'https://picsum.photos/seed/wireless/800/800',
+    minQuantity: 1,
+    basePrice: 45000,
+    options: [
+      {
+        name: '규격',
+        type: 'select',
+        values: [
+          { label: 'A4 (210x297)', priceModifier: 0 },
+          { label: 'A5 (148x210)', priceModifier: -5000 },
+          { label: 'B5 (182x257)', priceModifier: -2000 },
+        ]
+      },
+      {
+        name: '페이지 수',
+        type: 'select',
+        values: [
+          { label: '40페이지', priceModifier: 0 },
+          { label: '80페이지', priceModifier: 15000 },
+          { label: '120페이지', priceModifier: 30000 },
+          { label: '200페이지', priceModifier: 60000 },
+        ]
+      },
+      {
+        name: '표지 용지',
+        type: 'select',
+        values: [
+          { label: '아트지 250g', priceModifier: 0 },
+          { label: '스노우 250g', priceModifier: 0 },
+          { label: '랑데뷰 240g', priceModifier: 5000 },
+        ]
+      },
+      {
+        name: '내지 용지',
+        type: 'select',
+        values: [
+          { label: '모조지 80g', priceModifier: 0 },
+          { label: '모조지 100g', priceModifier: 2000 },
+          { label: '미색 모조 80g', priceModifier: 0 },
+        ]
+      }
+    ],
+    features: ['강력한 핫멜트 제본', '깔끔한 책등 마감', '대량 제작 가능'],
+    leadTime: '5~7 영업일',
+    badges: ['책제작', '표준제본', '고품질'],
+    warnings: [
+      '페이지 수가 너무 적으면(32p 미만) 무선제본이 어려울 수 있습니다.',
+      '책등(세나카) 두께를 고려하여 표지 디자인을 해야 합니다.'
+    ]
+  },
+  {
+    id: 'promo-leaflet',
+    name: '리플렛',
+    category: 'poster-promo',
+    subCategory: '리플렛',
+    tagline: '정보를 한눈에, 세련된 홍보물.',
+    description: '접지 가공을 통해 정보를 효율적으로 전달하는 홍보물입니다. 기업 소개, 전시 안내 등에 많이 사용됩니다.',
+    image: 'https://picsum.photos/seed/leaflet/800/800',
+    minQuantity: 10,
+    basePrice: 25000,
+    options: [
+      {
+        name: '접지 방식',
+        type: 'radio',
+        values: [
+          { label: '2단 접지', priceModifier: 0 },
+          { label: '3단 접지', priceModifier: 5000 },
+          { label: '대문 접지', priceModifier: 8000 },
+          { label: 'N단 접지', priceModifier: 10000 },
+        ]
+      },
+      {
+        name: '규격 (펼침 기준)',
+        type: 'select',
+        values: [
+          { label: 'A4 (210x297)', priceModifier: 0 },
+          { label: 'A3 (297x420)', priceModifier: 15000 },
+        ]
+      },
+      {
+        name: '용지 선택',
+        type: 'select',
+        values: [
+          { label: '아트지 150g', priceModifier: 0 },
+          { label: '스노우 150g', priceModifier: 0 },
+          { label: '랑데뷰 160g', priceModifier: 5000 },
+        ]
+      }
+    ],
+    features: ['정밀 오시/접지 가공', '양면 풀컬러 인쇄', '다양한 접지 형태'],
+    leadTime: '3~5 영업일',
+    badges: ['홍보용', '접지가공', '베스트'],
+    warnings: [
+      '접히는 부분의 인쇄 터짐 방지를 위해 코팅을 권장합니다.',
+      '접지 방향과 순서를 명확히 기재해 주세요.'
+    ]
+  },
+  {
+    id: 'pkg-tag',
+    name: '의류/상품 택(Tag)',
+    category: 'package-supply',
+    subCategory: '택(Tag)',
+    tagline: '브랜드의 가치를 완성하는 작은 디테일.',
+    description: '의류나 잡화에 부착하여 브랜드 정보와 가격 등을 표시하는 택입니다.',
+    image: 'https://picsum.photos/seed/tag/800/800',
+    minQuantity: 100,
+    basePrice: 15000,
+    options: [
+      {
+        name: '사이즈',
+        type: 'select',
+        values: [
+          { label: '40x80mm', priceModifier: 0 },
+          { label: '50x90mm', priceModifier: 0 },
+          { label: '60x60mm', priceModifier: 0 },
+          { label: '직접입력', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '용지 선택',
+        type: 'select',
+        values: [
+          { label: '스노우 250g', priceModifier: 0 },
+          { label: '아트지 250g', priceModifier: 0 },
+          { label: '크라프트 250g', priceModifier: 2000 },
+          { label: '랑데뷰 240g', priceModifier: 3000 },
+        ]
+      },
+      {
+        name: '타공 유무',
+        type: 'radio',
+        values: [
+          { label: '있음 (3mm)', priceModifier: 0 },
+          { label: '없음', priceModifier: 0 },
+        ]
+      }
+    ],
+    features: ['정밀 타공 포함', '고급 용지 사용', '소량 제작 가능'],
+    leadTime: '3~5 영업일',
+    badges: ['의류용', '브랜딩', '필수템'],
+    notes: [
+      '끈은 포함되어 있지 않으며 별도 구매 또는 준비하셔야 합니다.',
+      '양면 인쇄가 기본입니다.'
+    ]
   }
 ];
 

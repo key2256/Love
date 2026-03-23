@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { CATEGORIES, SubCategoryGroup } from '../types';
 
 interface NavbarProps {
-  onNavigate: (view: 'home' | 'detail' | 'category' | 'guide' | 'inquiry' | 'custom_inquiry' | 'portfolio') => void;
+  onNavigate: (view: 'home' | 'detail' | 'category' | 'guide' | 'inquiry' | 'custom_inquiry' | 'portfolio' | 'location') => void;
   onCategorySelect: (id: string) => void;
   onSubCategorySelect: (sub: string) => void;
   onLogoClick: () => void;
@@ -20,6 +20,7 @@ interface NavbarProps {
   isScrolled: boolean;
   searchQuery: string;
   onSearchChange: (query: string) => void;
+  currentView: string;
 }
 
 export const Navbar = ({ 
@@ -31,7 +32,8 @@ export const Navbar = ({
   activeSubCategory,
   isScrolled,
   searchQuery,
-  onSearchChange
+  onSearchChange,
+  currentView
 }: NavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
@@ -202,9 +204,24 @@ export const Navbar = ({
                   </button>
                 )}
               </div>
-              <button onClick={() => onNavigate('guide')} className="text-xs font-bold text-zinc-400 hover:text-zinc-900 transition-colors">파일 가이드</button>
-              <button onClick={() => onNavigate('inquiry')} className="text-xs font-bold text-zinc-400 hover:text-zinc-900 transition-colors">견적 문의</button>
-              <button onClick={() => onNavigate('portfolio')} className="text-xs font-bold text-zinc-400 hover:text-zinc-900 transition-colors">제작 사례</button>
+              <button 
+                onClick={() => onNavigate('guide')} 
+                className={`text-xs font-bold transition-colors ${currentView === 'guide' ? 'text-emerald-600' : 'text-zinc-400 hover:text-zinc-900'}`}
+              >
+                파일 가이드
+              </button>
+              <button 
+                onClick={() => onNavigate('inquiry')} 
+                className={`text-xs font-bold transition-colors ${currentView === 'inquiry' ? 'text-emerald-600' : 'text-zinc-400 hover:text-zinc-900'}`}
+              >
+                견적 문의
+              </button>
+              <button 
+                onClick={() => onNavigate('portfolio')} 
+                className={`text-xs font-bold transition-colors ${currentView === 'portfolio' ? 'text-emerald-600' : 'text-zinc-400 hover:text-zinc-900'}`}
+              >
+                제작 사례
+              </button>
             </div>
 
             <button className="p-2 rounded-full text-zinc-600 hover:bg-zinc-100 transition-colors relative">
@@ -501,8 +518,30 @@ export const Navbar = ({
                 ))}
               </div>
               <div className="flex flex-col gap-4 pt-6 border-t border-zinc-100">
-                <button onClick={() => { onNavigate('guide'); setIsMenuOpen(false); }} className="text-left text-lg font-bold">파일 가이드</button>
-                <button onClick={() => { onNavigate('inquiry'); setIsMenuOpen(false); }} className="text-left text-lg font-bold">견적 문의</button>
+                <button 
+                  onClick={() => { onNavigate('guide'); setIsMenuOpen(false); }} 
+                  className={`text-left text-lg font-black tracking-tight ${currentView === 'guide' ? 'text-emerald-600' : 'text-zinc-900'}`}
+                >
+                  파일 가이드
+                </button>
+                <button 
+                  onClick={() => { onNavigate('inquiry'); setIsMenuOpen(false); }} 
+                  className={`text-left text-lg font-black tracking-tight ${currentView === 'inquiry' ? 'text-emerald-600' : 'text-zinc-900'}`}
+                >
+                  견적 문의
+                </button>
+                <button 
+                  onClick={() => { onNavigate('portfolio'); setIsMenuOpen(false); }} 
+                  className={`text-left text-lg font-black tracking-tight ${currentView === 'portfolio' ? 'text-emerald-600' : 'text-zinc-900'}`}
+                >
+                  제작 사례
+                </button>
+                <button 
+                  onClick={() => { onNavigate('location'); setIsMenuOpen(false); }} 
+                  className={`text-left text-lg font-black tracking-tight ${currentView === 'location' ? 'text-emerald-600' : 'text-zinc-900'}`}
+                >
+                  오시는 길
+                </button>
               </div>
             </div>
           </motion.div>
