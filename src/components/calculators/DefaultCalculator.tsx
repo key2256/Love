@@ -6,6 +6,7 @@ import { FileUploadSection } from './shared/FileUploadSection';
 import { OrderTitleSection } from './shared/OrderTitleSection';
 import { ActionButtons } from './shared/ActionButtons';
 import { NotesSection } from './shared/NotesSection';
+import { OptionGroup } from './shared/OptionGroup';
 
 interface DefaultCalculatorProps {
   product: Product;
@@ -48,14 +49,7 @@ export const DefaultCalculator: React.FC<DefaultCalculatorProps> = ({
 
         return true;
       }).map((option) => (
-        <div key={option.name} className="space-y-4">
-          <div className="flex items-center gap-2">
-            <div className="w-1 h-4 bg-emerald-500 rounded-full" />
-            <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
-              {option.name}
-            </label>
-          </div>
-
+        <OptionGroup key={option.name} label={option.name}>
           {option.type === 'text' ? (
             <input
               type="text"
@@ -86,7 +80,7 @@ export const DefaultCalculator: React.FC<DefaultCalculatorProps> = ({
               ))}
             </div>
           )}
-        </div>
+        </OptionGroup>
       ))}
 
       <QuantitySection product={product} quantity={quantity} setQuantity={setQuantity} />

@@ -3971,7 +3971,7 @@ export const PRODUCTS: Product[] = [
         }))
       },
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
-      STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.COATING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['금색 광택', '내구성 우수', '방수 기능'],
@@ -3997,7 +3997,7 @@ export const PRODUCTS: Product[] = [
         }))
       },
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
-      STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.COATING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['은색 광택', '메탈릭 질감', '방수 기능'],
@@ -4023,7 +4023,7 @@ export const PRODUCTS: Product[] = [
         }))
       },
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
-      STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.COATING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['무광 은색', '내열성/내구성', '방수 기능'],
@@ -4049,7 +4049,7 @@ export const PRODUCTS: Product[] = [
         }))
       },
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
-      STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.COATING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['명품 수입지', '독보적 질감', '친환경 인증'],
@@ -4075,7 +4075,7 @@ export const PRODUCTS: Product[] = [
         }))
       },
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
-      STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.COATING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['은은한 금색', '종이 질감', '가성비 고급'],
@@ -4101,7 +4101,7 @@ export const PRODUCTS: Product[] = [
         }))
       },
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
-      STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.COATING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['은은한 은색', '종이 질감', '깔끔한 마감'],
@@ -4127,7 +4127,7 @@ export const PRODUCTS: Product[] = [
         }))
       },
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
-      STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.COATING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
     features: ['빈티지 브론즈', '종이 질감', '유니크 색상'],

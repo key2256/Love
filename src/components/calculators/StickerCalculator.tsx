@@ -9,6 +9,7 @@ import { OrderTitleSection } from './shared/OrderTitleSection';
 import { ActionButtons } from './shared/ActionButtons';
 import { NotesSection } from './shared/NotesSection';
 import { PostProcessingSection } from './shared/PostProcessingSection';
+import { OptionGroup } from './shared/OptionGroup';
 import { SHAPE_ICONS, PRODUCT_CONFIG } from './shared/constants';
 
 interface StickerCalculatorProps {
@@ -57,14 +58,7 @@ export const StickerCalculator: React.FC<StickerCalculatorProps> = ({
     <div className="space-y-10">
       {/* 1. Material Selection (Grouped) */}
       {product.options.filter(opt => opt.name.includes('재질') || opt.name.includes('용지')).map((option) => (
-        <div key={option.name} className="space-y-4">
-          <div className="flex items-center gap-2">
-            <div className="w-1 h-4 bg-emerald-500 rounded-full" />
-            <Layers className="w-4 h-4 text-zinc-400" />
-            <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
-              {option.name}
-            </label>
-          </div>
+        <OptionGroup key={option.name} label={option.name} icon={Layers}>
           <div className="space-y-3">
             {(config?.groups || ['일반/기본 용지', '방수/합성지', '투명/PET', '메탈/광택 특수 재질', '프리미엄 라벨(GMUND)']).map(group => {
               const materialsInGroup = PAPER_MATERIALS.filter(m => m.group === group);
@@ -127,18 +121,12 @@ export const StickerCalculator: React.FC<StickerCalculatorProps> = ({
               );
             })}
           </div>
-        </div>
+        </OptionGroup>
       ))}
 
       {/* 2. Shape Selection (Icon Grid) */}
       {product.options.filter(opt => opt.name === '모양').map((option) => (
-        <div key={option.name} className="space-y-4">
-          <div className="flex items-center gap-2">
-            <div className="w-1 h-4 bg-emerald-500 rounded-full" />
-            <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
-              {option.name}
-            </label>
-          </div>
+        <OptionGroup key={option.name} label={option.name}>
           <div className="grid grid-cols-4 gap-3">
             {option.values?.map((val) => {
               const IconNode = SHAPE_ICONS[val.label] || <Info className="w-6 h-6" />;
@@ -161,7 +149,7 @@ export const StickerCalculator: React.FC<StickerCalculatorProps> = ({
               );
             })}
           </div>
-        </div>
+        </OptionGroup>
       ))}
 
       {/* 3. Standard Options */}
@@ -184,13 +172,7 @@ export const StickerCalculator: React.FC<StickerCalculatorProps> = ({
 
         return true;
       }).map((option) => (
-        <div key={option.name} className="space-y-4">
-          <div className="flex items-center gap-2">
-            <div className="w-1 h-4 bg-emerald-500 rounded-full" />
-            <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
-              {option.name}
-            </label>
-          </div>
+        <OptionGroup key={option.name} label={option.name}>
           {option.type === 'text' ? (
             <input
               type="text"
@@ -221,7 +203,7 @@ export const StickerCalculator: React.FC<StickerCalculatorProps> = ({
               ))}
             </div>
           )}
-        </div>
+        </OptionGroup>
       ))}
 
       <PostProcessingSection 

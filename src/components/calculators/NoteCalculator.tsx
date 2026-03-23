@@ -7,6 +7,7 @@ import { FileUploadSection } from './shared/FileUploadSection';
 import { OrderTitleSection } from './shared/OrderTitleSection';
 import { ActionButtons } from './shared/ActionButtons';
 import { NotesSection } from './shared/NotesSection';
+import { OptionGroup } from './shared/OptionGroup';
 import { 
   NOTE_SIZE_ICONS, 
   NOTE_INNER_ICONS, 
@@ -47,11 +48,6 @@ export const NoteCalculator: React.FC<NoteCalculatorProps> = ({
         const exclusions = ['제작수량', '수량', '주문수량'];
         if (exclusions.includes(normalizedName)) return false;
         
-        // Hide some options for Note Saddle specifically if needed (logic from QuotationCalculator)
-        if (product.id === 'note-saddle' && (opt.name === '표지 코팅' || opt.name === '커버 인쇄' || opt.name === '엣지 마감')) {
-           // These are handled by groups or hidden
-        }
-
         return true;
       }).map((option, index, array) => {
         const currentGroup = getNoteGroup(option.name);
@@ -74,14 +70,7 @@ export const NoteCalculator: React.FC<NoteCalculatorProps> = ({
             )}
             
             {!isHiddenSaddleOption && (
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-1 h-4 bg-emerald-500 rounded-full" />
-                  <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
-                    {option.name}
-                  </label>
-                </div>
-
+              <OptionGroup label={option.name}>
                 {option.type === 'text' ? (
                   <input
                     type="text"
@@ -269,7 +258,7 @@ export const NoteCalculator: React.FC<NoteCalculatorProps> = ({
                     ))}
                   </div>
                 )}
-              </div>
+              </OptionGroup>
             )}
           </React.Fragment>
         );

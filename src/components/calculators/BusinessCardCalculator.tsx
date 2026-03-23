@@ -9,6 +9,7 @@ import { OrderTitleSection } from './shared/OrderTitleSection';
 import { ActionButtons } from './shared/ActionButtons';
 import { NotesSection } from './shared/NotesSection';
 import { PostProcessingSection } from './shared/PostProcessingSection';
+import { OptionGroup } from './shared/OptionGroup';
 import { PRODUCT_CONFIG } from './shared/constants';
 
 interface BusinessCardCalculatorProps {
@@ -57,14 +58,7 @@ export const BusinessCardCalculator: React.FC<BusinessCardCalculatorProps> = ({
     <div className="space-y-10">
       {/* 1. Material Selection */}
       {product.options.filter(opt => opt.name.includes('용지')).map((option) => (
-        <div key={option.name} className="space-y-6">
-          <div className="flex items-center gap-2">
-            <div className="w-1 h-4 bg-emerald-500 rounded-full" />
-            <Layers className="w-4 h-4 text-zinc-400" />
-            <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
-              {option.name}
-            </label>
-          </div>
+        <OptionGroup key={option.name} label={option.name} icon={Layers}>
           <div className="space-y-6">
             <div className="grid grid-cols-2 gap-3">
               {(config?.groups || ['기본 대중형', '고급 감성형', '내추럴/친환경형', '특수지/프리미엄형'])
@@ -136,7 +130,7 @@ export const BusinessCardCalculator: React.FC<BusinessCardCalculatorProps> = ({
               </div>
             )}
           </div>
-        </div>
+        </OptionGroup>
       ))}
 
       {/* 2. Standard Options */}
@@ -159,13 +153,7 @@ export const BusinessCardCalculator: React.FC<BusinessCardCalculatorProps> = ({
 
         return true;
       }).map((option) => (
-        <div key={option.name} className="space-y-4">
-          <div className="flex items-center gap-2">
-            <div className="w-1 h-4 bg-emerald-500 rounded-full" />
-            <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
-              {option.name}
-            </label>
-          </div>
+        <OptionGroup key={option.name} label={option.name}>
           {option.type === 'text' ? (
             <input
               type="text"
@@ -196,7 +184,7 @@ export const BusinessCardCalculator: React.FC<BusinessCardCalculatorProps> = ({
               ))}
             </div>
           )}
-        </div>
+        </OptionGroup>
       ))}
 
       <PostProcessingSection 

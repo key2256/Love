@@ -9,6 +9,7 @@ import { OrderTitleSection } from './shared/OrderTitleSection';
 import { ActionButtons } from './shared/ActionButtons';
 import { NotesSection } from './shared/NotesSection';
 import { PostProcessingSection } from './shared/PostProcessingSection';
+import { OptionGroup } from './shared/OptionGroup';
 import { PRODUCT_CONFIG } from './shared/constants';
 
 interface PostcardCalculatorProps {
@@ -56,15 +57,7 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
   return (
     <div className="space-y-10">
       {/* 1. Material Selection (Grouped) */}
-      <div className="space-y-4">
-        <div className="flex items-center gap-2">
-          <div className="w-1 h-4 bg-emerald-500 rounded-full" />
-          <Layers className="w-4 h-4 text-zinc-400" />
-          <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
-            용지 선택
-          </label>
-        </div>
-        
+      <OptionGroup label="용지 선택" icon={Layers}>
         {config && config.groups.length > 1 && (
           <div className="flex flex-wrap gap-2 mb-4">
             {config.groups.map(group => (
@@ -127,7 +120,7 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
               );
             })}
         </div>
-      </div>
+      </OptionGroup>
 
       {/* 2. Standard Options */}
       {product.options.filter(opt => {
@@ -149,13 +142,7 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
 
         return true;
       }).map((option) => (
-        <div key={option.name} className="space-y-4">
-          <div className="flex items-center gap-2">
-            <div className="w-1 h-4 bg-emerald-500 rounded-full" />
-            <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
-              {option.name}
-            </label>
-          </div>
+        <OptionGroup key={option.name} label={option.name}>
           {option.type === 'text' ? (
             <input
               type="text"
@@ -186,7 +173,7 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
               ))}
             </div>
           )}
-        </div>
+        </OptionGroup>
       ))}
 
       <PostProcessingSection 

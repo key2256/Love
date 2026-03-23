@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { Product, Quotation, PRODUCTS, CATEGORIES, PAPER_MATERIALS, PaperMaterial } from '../types';
 import { QuotationCalculator } from './QuotationCalculator';
+import { ProductIntroSection } from './calculators/shared/ProductIntroSection';
 import PaperMaterialCard from './PaperMaterialCard';
 
 interface ProductDetailProps {
@@ -96,29 +97,9 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, o
 
           {/* Right: Quotation Calculator */}
           <div className="flex flex-col">
-            <div className="mb-8">
-              <div className="flex items-center gap-2 mb-4">
-                <span className="px-4 py-1.5 bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-widest rounded-full border border-emerald-100">
-                  {CATEGORIES.find(c => c.id === product.category)?.name}
-                </span>
-                <span className="px-4 py-1.5 bg-zinc-100 text-zinc-500 text-[10px] font-black uppercase tracking-widest rounded-full border border-zinc-200">
-                  {product.subCategory}
-                </span>
-                {product.isNew && (
-                  <span className="px-4 py-1.5 bg-zinc-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full">
-                    NEW
-                  </span>
-                )}
-              </div>
-              <h1 className="text-5xl font-black text-zinc-900 mb-6 tracking-tight leading-tight">
-                {product.name}
-              </h1>
-              <p className="text-xl text-zinc-500 leading-relaxed font-serif italic">
-                {product.tagline}
-              </p>
-            </div>
+            <ProductIntroSection product={product} />
 
-            <div className="flex gap-1 p-1.5 bg-zinc-100 rounded-[20px] mb-10 w-fit">
+            <div className="flex gap-1 p-1.5 bg-zinc-100 rounded-[20px] my-10 w-fit">
               <button 
                 onClick={() => setActiveTab('calc')}
                 className={`px-8 py-3 rounded-2xl text-sm font-bold transition-all ${activeTab === 'calc' ? 'bg-white text-zinc-900 shadow-sm' : 'text-zinc-500 hover:text-zinc-700'}`}

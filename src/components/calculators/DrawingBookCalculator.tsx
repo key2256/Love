@@ -6,6 +6,7 @@ import { FileUploadSection } from './shared/FileUploadSection';
 import { OrderTitleSection } from './shared/OrderTitleSection';
 import { ActionButtons } from './shared/ActionButtons';
 import { NotesSection } from './shared/NotesSection';
+import { OptionGroup } from './shared/OptionGroup';
 
 interface DrawingBookCalculatorProps {
   product: Product;
@@ -48,14 +49,7 @@ export const DrawingBookCalculator: React.FC<DrawingBookCalculatorProps> = ({
         if (exclusions.includes(normalizedName)) return false;
         return true;
       }).map((option) => (
-        <div key={option.name} className="space-y-6">
-          <div className="flex items-center gap-2">
-            <div className="w-1 h-4 bg-emerald-500 rounded-full" />
-            <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
-              {option.name}
-            </label>
-          </div>
-
+        <OptionGroup key={option.name} label={option.name}>
           <div className="grid grid-cols-2 gap-3">
             {option.values?.map((val) => {
               const isValSelected = selectedOptions[option.name] === val.label;
@@ -79,7 +73,7 @@ export const DrawingBookCalculator: React.FC<DrawingBookCalculatorProps> = ({
               );
             })}
           </div>
-        </div>
+        </OptionGroup>
       ))}
 
       <QuantitySection product={product} quantity={quantity} setQuantity={setQuantity} />

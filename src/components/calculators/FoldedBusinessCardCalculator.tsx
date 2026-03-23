@@ -9,6 +9,7 @@ import { OrderTitleSection } from './shared/OrderTitleSection';
 import { ActionButtons } from './shared/ActionButtons';
 import { NotesSection } from './shared/NotesSection';
 import { PostProcessingSection } from './shared/PostProcessingSection';
+import { OptionGroup } from './shared/OptionGroup';
 import { PRODUCT_CONFIG } from './shared/constants';
 
 interface FoldedBusinessCardCalculatorProps {
@@ -57,14 +58,7 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
     <div className="space-y-10">
       {/* 1. Material Selection (Grouped) */}
       {product.options.filter(opt => opt.name.includes('용지')).map((option) => (
-        <div key={option.name} className="space-y-4">
-          <div className="flex items-center gap-2">
-            <div className="w-1 h-4 bg-emerald-500 rounded-full" />
-            <Layers className="w-4 h-4 text-zinc-400" />
-            <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
-              {option.name}
-            </label>
-          </div>
+        <OptionGroup key={option.name} label={option.name} icon={<Layers className="w-4 h-4 text-zinc-400" />}>
           <div className="flex flex-wrap gap-2 mb-4">
             {(config?.groups || ['기본 대중형', '고급 감성형', '최고급 프리미엄']).map(group => (
               <button
@@ -119,7 +113,7 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
               );
             })}
           </div>
-        </div>
+        </OptionGroup>
       ))}
 
       {/* 2. Standard Options */}
@@ -142,13 +136,7 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
 
         return true;
       }).map((option) => (
-        <div key={option.name} className="space-y-4">
-          <div className="flex items-center gap-2">
-            <div className="w-1 h-4 bg-emerald-500 rounded-full" />
-            <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">
-              {option.name}
-            </label>
-          </div>
+        <OptionGroup key={option.name} label={option.name}>
           {option.type === 'text' ? (
             <input
               type="text"
@@ -179,7 +167,7 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
               ))}
             </div>
           )}
-        </div>
+        </OptionGroup>
       ))}
 
       <PostProcessingSection 
