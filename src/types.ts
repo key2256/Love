@@ -2746,6 +2746,71 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
+    id: 'note-saddle',
+    name: '중철 노트',
+    category: 'memo-note',
+    subCategory: '중철 노트',
+    tagline: '가볍고 슬림한 중철 제본 노트.',
+    description: '가운데 철심으로 고정되는 방식으로 얇고 가벼워 휴대하기 좋습니다. 브랜드북이나 간단한 필기용으로 추천합니다.',
+    image: 'https://picsum.photos/seed/saddle-note/800/800',
+    minQuantity: 1,
+    basePrice: 3000,
+    options: [
+      {
+        name: '규격',
+        type: 'select',
+        values: [
+          { label: 'A5 (148x210)', priceModifier: 0 },
+          { label: 'B5 (182x257)', priceModifier: 1000 },
+          { label: 'A4 (210x297)', priceModifier: 2000 },
+        ]
+      },
+      {
+        name: '표지 구성',
+        type: 'radio',
+        values: [
+          { label: '기본 표지', priceModifier: 0 },
+          { label: '두꺼운 표지', priceModifier: 500 },
+        ]
+      },
+      {
+        name: '내지 종류',
+        type: 'radio',
+        values: [
+          { label: '무지', priceModifier: 0 },
+          { label: '줄(라인)', priceModifier: 0 },
+          { label: '모눈(그리드)', priceModifier: 200 },
+          { label: '도트', priceModifier: 200 },
+        ]
+      },
+      {
+        name: '내지 색상',
+        type: 'radio',
+        values: [
+          { label: '백색', priceModifier: 0 },
+          { label: '미색', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '페이지 수',
+        type: 'select',
+        values: [
+          { label: '8p', priceModifier: 0 },
+          { label: '16p', priceModifier: 1000 },
+          { label: '24p', priceModifier: 2000 },
+          { label: '32p', priceModifier: 3000 },
+        ]
+      }
+    ],
+    features: ['중철 제본', '완전 펼침 가능', '슬림한 디자인'],
+    leadTime: '3~5 영업일',
+    badges: ['가벼움', '실용적', '소책자형'],
+    notes: [
+      '페이지 수는 4의 배수 기준으로 제작됩니다.',
+      '내지는 기본 모조지 80g 기준입니다.'
+    ]
+  },
+  {
     id: 'binding-saddle',
     name: '중철제본 책자',
     category: 'binding-booklet',

@@ -23,6 +23,7 @@ import {
   Shapes,
   AlertCircle,
   BookOpen,
+  Book,
   Palette,
   Settings,
   Type,
@@ -37,8 +38,8 @@ interface QuotationCalculatorProps {
 
 const NOTE_GROUPS = {
   '외부 구성': ['규격', '표지 구성', '커버 스타일'],
-  '내부 구성': ['내지 종류', '내지 색상', '내지 장수'],
-  '제본/마감': ['스프링 방향', '스프링 색상', '커버 인쇄', '엣지 마감']
+  '내부 구성': ['내지 종류', '내지 색상', '내지 장수', '페이지 수'],
+  '제본/마감': ['스프링 방향', '스프링 색상', '커버 인쇄', '엣지 마감', '제본 안내']
 };
 
 const getNoteGroup = (optionName: string) => {
@@ -273,7 +274,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
     if (product.id === 'bc-standard' || product.id === 'bc-premium') return 'BUSINESS_CARD';
     if (product.id === 'bc-folded') return 'FOLDED_BUSINESS_CARD';
     if (product.id === 'memo-standard') return 'MEMO_PAD';
-    if (product.id === 'note-spring' || product.id === 'note-leather') return 'NOTE';
+    if (product.id === 'note-spring' || product.id === 'note-leather' || product.id === 'note-saddle') return 'NOTE';
     if (product.category === 'card-paper') return 'PAPER_GOODS';
     if (product.category === 'binding-booklet' || product.id === 'note-spring') return 'BINDING_GOODS';
     if (product.category === 'poster-promo') return 'LARGE_FORMAT';
@@ -282,6 +283,15 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
   };
 
   const pattern = getLayoutPattern(product);
+
+  const getNoteSubPattern = (product: Product) => {
+    if (product.id === 'note-spring') return 'NOTE_SPIRAL';
+    if (product.id === 'note-leather') return 'NOTE_LEATHER';
+    if (product.id === 'note-saddle') return 'NOTE_SADDLE';
+    return 'NOTE_SPIRAL';
+  };
+
+  const noteSubPattern = pattern === 'NOTE' ? getNoteSubPattern(product) : null;
 
   const FoldedPreview = ({ type, direction }: { type: string, direction: string }) => {
     const is3Fold = type === '3단 명함';
@@ -1631,10 +1641,10 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                   <div>
                     <p className="text-[11px] font-bold text-zinc-400 mb-1 uppercase tracking-widest">표지/커버</p>
                     <p className="text-sm font-black text-zinc-900 leading-tight">
-                      {product.id === 'note-spring' ? '스노우 300g + 무광코팅' : '프리미엄 인조가죽'}
+                      {product.id === 'note-spring' ? '스노우 300g + 무광코팅' : product.id === 'note-saddle' ? '스노우 200g + 무광코팅' : '프리미엄 인조가죽'}
                     </p>
                     <p className="text-[10px] text-zinc-500 mt-1 leading-relaxed">
-                      {product.id === 'note-spring' ? '두툼하고 부드러운 질감' : '고급스러운 질감과 내구성'}
+                      {product.id === 'note-spring' ? '두툼하고 부드러운 질감' : product.id === 'note-saddle' ? '가볍고 유연한 표지' : '고급스러운 질감과 내구성'}
                     </p>
                   </div>
                 </div>
@@ -1645,7 +1655,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                   <div>
                     <p className="text-[11px] font-bold text-zinc-400 mb-1 uppercase tracking-widest">내지 용지</p>
                     <p className="text-sm font-black text-zinc-900 leading-tight">
-                      {product.id === 'note-spring' ? '백색 모조 80g' : '미색 모조 100g'}
+                      {product.id === 'note-spring' ? '백색 모조 80g' : product.id === 'note-saddle' ? '백색 모조 100g' : '미색 모조 100g'}
                     </p>
                     <p className="text-[10px] text-zinc-500 mt-1 leading-relaxed">
                       비침이 적고 필기감이 부드러운 용지
@@ -1656,7 +1666,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
             </div>
           )}
 
-          {product.options.filter(opt => {
+          {(product.id === 'note-saddle' ? [...product.options, { name: '제본 안내', type: 'radio', values: [] }] : product.options).filter(opt => {
             const normalizedName = opt.name.replace(/\s/g, '');
             const isIconGridPattern = pattern === 'BUSINESS_CARD' || pattern === 'DESIGN_CARD' || pattern === 'POSTCARD';
 
@@ -1722,7 +1732,8 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
             if (pattern === 'NOTE') {
               const springOrder = ['규격', '표지 구성', '내지 종류', '내지 색상', '내지 장수', '스프링 방향', '스프링 색상'];
               const leatherOrder = ['규격', '커버 스타일', '내지 종류', '내지 색상', '내지 장수', '커버 인쇄', '엣지 마감'];
-              const order = product.id === 'note-spring' ? springOrder : leatherOrder;
+              const saddleOrder = ['규격', '표지 구성', '내지 종류', '내지 색상', '페이지 수', '제본 안내'];
+              const order = product.id === 'note-spring' ? springOrder : product.id === 'note-saddle' ? saddleOrder : leatherOrder;
               return order.indexOf(a.name) - order.indexOf(b.name);
             }
             return 0;
@@ -1964,44 +1975,52 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                     );
                   })}
                 </div>
-              ) : (pattern === 'NOTE' && option.name === '내지 장수') ? (
-                <div className="grid grid-cols-2 gap-3">
-                  {option.values?.map((val) => {
-                    const isSelected = selectedOptions[option.name] === val.label;
-                    return (
-                      <button
-                        key={val.label}
-                        onClick={() => handleOptionChange(option.name, val.label)}
-                        className={`group p-4 rounded-3xl border-2 transition-all flex items-center justify-between ${
-                          isSelected
-                            ? 'bg-emerald-50 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.1)]'
-                            : 'bg-white border-zinc-100 hover:border-zinc-200'
-                        }`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+              ) : (pattern === 'NOTE' && (option.name === '내지 장수' || option.name === '페이지 수')) ? (
+                <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-3">
+                    {option.values?.map((val) => {
+                      const isSelected = selectedOptions[option.name] === val.label;
+                      return (
+                        <button
+                          key={val.label}
+                          onClick={() => handleOptionChange(option.name, val.label)}
+                          className={`group p-4 rounded-3xl border-2 transition-all flex items-center justify-between ${
                             isSelected
-                              ? 'bg-emerald-500 text-white shadow-lg'
-                              : 'bg-zinc-50 text-zinc-400 group-hover:bg-zinc-100 group-hover:text-zinc-600'
-                          }`}>
-                            <Layers className="w-5 h-5" />
+                              ? 'bg-emerald-50 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.1)]'
+                              : 'bg-white border-zinc-100 hover:border-zinc-200'
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+                              isSelected
+                                ? 'bg-emerald-500 text-white shadow-lg'
+                                : 'bg-zinc-50 text-zinc-400 group-hover:bg-zinc-100 group-hover:text-zinc-600'
+                            }`}>
+                              <Layers className="w-5 h-5" />
+                            </div>
+                            <span className={`text-sm font-black ${
+                              isSelected ? 'text-emerald-900' : 'text-zinc-900'
+                            }`}>
+                              {val.label}
+                            </span>
                           </div>
-                          <span className={`text-sm font-black ${
-                            isSelected ? 'text-emerald-900' : 'text-zinc-900'
-                          }`}>
-                            {val.label}
-                          </span>
-                        </div>
-                        {val.priceModifier !== undefined && val.priceModifier !== 0 && (
-                          <span className={`text-[11px] font-bold ${
-                            isSelected ? 'text-emerald-600' : 'text-zinc-400'
-                          }`}>
-                            {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
-                          </span>
-                        )}
-                      </button>
-                    );
-                  })}
+                          {val.priceModifier !== undefined && val.priceModifier !== 0 && (
+                            <span className={`text-[11px] font-bold ${
+                              isSelected ? 'text-emerald-600' : 'text-zinc-400'
+                            }`}>
+                              {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {option.name === '페이지 수' && (
+                    <p className="text-[10px] font-bold text-emerald-600 flex items-center gap-1.5 px-2">
+                      <Info className="w-3 h-3" />
+                      페이지 수는 4의 배수 기준으로 제작됩니다.
+                    </p>
+                  )}
                 </div>
               ) : (pattern === 'NOTE' && (option.name === '표지 구성' || option.name === '커버 스타일')) ? (
                 <div className="grid grid-cols-2 gap-3">
@@ -2026,6 +2045,29 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
                       </button>
                     );
                   })}
+                </div>
+              ) : (pattern === 'NOTE' && option.name === '제본 안내') ? (
+                <div className="p-6 bg-zinc-50 rounded-3xl border border-zinc-100 space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center shadow-sm">
+                      <Book className="w-5 h-5 text-emerald-500" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-black text-zinc-900">중철 제본 안내</p>
+                      <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Saddle Stitch Binding</p>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-xs text-zinc-600 leading-relaxed">
+                      • 가운데 철심으로 고정되는 방식입니다.
+                    </p>
+                    <p className="text-xs text-zinc-600 leading-relaxed">
+                      • 얇은 노트, 소책자, 브랜드북 제작에 적합합니다.
+                    </p>
+                    <p className="text-xs text-emerald-600 font-bold leading-relaxed">
+                      • 페이지 수는 4의 배수(8p, 16p, 24p, 32p)로 제작됩니다.
+                    </p>
+                  </div>
                 </div>
               ) : (pattern === 'NOTE' && (option.name === '스프링 방향' || option.name === '스프링 색상' || option.name === '커버 인쇄' || option.name === '엣지 마감')) ? (
                 <div className="grid grid-cols-2 gap-3">
