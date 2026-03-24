@@ -60,7 +60,7 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
     <div className="space-y-10">
       {/* 1. Material Selection (Grouped) */}
       {product.options.filter(opt => opt.name.includes('용지')).map((option) => (
-        <OptionGroup key={option.name} label={option.name} icon={<Layers className="w-4 h-4 text-zinc-400" />}>
+        <OptionGroup key={option.name} label={option.name} icon={Layers}>
           <div className="flex flex-wrap gap-2 mb-4">
             {(config?.groups || ['기본 대중형', '고급 감성형', '최고급 프리미엄']).map(group => (
               <button

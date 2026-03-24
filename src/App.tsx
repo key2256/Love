@@ -300,6 +300,7 @@ function App() {
         items={cart}
         onRemove={removeFromCart}
         onUpdateQuantity={updateCartQuantity}
+        onClear={clearCart}
         onCheckout={() => {
           setShowCart(false);
           setShowInquiry(true);

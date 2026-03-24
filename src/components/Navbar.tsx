@@ -442,16 +442,41 @@ export const Navbar = ({
         )}
       </AnimatePresence>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Backdrop */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsMenuOpen(false)}
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] lg:hidden"
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Mobile Menu Drawer */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div 
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden absolute top-full left-0 right-0 bg-white border-t border-zinc-100 shadow-xl overflow-y-auto max-h-[80vh]"
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            className="fixed top-0 right-0 bottom-0 w-full max-w-sm bg-white z-[70] shadow-2xl lg:hidden flex flex-col"
           >
-            <div className="p-6 flex flex-col gap-8">
+            <div className="p-6 border-b border-zinc-100 flex items-center justify-between">
+              <h2 className="text-xl font-black text-zinc-900">메뉴</h2>
+              <button 
+                onClick={() => setIsMenuOpen(false)}
+                className="p-2 rounded-full hover:bg-zinc-100 text-zinc-400 hover:text-zinc-900 transition-all"
+                aria-label="메뉴 닫기"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-8">
               <div className="relative">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={18} />
                 <input 
@@ -470,6 +495,7 @@ export const Navbar = ({
                   </button>
                 )}
               </div>
+              
               <div className="flex flex-col gap-6">
                 {CATEGORIES.map((cat) => (
                   <div key={cat.id} className="space-y-3">
@@ -479,7 +505,7 @@ export const Navbar = ({
                     >
                       {cat.name}
                     </button>
-                    <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-4 pl-4 border-l-2 border-zinc-100">
                       {cat.subCategories.map((sub, i) => {
                         if (typeof sub === 'string') {
                           return (
@@ -490,14 +516,14 @@ export const Navbar = ({
                                 onSubCategorySelect(sub);
                                 setIsMenuOpen(false);
                               }}
-                              className={`px-3 py-2 rounded-xl text-sm font-bold w-fit ${activeSubCategory === sub && activeCategory === cat.id ? 'bg-emerald-600 text-white' : 'bg-zinc-100 text-zinc-500'}`}
+                              className={`text-sm font-bold text-left ${activeSubCategory === sub && activeCategory === cat.id ? 'text-emerald-600' : 'text-zinc-500'}`}
                             >
                               {sub}
                             </button>
                           );
                         } else {
                           return (
-                            <div key={i} className="space-y-3 pl-4 border-l-2 border-zinc-100">
+                            <div key={i} className="space-y-3">
                               <button 
                                 onClick={() => {
                                   onCategorySelect(cat.id);
@@ -508,7 +534,7 @@ export const Navbar = ({
                               >
                                 {sub.groupName}
                               </button>
-                              <div className="flex flex-wrap gap-2">
+                              <div className="flex flex-wrap gap-2 pl-2">
                                 {sub.items.map((item, j) => {
                                   const itemName = typeof item === 'string' ? item : item.groupName;
                                   return (
@@ -534,37 +560,23 @@ export const Navbar = ({
                   </div>
                 ))}
               </div>
+              
               <div className="flex flex-col gap-4 pt-6 border-t border-zinc-100">
-                <button 
-                  onClick={() => { onNavigate('guide'); setIsMenuOpen(false); }} 
-                  className={`text-left text-lg font-black tracking-tight ${currentView === 'guide' ? 'text-emerald-600' : 'text-zinc-900'}`}
-                >
-                  파일 가이드
-                </button>
-                <button 
-                  onClick={() => { onNavigate('inquiry'); setIsMenuOpen(false); }} 
-                  className={`text-left text-lg font-black tracking-tight ${currentView === 'inquiry' ? 'text-emerald-600' : 'text-zinc-900'}`}
-                >
-                  견적 문의
-                </button>
-                <button 
-                  onClick={() => { onNavigate('portfolio'); setIsMenuOpen(false); }} 
-                  className={`text-left text-lg font-black tracking-tight ${currentView === 'portfolio' ? 'text-emerald-600' : 'text-zinc-900'}`}
-                >
-                  제작 사례
-                </button>
-                <button 
-                  onClick={() => { onNavigate('location'); setIsMenuOpen(false); }} 
-                  className={`text-left text-lg font-black tracking-tight ${currentView === 'location' ? 'text-emerald-600' : 'text-zinc-900'}`}
-                >
-                  오시는 길
-                </button>
-                <button 
-                  onClick={() => { onNavigate('faq'); setIsMenuOpen(false); }} 
-                  className={`text-left text-lg font-black tracking-tight ${currentView === 'faq' ? 'text-emerald-600' : 'text-zinc-900'}`}
-                >
-                  자주 묻는 질문
-                </button>
+                {[
+                  { label: '파일 가이드', view: 'guide' },
+                  { label: '견적 문의', view: 'inquiry' },
+                  { label: '제작 사례', view: 'portfolio' },
+                  { label: '오시는 길', view: 'location' },
+                  { label: '자주 묻는 질문', view: 'faq' },
+                ].map((item) => (
+                  <button 
+                    key={item.view}
+                    onClick={() => { onNavigate(item.view as any); setIsMenuOpen(false); }} 
+                    className={`text-left text-lg font-black tracking-tight ${currentView === item.view ? 'text-emerald-600' : 'text-zinc-900'}`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
               </div>
             </div>
           </motion.div>

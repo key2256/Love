@@ -10,6 +10,7 @@ interface CartProps {
   onRemove: (id: string) => void;
   onUpdateQuantity: (id: string, quantity: number) => void;
   onCheckout: () => void;
+  onClear: () => void;
 }
 
 export const Cart: React.FC<CartProps> = ({ 
@@ -18,7 +19,8 @@ export const Cart: React.FC<CartProps> = ({
   items, 
   onRemove, 
   onUpdateQuantity,
-  onCheckout
+  onCheckout,
+  onClear
 }) => {
   const totalAmount = items.reduce((sum, item) => sum + item.totalPrice, 0);
 
@@ -56,12 +58,25 @@ export const Cart: React.FC<CartProps> = ({
                   </p>
                 </div>
               </div>
-              <button 
-                onClick={onClose}
-                className="p-2 rounded-full hover:bg-zinc-100 text-zinc-400 hover:text-zinc-900 transition-all"
-              >
-                <X className="w-6 h-6" />
-              </button>
+              <div className="flex items-center gap-2">
+                {items.length > 0 && (
+                  <motion.button 
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={onClear}
+                    className="text-xs font-bold text-zinc-400 hover:text-red-500 transition-colors flex items-center gap-1"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                    전체 삭제
+                  </motion.button>
+                )}
+                <button 
+                  onClick={onClose}
+                  className="p-2 rounded-full hover:bg-zinc-100 text-zinc-400 hover:text-zinc-900 transition-all"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
             </div>
 
             {/* Items List */}
