@@ -11,6 +11,7 @@ import { MemoPadCalculator } from './calculators/MemoPadCalculator';
 import { NoteCalculator } from './calculators/NoteCalculator';
 import { DrawingBookCalculator } from './calculators/DrawingBookCalculator';
 import { FoldedBusinessCardCalculator } from './calculators/FoldedBusinessCardCalculator';
+import { SaddleBindingCalculator } from './calculators/SaddleBindingCalculator';
 import { DefaultCalculator } from './calculators/DefaultCalculator';
 
 import { useQuotationLogic } from '../hooks/useQuotationLogic';
@@ -51,6 +52,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
     if (product.id === 'bc-template') return 'DESIGN_CARD';
     if (product.id === 'bc-standard' || product.id === 'bc-premium') return 'BUSINESS_CARD';
     if (product.id === 'bc-folded') return 'FOLDED_BUSINESS_CARD';
+    if (product.id === 'binding-saddle') return 'SADDLE_BINDING';
     if (product.id === 'memo-standard') return 'MEMO_PAD';
     if (product.id === 'note-spring' || product.id === 'note-leather' || product.id === 'note-saddle') return 'NOTE';
     if (product.id === 'drawing-pro' || product.id === 'drawing-student') return 'DRAWING_BOOK';
@@ -104,6 +106,8 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
         return <DrawingBookCalculator {...calculatorProps} />;
       case 'FOLDED_BUSINESS_CARD':
         return <FoldedBusinessCardCalculator {...calculatorProps} />;
+      case 'SADDLE_BINDING':
+        return <SaddleBindingCalculator {...calculatorProps} />;
       default:
         return <DefaultCalculator {...calculatorProps} />;
     }
