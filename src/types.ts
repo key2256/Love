@@ -4469,6 +4469,80 @@ export const PRODUCTS: Product[] = [
     features: ['고급스러움', '감성적', '정성스러움'],
     leadTime: '5~7 영업일',
     badges: ['고급형', '감성', '정성']
+  },
+  {
+    id: 'binding-wireless-budget',
+    name: '알뜰 무선제본 책자',
+    category: 'binding-booklet',
+    subCategory: '알뜰책자',
+    tagline: '빠르게 제작하는 경제형 책자.',
+    description: '기본 사양 위주로 빠르게 제작하는 경제형 책자입니다.',
+    image: 'https://picsum.photos/seed/wireless-budget/800/800',
+    minQuantity: 10,
+    basePrice: 30000,
+    options: [
+      { name: '인쇄 색상', type: 'radio', values: [{ label: '컬러', priceModifier: 0 }, { label: '흑백', priceModifier: -5000 }] },
+      { name: '표지 인쇄', type: 'radio', values: [{ label: '컬러', priceModifier: 0 }, { label: '흑백', priceModifier: -2000 }] },
+      { name: '내지 인쇄', type: 'radio', values: [{ label: '컬러', priceModifier: 0 }, { label: '흑백', priceModifier: -3000 }] },
+      { name: '표지 용지', type: 'radio', values: [{ label: '스노우 250g', priceModifier: 0 }] },
+      { name: '내지 용지', type: 'radio', values: [{ label: '모조 80g', priceModifier: 0 }] },
+      { name: '페이지 수', type: 'radio', values: [{ label: '40p', priceModifier: 0 }, { label: '60p', priceModifier: 5000 }, { label: '80p', priceModifier: 10000 }] },
+      { name: '표지 코팅', type: 'radio', values: [{ label: '무광코팅', priceModifier: 1000 }, { label: '코팅 없음', priceModifier: 0 }] },
+      { name: '제본 방향', type: 'radio', values: [{ label: '세로형', priceModifier: 0 }, { label: '가로형', priceModifier: 2000 }] }
+    ],
+    features: ['경제적', '빠른제작', '기본사양'],
+    leadTime: '2~3 영업일',
+    badges: ['알뜰형', '보고서용', '가성비']
+  },
+  {
+    id: 'binding-spring-budget',
+    name: '알뜰 스프링제본 책자',
+    category: 'binding-booklet',
+    subCategory: '알뜰책자',
+    tagline: '필기와 펼침에 편한 경제형 제본.',
+    description: '교안, 프린트 묶음, 문제집형 자료에 적합한 경제형 제본입니다.',
+    image: 'https://picsum.photos/seed/spring-budget/800/800',
+    minQuantity: 10,
+    basePrice: 35000,
+    options: [
+      { name: '인쇄 색상', type: 'radio', values: [{ label: '컬러', priceModifier: 0 }, { label: '흑백', priceModifier: -5000 }] },
+      { name: '표지 인쇄', type: 'radio', values: [{ label: '컬러', priceModifier: 0 }, { label: '흑백', priceModifier: -2000 }] },
+      { name: '내지 인쇄', type: 'radio', values: [{ label: '컬러', priceModifier: 0 }, { label: '흑백', priceModifier: -3000 }] },
+      { name: '표지 용지', type: 'radio', values: [{ label: '스노우 250g', priceModifier: 0 }] },
+      { name: '내지 용지', type: 'radio', values: [{ label: '모조 80g', priceModifier: 0 }] },
+      { name: '페이지 수', type: 'radio', values: [{ label: '40p', priceModifier: 0 }, { label: '60p', priceModifier: 5000 }, { label: '80p', priceModifier: 10000 }] },
+      { name: '제본 방향', type: 'radio', values: [{ label: '세로형', priceModifier: 0 }, { label: '가로형', priceModifier: 2000 }] },
+      { name: '스프링 색상', type: 'radio', values: [{ label: '검정', priceModifier: 0 }, { label: '하양', priceModifier: 0 }] },
+      { name: '표지 코팅', type: 'radio', values: [{ label: '무광코팅', priceModifier: 1000 }, { label: '코팅 없음', priceModifier: 0 }] }
+    ],
+    features: ['경제적', '필기편함', '학습용'],
+    leadTime: '2~3 영업일',
+    badges: ['알뜰형', '학습용', '가성비']
+  },
+  {
+    id: 'binding-twinring-budget',
+    name: '알뜰 트윈링제본 책자',
+    category: 'binding-booklet',
+    subCategory: '알뜰책자',
+    tagline: '깔끔하고 튼튼한 경제형 제본.',
+    description: '자료집, 제출용 프린트, 간단한 설명집에 적합한 경제형 제본입니다.',
+    image: 'https://picsum.photos/seed/twinring-budget/800/800',
+    minQuantity: 10,
+    basePrice: 37000,
+    options: [
+      { name: '인쇄 색상', type: 'radio', values: [{ label: '컬러', priceModifier: 0 }, { label: '흑백', priceModifier: -5000 }] },
+      { name: '표지 인쇄', type: 'radio', values: [{ label: '컬러', priceModifier: 0 }, { label: '흑백', priceModifier: -2000 }] },
+      { name: '내지 인쇄', type: 'radio', values: [{ label: '컬러', priceModifier: 0 }, { label: '흑백', priceModifier: -3000 }] },
+      { name: '표지 용지', type: 'radio', values: [{ label: '스노우 250g', priceModifier: 0 }] },
+      { name: '내지 용지', type: 'radio', values: [{ label: '모조 80g', priceModifier: 0 }] },
+      { name: '페이지 수', type: 'radio', values: [{ label: '40p', priceModifier: 0 }, { label: '60p', priceModifier: 5000 }, { label: '80p', priceModifier: 10000 }] },
+      { name: '제본 방향', type: 'radio', values: [{ label: '세로형', priceModifier: 0 }, { label: '가로형', priceModifier: 2000 }] },
+      { name: '트윈링 색상', type: 'radio', values: [{ label: '검정', priceModifier: 0 }, { label: '하양', priceModifier: 0 }] },
+      { name: '표지 코팅', type: 'radio', values: [{ label: '무광코팅', priceModifier: 1000 }, { label: '코팅 없음', priceModifier: 0 }] }
+    ],
+    features: ['경제적', '튼튼함', '깔끔함'],
+    leadTime: '2~3 영업일',
+    badges: ['알뜰형', '제출용', '가성비']
   }
 ];
 
