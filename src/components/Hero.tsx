@@ -1,10 +1,10 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { ArrowRight, FileText, MessageSquare, ShoppingBag } from 'lucide-react';
+import { ArrowRight, FileText, MessageSquare, ShoppingBag, BookOpen } from 'lucide-react';
 
 interface HeroProps {
   onExplore: () => void;
-  onNavigate: (view: 'home' | 'detail' | 'category' | 'guide' | 'inquiry' | 'custom_inquiry' | 'portfolio' | 'location') => void;
+  onNavigate: (view: 'home' | 'detail' | 'category' | 'guide' | 'inquiry' | 'custom_inquiry' | 'portfolio' | 'location' | 'usage_ordering') => void;
 }
 
 export const Hero: React.FC<HeroProps> = ({ onExplore, onNavigate }) => {
@@ -46,19 +46,19 @@ export const Hero: React.FC<HeroProps> = ({ onExplore, onNavigate }) => {
               </button>
               
               <button 
+                onClick={() => onNavigate('usage_ordering')}
+                className="px-8 py-4 bg-white hover:bg-zinc-100 text-zinc-900 font-bold rounded-xl transition-all flex items-center gap-2"
+              >
+                <BookOpen className="w-5 h-5" />
+                용도별 주문
+              </button>
+
+              <button 
                 onClick={() => onNavigate('inquiry')}
                 className="px-8 py-4 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-xl transition-all flex items-center gap-2 border border-zinc-700"
               >
                 <MessageSquare className="w-5 h-5" />
                 견적 문의
-              </button>
-
-              <button 
-                onClick={() => onNavigate('guide')}
-                className="px-8 py-4 bg-transparent hover:bg-white/5 text-white font-bold rounded-xl transition-all flex items-center gap-2 border border-white/10"
-              >
-                <FileText className="w-5 h-5" />
-                파일 가이드
               </button>
             </div>
           </motion.div>

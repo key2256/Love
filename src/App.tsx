@@ -7,6 +7,7 @@ import { ProductCard } from './components/ProductCard';
 import { TrustSection } from './components/TrustSection';
 import { ProductDetail } from './components/ProductDetail';
 import { QuotationDocument } from './components/QuotationDocument';
+import { UsageBasedOrdering } from './components/UsageBasedOrdering';
 import { Footer } from './components/Footer';
 import { Portfolio } from './components/Portfolio';
 import { FAQ } from './components/FAQ';
@@ -26,7 +27,7 @@ const API_KEY =
   '';
 const hasValidKey = Boolean(API_KEY) && API_KEY !== 'YOUR_API_KEY';
 
-type View = 'home' | 'detail' | 'category' | 'guide' | 'inquiry' | 'quotation_doc' | 'custom_inquiry' | 'portfolio' | 'location' | 'faq';
+type View = 'home' | 'detail' | 'category' | 'guide' | 'inquiry' | 'quotation_doc' | 'custom_inquiry' | 'portfolio' | 'location' | 'faq' | 'usage_ordering';
 
 function App() {
   const [view, setView] = useState<View>('home');
@@ -694,6 +695,21 @@ function App() {
                 </p>
               </section>
             </div>
+          </motion.div>
+        )}
+
+        {view === 'usage_ordering' && (
+          <motion.div
+            key="usage_ordering"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+          >
+            <UsageBasedOrdering 
+              onBack={() => setView('home')} 
+              onProductClick={handleProductClick}
+              allProducts={PRODUCTS}
+            />
           </motion.div>
         )}
 
