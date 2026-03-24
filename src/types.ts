@@ -1803,6 +1803,8 @@ export const STICKER_COMMON_OPTIONS = {
         { label: '없음', priceModifier: 0 },
         { label: '무광 코팅', priceModifier: 0 },
         { label: '유광 코팅', priceModifier: 0 },
+        { label: '무광 벨벳 코팅', priceModifier: 5000 },
+        { label: '샌드 코팅', priceModifier: 3000 },
       ]
     }
   ],
@@ -1859,7 +1861,10 @@ export const STICKER_COMMON_OPTIONS = {
       { label: '없음', priceModifier: 0 },
       { label: '금박', priceModifier: 15000 },
       { label: '은박', priceModifier: 15000 },
+      { label: '홀로그램박', priceModifier: 18000 },
+      { label: '부분 UV 코팅', priceModifier: 12000 },
       { label: '형압', priceModifier: 20000 },
+      { label: '엠보싱', priceModifier: 15000 },
     ]
   }
 };
@@ -2622,6 +2627,9 @@ export const PRODUCTS: Product[] = [
         ]
       },
       STICKER_COMMON_OPTIONS.WHITE_INK,
+      ...STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.PACKAGING,
+      STICKER_COMMON_OPTIONS.POST_PROCESSING,
       {
         name: '사용 목적',
         type: 'select',

@@ -53,6 +53,22 @@ export const Navbar = ({
   const [showSuggestions, setShowSuggestions] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleHoverCategory = (id: string | null) => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+
+    if (id) {
+      setHoveredCategory(id);
+    } else {
+      hoverTimeoutRef.current = setTimeout(() => {
+        setHoveredCategory(null);
+      }, 150);
+    }
+  };
 
   // Focus management and body scroll lock
   useEffect(() => {
@@ -263,8 +279,8 @@ export const Navbar = ({
               {CATEGORIES.map((cat) => (
                 <button 
                   key={cat.id}
-                  onMouseEnter={() => setHoveredCategory(cat.id)}
-                  onMouseLeave={() => setHoveredCategory(null)}
+                  onMouseEnter={() => handleHoverCategory(cat.id)}
+                  onMouseLeave={() => handleHoverCategory(null)}
                   onClick={() => onCategorySelect(cat.id)}
                   className={`text-sm font-bold transition-all relative py-2 ${
                     activeCategory === cat.id ? 'text-emerald-600' : 'text-zinc-500 hover:text-zinc-900'
@@ -383,8 +399,8 @@ export const Navbar = ({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             className="bg-white/95 backdrop-blur-sm border-b border-zinc-100 shadow-sm hidden lg:block"
-            onMouseEnter={() => setHoveredCategory(displayCategoryId)}
-            onMouseLeave={() => setHoveredCategory(null)}
+            onMouseEnter={() => handleHoverCategory(displayCategoryId)}
+            onMouseLeave={() => handleHoverCategory(null)}
           >
             {/* Tier 1: Groups/Categories */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center gap-3 overflow-x-auto no-scrollbar border-b border-zinc-50/50">
@@ -409,10 +425,18 @@ export const Navbar = ({
                 {displayCategory?.subCategories.map((sub) => {
                   const groupName = typeof sub === 'string' ? sub : sub.groupName;
                   const isActive = selectedSubGroup === groupName;
+                  const isActuallyActive = (activeSubCategory === groupName || 
+                    (typeof sub !== 'string' && sub.items.some(item => 
+                      (typeof item === 'string' ? item : item.groupName) === activeSubCategory
+                    ))) && activeCategory === displayCategoryId;
                   
                   return (
                     <button
                       key={groupName}
+                      onMouseEnter={() => {
+                        setSelectedSubGroup(groupName);
+                        setSelectedSubSubGroup(null);
+                      }}
                       onClick={() => {
                         setSelectedSubGroup(groupName);
                         setSelectedSubSubGroup(null);
@@ -423,13 +447,16 @@ export const Navbar = ({
                           onSubCategorySelect(sub.groupName);
                         }
                       }}
-                      className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
+                      className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap relative ${
                         isActive
                           ? 'bg-emerald-600 text-white shadow-md shadow-emerald-100'
                           : 'text-zinc-500 hover:bg-zinc-100'
                       }`}
                     >
                       {groupName}
+                      {isActuallyActive && !isActive && (
+                        <span className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-500 rounded-full border-2 border-white" />
+                      )}
                     </button>
                   );
                 })}
@@ -466,6 +493,13 @@ export const Navbar = ({
                           return (
                             <button
                               key={itemName || idx}
+                              onMouseEnter={() => {
+                                if (typeof item !== 'string') {
+                                  setSelectedSubSubGroup(item.groupName);
+                                } else {
+                                  setSelectedSubSubGroup(null);
+                                }
+                              }}
                               onClick={() => {
                                 if (typeof item !== 'string') {
                                   setSelectedSubSubGroup(item.groupName);

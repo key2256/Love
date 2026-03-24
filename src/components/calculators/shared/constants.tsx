@@ -231,32 +231,37 @@ export const PRODUCT_CONFIG: Record<string, {
   'stk-rect': {
     defaultGroup: '일반/기본 용지',
     groups: ['일반/기본 용지', '방수/합성지', '투명/PET', '메탈/광택 특수 재질', '프리미엄 라벨(GMUND)'],
-    allowedPostProcessing: ['코팅', '귀돌이', '폴리백 개별포장', '화이트 인쇄'],
+    allowedPostProcessing: ['코팅', '귀돌이', '폴리백 개별포장', '화이트 인쇄', '후가공 옵션'],
   },
   'stk-circle': {
     defaultGroup: '일반/기본 용지',
     groups: ['일반/기본 용지', '방수/합성지', '투명/PET', '메탈/광택 특수 재질', '프리미엄 라벨(GMUND)'],
-    allowedPostProcessing: ['코팅', '귀돌이', '폴리백 개별포장', '화이트 인쇄'],
+    allowedPostProcessing: ['코팅', '귀돌이', '폴리백 개별포장', '화이트 인쇄', '후가공 옵션'],
   },
   'stk-oval': {
     defaultGroup: '일반/기본 용지',
     groups: ['일반/기본 용지', '방수/합성지', '투명/PET', '메탈/광택 특수 재질', '프리미엄 라벨(GMUND)'],
-    allowedPostProcessing: ['코팅', '귀돌이', '폴리백 개별포장', '화이트 인쇄'],
+    allowedPostProcessing: ['코팅', '귀돌이', '폴리백 개별포장', '화이트 인쇄', '후가공 옵션'],
   },
   'stk-round-rect': {
     defaultGroup: '일반/기본 용지',
     groups: ['일반/기본 용지', '방수/합성지', '투명/PET', '메탈/광택 특수 재질', '프리미엄 라벨(GMUND)'],
-    allowedPostProcessing: ['코팅', '귀돌이', '폴리백 개별포장', '화이트 인쇄'],
+    allowedPostProcessing: ['코팅', '귀돌이', '폴리백 개별포장', '화이트 인쇄', '후가공 옵션'],
   },
   'stk-various': {
     defaultGroup: '일반/기본 용지',
     groups: ['일반/기본 용지', '방수/합성지', '투명/PET', '메탈/광택 특수 재질', '프리미엄 라벨(GMUND)'],
-    allowedPostProcessing: ['코팅', '귀돌이', '폴리백 개별포장', '화이트 인쇄'],
+    allowedPostProcessing: ['코팅', '귀돌이', '폴리백 개별포장', '화이트 인쇄', '후가공 옵션'],
   },
   'stk-free-normal': {
     defaultGroup: '일반/기본 용지',
     groups: ['일반/기본 용지', '방수/합성지', '투명/PET', '메탈/광택 특수 재질', '프리미엄 라벨(GMUND)'],
-    allowedPostProcessing: ['모양커팅', '코팅', '폴리백 개별포장', '화이트 인쇄'],
+    allowedPostProcessing: ['모양커팅', '코팅', '폴리백 개별포장', '화이트 인쇄', '후가공 옵션'],
+  },
+  'stk-uv': {
+    defaultGroup: 'UV 전사 스티커',
+    groups: ['UV 전사 스티커'],
+    allowedPostProcessing: ['화이트 인쇄', '코팅', '폴리백 개별포장', '후가공 옵션'],
   },
   // Business Cards
   'bc-standard': {

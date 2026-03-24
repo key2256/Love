@@ -9,7 +9,8 @@ import {
   FileUp, 
   ShoppingCart, 
   Package,
-  CheckCircle2
+  CheckCircle2,
+  Sparkles
 } from 'lucide-react';
 import { Product } from '../../../types';
 import { 
@@ -103,6 +104,13 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
       active: selectedOptions['화이트 인쇄'] === '있음', 
       hidden: !config?.allowedPostProcessing?.includes('화이트 인쇄') || 
               (materialOptionName ? selectedOptions[materialOptionName] !== '투명/PET' : (selectedOptions['재질'] !== '투명/PET' && selectedOptions['용지'] !== '투명/PET'))
+    },
+    { 
+      id: 'special-effects', 
+      name: '특수 효과', 
+      icon: <Sparkles className="w-5 h-5" />, 
+      active: selectedOptions['후가공 옵션'] !== '없음' && selectedOptions['후가공 옵션'] !== undefined, 
+      hidden: !config?.allowedPostProcessing?.includes('후가공 옵션')
     },
     { 
       id: 'case', 
@@ -736,6 +744,46 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                       {v.label}
                     </button>
                   ))}
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {expandedPostOption === 'special-effects' && (
+            <motion.div
+              key="special-effects"
+              initial={{ opacity: 0, y: -10, height: 0 }}
+              animate={{ opacity: 1, y: 0, height: 'auto' }}
+              exit={{ opacity: 0, y: -10, height: 0 }}
+              className="overflow-hidden"
+            >
+              <div className="pt-4 border-t border-zinc-200/50 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-black text-zinc-900 uppercase tracking-widest">특수 효과 설정</h4>
+                  <button onClick={() => setExpandedPostOption(null)} className="text-[10px] font-bold text-zinc-400 hover:text-zinc-600">닫기</button>
+                </div>
+                <div className="space-y-4">
+                  {(() => {
+                    const effectOption = product.options.find(o => o.name === '후가공 옵션');
+                    if (!effectOption) return null;
+                    return (
+                      <div className="grid grid-cols-2 gap-2">
+                        {effectOption.values?.map(v => (
+                          <button
+                            key={v.label}
+                            onClick={() => handleOptionChange('후가공 옵션', v.label)}
+                            className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
+                              selectedOptions['후가공 옵션'] === v.label
+                                ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
+                                : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
+                            }`}
+                          >
+                            {v.label}
+                          </button>
+                        ))}
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
             </motion.div>
