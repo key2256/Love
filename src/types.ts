@@ -1510,18 +1510,22 @@ export const CATEGORIES: Category[] = [
   },
   { 
     id: 'binding-booklet', 
-    name: '제본 · 책자', 
+    name: '제본•책자', 
     icon: 'Book', 
     description: '소량 책자부터 대량 출판물까지 완벽한 제본',
     entryPhrase: '당신의 이야기를 한 권의 책으로',
     subCategories: [
       {
-        groupName: '제본 방식',
-        items: ['중철제본', '무선제본', '스프링제본', '양장제본']
+        groupName: '학교용/기관/단행본',
+        items: ['무선제본 책자', '스프링제본 책자', '트윈링제본 책자', '중철제본 책자', '실제본 책자']
       },
       {
-        groupName: '책자 종류',
-        items: ['카탈로그', '브로슈어', '포트폴리오', '작품집']
+        groupName: '알뜰책자',
+        items: ['알뜰 무선제본 책자', '알뜰 스프링제본 책자', '알뜰 트윈링제본 책자']
+      },
+      {
+        groupName: '용도별 주문',
+        items: ['공부자료 제본', '학습자료 제본', '수업교안 제본', '문제집 제본', '단행본/소책자 제작', '기관/학교 제출용 제본']
       }
     ]
   },
@@ -3116,7 +3120,7 @@ export const PRODUCTS: Product[] = [
     id: 'binding-saddle',
     name: '중철제본 책자',
     category: 'binding-booklet',
-    subCategory: '중철제본',
+    subCategory: '중철제본 책자',
     tagline: '가볍고 실용적인 중철 제본 책자.',
     description: '카탈로그나 팜플렛 제작에 적합한 제본 방식입니다. 페이지 수가 적은 책자에 최적입니다.',
     image: 'https://picsum.photos/seed/booklet/800/800',
@@ -3124,55 +3128,88 @@ export const PRODUCTS: Product[] = [
     basePrice: 35000,
     options: [
       {
-        name: '규격',
-        type: 'select',
+        name: '규격 안내',
+        type: 'text',
+        description: 'A4(210x297mm) 고정입니다.'
+      },
+      {
+        name: '인쇄 색상',
+        type: 'radio',
         values: [
-          { label: 'A4 (210x297)', priceModifier: 0 },
-          { label: 'A5 (148x210)', priceModifier: -5000 },
-          { label: 'B5 (182x257)', priceModifier: -2000 },
+          { label: '컬러', priceModifier: 0 },
+          { label: '흑백', priceModifier: -5000 },
         ]
       },
       {
-        name: '페이지 수',
-        type: 'select',
+        name: '표지 인쇄',
+        type: 'radio',
         values: [
-          { label: '8페이지', priceModifier: 0 },
-          { label: '12페이지', priceModifier: 5000 },
-          { label: '16페이지', priceModifier: 10000 },
-          { label: '20페이지', priceModifier: 15000 },
-          { label: '24페이지', priceModifier: 20000 },
+          { label: '컬러', priceModifier: 0 },
+          { label: '흑백', priceModifier: -2000 },
+        ]
+      },
+      {
+        name: '내지 인쇄',
+        type: 'radio',
+        values: [
+          { label: '컬러', priceModifier: 0 },
+          { label: '흑백', priceModifier: -3000 },
         ]
       },
       {
         name: '표지 용지',
         type: 'select',
         values: [
-          { label: '아트지 200g', priceModifier: 0 },
-          { label: '스노우 200g', priceModifier: 0 },
-          { label: '랑데뷰 210g', priceModifier: 3000 },
+          { label: '스노우 250g', priceModifier: 0 },
+          { label: '스노우 300g', priceModifier: 1000 },
+          { label: '아트지 250g', priceModifier: 0 },
         ]
       },
       {
         name: '내지 용지',
         type: 'select',
         values: [
-          { label: '아트지 100g', priceModifier: 0 },
-          { label: '스노우 100g', priceModifier: 0 },
-          { label: '모조지 80g', priceModifier: 0 },
+          { label: '모조 80g', priceModifier: 0 },
+          { label: '모조 100g', priceModifier: 1000 },
+          { label: '백상지 100g', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '페이지 수',
+        type: 'select',
+        values: [
+          { label: '8p', priceModifier: 0 },
+          { label: '16p', priceModifier: 5000 },
+          { label: '24p', priceModifier: 10000 },
+          { label: '32p', priceModifier: 15000 },
+        ]
+      },
+      {
+        name: '제본 방향',
+        type: 'radio',
+        values: [
+          { label: '세로형', priceModifier: 0 },
+          { label: '가로형', priceModifier: 2000 },
+        ]
+      },
+      {
+        name: '표지 코팅',
+        type: 'radio',
+        values: [
+          { label: '무광코팅', priceModifier: 1000 },
+          { label: '유광코팅', priceModifier: 1000 },
+          { label: '코팅 없음', priceModifier: 0 },
         ]
       }
     ],
-    features: ['깔끔한 스테이플 마감', '완전 펼침 가능', '빠른 제작'],
+    features: ['중철제본', '가운데 철심으로 묶는 방식', '얇은 학습자료에 적합'],
     leadTime: '3~5 영업일',
     badges: ['카탈로그', '실용적', '빠른제작'],
-    recommendation: '가벼운 홍보물이나 메뉴판용으로는 "8페이지" 또는 "12페이지" 중철 제본이 가장 경제적입니다.',
     warnings: [
       '중철 제본은 반드시 4의 배수 페이지로 구성되어야 합니다.',
-      '페이지 수가 너무 많으면 책이 벌어질 수 있으니 32페이지 이내를 권장합니다.'
     ],
     notes: [
-      '표지와 내지 용지를 다르게 구성하고 싶으시면 별도 문의 주세요.',
-      '세로형 제본이 기본이며 가로형은 별도 상담이 필요합니다.'
+      '중철제본 / 가운데 철심으로 묶는 방식 / 얇은 학습자료에 적합'
     ]
   },
   {
@@ -4168,7 +4205,7 @@ export const PRODUCTS: Product[] = [
     id: 'binding-wireless',
     name: '무선제본 책자',
     category: 'binding-booklet',
-    subCategory: '무선제본',
+    subCategory: '무선제본 책자',
     tagline: '가장 일반적인 책 제본 방식.',
     description: '강력한 접착제로 고정하는 방식으로 두꺼운 책자 제작에 적합합니다. 소설, 문제집, 보고서 등에 추천합니다.',
     image: 'https://picsum.photos/seed/wireless/800/800',
@@ -4176,49 +4213,89 @@ export const PRODUCTS: Product[] = [
     basePrice: 45000,
     options: [
       {
-        name: '규격',
-        type: 'select',
+        name: '규격 안내',
+        type: 'text',
+        description: 'A4(210x297mm) 고정입니다.'
+      },
+      {
+        name: '인쇄 색상',
+        type: 'radio',
         values: [
-          { label: 'A4 (210x297)', priceModifier: 0 },
-          { label: 'A5 (148x210)', priceModifier: -5000 },
-          { label: 'B5 (182x257)', priceModifier: -2000 },
+          { label: '컬러', priceModifier: 0 },
+          { label: '흑백', priceModifier: -5000 },
         ]
       },
       {
-        name: '페이지 수',
-        type: 'select',
+        name: '표지 인쇄',
+        type: 'radio',
         values: [
-          { label: '40페이지', priceModifier: 0 },
-          { label: '80페이지', priceModifier: 15000 },
-          { label: '120페이지', priceModifier: 30000 },
-          { label: '200페이지', priceModifier: 60000 },
+          { label: '컬러', priceModifier: 0 },
+          { label: '흑백', priceModifier: -2000 },
+        ]
+      },
+      {
+        name: '내지 인쇄',
+        type: 'radio',
+        values: [
+          { label: '컬러', priceModifier: 0 },
+          { label: '흑백', priceModifier: -3000 },
         ]
       },
       {
         name: '표지 용지',
         type: 'select',
         values: [
-          { label: '아트지 250g', priceModifier: 0 },
           { label: '스노우 250g', priceModifier: 0 },
-          { label: '랑데뷰 240g', priceModifier: 5000 },
+          { label: '스노우 300g', priceModifier: 1000 },
+          { label: '아트지 250g', priceModifier: 0 },
         ]
       },
       {
         name: '내지 용지',
         type: 'select',
         values: [
-          { label: '모조지 80g', priceModifier: 0 },
-          { label: '모조지 100g', priceModifier: 2000 },
-          { label: '미색 모조 80g', priceModifier: 0 },
+          { label: '모조 80g', priceModifier: 0 },
+          { label: '모조 100g', priceModifier: 1000 },
+          { label: '백상지 100g', priceModifier: 1000 },
+        ]
+      },
+      {
+        name: '페이지 수',
+        type: 'select',
+        values: [
+          { label: '40p', priceModifier: 0 },
+          { label: '60p', priceModifier: 5000 },
+          { label: '80p', priceModifier: 10000 },
+          { label: '100p', priceModifier: 15000 },
+          { label: '120p', priceModifier: 20000 },
+        ]
+      },
+      {
+        name: '표지 코팅',
+        type: 'radio',
+        values: [
+          { label: '무광코팅', priceModifier: 1000 },
+          { label: '유광코팅', priceModifier: 1000 },
+          { label: '코팅 없음', priceModifier: 0 },
+        ]
+      },
+      {
+        name: '제본 방향',
+        type: 'radio',
+        values: [
+          { label: '세로형', priceModifier: 0 },
+          { label: '가로형', priceModifier: 2000 },
         ]
       }
     ],
-    features: ['강력한 핫멜트 제본', '깔끔한 책등 마감', '대량 제작 가능'],
+    features: ['무선제본', '옆면 풀제본', '두꺼운 자료집에 적합'],
     leadTime: '5~7 영업일',
     badges: ['책제작', '표준제본', '고품질'],
     warnings: [
-      '페이지 수가 너무 적으면(32p 미만) 무선제본이 어려울 수 있습니다.',
       '책등(세나카) 두께를 고려하여 표지 디자인을 해야 합니다.'
+    ],
+    notes: [
+      '무선제본 / 옆면 풀제본 / 두꺼운 자료집에 적합'
     ]
   },
   {
