@@ -10,7 +10,7 @@ import { ActionButtons } from './shared/ActionButtons';
 import { NotesSection } from './shared/NotesSection';
 import { PostProcessingSection } from './shared/PostProcessingSection';
 import { OptionGroup } from './shared/OptionGroup';
-import { PRODUCT_CONFIG } from './shared/constants';
+import { SHAPE_ICONS, PRODUCT_CONFIG } from './shared/constants';
 
 interface PostcardCalculatorProps {
   product: Product;
@@ -42,6 +42,8 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
   const [selectedPostcardGroup, setSelectedPostcardGroup] = useState<string>('기본 대중형');
   const [expandedPostOption, setExpandedPostOption] = useState<string | null>(null);
   const config = PRODUCT_CONFIG[product.id as keyof typeof PRODUCT_CONFIG];
+  const materialOption = product.options.find(opt => opt.name.includes('용지') && opt.name !== '용지 그룹');
+  const materialOptionName = materialOption?.name;
 
   useEffect(() => {
     if (config) {
@@ -124,6 +126,34 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
         </div>
       </OptionGroup>
 
+      {/* Shape Selection for 모양 엽서 */}
+      {product.options.filter(opt => opt.name === '모양').map((option) => (
+        <OptionGroup key={option.name} label={option.name}>
+          <div className="grid grid-cols-4 gap-3">
+            {option.values?.map((val) => {
+              const IconNode = SHAPE_ICONS[val.label] || <Layers className="w-6 h-6" />;
+              const isSelected = selectedOptions[option.name] === val.label;
+              return (
+                <button
+                  key={val.label}
+                  onClick={() => handleOptionChange(option.name, val.label)}
+                  className={`flex flex-col items-center gap-3 p-4 rounded-2xl border transition-all ${
+                    isSelected
+                      ? 'bg-zinc-900 border-zinc-900 text-white shadow-lg'
+                      : 'bg-white border-zinc-100 text-zinc-400 hover:border-zinc-300'
+                  }`}
+                >
+                  <div className={`${isSelected ? 'text-emerald-400' : 'text-zinc-300'}`}>
+                    {IconNode}
+                  </div>
+                  <span className="text-[11px] font-black uppercase tracking-tight">{val.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </OptionGroup>
+      ))}
+
       {/* 2. Standard Options */}
       {product.options.filter(opt => {
         const normalizedName = opt.name.replace(/\s/g, '');
@@ -185,6 +215,7 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
         pattern="POSTCARD"
         expandedPostOption={expandedPostOption}
         setExpandedPostOption={setExpandedPostOption}
+        materialOptionName={materialOptionName}
       />
 
       <QuantitySection product={product} quantity={quantity} setQuantity={setQuantity} />

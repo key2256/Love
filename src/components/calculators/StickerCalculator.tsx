@@ -42,6 +42,8 @@ export const StickerCalculator: React.FC<StickerCalculatorProps> = ({
   const [expandedGroup, setExpandedGroup] = useState<string | null>('일반/기본 용지');
   const [expandedPostOption, setExpandedPostOption] = useState<string | null>(null);
   const config = PRODUCT_CONFIG[product.id];
+  const materialOption = product.options.find(opt => opt.name.includes('재질') || opt.name.includes('용지'));
+  const materialOptionName = materialOption?.name;
 
   useEffect(() => {
     if (config) {
@@ -215,6 +217,7 @@ export const StickerCalculator: React.FC<StickerCalculatorProps> = ({
         pattern="STICKER"
         expandedPostOption={expandedPostOption}
         setExpandedPostOption={setExpandedPostOption}
+        materialOptionName={materialOptionName}
       />
 
       <QuantitySection product={product} quantity={quantity} setQuantity={setQuantity} />
