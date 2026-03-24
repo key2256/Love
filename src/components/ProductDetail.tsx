@@ -63,7 +63,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, o
           className="flex items-center gap-2 text-zinc-500 hover:text-zinc-900 mb-8 transition-colors group"
         >
           <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-          <span>목록으로 돌아가기</span>
+          <span className="font-bold">이전으로</span>
         </button>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-24">

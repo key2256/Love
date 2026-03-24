@@ -11,7 +11,7 @@ import { Footer } from './components/Footer';
 import { Portfolio } from './components/Portfolio';
 import { InquiryForm } from './components/InquiryForm';
 import { PRODUCTS, CATEGORIES, Product, Quotation, ORDER_STEPS, PORTFOLIO_ITEMS, SUBCATEGORY_METADATA, SubCategoryGroup } from './types';
-import { FileUp, Send, CheckCircle2, MessageSquare, ArrowRight, Box, Search, Star, Zap, Calculator, MapPin, Phone, Mail } from 'lucide-react';
+import { FileUp, Send, CheckCircle2, MessageSquare, ArrowRight, Box, Search, Star, Zap, Calculator, MapPin, Phone, Mail, ChevronLeft, ChevronRight } from 'lucide-react';
 import { APIProvider, Map, AdvancedMarker, Pin } from '@vis.gl/react-google-maps';
 
 const center = { lat: 37.6438, lng: 126.7868 }; // Approximate coordinates for Ilsan-donggu, Goyang-si
@@ -595,6 +595,13 @@ function App() {
             exit={{ opacity: 0, y: -20 }}
             className="pt-32 pb-24 max-w-4xl mx-auto px-4"
           >
+            <button 
+              onClick={() => setView('home')}
+              className="flex items-center gap-2 text-zinc-500 hover:text-zinc-900 transition-colors group mb-8"
+            >
+              <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+              <span className="font-bold text-sm uppercase tracking-widest">이전으로</span>
+            </button>
             <h1 className="text-4xl font-black mb-8">파일 가이드</h1>
             <div className="bg-zinc-50 rounded-3xl p-8 border border-zinc-100 space-y-8">
               <section>
@@ -637,7 +644,7 @@ function App() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
           >
-            <Portfolio />
+            <Portfolio onBack={() => setView('home')} />
           </motion.div>
         )}
 
@@ -650,12 +657,19 @@ function App() {
             className="pt-32 pb-24"
           >
             <div className="max-w-3xl mx-auto px-4">
+              <button 
+                onClick={() => setView('home')}
+                className="flex items-center gap-2 text-zinc-500 hover:text-zinc-900 transition-colors group mb-8"
+              >
+                <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                <span className="font-bold text-sm uppercase tracking-widest">이전으로</span>
+              </button>
               <div className="text-center mb-12">
                 <h1 className="text-4xl font-black mb-4 tracking-tight">견적 문의</h1>
                 <p className="text-zinc-500">원하시는 제작 사양을 남겨주시면 전문가가 확인 후 연락드립니다.</p>
               </div>
               <div className="bg-white rounded-[40px] border border-zinc-100 p-8 md:p-12 shadow-xl shadow-zinc-100/50">
-                <InquiryForm />
+                <InquiryForm isInline onClose={() => setView('home')} />
               </div>
             </div>
           </motion.div>
@@ -670,6 +684,13 @@ function App() {
             className="pt-32 pb-24"
           >
             <div className="max-w-7xl mx-auto px-4">
+              <button 
+                onClick={() => setView('home')}
+                className="flex items-center gap-2 text-zinc-500 hover:text-zinc-900 transition-colors group mb-8"
+              >
+                <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                <span className="font-bold text-sm uppercase tracking-widest">이전으로</span>
+              </button>
               <div className="text-center mb-16">
                 <h1 className="text-5xl font-black mb-6 tracking-tight">오시는 길</h1>
                 <p className="text-lg text-zinc-500">완두프린트 오프라인 매장 및 작업실 위치를 안내해 드립니다.</p>

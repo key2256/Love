@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { PORTFOLIO_ITEMS, CATEGORIES } from '../types';
-import { Search, Filter, ArrowRight } from 'lucide-react';
+import { Search, Filter, ArrowRight, ChevronLeft } from 'lucide-react';
 
-export const Portfolio: React.FC = () => {
+interface PortfolioProps {
+  onBack?: () => void;
+}
+
+export const Portfolio: React.FC<PortfolioProps> = ({ onBack }) => {
   const [activeFilter, setActiveFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -18,6 +22,15 @@ export const Portfolio: React.FC = () => {
   return (
     <div className="pt-32 pb-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {onBack && (
+          <button 
+            onClick={onBack}
+            className="flex items-center gap-2 text-zinc-500 hover:text-zinc-900 transition-colors group mb-12"
+          >
+            <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+            <span className="font-bold text-sm uppercase tracking-widest">이전으로</span>
+          </button>
+        )}
         <div className="text-center mb-16">
           <h1 className="text-5xl font-black mb-6 tracking-tight">제작 사례</h1>
           <p className="text-lg text-zinc-500 max-w-2xl mx-auto">
