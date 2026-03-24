@@ -111,60 +111,78 @@ const UsageProductDetail: React.FC<{ product: Product; onProductClick: (id: stri
 
   return (
     <div className="space-y-12">
-      {/* Top Layout: 2-column */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="space-y-4">
-          <h1 className="text-4xl font-black tracking-tight text-zinc-900">{recommendation.title}</h1>
-          <p className="text-lg text-zinc-600 leading-relaxed">{recommendation.description}</p>
+      {/* Top Layout: 2-column with better balance */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+        <div className="flex flex-col justify-center space-y-4">
+          <h1 className="text-4xl font-black tracking-tight text-zinc-900 leading-tight">{recommendation.title}</h1>
+          <p className="text-lg text-zinc-600 leading-relaxed max-w-xl">{recommendation.description}</p>
         </div>
         
-        {/* Recommendation Guide Box */}
-        <div className="p-6 bg-emerald-50 rounded-2xl text-emerald-900 border border-emerald-100">
-          <p className="font-bold text-sm mb-2">💡 추천 가이드</p>
-          <p className="text-sm leading-relaxed">{recommendation.recommendationText}</p>
+        {/* Recommendation Guide Box - more balanced height */}
+        <div className="p-8 bg-emerald-50 rounded-[32px] text-emerald-900 border border-emerald-100 flex flex-col justify-center">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-xl">💡</span>
+            <p className="font-black text-sm uppercase tracking-wider">추천 가이드</p>
+          </div>
+          <p className="text-sm leading-relaxed opacity-90">{recommendation.recommendationText}</p>
         </div>
       </div>
 
-      {/* Selection Guide Box - Prominent */}
-      <div className="bg-zinc-50 rounded-[24px] p-6 border border-zinc-100">
-        <h3 className="font-black text-lg mb-4 text-zinc-900">선택 가이드</h3>
-        <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      {/* Selection Guide Box - More visually organized */}
+      <div className="bg-white rounded-[32px] p-8 border border-zinc-100 shadow-sm">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-1 h-6 bg-emerald-500 rounded-full"></div>
+          <h3 className="font-black text-xl text-zinc-900">선택 가이드</h3>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
           {recommendation.selectionGuide.map((guide, i) => (
-            <li key={i} className="text-sm text-zinc-600 flex items-start gap-2">
-              <span className="text-emerald-500 font-bold mt-0.5">•</span>
-              {guide}
-            </li>
+            <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-zinc-50 border border-zinc-100/50 hover:border-emerald-200 transition-colors group">
+              <div className="w-8 h-8 rounded-full bg-white border border-zinc-200 flex items-center justify-center text-xs font-bold text-zinc-400 group-hover:text-emerald-500 group-hover:border-emerald-500 transition-colors">
+                {i + 1}
+              </div>
+              <p className="text-sm text-zinc-700 font-medium">{guide}</p>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
         
       {/* Recommended Products */}
-      <div className="space-y-6">
-        <h3 className="font-black text-2xl text-zinc-900">추천 제본 상품</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="space-y-8">
+        <div className="flex items-center justify-between">
+          <h3 className="font-black text-2xl text-zinc-900 tracking-tight">추천 제본 상품</h3>
+          <div className="h-px flex-1 bg-zinc-100 mx-8 hidden md:block"></div>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {recommendation.recommendedProducts.map(item => {
             const recommendedProduct = PRODUCTS.find(p => p.id === item.id);
             if (!recommendedProduct) return null;
             return (
-              <div key={recommendedProduct.id} className="bg-white p-6 rounded-3xl border border-zinc-100 shadow-sm hover:shadow-lg transition-all flex flex-col gap-4">
-                <div className="flex justify-between items-start gap-2">
-                  <h4 className="font-black text-xl text-zinc-900">{recommendedProduct.name}</h4>
-                  <span className="px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full whitespace-nowrap">{item.badge}</span>
+              <div key={recommendedProduct.id} className="group bg-white p-8 rounded-[40px] border border-zinc-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6">
+                  <div className="space-y-1">
+                    <h4 className="font-black text-2xl text-zinc-900 group-hover:text-emerald-600 transition-colors">{recommendedProduct.name}</h4>
+                    <p className="text-sm text-zinc-400 font-medium">{recommendedProduct.tagline}</p>
+                  </div>
+                  <span className="inline-flex px-3 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-black rounded-full border border-emerald-100 whitespace-nowrap self-start">
+                    {item.badge}
+                  </span>
                 </div>
-                <p className="text-sm text-zinc-500">{recommendedProduct.tagline}</p>
                 
-                <ul className="space-y-1">
-                  {item.features.map((feature, i) => (
-                    <li key={i} className="text-xs text-zinc-600 flex items-center gap-2">
-                      <span className="w-1 h-1 rounded-full bg-zinc-400"></span>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
+                <div className="space-y-4 mb-8">
+                  <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest">주요 특징</p>
+                  <div className="flex flex-wrap gap-2">
+                    {item.features.map((feature, i) => (
+                      <span key={i} className="px-3 py-1.5 rounded-xl bg-zinc-50 text-zinc-600 text-xs font-semibold border border-zinc-100">
+                        {feature}
+                      </span>
+                    ))}
+                  </div>
+                </div>
 
                 <button 
                   onClick={() => onProductClick(recommendedProduct.id)}
-                  className="mt-4 w-full py-3 rounded-xl bg-zinc-900 text-white font-bold text-sm hover:bg-zinc-800 transition-all"
+                  className="mt-auto w-full py-4 rounded-2xl bg-zinc-900 text-white font-black text-sm hover:bg-emerald-600 transition-all duration-300 shadow-lg shadow-zinc-900/10 hover:shadow-emerald-600/20"
                 >
                   이 상품으로 주문하기
                 </button>
