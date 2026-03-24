@@ -15,6 +15,7 @@ import { SaddleBindingCalculator } from './calculators/SaddleBindingCalculator';
 import { PerfectBindingCalculator } from './calculators/PerfectBindingCalculator';
 import { SpringBindingCalculator } from './calculators/SpringBindingCalculator';
 import { TwinRingBindingCalculator } from './calculators/TwinRingBindingCalculator';
+import { SewnBindingCalculator } from './calculators/SewnBindingCalculator';
 import { DefaultCalculator } from './calculators/DefaultCalculator';
 
 import { useQuotationLogic } from '../hooks/useQuotationLogic';
@@ -59,6 +60,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
     if (product.id === 'binding-wireless') return 'PERFECT_BINDING';
     if (product.id === 'binding-spring') return 'SPRING_BINDING';
     if (product.id === 'binding-twinring') return 'TWINRING_BINDING';
+    if (product.id === 'binding-sewn') return 'SEWN_BINDING';
     if (product.id === 'memo-standard') return 'MEMO_PAD';
     if (product.id === 'note-spring' || product.id === 'note-leather' || product.id === 'note-saddle') return 'NOTE';
     if (product.id === 'drawing-pro' || product.id === 'drawing-student') return 'DRAWING_BOOK';
@@ -120,6 +122,8 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
         return <SpringBindingCalculator {...calculatorProps} />;
       case 'TWINRING_BINDING':
         return <TwinRingBindingCalculator {...calculatorProps} />;
+      case 'SEWN_BINDING':
+        return <SewnBindingCalculator {...calculatorProps} />;
       default:
         return <DefaultCalculator {...calculatorProps} />;
     }
