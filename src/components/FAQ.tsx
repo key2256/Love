@@ -6,15 +6,15 @@ interface FAQItemProps {
   question: string;
   answer: string;
   category: string;
+  isOpen: boolean;
+  onToggle: () => void;
 }
 
-const FAQItem: React.FC<FAQItemProps> = ({ question, answer, category }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
+const FAQItem: React.FC<FAQItemProps> = ({ question, answer, category, isOpen, onToggle }) => {
   return (
     <div className="border-b border-zinc-100 last:border-0">
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={onToggle}
         className="w-full py-6 flex items-center justify-between text-left group"
       >
         <div className="flex items-center gap-4">
@@ -53,6 +53,7 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer, category }) => {
 
 export const FAQ: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState('전체');
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
   const faqs = [
     {
@@ -100,6 +101,16 @@ export const FAQ: React.FC = () => {
   const categories = ['전체', ...new Set(faqs.map(f => f.category))];
   const filteredFaqs = activeCategory === '전체' ? faqs : faqs.filter(f => f.category === activeCategory);
 
+  const handleToggle = (index: number) => {
+    setExpandedIndex(expandedIndex === index ? null : index);
+  };
+
+  // Reset expanded index when category changes
+  const handleCategoryChange = (cat: string) => {
+    setActiveCategory(cat);
+    setExpandedIndex(null);
+  };
+
   return (
     <div className="pt-32 pb-24 max-w-4xl mx-auto px-4">
       <div className="text-center mb-16">
@@ -115,7 +126,7 @@ export const FAQ: React.FC = () => {
         {categories.map(cat => (
           <button
             key={cat}
-            onClick={() => setActiveCategory(cat)}
+            onClick={() => handleCategoryChange(cat)}
             className={`px-6 py-3 rounded-2xl text-sm font-bold transition-all border ${
               activeCategory === cat
                 ? 'bg-zinc-900 border-zinc-900 text-white shadow-xl shadow-zinc-900/20'
@@ -132,7 +143,12 @@ export const FAQ: React.FC = () => {
         {filteredFaqs.length > 0 ? (
           <div className="divide-y divide-zinc-100">
             {filteredFaqs.map((faq, index) => (
-              <FAQItem key={index} {...faq} />
+              <FAQItem 
+                key={index} 
+                {...faq} 
+                isOpen={expandedIndex === index}
+                onToggle={() => handleToggle(index)}
+              />
             ))}
           </div>
         ) : (

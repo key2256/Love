@@ -1,7 +1,8 @@
-import React, { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
+import { motion, AnimatePresence, useMotionValue, useSpring } from 'motion/react';
 import { 
   ChevronLeft, 
+  ChevronRight,
   ShoppingCart, 
   FileUp, 
   CheckCircle2, 
@@ -28,7 +29,10 @@ import {
   ThumbsUp,
   MessageCircle,
   Plus,
-  Search
+  Search,
+  Maximize2,
+  Minimize2,
+  RefreshCw
 } from 'lucide-react';
 import { Product, Quotation, PRODUCTS, CATEGORIES, PAPER_MATERIALS, PaperMaterial, CartItem, Review } from '../types';
 import { QuotationCalculator } from './QuotationCalculator';
@@ -475,16 +479,56 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, o
   const [activeTab, setActiveTab] = useState<'calc' | 'info'>('calc');
   const [selectedMaterialGroup, setSelectedMaterialGroup] = useState<PaperMaterial['group']>('일반/기본 용지');
   const [showAllMaterials, setShowAllMaterials] = useState(false);
-  const [activeImage, setActiveImage] = useState(product.image);
-  const [zoomPos, setZoomPos] = useState({ x: 0, y: 0 });
-  const [isZoomed, setIsZoomed] = useState(false);
+  
+  const productImages = useMemo(() => [
+    product.image,
+    ...[1, 2, 3].map(i => `https://picsum.photos/seed/${product.id}-${i}/800/800`)
+  ], [product.id, product.image]);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - left) / width) * 100;
-    const y = ((e.clientY - top) / height) * 100;
-    setZoomPos({ x, y });
+  const [activeImage, setActiveImage] = useState(productImages[0]);
+  const [zoomScale, setZoomScale] = useState(1);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+
+  // Motion values for smooth panning
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const springX = useSpring(x, { stiffness: 300, damping: 30 });
+  const springY = useSpring(y, { stiffness: 300, damping: 30 });
+
+  const handleWheel = (e: React.WheelEvent) => {
+    if (e.ctrlKey || e.metaKey || isDragging) return;
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.2 : 0.2;
+    setZoomScale(prev => Math.min(Math.max(prev + delta, 1), 4));
   };
+
+  const resetZoom = () => {
+    setZoomScale(1);
+    x.set(0);
+    y.set(0);
+  };
+
+  const nextImage = () => {
+    const currentIndex = productImages.indexOf(activeImage);
+    const nextIndex = (currentIndex + 1) % productImages.length;
+    setActiveImage(productImages[nextIndex]);
+    resetZoom();
+  };
+
+  const prevImage = () => {
+    const currentIndex = productImages.indexOf(activeImage);
+    const prevIndex = (currentIndex - 1 + productImages.length) % productImages.length;
+    setActiveImage(productImages[prevIndex]);
+    resetZoom();
+  };
+
+  useEffect(() => {
+    if (zoomScale === 1) {
+      x.set(0);
+      y.set(0);
+    }
+  }, [zoomScale, x, y]);
 
   // Find similar products based on category, subcategory, and shared features
   const similarProducts = useMemo(() => {
@@ -542,39 +586,117 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, o
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-24">
               {/* Left: Images */}
               <div className="space-y-4">
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="aspect-square rounded-[40px] overflow-hidden bg-zinc-100 border border-zinc-100 shadow-2xl shadow-zinc-200/50 relative cursor-zoom-in"
-                  onMouseMove={handleMouseMove}
-                  onMouseEnter={() => setIsZoomed(true)}
-                  onMouseLeave={() => setIsZoomed(false)}
+                <div 
+                  ref={containerRef}
+                  className="aspect-square rounded-[40px] overflow-hidden bg-zinc-100 border border-zinc-100 shadow-2xl shadow-zinc-200/50 relative group select-none"
+                  onWheel={handleWheel}
+                  style={{ touchAction: 'none' }}
                 >
-                  <motion.img 
-                    src={activeImage} 
-                    alt={product.name}
-                    className="w-full h-full object-cover"
-                    style={{
-                      transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`
+                  <motion.div
+                    drag={zoomScale > 1}
+                    dragConstraints={containerRef}
+                    dragElastic={0.1}
+                    onDragStart={() => setIsDragging(true)}
+                    onDragEnd={() => setIsDragging(false)}
+                    style={{ 
+                      x: springX, 
+                      y: springY,
+                      width: '100%',
+                      height: '100%',
+                      cursor: zoomScale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in'
                     }}
-                    animate={{
-                      scale: isZoomed ? 2.5 : 1,
+                    onClick={() => {
+                      if (zoomScale === 1) setZoomScale(2);
+                      else resetZoom();
                     }}
-                    transition={{ type: 'tween', duration: 0.2 }}
-                    referrerPolicy="no-referrer"
-                  />
-                  {!isZoomed && (
-                    <div className="absolute bottom-6 right-6 bg-white/80 backdrop-blur-md px-4 py-2 rounded-full text-[10px] font-black text-zinc-900 shadow-lg border border-white/20 flex items-center gap-2">
-                      <Search size={12} />
-                      이미지 위에 마우스를 올려 확대해보세요
+                  >
+                    <motion.img 
+                      src={activeImage} 
+                      alt={product.name}
+                      className="w-full h-full object-cover pointer-events-none"
+                      animate={{
+                        scale: zoomScale,
+                      }}
+                      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                      referrerPolicy="no-referrer"
+                    />
+                  </motion.div>
+
+                  {/* Zoom Controls Overlay */}
+                  <div className="absolute bottom-6 left-6 right-6 flex justify-between items-center pointer-events-none">
+                    <div className="flex gap-2 pointer-events-auto">
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); setZoomScale(prev => Math.min(prev + 0.5, 4)); }}
+                        className="w-10 h-10 bg-white/80 backdrop-blur-md rounded-xl flex items-center justify-center text-zinc-900 shadow-lg border border-white/20 hover:bg-white transition-colors"
+                        title="확대"
+                      >
+                        <Maximize2 size={18} />
+                      </button>
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); setZoomScale(prev => Math.max(prev - 0.5, 1)); }}
+                        className="w-10 h-10 bg-white/80 backdrop-blur-md rounded-xl flex items-center justify-center text-zinc-900 shadow-lg border border-white/20 hover:bg-white transition-colors"
+                        title="축소"
+                      >
+                        <Minimize2 size={18} />
+                      </button>
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); resetZoom(); }}
+                        className="w-10 h-10 bg-white/80 backdrop-blur-md rounded-xl flex items-center justify-center text-zinc-900 shadow-lg border border-white/20 hover:bg-white transition-colors"
+                        title="초기화"
+                      >
+                        <RefreshCw size={18} />
+                      </button>
+                    </div>
+
+                    <div className="bg-white/80 backdrop-blur-md px-4 py-2 rounded-full text-[10px] font-black text-zinc-900 shadow-lg border border-white/20 flex items-center gap-2">
+                      {zoomScale > 1 ? (
+                        <>
+                          <Zap size={12} className="text-emerald-500" />
+                          드래그하여 이동 / 휠로 확대축소
+                        </>
+                      ) : (
+                        <>
+                          <Search size={12} />
+                          클릭하거나 휠을 돌려 확대해보세요
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Carousel Navigation Arrows */}
+                  {zoomScale === 1 && (
+                    <>
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); prevImage(); }}
+                        className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 backdrop-blur-md rounded-2xl flex items-center justify-center text-zinc-900 shadow-xl border border-white/20 hover:bg-white transition-all opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0"
+                      >
+                        <ChevronLeft size={24} />
+                      </button>
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); nextImage(); }}
+                        className="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 backdrop-blur-md rounded-2xl flex items-center justify-center text-zinc-900 shadow-xl border border-white/20 hover:bg-white transition-all opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0"
+                      >
+                        <ChevronRight size={24} />
+                      </button>
+                    </>
+                  )}
+
+                  {/* Zoom Level Indicator */}
+                  {zoomScale > 1 && (
+                    <div className="absolute top-6 right-6 bg-zinc-900/90 text-white px-3 py-1 rounded-lg text-[10px] font-black tracking-widest">
+                      {zoomScale.toFixed(1)}X
                     </div>
                   )}
-                </motion.div>
+                </div>
+
                 <div className="grid grid-cols-4 gap-4">
-                  {[product.image, ...[1, 2, 3].map(i => `https://picsum.photos/seed/${product.id}-${i}/800/800`)].map((imgUrl, i) => (
+                  {productImages.map((imgUrl, i) => (
                     <div 
                       key={i} 
-                      onClick={() => setActiveImage(imgUrl)}
+                      onClick={() => {
+                        setActiveImage(imgUrl);
+                        resetZoom();
+                      }}
                       className={`aspect-square rounded-2xl overflow-hidden bg-zinc-50 border transition-all cursor-pointer ${activeImage === imgUrl ? 'border-emerald-500 ring-4 ring-emerald-500/10' : 'border-zinc-100 hover:border-emerald-300'}`}
                     >
                       <img 
