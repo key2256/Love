@@ -4438,6 +4438,7 @@ export const PRODUCTS: Product[] = [
       { name: '내지 용지', type: 'select', values: [{ label: '모조 80g', priceModifier: 0 }, { label: '모조 100g', priceModifier: 1000 }, { label: '백상지 100g', priceModifier: 1000 }] },
       { name: '페이지 수', type: 'select', values: [{ label: '40p', priceModifier: 0 }, { label: '60p', priceModifier: 5000 }, { label: '80p', priceModifier: 10000 }, { label: '100p', priceModifier: 15000 }] },
       { name: '제본 방향', type: 'radio', values: [{ label: '세로형', priceModifier: 0 }, { label: '가로형', priceModifier: 2000 }] },
+      { name: '트윈링 색상', type: 'radio', values: [{ label: '검정', priceModifier: 0 }, { label: '하양', priceModifier: 0 }] },
       { name: '표지 코팅', type: 'radio', values: [{ label: '무광코팅', priceModifier: 1000 }, { label: '유광코팅', priceModifier: 1000 }, { label: '코팅 없음', priceModifier: 0 }] }
     ],
     features: ['튼튼함', '고급스러움', '깔끔함'],
