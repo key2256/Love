@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { 
   ChevronLeft, 
   ShoppingCart, 
@@ -27,7 +27,8 @@ import {
   StarHalf,
   ThumbsUp,
   MessageCircle,
-  Plus
+  Plus,
+  Search
 } from 'lucide-react';
 import { Product, Quotation, PRODUCTS, CATEGORIES, PAPER_MATERIALS, PaperMaterial, CartItem, Review } from '../types';
 import { QuotationCalculator } from './QuotationCalculator';
@@ -238,6 +239,8 @@ const UsageProductDetail: React.FC<{ product: Product; onProductClick: (id: stri
 };
 
 const ReviewSection: React.FC<{ productId: string }> = ({ productId }) => {
+  const [filter, setFilter] = useState<'all' | 'photo' | 'high'>('all');
+
   // Mock reviews data
   const mockReviews: Review[] = [
     {
@@ -245,17 +248,17 @@ const ReviewSection: React.FC<{ productId: string }> = ({ productId }) => {
       productId,
       userName: '김*현',
       rating: 5,
-      comment: '색감이 너무 선명하고 예뻐요! 배송도 생각보다 빨라서 좋았습니다. 다음에도 여기서 주문할게요.',
+      comment: '색감이 너무 선명하고 예뻐요! 배송도 생각보다 빨라서 좋았습니다. 다음에도 여기서 주문할게요. 특히 종이 질감이 생각보다 훨씬 고급스러워서 대만족입니다.',
       date: '2024-03-15',
       isVerified: true,
-      images: ['https://picsum.photos/seed/review1/400/400']
+      images: ['https://picsum.photos/seed/review1/800/800']
     },
     {
       id: 'r2',
       productId,
       userName: '이*서',
       rating: 4,
-      comment: '재질이 고급스럽고 마감이 깔끔합니다. 다만 칼선이 아주 미세하게 밀린 부분이 있었는데 크게 티는 안 나네요.',
+      comment: '재질이 고급스럽고 마감이 깔끔합니다. 다만 칼선이 아주 미세하게 밀린 부분이 있었는데 크게 티는 안 나네요. 전반적으로 만족스러운 퀄리티입니다.',
       date: '2024-03-12',
       isVerified: true
     },
@@ -264,12 +267,33 @@ const ReviewSection: React.FC<{ productId: string }> = ({ productId }) => {
       productId,
       userName: '박*민',
       rating: 5,
-      comment: '가성비 최고입니다. 대량으로 주문했는데 파손 없이 잘 왔어요. 상담원분도 친절하셔서 기분 좋게 주문했습니다.',
+      comment: '가성비 최고입니다. 대량으로 주문했는데 파손 없이 잘 왔어요. 상담원분도 친절하셔서 기분 좋게 주문했습니다. 포장이 꼼꼼해서 좋았어요.',
       date: '2024-03-10',
       isVerified: true,
-      images: ['https://picsum.photos/seed/review2/400/400', 'https://picsum.photos/seed/review3/400/400']
+      images: [
+        'https://picsum.photos/seed/review2/800/800', 
+        'https://picsum.photos/seed/review3/800/800'
+      ]
+    },
+    {
+      id: 'r4',
+      productId,
+      userName: '최*준',
+      rating: 5,
+      comment: '디자인한 대로 색상이 잘 나와서 너무 기쁩니다. 소량 제작인데도 정성스럽게 만들어주셨네요.',
+      date: '2024-03-08',
+      isVerified: true,
+      images: ['https://picsum.photos/seed/review4/800/800']
     }
   ];
+
+  const filteredReviews = useMemo(() => {
+    switch (filter) {
+      case 'photo': return mockReviews.filter(r => r.images && r.images.length > 0);
+      case 'high': return mockReviews.filter(r => r.rating === 5);
+      default: return mockReviews;
+    }
+  }, [filter, mockReviews]);
 
   const averageRating = 4.8;
   const totalReviews = 124;
@@ -307,79 +331,129 @@ const ReviewSection: React.FC<{ productId: string }> = ({ productId }) => {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
         {/* Rating Breakdown */}
-        <div className="lg:col-span-1 p-10 rounded-[40px] bg-zinc-50 border border-zinc-100 h-fit">
-          <h3 className="text-lg font-black mb-8">평점 비율</h3>
-          <div className="space-y-4">
-            {[5, 4, 3, 2, 1].map((star) => {
-              const percentages = { 5: 85, 4: 10, 3: 3, 2: 1, 1: 1 };
-              const percentage = percentages[star as keyof typeof percentages];
-              return (
-                <div key={star} className="flex items-center gap-4">
-                  <span className="text-xs font-bold text-zinc-500 w-4">{star}점</span>
-                  <div className="flex-1 h-2 bg-zinc-200 rounded-full overflow-hidden">
-                    <motion.div 
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${percentage}%` }}
-                      transition={{ duration: 1, delay: 0.2 }}
-                      className="h-full bg-amber-400"
-                    />
+        <div className="lg:col-span-1 space-y-8">
+          <div className="p-10 rounded-[40px] bg-zinc-50 border border-zinc-100 h-fit">
+            <h3 className="text-lg font-black mb-8">평점 비율</h3>
+            <div className="space-y-4">
+              {[5, 4, 3, 2, 1].map((star) => {
+                const percentages = { 5: 85, 4: 10, 3: 3, 2: 1, 1: 1 };
+                const percentage = percentages[star as keyof typeof percentages];
+                return (
+                  <div key={star} className="flex items-center gap-4">
+                    <span className="text-xs font-bold text-zinc-500 w-4">{star}점</span>
+                    <div className="flex-1 h-2 bg-zinc-200 rounded-full overflow-hidden">
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        whileInView={{ width: `${percentage}%` }}
+                        transition={{ duration: 1, delay: 0.2 }}
+                        className="h-full bg-amber-400"
+                      />
+                    </div>
+                    <span className="text-xs font-bold text-zinc-400 w-8">{percentage}%</span>
                   </div>
-                  <span className="text-xs font-bold text-zinc-400 w-8">{percentage}%</span>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
+            <div className="mt-10 pt-10 border-t border-zinc-200">
+              <p className="text-sm text-zinc-500 font-medium leading-relaxed">
+                <b>98%</b>의 구매자가 이 상품을 추천합니다. <br />
+                실제 구매 고객님들이 남겨주신 소중한 후기입니다.
+              </p>
+            </div>
           </div>
-          <div className="mt-10 pt-10 border-t border-zinc-200">
-            <p className="text-sm text-zinc-500 font-medium leading-relaxed">
-              <b>98%</b>의 구매자가 이 상품을 추천합니다. <br />
-              실제 구매 고객님들이 남겨주신 소중한 후기입니다.
-            </p>
+
+          {/* Review Filters */}
+          <div className="flex flex-col gap-2">
+            <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-2 ml-2">정렬 및 필터</p>
+            {[
+              { id: 'all', label: '전체 후기' },
+              { id: 'photo', label: '포토 후기' },
+              { id: 'high', label: '최고 평점' }
+            ].map((f) => (
+              <button
+                key={f.id}
+                onClick={() => setFilter(f.id as any)}
+                className={`w-full text-left px-6 py-4 rounded-2xl text-sm font-bold transition-all ${
+                  filter === f.id 
+                    ? 'bg-zinc-900 text-white shadow-lg shadow-zinc-200' 
+                    : 'bg-white text-zinc-500 border border-zinc-100 hover:border-zinc-300'
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
           </div>
         </div>
 
         {/* Reviews List */}
-        <div className="lg:col-span-2 space-y-6">
-          {mockReviews.map((review) => (
-            <div key={review.id} className="p-8 rounded-[32px] bg-white border border-zinc-100 hover:border-emerald-200 transition-all group">
-              <div className="flex justify-between items-start mb-6">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-1">
-                    {renderStars(review.rating)}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-black text-zinc-900">{review.userName}</span>
-                    {review.isVerified && (
-                      <span className="px-2 py-0.5 bg-emerald-50 text-emerald-600 text-[10px] font-black rounded-md border border-emerald-100 uppercase tracking-tighter">
-                        구매인증
-                      </span>
-                    )}
-                    <span className="text-xs text-zinc-400 font-medium">{review.date}</span>
-                  </div>
-                </div>
-                <button className="text-zinc-300 hover:text-emerald-500 transition-colors">
-                  <ThumbsUp size={18} />
-                </button>
-              </div>
-              
-              <p className="text-zinc-600 leading-relaxed mb-6 font-medium">
-                {review.comment}
-              </p>
-
-              {review.images && review.images.length > 0 && (
-                <div className="flex gap-3">
-                  {review.images.map((img, idx) => (
-                    <div key={idx} className="w-24 h-24 rounded-2xl overflow-hidden border border-zinc-100 cursor-pointer hover:opacity-80 transition-opacity">
-                      <img src={img} alt="review" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+        <div className="lg:col-span-2 space-y-8">
+          <AnimatePresence mode="popLayout">
+            {filteredReviews.map((review) => (
+              <motion.div 
+                key={review.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="p-8 md:p-10 rounded-[40px] bg-white border border-zinc-100 hover:border-emerald-200 transition-all group shadow-sm hover:shadow-xl"
+              >
+                <div className="flex flex-col md:flex-row gap-8">
+                  {/* Review Content */}
+                  <div className="flex-1">
+                    <div className="flex justify-between items-start mb-6">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-1">
+                          {renderStars(review.rating)}
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="font-black text-zinc-900">{review.userName}</span>
+                          {review.isVerified && (
+                            <span className="px-2 py-0.5 bg-emerald-50 text-emerald-600 text-[10px] font-black rounded-md border border-emerald-100 uppercase tracking-tighter">
+                              구매인증
+                            </span>
+                          )}
+                          <span className="text-xs text-zinc-400 font-medium">{review.date}</span>
+                        </div>
+                      </div>
+                      <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-50 text-zinc-400 hover:text-emerald-600 hover:bg-emerald-50 transition-all text-xs font-bold">
+                        <ThumbsUp size={14} />
+                        도움됨
+                      </button>
                     </div>
-                  ))}
+                    
+                    <p className="text-zinc-600 leading-relaxed mb-6 font-medium text-base">
+                      {review.comment}
+                    </p>
+
+                    {review.images && review.images.length > 0 && (
+                      <div className="flex flex-wrap gap-4 mt-6">
+                        {review.images.map((img, idx) => (
+                          <div 
+                            key={idx} 
+                            className="relative w-32 h-32 md:w-40 md:h-40 rounded-3xl overflow-hidden border border-zinc-100 cursor-zoom-in group/img"
+                          >
+                            <img 
+                              src={img} 
+                              alt="review" 
+                              className="w-full h-full object-cover group-hover/img:scale-110 transition-transform duration-500" 
+                              referrerPolicy="no-referrer" 
+                            />
+                            <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/10 transition-colors flex items-center justify-center">
+                              <Search size={20} className="text-white opacity-0 group-hover/img:opacity-100 transition-opacity" />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              )}
-            </div>
-          ))}
+              </motion.div>
+            ))}
+          </AnimatePresence>
           
-          <button className="w-full py-6 rounded-[32px] bg-zinc-50 text-zinc-500 font-black text-sm hover:bg-zinc-100 transition-all border border-dashed border-zinc-200">
+          <button className="w-full py-8 rounded-[40px] bg-zinc-50 text-zinc-500 font-black text-sm hover:bg-zinc-100 transition-all border border-dashed border-zinc-200 flex items-center justify-center gap-3">
+            <MessageCircle size={18} />
             후기 더보기 (121개)
           </button>
         </div>
@@ -401,6 +475,16 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, o
   const [activeTab, setActiveTab] = useState<'calc' | 'info'>('calc');
   const [selectedMaterialGroup, setSelectedMaterialGroup] = useState<PaperMaterial['group']>('일반/기본 용지');
   const [showAllMaterials, setShowAllMaterials] = useState(false);
+  const [activeImage, setActiveImage] = useState(product.image);
+  const [zoomPos, setZoomPos] = useState({ x: 0, y: 0 });
+  const [isZoomed, setIsZoomed] = useState(false);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - left) / width) * 100;
+    const y = ((e.clientY - top) / height) * 100;
+    setZoomPos({ x, y });
+  };
 
   // Find similar products based on category, subcategory, and shared features
   const similarProducts = useMemo(() => {
@@ -461,22 +545,42 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, o
                 <motion.div 
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="aspect-square rounded-[40px] overflow-hidden bg-zinc-100 border border-zinc-100 shadow-2xl shadow-zinc-200/50"
+                  className="aspect-square rounded-[40px] overflow-hidden bg-zinc-100 border border-zinc-100 shadow-2xl shadow-zinc-200/50 relative cursor-zoom-in"
+                  onMouseMove={handleMouseMove}
+                  onMouseEnter={() => setIsZoomed(true)}
+                  onMouseLeave={() => setIsZoomed(false)}
                 >
-                  <img 
-                    src={product.image} 
+                  <motion.img 
+                    src={activeImage} 
                     alt={product.name}
                     className="w-full h-full object-cover"
+                    style={{
+                      transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`
+                    }}
+                    animate={{
+                      scale: isZoomed ? 2.5 : 1,
+                    }}
+                    transition={{ type: 'tween', duration: 0.2 }}
                     referrerPolicy="no-referrer"
                   />
+                  {!isZoomed && (
+                    <div className="absolute bottom-6 right-6 bg-white/80 backdrop-blur-md px-4 py-2 rounded-full text-[10px] font-black text-zinc-900 shadow-lg border border-white/20 flex items-center gap-2">
+                      <Search size={12} />
+                      이미지 위에 마우스를 올려 확대해보세요
+                    </div>
+                  )}
                 </motion.div>
                 <div className="grid grid-cols-4 gap-4">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="aspect-square rounded-2xl overflow-hidden bg-zinc-50 border border-zinc-100 cursor-pointer hover:border-emerald-500 transition-colors">
+                  {[product.image, ...[1, 2, 3].map(i => `https://picsum.photos/seed/${product.id}-${i}/800/800`)].map((imgUrl, i) => (
+                    <div 
+                      key={i} 
+                      onClick={() => setActiveImage(imgUrl)}
+                      className={`aspect-square rounded-2xl overflow-hidden bg-zinc-50 border transition-all cursor-pointer ${activeImage === imgUrl ? 'border-emerald-500 ring-4 ring-emerald-500/10' : 'border-zinc-100 hover:border-emerald-300'}`}
+                    >
                       <img 
-                        src={`https://picsum.photos/seed/${product.id}-${i}/400/400`} 
-                        alt="sample"
-                        className="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity"
+                        src={imgUrl} 
+                        alt={`thumbnail-${i}`}
+                        className={`w-full h-full object-cover transition-opacity ${activeImage === imgUrl ? 'opacity-100' : 'opacity-60 hover:opacity-100'}`}
                         referrerPolicy="no-referrer"
                       />
                     </div>
