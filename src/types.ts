@@ -4392,6 +4392,82 @@ export const PRODUCTS: Product[] = [
       '끈은 포함되어 있지 않으며 별도 구매 또는 준비하셔야 합니다.',
       '양면 인쇄가 기본입니다.'
     ]
+  },
+  {
+    id: 'binding-spring',
+    name: '스프링제본 책자',
+    category: 'binding-booklet',
+    subCategory: '스프링제본 책자',
+    tagline: '필기하기 편한 스프링 제본.',
+    description: '자주 펼쳐보는 자료나 문제집, 교안 등에 적합한 제본 방식입니다.',
+    image: 'https://picsum.photos/seed/spring/800/800',
+    minQuantity: 1,
+    basePrice: 40000,
+    options: [
+      { name: '규격 안내', type: 'text', description: 'A4(210x297mm) 고정입니다.' },
+      { name: '인쇄 색상', type: 'radio', values: [{ label: '컬러', priceModifier: 0 }, { label: '흑백', priceModifier: -5000 }] },
+      { name: '표지 인쇄', type: 'radio', values: [{ label: '컬러', priceModifier: 0 }, { label: '흑백', priceModifier: -2000 }] },
+      { name: '내지 인쇄', type: 'radio', values: [{ label: '컬러', priceModifier: 0 }, { label: '흑백', priceModifier: -3000 }] },
+      { name: '표지 용지', type: 'select', values: [{ label: '스노우 250g', priceModifier: 0 }, { label: '스노우 300g', priceModifier: 1000 }, { label: '아트지 250g', priceModifier: 0 }] },
+      { name: '내지 용지', type: 'select', values: [{ label: '모조 80g', priceModifier: 0 }, { label: '모조 100g', priceModifier: 1000 }, { label: '백상지 100g', priceModifier: 1000 }] },
+      { name: '페이지 수', type: 'select', values: [{ label: '40p', priceModifier: 0 }, { label: '60p', priceModifier: 5000 }, { label: '80p', priceModifier: 10000 }, { label: '100p', priceModifier: 15000 }] },
+      { name: '제본 방향', type: 'radio', values: [{ label: '세로형', priceModifier: 0 }, { label: '가로형', priceModifier: 2000 }] },
+      { name: '스프링 색상', type: 'radio', values: [{ label: '검정', priceModifier: 0 }, { label: '하양', priceModifier: 0 }] },
+      { name: '표지 코팅', type: 'radio', values: [{ label: '무광코팅', priceModifier: 1000 }, { label: '유광코팅', priceModifier: 1000 }, { label: '코팅 없음', priceModifier: 0 }] }
+    ],
+    features: ['잘 펼쳐짐', '필기 용이', '학습자료 최적'],
+    leadTime: '3~5 영업일',
+    badges: ['학습용', '필기최적', '베스트']
+  },
+  {
+    id: 'binding-twinring',
+    name: '트윈링제본 책자',
+    category: 'binding-booklet',
+    subCategory: '트윈링제본 책자',
+    tagline: '튼튼하고 깔끔한 트윈링 제본.',
+    description: '스프링보다 더 튼튼하고 고급스러운 느낌의 제본 방식입니다.',
+    image: 'https://picsum.photos/seed/twinring/800/800',
+    minQuantity: 1,
+    basePrice: 42000,
+    options: [
+      { name: '규격 안내', type: 'text', description: 'A4(210x297mm) 고정입니다.' },
+      { name: '인쇄 색상', type: 'radio', values: [{ label: '컬러', priceModifier: 0 }, { label: '흑백', priceModifier: -5000 }] },
+      { name: '표지 인쇄', type: 'radio', values: [{ label: '컬러', priceModifier: 0 }, { label: '흑백', priceModifier: -2000 }] },
+      { name: '내지 인쇄', type: 'radio', values: [{ label: '컬러', priceModifier: 0 }, { label: '흑백', priceModifier: -3000 }] },
+      { name: '표지 용지', type: 'select', values: [{ label: '스노우 250g', priceModifier: 0 }, { label: '스노우 300g', priceModifier: 1000 }, { label: '아트지 250g', priceModifier: 0 }] },
+      { name: '내지 용지', type: 'select', values: [{ label: '모조 80g', priceModifier: 0 }, { label: '모조 100g', priceModifier: 1000 }, { label: '백상지 100g', priceModifier: 1000 }] },
+      { name: '페이지 수', type: 'select', values: [{ label: '40p', priceModifier: 0 }, { label: '60p', priceModifier: 5000 }, { label: '80p', priceModifier: 10000 }, { label: '100p', priceModifier: 15000 }] },
+      { name: '제본 방향', type: 'radio', values: [{ label: '세로형', priceModifier: 0 }, { label: '가로형', priceModifier: 2000 }] },
+      { name: '표지 코팅', type: 'radio', values: [{ label: '무광코팅', priceModifier: 1000 }, { label: '유광코팅', priceModifier: 1000 }, { label: '코팅 없음', priceModifier: 0 }] }
+    ],
+    features: ['튼튼함', '고급스러움', '깔끔함'],
+    leadTime: '3~5 영업일',
+    badges: ['고급형', '튼튼함', '깔끔함']
+  },
+  {
+    id: 'binding-sewn',
+    name: '실제본 책자',
+    category: 'binding-booklet',
+    subCategory: '실제본 책자',
+    tagline: '감성적이고 정성스러운 실제본.',
+    description: '실로 직접 꿰매어 제작하는 방식으로 고급스럽고 감성적인 느낌을 줍니다.',
+    image: 'https://picsum.photos/seed/sewn/800/800',
+    minQuantity: 1,
+    basePrice: 50000,
+    options: [
+      { name: '규격 안내', type: 'text', description: 'A4(210x297mm) 고정입니다.' },
+      { name: '인쇄 색상', type: 'radio', values: [{ label: '컬러', priceModifier: 0 }, { label: '흑백', priceModifier: -5000 }] },
+      { name: '표지 인쇄', type: 'radio', values: [{ label: '컬러', priceModifier: 0 }, { label: '흑백', priceModifier: -2000 }] },
+      { name: '내지 인쇄', type: 'radio', values: [{ label: '컬러', priceModifier: 0 }, { label: '흑백', priceModifier: -3000 }] },
+      { name: '표지 용지', type: 'select', values: [{ label: '스노우 250g', priceModifier: 0 }, { label: '스노우 300g', priceModifier: 1000 }, { label: '아트지 250g', priceModifier: 0 }] },
+      { name: '내지 용지', type: 'select', values: [{ label: '모조 80g', priceModifier: 0 }, { label: '모조 100g', priceModifier: 1000 }, { label: '백상지 100g', priceModifier: 1000 }] },
+      { name: '페이지 수', type: 'select', values: [{ label: '40p', priceModifier: 0 }, { label: '60p', priceModifier: 5000 }, { label: '80p', priceModifier: 10000 }, { label: '100p', priceModifier: 15000 }] },
+      { name: '제본 방향', type: 'radio', values: [{ label: '세로형', priceModifier: 0 }, { label: '가로형', priceModifier: 2000 }] },
+      { name: '표지 코팅', type: 'radio', values: [{ label: '무광코팅', priceModifier: 1000 }, { label: '유광코팅', priceModifier: 1000 }, { label: '코팅 없음', priceModifier: 0 }] }
+    ],
+    features: ['고급스러움', '감성적', '정성스러움'],
+    leadTime: '5~7 영업일',
+    badges: ['고급형', '감성', '정성']
   }
 ];
 
