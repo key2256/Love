@@ -21,13 +21,119 @@ import {
   Crown,
   ChevronDown,
   ChevronUp,
-  Share2
+  Share2,
+  Upload
 } from 'lucide-react';
 import { Product, Quotation, PRODUCTS, CATEGORIES, PAPER_MATERIALS, PaperMaterial, CartItem } from '../types';
 import { QuotationCalculator } from './QuotationCalculator';
 import { ProductIntroSection } from './calculators/shared/ProductIntroSection';
 import PaperMaterialCard from './PaperMaterialCard';
 import { SocialShare } from './SocialShare';
+
+interface UsageRecommendation {
+  title: string;
+  description: string;
+  recommendationText: string;
+  recommendedProductIds: string[];
+  selectionGuide: string[];
+}
+
+const USAGE_RECOMMENDATIONS: Record<string, UsageRecommendation> = {
+  'usage-study': {
+    title: '공부자료 제본',
+    description: '시험 대비 요약본, 개인 정리노트, 프린트 묶음처럼 공부할 때 자주 보는 자료를 제본하는 상품입니다.',
+    recommendationText: '가볍게 정리한 자료는 중철제본, 자주 펼쳐보며 필기할 자료는 스프링제본을 추천합니다.',
+    recommendedProductIds: ['binding-saddle', 'binding-spring'],
+    selectionGuide: ['얇은 책자/간단한 자료 → 중철제본 추천', '자주 펼치고 필기할 자료 → 스프링제본 추천']
+  },
+  'usage-learning': {
+    title: '학습자료 제본',
+    description: '학원, 과외, 자습용 자료처럼 체계적으로 정리된 학습용 인쇄물을 제본하는 상품입니다.',
+    recommendationText: '얇은 자료는 중철제본, 두꺼운 정리본은 무선제본, 필기와 펼침이 중요하면 스프링제본을 추천합니다.',
+    recommendedProductIds: ['binding-saddle', 'binding-wireless', 'binding-spring'],
+    selectionGuide: ['얇은 자료 → 중철제본 추천', '두꺼운 정리본/보고서 → 무선제본 추천', '자주 펼치고 필기할 자료 → 스프링제본 추천']
+  },
+  'usage-teaching': {
+    title: '수업교안 제본',
+    description: '강의용 프린트, 수업 자료, 설명용 교안처럼 전달력과 가독성이 중요한 자료를 위한 제본 상품입니다.',
+    recommendationText: '간단한 수업 자료는 중철제본, 수업 중 펼쳐두고 사용할 자료는 스프링제본을 추천합니다.',
+    recommendedProductIds: ['binding-saddle', 'binding-spring'],
+    selectionGuide: ['얇은 책자/간단한 자료 → 중철제본 추천', '자주 펼치고 필기할 자료 → 스프링제본 추천']
+  },
+  'usage-workbook': {
+    title: '문제집 제본',
+    description: '문제풀이 자료, 오답노트, 연습문제 모음처럼 반복해서 펼치고 직접 써가며 사용하는 자료에 적합한 상품입니다.',
+    recommendationText: '필기와 반복 풀이에는 스프링/트윈링 제본, 두꺼운 문제집 형태로 만들고 싶다면 무선제본을 추천합니다.',
+    recommendedProductIds: ['binding-spring', 'binding-twinring', 'binding-wireless'],
+    selectionGuide: ['자주 펼치고 필기할 자료 → 스프링/트윈링 제본 추천', '두꺼운 정리본/보고서 → 무선제본 추천']
+  },
+  'usage-book': {
+    title: '단행본/소책자 제작',
+    description: '개인 출판물, 브랜드북, 소책자, 작품집처럼 한 권의 완성된 인쇄물 형태로 만들고 싶은 경우에 적합합니다.',
+    recommendationText: '기본적인 책자 제작은 무선제본, 감성적이고 정성스러운 제작은 실제본, 얇은 소책자는 중철제본을 추천합니다.',
+    recommendedProductIds: ['binding-wireless', 'binding-sewn', 'binding-saddle'],
+    selectionGuide: ['얇은 책자/간단한 자료 → 중철제본 추천', '두꺼운 정리본/보고서 → 무선제본 추천', '감성적이고 완성도 높은 제작물 → 실제본 추천']
+  },
+  'usage-submission': {
+    title: '기관/학교 제출용 제본',
+    description: '보고서, 발표자료, 제출용 문서, 기관 배포자료처럼 정돈된 인상과 깔끔한 마감이 중요한 제본 상품입니다.',
+    recommendationText: '깔끔한 제출용 자료는 무선제본, 넘김이 편한 자료집은 트윈링제본, 완성도와 보관성을 높이고 싶다면 실제본을 추천합니다.',
+    recommendedProductIds: ['binding-wireless', 'binding-twinring', 'binding-sewn'],
+    selectionGuide: ['두꺼운 정리본/보고서 → 무선제본 추천', '제출용/정돈된 자료 → 트윈링제본 추천', '감성적이고 완성도 높은 제작물 → 실제본 추천']
+  }
+};
+
+const UsageProductDetail: React.FC<{ product: Product; onProductClick: (id: string) => void }> = ({ product, onProductClick }) => {
+  const recommendation = USAGE_RECOMMENDATIONS[product.id];
+  if (!recommendation) return null;
+
+  return (
+    <div className="space-y-16">
+      <div className="space-y-6">
+        <h1 className="text-5xl font-black tracking-tight">{recommendation.title}</h1>
+        <p className="text-xl text-zinc-600">{recommendation.description}</p>
+        <div className="p-6 bg-emerald-50 rounded-2xl text-emerald-900 border border-emerald-100">
+          <p className="font-bold text-sm mb-2">💡 추천 가이드</p>
+          <p className="text-sm">{recommendation.recommendationText}</p>
+        </div>
+      </div>
+        
+      <div className="space-y-6">
+        <h3 className="font-black text-2xl">추천 제본 상품</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {recommendation.recommendedProductIds.map(id => {
+            const recommendedProduct = PRODUCTS.find(p => p.id === id);
+            if (!recommendedProduct) return null;
+            return (
+              <div key={recommendedProduct.id} className="bg-white p-8 rounded-3xl border border-zinc-100 shadow-sm hover:shadow-lg transition-all flex flex-col">
+                <h4 className="font-black text-xl text-zinc-900 mb-2">{recommendedProduct.name}</h4>
+                <p className="text-sm text-zinc-500 mb-6">{recommendedProduct.tagline}</p>
+                <button 
+                  onClick={() => onProductClick(recommendedProduct.id)}
+                  className="mt-auto w-full py-4 rounded-xl bg-emerald-600 text-white font-bold text-sm hover:bg-emerald-700 transition-all"
+                >
+                  상품 상세 보기
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="bg-zinc-50 rounded-[32px] p-8 border border-zinc-100">
+        <h3 className="font-black text-lg mb-4">선택 가이드</h3>
+        <ul className="space-y-2">
+          {recommendation.selectionGuide.map((guide, i) => (
+            <li key={i} className="text-sm text-zinc-600 flex items-start gap-2">
+              <span className="text-emerald-500 font-bold">•</span>
+              {guide}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+};
 
 interface ProductDetailProps {
   product: Product;
@@ -38,6 +144,7 @@ interface ProductDetailProps {
 }
 
 export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, onProductClick, onQuotationGenerated, onAddToCart }) => {
+  const isUsageBased = product.id.startsWith('usage-');
   const [activeTab, setActiveTab] = useState<'calc' | 'info'>('calc');
   const [selectedMaterialGroup, setSelectedMaterialGroup] = useState<PaperMaterial['group']>('일반/기본 용지');
   const [showAllMaterials, setShowAllMaterials] = useState(false);
@@ -88,403 +195,409 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, o
             <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             <span className="font-bold">이전으로</span>
           </button>
-          <SocialShare title={product.name} />
+          {!isUsageBased && <SocialShare title={product.name} />}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-24">
-          {/* Left: Images */}
-          <div className="space-y-4">
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="aspect-square rounded-[40px] overflow-hidden bg-zinc-100 border border-zinc-100 shadow-2xl shadow-zinc-200/50"
-            >
-              <img 
-                src={product.image} 
-                alt={product.name}
-                className="w-full h-full object-cover"
-                referrerPolicy="no-referrer"
-              />
-            </motion.div>
-            <div className="grid grid-cols-4 gap-4">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="aspect-square rounded-2xl overflow-hidden bg-zinc-50 border border-zinc-100 cursor-pointer hover:border-emerald-500 transition-colors">
+        {isUsageBased ? (
+          <UsageProductDetail product={product} onProductClick={onProductClick} />
+        ) : (
+          <>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-24">
+              {/* Left: Images */}
+              <div className="space-y-4">
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="aspect-square rounded-[40px] overflow-hidden bg-zinc-100 border border-zinc-100 shadow-2xl shadow-zinc-200/50"
+                >
                   <img 
-                    src={`https://picsum.photos/seed/${product.id}-${i}/400/400`} 
-                    alt="sample"
-                    className="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity"
+                    src={product.image} 
+                    alt={product.name}
+                    className="w-full h-full object-cover"
                     referrerPolicy="no-referrer"
                   />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Right: Quotation Calculator */}
-          <div className="flex flex-col">
-            <ProductIntroSection product={product} />
-
-            <div className="flex gap-1 p-1.5 bg-zinc-100 rounded-[20px] my-10 w-fit">
-              <button 
-                onClick={() => setActiveTab('calc')}
-                className={`px-8 py-3 rounded-2xl text-sm font-bold transition-all ${activeTab === 'calc' ? 'bg-white text-zinc-900 shadow-sm' : 'text-zinc-500 hover:text-zinc-700'}`}
-              >
-                주문 및 견적
-              </button>
-              <button 
-                onClick={() => setActiveTab('info')}
-                className={`px-8 py-3 rounded-2xl text-sm font-bold transition-all ${activeTab === 'info' ? 'bg-white text-zinc-900 shadow-sm' : 'text-zinc-500 hover:text-zinc-700'}`}
-              >
-                상세 정보
-              </button>
-            </div>
-
-            {activeTab === 'calc' ? (
-              <div className="space-y-8">
-                <QuotationCalculator 
-                  product={product} 
-                  onGenerateQuotation={onQuotationGenerated} 
-                  onAddToCart={onAddToCart}
-                />
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="p-6 rounded-3xl bg-zinc-50 border border-zinc-100">
-                    <Clock className="w-5 h-5 text-emerald-600 mb-3" />
-                    <p className="text-[10px] text-zinc-400 font-black uppercase tracking-widest mb-1">제작 기간</p>
-                    <p className="text-base font-bold text-zinc-900">{product.leadTime}</p>
-                  </div>
-                  <div className="p-6 rounded-3xl bg-zinc-50 border border-zinc-100">
-                    <Truck className="w-5 h-5 text-emerald-600 mb-3" />
-                    <p className="text-[10px] text-zinc-400 font-black uppercase tracking-widest mb-1">배송 안내</p>
-                    <p className="text-base font-bold text-zinc-900">3,000원 (5만원↑ 무료)</p>
-                  </div>
+                </motion.div>
+                <div className="grid grid-cols-4 gap-4">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="aspect-square rounded-2xl overflow-hidden bg-zinc-50 border border-zinc-100 cursor-pointer hover:border-emerald-500 transition-colors">
+                      <img 
+                        src={`https://picsum.photos/seed/${product.id}-${i}/400/400`} 
+                        alt="sample"
+                        className="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity"
+                        referrerPolicy="no-referrer"
+                      />
+                    </div>
+                  ))}
                 </div>
               </div>
-            ) : (
-              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="p-8 rounded-[32px] bg-emerald-50 border border-emerald-100">
-                  <h3 className="font-black text-emerald-900 mb-4 flex items-center gap-2 uppercase tracking-tight">
-                    <Sparkles className="w-5 h-5" />
-                    Expert Recommendation
-                  </h3>
-                  <p className="text-sm text-emerald-800/80 leading-relaxed font-medium">
-                    {product.recommendation || `${product.name} 제작 시 가장 많이 선택하시는 옵션은 '무광 코팅'입니다. 고급스러운 질감을 원하신다면 무광을, 선명한 색감을 원하신다면 유광을 추천드려요.`}
+
+              {/* Right: Quotation Calculator */}
+              <div className="flex flex-col">
+                <ProductIntroSection product={product} />
+
+                <div className="flex gap-1 p-1.5 bg-zinc-100 rounded-[20px] my-10 w-fit">
+                  <button 
+                    onClick={() => setActiveTab('calc')}
+                    className={`px-8 py-3 rounded-2xl text-sm font-bold transition-all ${activeTab === 'calc' ? 'bg-white text-zinc-900 shadow-sm' : 'text-zinc-500 hover:text-zinc-700'}`}
+                  >
+                    주문 및 견적
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab('info')}
+                    className={`px-8 py-3 rounded-2xl text-sm font-bold transition-all ${activeTab === 'info' ? 'bg-white text-zinc-900 shadow-sm' : 'text-zinc-500 hover:text-zinc-700'}`}
+                  >
+                    상세 정보
+                  </button>
+                </div>
+
+                {activeTab === 'calc' ? (
+                  <div className="space-y-8">
+                    <QuotationCalculator 
+                      product={product} 
+                      onGenerateQuotation={onQuotationGenerated} 
+                      onAddToCart={onAddToCart}
+                    />
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="p-6 rounded-3xl bg-zinc-50 border border-zinc-100">
+                        <Clock className="w-5 h-5 text-emerald-600 mb-3" />
+                        <p className="text-[10px] text-zinc-400 font-black uppercase tracking-widest mb-1">제작 기간</p>
+                        <p className="text-base font-bold text-zinc-900">{product.leadTime}</p>
+                      </div>
+                      <div className="p-6 rounded-3xl bg-zinc-50 border border-zinc-100">
+                        <Truck className="w-5 h-5 text-emerald-600 mb-3" />
+                        <p className="text-[10px] text-zinc-400 font-black uppercase tracking-widest mb-1">배송 안내</p>
+                        <p className="text-base font-bold text-zinc-900">3,000원 (5만원↑ 무료)</p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div className="p-8 rounded-[32px] bg-emerald-50 border border-emerald-100">
+                      <h3 className="font-black text-emerald-900 mb-4 flex items-center gap-2 uppercase tracking-tight">
+                        <Sparkles className="w-5 h-5" />
+                        Expert Recommendation
+                      </h3>
+                      <p className="text-sm text-emerald-800/80 leading-relaxed font-medium">
+                        {product.recommendation || `${product.name} 제작 시 가장 많이 선택하시는 옵션은 '무광 코팅'입니다. 고급스러운 질감을 원하신다면 무광을, 선명한 색감을 원하신다면 유광을 추천드려요.`}
+                      </p>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <h3 className="text-xs font-black text-zinc-900 uppercase tracking-widest">핵심 특징</h3>
+                      <div className="grid grid-cols-1 gap-3">
+                        {product.features.map((f, i) => (
+                          <div key={i} className="flex items-center gap-3 p-4 rounded-2xl bg-zinc-50 border border-zinc-100">
+                            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                            <span className="text-sm font-bold text-zinc-700">{f}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {hasWarnings && (
+                      <div className="space-y-4">
+                        <h3 className="text-xs font-black text-zinc-900 uppercase tracking-widest">제작 시 유의사항</h3>
+                        <div className="p-6 rounded-2xl bg-amber-50 border border-amber-100 space-y-3">
+                          {product.warnings?.map((w, i) => (
+                            <div key={i} className="flex gap-3 text-xs text-amber-800/80 leading-relaxed">
+                              <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+                              <span>{w}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {product.notes && product.notes.length > 0 && (
+                      <div className="space-y-4">
+                        <h3 className="text-xs font-black text-zinc-900 uppercase tracking-widest">참고사항</h3>
+                        <div className="p-6 rounded-2xl bg-zinc-50 border border-zinc-100 space-y-3">
+                          {product.notes.map((note, i) => (
+                            <div key={i} className="flex gap-3 text-xs text-zinc-600 leading-relaxed">
+                              <FileText className="w-4 h-4 text-zinc-400 shrink-0" />
+                              <span>{note}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="pt-4 flex flex-col gap-3">
+                      <button className="w-full py-4 rounded-2xl bg-zinc-900 text-white font-bold text-sm flex items-center justify-center gap-2 hover:bg-zinc-800 transition-all">
+                        <FileUp className="w-4 h-4" />
+                        작업 가이드 다운로드
+                      </button>
+                      <button className="w-full py-4 rounded-2xl bg-white border-2 border-zinc-900 text-zinc-900 font-bold text-sm flex items-center justify-center gap-2 hover:bg-zinc-50 transition-all">
+                        <HelpCircle className="w-4 h-4" />
+                        1:1 제작 문의하기
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Paper Comparison Section (Sticker Only) */}
+            {isSticker && (
+              <section className="py-32 border-t border-zinc-100">
+                <div className="text-center mb-20">
+                  <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-widest mb-4 border border-emerald-100">
+                    Material Guide
+                  </span>
+                  <h2 className="text-4xl font-black text-zinc-900 mb-6 tracking-tight">주문 가능 용지 안내</h2>
+                  <p className="text-zinc-500 max-w-2xl mx-auto font-medium text-lg">
+                    용도와 디자인에 가장 적합한 재질을 비교해 보세요. <br />
+                    재질에 따라 인쇄 느낌과 내구성이 달라집니다.
                   </p>
                 </div>
-                
-                <div className="space-y-4">
-                  <h3 className="text-xs font-black text-zinc-900 uppercase tracking-widest">핵심 특징</h3>
-                  <div className="grid grid-cols-1 gap-3">
-                    {product.features.map((f, i) => (
-                      <div key={i} className="flex items-center gap-3 p-4 rounded-2xl bg-zinc-50 border border-zinc-100">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                        <span className="text-sm font-bold text-zinc-700">{f}</span>
-                      </div>
-                    ))}
-                  </div>
+
+                {/* Tier 1: Material Groups */}
+                <div className="flex flex-wrap justify-center gap-2 mb-12">
+                  {materialGroups.map((group) => (
+                    <button
+                      key={group}
+                      onClick={() => {
+                        setSelectedMaterialGroup(group);
+                        setShowAllMaterials(false);
+                      }}
+                      className={`px-8 py-4 rounded-2xl text-sm font-black transition-all border-2 ${
+                        selectedMaterialGroup === group 
+                          ? 'bg-zinc-900 border-zinc-900 text-white shadow-xl shadow-zinc-200 scale-105' 
+                          : 'bg-white border-zinc-100 text-zinc-400 hover:border-zinc-300 hover:text-zinc-600'
+                      }`}
+                    >
+                      {group}
+                    </button>
+                  ))}
                 </div>
 
-                {hasWarnings && (
-                  <div className="space-y-4">
-                    <h3 className="text-xs font-black text-zinc-900 uppercase tracking-widest">제작 시 유의사항</h3>
-                    <div className="p-6 rounded-2xl bg-amber-50 border border-amber-100 space-y-3">
-                      {product.warnings?.map((w, i) => (
-                        <div key={i} className="flex gap-3 text-xs text-amber-800/80 leading-relaxed">
-                          <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
-                          <span>{w}</span>
-                        </div>
-                      ))}
-                    </div>
+                {/* Tier 2: Specific Materials */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                  {displayedMaterials.map((paper) => (
+                    <PaperMaterialCard key={paper.id} material={paper} />
+                  ))}
+                </div>
+
+                {filteredMaterials.length > 8 && (
+                  <div className="mt-12 text-center">
+                    <button
+                      onClick={() => setShowAllMaterials(!showAllMaterials)}
+                      className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-zinc-100 text-zinc-900 font-black text-sm hover:bg-zinc-200 transition-all"
+                    >
+                      {showAllMaterials ? (
+                        <>접기 <ChevronUp size={16} /></>
+                      ) : (
+                        <>더 많은 재질 보기 ({filteredMaterials.length - 8}개 더 있음) <ChevronDown size={16} /></>
+                      )}
+                    </button>
                   </div>
                 )}
 
-                {product.notes && product.notes.length > 0 && (
-                  <div className="space-y-4">
-                    <h3 className="text-xs font-black text-zinc-900 uppercase tracking-widest">참고사항</h3>
-                    <div className="p-6 rounded-2xl bg-zinc-50 border border-zinc-100 space-y-3">
-                      {product.notes.map((note, i) => (
-                        <div key={i} className="flex gap-3 text-xs text-zinc-600 leading-relaxed">
-                          <FileText className="w-4 h-4 text-zinc-400 shrink-0" />
-                          <span>{note}</span>
+                <div className="mt-16 p-10 rounded-[40px] bg-zinc-50 border border-zinc-100">
+                  <div className="flex flex-col md:flex-row gap-12">
+                    <div className="flex-1 space-y-6">
+                      <h3 className="text-xl font-black text-zinc-900 flex items-center gap-3">
+                        <Info className="w-6 h-6 text-emerald-600" />
+                        재질 선택 팁
+                      </h3>
+                      <div className="space-y-4">
+                        <div className="flex gap-4">
+                          <div className="w-8 h-8 rounded-full bg-white border border-zinc-200 flex items-center justify-center shrink-0 text-xs font-black">1</div>
+                          <p className="text-sm text-zinc-600 leading-relaxed">물이나 습기에 노출되는 환경이라면 <b>유포 스티커</b>나 <b>PET</b> 재질을 선택하세요.</p>
                         </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <div className="pt-4 flex flex-col gap-3">
-                  <button className="w-full py-4 rounded-2xl bg-zinc-900 text-white font-bold text-sm flex items-center justify-center gap-2 hover:bg-zinc-800 transition-all">
-                    <FileUp className="w-4 h-4" />
-                    작업 가이드 다운로드
-                  </button>
-                  <button className="w-full py-4 rounded-2xl bg-white border-2 border-zinc-900 text-zinc-900 font-bold text-sm flex items-center justify-center gap-2 hover:bg-zinc-50 transition-all">
-                    <HelpCircle className="w-4 h-4" />
-                    1:1 제작 문의하기
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Paper Comparison Section (Sticker Only) */}
-        {isSticker && (
-          <section className="py-32 border-t border-zinc-100">
-            <div className="text-center mb-20">
-              <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-widest mb-4 border border-emerald-100">
-                Material Guide
-              </span>
-              <h2 className="text-4xl font-black text-zinc-900 mb-6 tracking-tight">주문 가능 용지 안내</h2>
-              <p className="text-zinc-500 max-w-2xl mx-auto font-medium text-lg">
-                용도와 디자인에 가장 적합한 재질을 비교해 보세요. <br />
-                재질에 따라 인쇄 느낌과 내구성이 달라집니다.
-              </p>
-            </div>
-
-            {/* Tier 1: Material Groups */}
-            <div className="flex flex-wrap justify-center gap-2 mb-12">
-              {materialGroups.map((group) => (
-                <button
-                  key={group}
-                  onClick={() => {
-                    setSelectedMaterialGroup(group);
-                    setShowAllMaterials(false);
-                  }}
-                  className={`px-8 py-4 rounded-2xl text-sm font-black transition-all border-2 ${
-                    selectedMaterialGroup === group 
-                      ? 'bg-zinc-900 border-zinc-900 text-white shadow-xl shadow-zinc-200 scale-105' 
-                      : 'bg-white border-zinc-100 text-zinc-400 hover:border-zinc-300 hover:text-zinc-600'
-                  }`}
-                >
-                  {group}
-                </button>
-              ))}
-            </div>
-
-            {/* Tier 2: Specific Materials */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-              {displayedMaterials.map((paper) => (
-                <PaperMaterialCard key={paper.id} material={paper} />
-              ))}
-            </div>
-
-            {filteredMaterials.length > 8 && (
-              <div className="mt-12 text-center">
-                <button
-                  onClick={() => setShowAllMaterials(!showAllMaterials)}
-                  className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-zinc-100 text-zinc-900 font-black text-sm hover:bg-zinc-200 transition-all"
-                >
-                  {showAllMaterials ? (
-                    <>접기 <ChevronUp size={16} /></>
-                  ) : (
-                    <>더 많은 재질 보기 ({filteredMaterials.length - 8}개 더 있음) <ChevronDown size={16} /></>
-                  )}
-                </button>
-              </div>
-            )}
-
-            <div className="mt-16 p-10 rounded-[40px] bg-zinc-50 border border-zinc-100">
-              <div className="flex flex-col md:flex-row gap-12">
-                <div className="flex-1 space-y-6">
-                  <h3 className="text-xl font-black text-zinc-900 flex items-center gap-3">
-                    <Info className="w-6 h-6 text-emerald-600" />
-                    재질 선택 팁
-                  </h3>
-                  <div className="space-y-4">
-                    <div className="flex gap-4">
-                      <div className="w-8 h-8 rounded-full bg-white border border-zinc-200 flex items-center justify-center shrink-0 text-xs font-black">1</div>
-                      <p className="text-sm text-zinc-600 leading-relaxed">물이나 습기에 노출되는 환경이라면 <b>유포 스티커</b>나 <b>PET</b> 재질을 선택하세요.</p>
-                    </div>
-                    <div className="flex gap-4">
-                      <div className="w-8 h-8 rounded-full bg-white border border-zinc-200 flex items-center justify-center shrink-0 text-xs font-black">2</div>
-                      <p className="text-sm text-zinc-600 leading-relaxed">투명 용기에 부착할 때는 <b>투명 PET</b>와 <b>화이트 인쇄</b> 조합이 가장 예쁩니다.</p>
-                    </div>
-                    <div className="flex gap-4">
-                      <div className="w-8 h-8 rounded-full bg-white border border-zinc-200 flex items-center justify-center shrink-0 text-xs font-black">3</div>
-                      <p className="text-sm text-zinc-600 leading-relaxed">고급스러운 느낌을 원하신다면 무광의 <b>그문드 라벨</b>이나 <b>유포매트</b>를 추천합니다.</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex-1 p-8 rounded-3xl bg-white border border-zinc-100">
-                  <h3 className="text-sm font-black text-zinc-900 uppercase tracking-widest mb-6">용지별 주의사항</h3>
-                  <ul className="space-y-3">
-                    {PAPER_MATERIALS.slice(0, 4).map(p => (
-                      <li key={p.id} className="text-xs text-zinc-500 flex gap-3">
-                        <span className="font-black text-emerald-600 whitespace-nowrap">{p.name}</span>
-                        <span>{p.precautions}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* Detailed Options & Processing (Sticker Only) */}
-        {isSticker && (
-          <section className="py-32 border-t border-zinc-100">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-20">
-              <div className="space-y-16">
-                <div>
-                  <h2 className="text-3xl font-black text-zinc-900 mb-10 flex items-center gap-4">
-                    <Layers className="w-8 h-8 text-emerald-600" />
-                    코팅 및 후가공
-                  </h2>
-                  <div className="grid grid-cols-1 gap-6">
-                    <div className="flex gap-6 p-8 rounded-3xl bg-zinc-50 border border-zinc-100 group hover:bg-white hover:shadow-xl transition-all">
-                      <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center shrink-0">
-                        <Sparkles className="text-emerald-600" />
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-zinc-900 mb-2">유광/무광 코팅</h4>
-                        <p className="text-sm text-zinc-500 leading-relaxed">인쇄물을 보호하고 질감을 조절합니다. 유광은 선명함을, 무광은 차분함을 더해줍니다.</p>
-                      </div>
-                    </div>
-                    <div className="flex gap-6 p-8 rounded-3xl bg-zinc-50 border border-zinc-100 group hover:bg-white hover:shadow-xl transition-all">
-                      <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center shrink-0">
-                        <Droplets className="text-emerald-600" />
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-zinc-900 mb-2">화이트 인쇄</h4>
-                        <p className="text-sm text-zinc-500 leading-relaxed">투명이나 유색 용지 위에 흰색을 먼저 인쇄하여 색상을 선명하게 표현합니다.</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h2 className="text-3xl font-black text-zinc-900 mb-10 flex items-center gap-4">
-                    <Scissors className="w-8 h-8 text-emerald-600" />
-                    재단 방식 안내
-                  </h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="p-8 rounded-[32px] bg-zinc-50 border border-zinc-100">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="w-10 h-10 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 font-bold">
-                          시트
+                        <div className="flex gap-4">
+                          <div className="w-8 h-8 rounded-full bg-white border border-zinc-200 flex items-center justify-center shrink-0 text-xs font-black">2</div>
+                          <p className="text-sm text-zinc-600 leading-relaxed">투명 용기에 부착할 때는 <b>투명 PET</b>와 <b>화이트 인쇄</b> 조합이 가장 예쁩니다.</p>
                         </div>
-                        <h4 className="font-bold text-zinc-900">시트형 반칼 (Kiss-cut)</h4>
-                      </div>
-                      <p className="text-sm text-zinc-600 leading-relaxed mb-4">
-                        스티커 용지는 그대로 두고, 스티커 모양대로 칼선만 내는 방식입니다. 
-                        한 장의 시트에 여러 개의 스티커가 붙어 있어 대량 부착 작업에 편리합니다.
-                      </p>
-                      <ul className="text-xs text-zinc-500 space-y-2">
-                        <li className="flex items-start gap-2">
-                          <span className="text-indigo-500 mt-0.5">•</span>
-                          <span>다이어리 꾸미기, 라벨링 작업에 최적</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-indigo-500 mt-0.5">•</span>
-                          <span>시트 전체 크기 내에서 자유로운 배치 가능</span>
-                        </li>
-                      </ul>
-                    </div>
-
-                    <div className="p-8 rounded-[32px] bg-zinc-50 border border-zinc-100">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="w-10 h-10 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 font-bold">
-                          개별
+                        <div className="flex gap-4">
+                          <div className="w-8 h-8 rounded-full bg-white border border-zinc-200 flex items-center justify-center shrink-0 text-xs font-black">3</div>
+                          <p className="text-sm text-zinc-600 leading-relaxed">고급스러운 느낌을 원하신다면 무광의 <b>그문드 라벨</b>이나 <b>유포매트</b>를 추천합니다.</p>
                         </div>
-                        <h4 className="font-bold text-zinc-900">개별재단 완칼 (Full-cut)</h4>
                       </div>
-                      <p className="text-sm text-zinc-600 leading-relaxed mb-4">
-                        스티커와 뒷면 대지까지 모양대로 완전히 잘라내는 방식입니다. 
-                        스티커가 하나씩 낱개로 떨어져 있어 배포용이나 사은품용으로 적합합니다.
-                      </p>
-                      <ul className="text-xs text-zinc-500 space-y-2">
-                        <li className="flex items-start gap-2">
-                          <span className="text-emerald-500 mt-0.5">•</span>
-                          <span>홍보용 배포, 굿즈 판매용으로 인기</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-emerald-500 mt-0.5">•</span>
-                          <span>하나씩 개별적으로 보관 및 사용 가능</span>
-                        </li>
+                    </div>
+                    <div className="flex-1 p-8 rounded-3xl bg-white border border-zinc-100">
+                      <h3 className="text-sm font-black text-zinc-900 uppercase tracking-widest mb-6">용지별 주의사항</h3>
+                      <ul className="space-y-3">
+                        {PAPER_MATERIALS.slice(0, 4).map(p => (
+                          <li key={p.id} className="text-xs text-zinc-500 flex gap-3">
+                            <span className="font-black text-emerald-600 whitespace-nowrap">{p.name}</span>
+                            <span>{p.precautions}</span>
+                          </li>
+                        ))}
                       </ul>
                     </div>
                   </div>
+                </div>
+              </section>
+            )}
 
-                  <div className="mt-6 p-6 bg-amber-50 rounded-[32px] border border-amber-100">
-                    <div className="flex gap-4">
-                      <div className="w-10 h-10 bg-amber-100 rounded-2xl flex items-center justify-center shrink-0">
-                        <Info className="w-5 h-5 text-amber-600" />
+            {/* Detailed Options & Processing (Sticker Only) */}
+            {isSticker && (
+              <section className="py-32 border-t border-zinc-100">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-20">
+                  <div className="space-y-16">
+                    <div>
+                      <h2 className="text-3xl font-black text-zinc-900 mb-10 flex items-center gap-4">
+                        <Layers className="w-8 h-8 text-emerald-600" />
+                        코팅 및 후가공
+                      </h2>
+                      <div className="grid grid-cols-1 gap-6">
+                        <div className="flex gap-6 p-8 rounded-3xl bg-zinc-50 border border-zinc-100 group hover:bg-white hover:shadow-xl transition-all">
+                          <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center shrink-0">
+                            <Sparkles className="text-emerald-600" />
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-zinc-900 mb-2">유광/무광 코팅</h4>
+                            <p className="text-sm text-zinc-500 leading-relaxed">인쇄물을 보호하고 질감을 조절합니다. 유광은 선명함을, 무광은 차분함을 더해줍니다.</p>
+                          </div>
+                        </div>
+                        <div className="flex gap-6 p-8 rounded-3xl bg-zinc-50 border border-zinc-100 group hover:bg-white hover:shadow-xl transition-all">
+                          <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center shrink-0">
+                            <Droplets className="text-emerald-600" />
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-zinc-900 mb-2">화이트 인쇄</h4>
+                            <p className="text-sm text-zinc-500 leading-relaxed">투명이나 유색 용지 위에 흰색을 먼저 인쇄하여 색상을 선명하게 표현합니다.</p>
+                          </div>
+                        </div>
                       </div>
-                      <div>
-                        <h5 className="text-lg font-bold text-amber-900 mb-1">복합 재단 (시트형 반칼 + 개별 완칼)</h5>
-                        <p className="text-sm text-amber-800 leading-relaxed">
-                          시트 안에 여러 개의 모양 반칼을 넣고, 그 시트 자체를 원하는 모양으로 개별 완칼하는 방식입니다. 
-                          브랜드 스티커 팩 제작 시 가장 많이 활용되는 고급 사양입니다.
+                    </div>
+
+                    <div>
+                      <h2 className="text-3xl font-black text-zinc-900 mb-10 flex items-center gap-4">
+                        <Scissors className="w-8 h-8 text-emerald-600" />
+                        재단 방식 안내
+                      </h2>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="p-8 rounded-[32px] bg-zinc-50 border border-zinc-100">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="w-10 h-10 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 font-bold">
+                              시트
+                            </div>
+                            <h4 className="font-bold text-zinc-900">시트형 반칼 (Kiss-cut)</h4>
+                          </div>
+                          <p className="text-sm text-zinc-600 leading-relaxed mb-4">
+                            스티커 용지는 그대로 두고, 스티커 모양대로 칼선만 내는 방식입니다. 
+                            한 장의 시트에 여러 개의 스티커가 붙어 있어 대량 부착 작업에 편리합니다.
+                          </p>
+                          <ul className="text-xs text-zinc-500 space-y-2">
+                            <li className="flex items-start gap-2">
+                              <span className="text-indigo-500 mt-0.5">•</span>
+                              <span>다이어리 꾸미기, 라벨링 작업에 최적</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <span className="text-indigo-500 mt-0.5">•</span>
+                              <span>시트 전체 크기 내에서 자유로운 배치 가능</span>
+                            </li>
+                          </ul>
+                        </div>
+
+                        <div className="p-8 rounded-[32px] bg-zinc-50 border border-zinc-100">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="w-10 h-10 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 font-bold">
+                              개별
+                            </div>
+                            <h4 className="font-bold text-zinc-900">개별재단 완칼 (Full-cut)</h4>
+                          </div>
+                          <p className="text-sm text-zinc-600 leading-relaxed mb-4">
+                            스티커와 뒷면 대지까지 모양대로 완전히 잘라내는 방식입니다. 
+                            스티커가 하나씩 낱개로 떨어져 있어 배포용이나 사은품용으로 적합합니다.
+                          </p>
+                          <ul className="text-xs text-zinc-500 space-y-2">
+                            <li className="flex items-start gap-2">
+                              <span className="text-emerald-500 mt-0.5">•</span>
+                              <span>홍보용 배포, 굿즈 판매용으로 인기</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <span className="text-emerald-500 mt-0.5">•</span>
+                              <span>하나씩 개별적으로 보관 및 사용 가능</span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+
+                      <div className="mt-6 p-6 bg-amber-50 rounded-[32px] border border-amber-100">
+                        <div className="flex gap-4">
+                          <div className="w-10 h-10 bg-amber-100 rounded-2xl flex items-center justify-center shrink-0">
+                            <Info className="w-5 h-5 text-amber-600" />
+                          </div>
+                          <div>
+                            <h5 className="text-lg font-bold text-amber-900 mb-1">복합 재단 (시트형 반칼 + 개별 완칼)</h5>
+                            <p className="text-sm text-amber-800 leading-relaxed">
+                              시트 안에 여러 개의 모양 반칼을 넣고, 그 시트 자체를 원하는 모양으로 개별 완칼하는 방식입니다. 
+                              브랜드 스티커 팩 제작 시 가장 많이 활용되는 고급 사양입니다.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-12 rounded-[48px] bg-zinc-900 text-white">
+                    <h2 className="text-3xl font-black mb-10 flex items-center gap-4">
+                      <AlertTriangle className="w-8 h-8 text-emerald-400" />
+                      제작 시 유의사항
+                    </h2>
+                    <div className="space-y-8">
+                      <div className="space-y-4">
+                        <h4 className="text-emerald-400 font-bold text-sm uppercase tracking-widest">파일 작업</h4>
+                        <ul className="space-y-3 text-sm text-zinc-400 list-disc pl-5">
+                          <li>칼선(Kiss-cut)은 반드시 별도의 레이어나 색상으로 구분해 주세요.</li>
+                          <li>복잡한 모양의 칼선은 재단 시 오차가 발생할 수 있으니 단순화 권장합니다.</li>
+                          <li>텍스트는 반드시 아웃라인 처리를 해주세요.</li>
+                        </ul>
+                      </div>
+                      <div className="space-y-4">
+                        <h4 className="text-emerald-400 font-bold text-sm uppercase tracking-widest">인쇄 및 색상</h4>
+                        <ul className="space-y-3 text-sm text-zinc-400 list-disc pl-5">
+                          <li>재질에 따라 동일한 색상값이라도 다르게 표현될 수 있습니다.</li>
+                          <li>투명 재질은 화이트 인쇄 유무에 따라 느낌이 크게 달라집니다.</li>
+                          <li>사방 1~2mm 정도의 밀림 현상이 발생할 수 있습니다.</li>
+                        </ul>
+                      </div>
+                      <div className="pt-8 border-t border-white/10">
+                        <p className="text-xs text-zinc-500 leading-relaxed">
+                          ※ 위 유의사항을 숙지하지 않아 발생하는 제작 사고는 교환/환불이 불가합니다. <br />
+                          처음 주문하신다면 반드시 소량 샘플 제작을 추천드립니다.
                         </p>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              </section>
+            )}
 
-              <div className="p-12 rounded-[48px] bg-zinc-900 text-white">
-                <h2 className="text-3xl font-black mb-10 flex items-center gap-4">
-                  <AlertTriangle className="w-8 h-8 text-emerald-400" />
-                  제작 시 유의사항
-                </h2>
-                <div className="space-y-8">
-                  <div className="space-y-4">
-                    <h4 className="text-emerald-400 font-bold text-sm uppercase tracking-widest">파일 작업</h4>
-                    <ul className="space-y-3 text-sm text-zinc-400 list-disc pl-5">
-                      <li>칼선(Kiss-cut)은 반드시 별도의 레이어나 색상으로 구분해 주세요.</li>
-                      <li>복잡한 모양의 칼선은 재단 시 오차가 발생할 수 있으니 단순화 권장합니다.</li>
-                      <li>텍스트는 반드시 아웃라인 처리를 해주세요.</li>
-                    </ul>
+            {/* Similar Products Section */}
+            {similarProducts.length > 0 && (
+              <section className="py-32 border-t border-zinc-100">
+                <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+                  <div>
+                    <h2 className="text-4xl font-black mb-4 tracking-tight">함께 보면 좋은 상품</h2>
+                    <p className="text-zinc-500 font-medium text-lg">다른 제작 옵션이나 관련 상품들도 확인해 보세요.</p>
                   </div>
-                  <div className="space-y-4">
-                    <h4 className="text-emerald-400 font-bold text-sm uppercase tracking-widest">인쇄 및 색상</h4>
-                    <ul className="space-y-3 text-sm text-zinc-400 list-disc pl-5">
-                      <li>재질에 따라 동일한 색상값이라도 다르게 표현될 수 있습니다.</li>
-                      <li>투명 재질은 화이트 인쇄 유무에 따라 느낌이 크게 달라집니다.</li>
-                      <li>사방 1~2mm 정도의 밀림 현상이 발생할 수 있습니다.</li>
-                    </ul>
-                  </div>
-                  <div className="pt-8 border-t border-white/10">
-                    <p className="text-xs text-zinc-500 leading-relaxed">
-                      ※ 위 유의사항을 숙지하지 않아 발생하는 제작 사고는 교환/환불이 불가합니다. <br />
-                      처음 주문하신다면 반드시 소량 샘플 제작을 추천드립니다.
-                    </p>
-                  </div>
+                  <button 
+                    onClick={onBack}
+                    className="px-8 py-3 rounded-2xl bg-zinc-100 text-zinc-900 font-bold text-sm hover:bg-zinc-200 transition-all"
+                  >
+                    전체 상품 보기
+                  </button>
                 </div>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* Similar Products Section */}
-        {similarProducts.length > 0 && (
-          <section className="py-32 border-t border-zinc-100">
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-              <div>
-                <h2 className="text-4xl font-black mb-4 tracking-tight">함께 보면 좋은 상품</h2>
-                <p className="text-zinc-500 font-medium text-lg">다른 제작 옵션이나 관련 상품들도 확인해 보세요.</p>
-              </div>
-              <button 
-                onClick={onBack}
-                className="px-8 py-3 rounded-2xl bg-zinc-100 text-zinc-900 font-bold text-sm hover:bg-zinc-200 transition-all"
-              >
-                전체 상품 보기
-              </button>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {similarProducts.map(p => (
-                <div key={p.id} onClick={() => onProductClick(p.id)} className="group cursor-pointer">
-                  <div className="aspect-square rounded-[32px] overflow-hidden mb-6 bg-zinc-50 border border-zinc-100">
-                    <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" referrerPolicy="no-referrer" />
-                  </div>
-                  <h3 className="text-lg font-bold mb-2 group-hover:text-emerald-600 transition-colors">{p.name}</h3>
-                  <p className="text-sm text-zinc-500 mb-4 line-clamp-1">{p.tagline}</p>
-                  <p className="text-sm font-black text-zinc-900">{p.basePrice.toLocaleString()}원~</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                  {similarProducts.map(p => (
+                    <div key={p.id} onClick={() => onProductClick(p.id)} className="group cursor-pointer">
+                      <div className="aspect-square rounded-[32px] overflow-hidden mb-6 bg-zinc-50 border border-zinc-100">
+                        <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" referrerPolicy="no-referrer" />
+                      </div>
+                      <h3 className="text-lg font-bold mb-2 group-hover:text-emerald-600 transition-colors">{p.name}</h3>
+                      <p className="text-sm text-zinc-500 mb-4 line-clamp-1">{p.tagline}</p>
+                      <p className="text-sm font-black text-zinc-900">{p.basePrice.toLocaleString()}원~</p>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </section>
+              </section>
+            )}
+          </>
         )}
       </div>
     </div>
