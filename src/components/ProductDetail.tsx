@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion } from 'motion/react';
 import { 
   ChevronLeft, 
@@ -32,17 +32,36 @@ import { SocialShare } from './SocialShare';
 interface ProductDetailProps {
   product: Product;
   onBack: () => void;
+  onProductClick: (id: string) => void;
   onQuotationGenerated: (quotation: Quotation) => void;
   onAddToCart: (item: CartItem) => void;
 }
 
-export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, onQuotationGenerated, onAddToCart }) => {
+export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, onProductClick, onQuotationGenerated, onAddToCart }) => {
   const [activeTab, setActiveTab] = useState<'calc' | 'info'>('calc');
   const [selectedMaterialGroup, setSelectedMaterialGroup] = useState<PaperMaterial['group']>('일반/기본 용지');
   const [showAllMaterials, setShowAllMaterials] = useState(false);
 
-  // Find similar products for comparison
-  const similarProducts = PRODUCTS.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
+  // Find similar products based on category, subcategory, and shared features
+  const similarProducts = useMemo(() => {
+    return PRODUCTS
+      .filter(p => p.id !== product.id)
+      .map(p => {
+        let score = 0;
+        if (p.category === product.category) score += 10;
+        if (p.subCategory === product.subCategory) score += 5;
+        
+        // Shared features (acting as tags)
+        const sharedFeatures = p.features.filter(f => product.features.includes(f));
+        score += sharedFeatures.length * 2;
+        
+        return { product: p, score };
+      })
+      .filter(item => item.score > 0) // Only include if at least some similarity
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 4)
+      .map(item => item.product);
+  }, [product]);
 
   const isSticker = product.category === 'sticker';
   const hasWarnings = product.warnings && product.warnings.length > 0;
@@ -455,7 +474,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, o
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {similarProducts.map(p => (
-                <div key={p.id} onClick={() => { onBack(); /* Should navigate to this product but for now just back */ }} className="group cursor-pointer">
+                <div key={p.id} onClick={() => onProductClick(p.id)} className="group cursor-pointer">
                   <div className="aspect-square rounded-[32px] overflow-hidden mb-6 bg-zinc-50 border border-zinc-100">
                     <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" referrerPolicy="no-referrer" />
                   </div>

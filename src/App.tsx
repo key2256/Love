@@ -625,6 +625,7 @@ function App() {
             <ProductDetail 
               product={selectedProduct} 
               onBack={() => setView('home')} 
+              onProductClick={handleProductClick}
               onQuotationGenerated={handleQuotationGenerated}
               onAddToCart={addToCart}
             />

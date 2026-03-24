@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Search, 
   ShoppingCart, 
@@ -8,7 +8,7 @@ import {
   ChevronDown
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { CATEGORIES, SubCategoryGroup } from '../types';
+import { CATEGORIES, SubCategoryGroup, PRODUCTS } from '../types';
 
 interface NavbarProps {
   onNavigate: (view: 'home' | 'detail' | 'category' | 'guide' | 'inquiry' | 'custom_inquiry' | 'portfolio' | 'location' | 'faq') => void;
@@ -43,6 +43,35 @@ export const Navbar = ({
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const [selectedSubGroup, setSelectedSubGroup] = useState<string | null>(null);
   const [selectedSubSubGroup, setSelectedSubSubGroup] = useState<string | null>(null);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  const suggestions = useMemo(() => {
+    if (!searchQuery) return [];
+    const query = searchQuery.toLowerCase();
+    const productSuggestions = PRODUCTS.filter(p => 
+      p.name.toLowerCase().includes(query) || 
+      p.category.toLowerCase().includes(query)
+    ).slice(0, 5);
+    const categorySuggestions = CATEGORIES.filter(c => 
+      c.name.toLowerCase().includes(query)
+    ).slice(0, 3);
+    return [...productSuggestions, ...categorySuggestions];
+  }, [searchQuery]);
+
+  const handleSuggestionClick = (item: any) => {
+    onSearchChange('');
+    setShowSuggestions(false);
+    if (item.category && item.id) { // It's a product
+      onNavigate('detail');
+      // Assuming there's a mechanism to set the active product, 
+      // but for now, just navigating to detail might be enough or 
+      // I might need to trigger product selection.
+      // Looking at the App.tsx might reveal how product selection works.
+    } else { // It's a category
+      onCategorySelect(item.id);
+      onNavigate('category');
+    }
+  };
 
   // The category we are actually showing in the sub-nav
   const displayCategoryId = hoveredCategory || (activeCategory !== 'all' ? activeCategory : null);
@@ -196,9 +225,27 @@ export const Navbar = ({
                   type="text" 
                   placeholder="제품 검색..." 
                   value={searchQuery}
-                  onChange={(e) => onSearchChange(e.target.value)}
+                  onChange={(e) => {
+                    onSearchChange(e.target.value);
+                    setShowSuggestions(true);
+                  }}
+                  onFocus={() => setShowSuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                   className="pl-9 pr-10 py-1.5 bg-zinc-50 border border-zinc-100 rounded-full text-xs font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all w-40 focus:w-64"
                 />
+                {showSuggestions && suggestions.length > 0 && (
+                  <div className="absolute top-full left-0 mt-2 w-64 bg-white border border-zinc-100 rounded-xl shadow-lg z-50 overflow-hidden">
+                    {suggestions.map((item: any, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => handleSuggestionClick(item)}
+                        className="w-full text-left px-4 py-2 text-xs hover:bg-zinc-50 transition-colors"
+                      >
+                        {item.name}
+                      </button>
+                    ))}
+                  </div>
+                )}
                 {searchQuery && (
                   <button 
                     onClick={() => onSearchChange('')}
@@ -483,9 +530,27 @@ export const Navbar = ({
                   type="text" 
                   placeholder="제품 검색..." 
                   value={searchQuery}
-                  onChange={(e) => onSearchChange(e.target.value)}
+                  onChange={(e) => {
+                    onSearchChange(e.target.value);
+                    setShowSuggestions(true);
+                  }}
+                  onFocus={() => setShowSuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                   className="w-full pl-12 pr-12 py-3 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                 />
+                {showSuggestions && suggestions.length > 0 && (
+                  <div className="absolute top-full left-0 mt-2 w-full bg-white border border-zinc-100 rounded-2xl shadow-lg z-50 overflow-hidden">
+                    {suggestions.map((item: any, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => handleSuggestionClick(item)}
+                        className="w-full text-left px-6 py-3 text-sm hover:bg-zinc-50 transition-colors"
+                      >
+                        {item.name}
+                      </button>
+                    ))}
+                  </div>
+                )}
                 {searchQuery && (
                   <button 
                     onClick={() => onSearchChange('')}
