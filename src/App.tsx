@@ -42,6 +42,7 @@ function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [cart, setCart] = useState<CartItem[]>([]);
   const [showCart, setShowCart] = useState(false);
+  const [bypassMapCheck, setBypassMapCheck] = useState(false);
 
   const addToCart = (item: CartItem) => {
     setCart(prev => {
@@ -238,40 +239,74 @@ function App() {
     setVisibleCount(prev => prev + 8);
   };
 
-  if (!hasValidKey) {
+  if (!hasValidKey && !bypassMapCheck) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-zinc-50 font-sans p-4">
-        <div className="max-w-md w-full bg-white rounded-[32px] p-10 shadow-xl border border-zinc-100 text-center">
-          <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-8">
-            <MapPin className="w-8 h-8" />
-          </div>
-          <h2 className="text-2xl font-black text-zinc-900 mb-4 tracking-tight">Google Maps API Key Required</h2>
-          <p className="text-zinc-500 text-sm leading-relaxed mb-8">
-            지도 기능을 활성화하려면 API 키 설정이 필요합니다. 아래 단계를 따라주세요.
-          </p>
+      <div className="flex items-center justify-center min-h-screen bg-zinc-50 font-sans p-6">
+        <div className="max-w-xl w-full bg-white rounded-[48px] p-10 md:p-16 shadow-2xl shadow-zinc-200/50 border border-zinc-100 text-center relative overflow-hidden">
+          {/* Decorative background element */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full -mr-32 -mt-32 opacity-50" />
           
-          <div className="text-left space-y-4 mb-8">
-            <div className="flex gap-3">
-              <span className="flex-shrink-0 w-6 h-6 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center text-xs font-bold">1</span>
-              <p className="text-xs text-zinc-600">
-                <a href="https://console.cloud.google.com/google/maps-apis/credentials" target="_blank" rel="noopener" className="text-emerald-600 font-bold hover:underline">여기에서 API 키를 발급</a> 받으세요.
-              </p>
+          <div className="relative z-10">
+            <div className="w-20 h-20 bg-emerald-50 text-emerald-600 rounded-[28px] flex items-center justify-center mx-auto mb-10 shadow-lg shadow-emerald-100">
+              <MapPin className="w-10 h-10" />
             </div>
-            <div className="flex gap-3">
-              <span className="flex-shrink-0 w-6 h-6 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center text-xs font-bold">2</span>
-              <p className="text-xs text-zinc-600">
-                우측 상단 <strong>설정(⚙️)</strong> {">"} <strong>Secrets</strong> 메뉴를 엽니다.
-              </p>
+            
+            <h2 className="text-3xl font-black text-zinc-900 mb-6 tracking-tight leading-tight">
+              Google Maps API 설정이<br />필요합니다
+            </h2>
+            
+            <p className="text-zinc-500 text-base leading-relaxed mb-12 max-w-sm mx-auto">
+              지도 기능을 활성화하고 정확한 위치 정보를 제공하려면 API 키 설정이 필요합니다. 아래 가이드를 따라주세요.
+            </p>
+            
+            <div className="text-left space-y-6 mb-12 bg-zinc-50 p-8 rounded-[32px] border border-zinc-100">
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-8 h-8 bg-emerald-600 text-white rounded-xl flex items-center justify-center text-sm font-black shadow-md shadow-emerald-200">1</div>
+                <div>
+                  <p className="text-sm font-bold text-zinc-900 mb-1">API 키 발급</p>
+                  <p className="text-xs text-zinc-500 leading-relaxed">
+                    <a href="https://console.cloud.google.com/google/maps-apis/credentials" target="_blank" rel="noopener" className="text-emerald-600 font-bold hover:underline">Google Cloud Console</a>에서 새 API 키를 생성하세요.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-8 h-8 bg-emerald-600 text-white rounded-xl flex items-center justify-center text-sm font-black shadow-md shadow-emerald-200">2</div>
+                <div>
+                  <p className="text-sm font-bold text-zinc-900 mb-1">Secrets 설정</p>
+                  <p className="text-xs text-zinc-500 leading-relaxed">
+                    우측 상단 <strong>설정(⚙️)</strong> {">"} <strong>Secrets</strong> 메뉴를 클릭합니다.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-8 h-8 bg-emerald-600 text-white rounded-xl flex items-center justify-center text-sm font-black shadow-md shadow-emerald-200">3</div>
+                <div>
+                  <p className="text-sm font-bold text-zinc-900 mb-1">환경 변수 추가</p>
+                  <p className="text-xs text-zinc-500 leading-relaxed">
+                    이름: <code className="bg-zinc-200 px-1.5 py-0.5 rounded text-zinc-800 font-mono">GOOGLE_MAPS_PLATFORM_KEY</code><br />
+                    값: 발급받은 API 키를 입력하세요.
+                  </p>
+                </div>
+              </div>
             </div>
-            <div className="flex gap-3">
-              <span className="flex-shrink-0 w-6 h-6 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center text-xs font-bold">3</span>
-              <p className="text-xs text-zinc-600">
-                이름에 <code>GOOGLE_MAPS_PLATFORM_KEY</code>를 입력하고, 값에 발급받은 키를 붙여넣으세요.
-              </p>
+            
+            <div className="flex flex-col gap-4">
+              <div className="p-4 bg-zinc-100 rounded-2xl text-[11px] text-zinc-500 font-medium">
+                <Zap size={14} className="inline-block mr-2 text-emerald-500" />
+                키를 추가하면 앱이 자동으로 다시 빌드되어 지도가 활성화됩니다.
+              </div>
+              
+              <button 
+                onClick={() => setBypassMapCheck(true)}
+                className="w-full py-5 rounded-2xl bg-zinc-900 text-white font-black text-sm hover:bg-zinc-800 transition-all shadow-xl shadow-zinc-200 flex items-center justify-center gap-2 group"
+              >
+                지도 없이 앱 계속하기
+                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+              </button>
             </div>
           </div>
-          
-          <p className="text-[10px] text-zinc-400">키를 추가하면 앱이 자동으로 다시 빌드됩니다.</p>
         </div>
       </div>
     );
@@ -828,18 +863,16 @@ function App() {
 
                 <div className="aspect-square lg:aspect-auto lg:h-full min-h-[500px] rounded-[40px] overflow-hidden border border-zinc-100 shadow-xl relative bg-zinc-100">
                   {hasValidKey ? (
-                    <APIProvider apiKey={API_KEY}>
-                      <Map
-                        defaultCenter={center}
-                        defaultZoom={17}
-                        mapId="DEMO_MAP_ID"
-                        className="w-full h-full"
-                      >
-                        <AdvancedMarker position={center}>
-                          <Pin background={'#10b981'} glyphColor={'#fff'} borderColor={'#059669'} />
-                        </AdvancedMarker>
-                      </Map>
-                    </APIProvider>
+                    <Map
+                      defaultCenter={center}
+                      defaultZoom={17}
+                      mapId="DEMO_MAP_ID"
+                      className="w-full h-full"
+                    >
+                      <AdvancedMarker position={center}>
+                        <Pin background={'#10b981'} glyphColor={'#fff'} borderColor={'#059669'} />
+                      </AdvancedMarker>
+                    </Map>
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center p-12 text-center">
                       <div className="w-16 h-16 bg-zinc-100 rounded-3xl flex items-center justify-center text-zinc-400 mb-6">

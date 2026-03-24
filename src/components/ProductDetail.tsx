@@ -113,44 +113,63 @@ const UsageProductDetail: React.FC<{ product: Product; onProductClick: (id: stri
     <div className="space-y-12">
       {/* Top Layout: 2-column with better balance */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
-        <div className="flex flex-col justify-center space-y-4">
-          <h1 className="text-4xl font-black tracking-tight text-zinc-900 leading-tight">{recommendation.title}</h1>
-          <p className="text-lg text-zinc-600 leading-relaxed max-w-xl">{recommendation.description}</p>
+        <div className="flex flex-col justify-center space-y-4 p-2">
+          <h1 className="text-3xl md:text-4xl font-black tracking-tight text-zinc-900 leading-tight">
+            {recommendation.title}
+          </h1>
+          <p className="text-base md:text-lg text-zinc-600 leading-relaxed max-w-xl">
+            {recommendation.description}
+          </p>
         </div>
         
         {/* Recommendation Guide Box - more balanced height */}
-        <div className="p-8 bg-emerald-50 rounded-[32px] text-emerald-900 border border-emerald-100 flex flex-col justify-center">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-xl">💡</span>
-            <p className="font-black text-sm uppercase tracking-wider">추천 가이드</p>
+        <div className="p-8 bg-emerald-50 rounded-[40px] text-emerald-900 border border-emerald-100 flex flex-col justify-center relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
+            <Zap size={120} className="text-emerald-500" />
           </div>
-          <p className="text-sm leading-relaxed opacity-90">{recommendation.recommendationText}</p>
+          <div className="relative z-10">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 rounded-xl bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
+                <Sparkles size={16} />
+              </div>
+              <p className="font-black text-xs uppercase tracking-widest text-emerald-600">추천 가이드</p>
+            </div>
+            <p className="text-base md:text-lg font-bold leading-relaxed text-emerald-950">
+              {recommendation.recommendationText}
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Selection Guide Box - More visually organized */}
-      <div className="bg-white rounded-[32px] p-8 border border-zinc-100 shadow-sm">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-1 h-6 bg-emerald-500 rounded-full"></div>
-          <h3 className="font-black text-xl text-zinc-900">선택 가이드</h3>
+      {/* Selection Guide Box - More visually organized and integrated */}
+      <div className="bg-zinc-50 rounded-[40px] p-8 md:p-10 border border-zinc-100">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+          <div className="space-y-1">
+            <h3 className="font-black text-2xl text-zinc-900">선택 가이드</h3>
+            <p className="text-sm text-zinc-500 font-medium">용도에 맞는 최적의 제본 방식을 선택해보세요.</p>
+          </div>
+          <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-zinc-200 shadow-sm">
+            <Info size={14} className="text-emerald-500" />
+            <span className="text-xs font-bold text-zinc-600">전문가 추천 가이드</span>
+          </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {recommendation.selectionGuide.map((guide, i) => (
-            <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-zinc-50 border border-zinc-100/50 hover:border-emerald-200 transition-colors group">
-              <div className="w-8 h-8 rounded-full bg-white border border-zinc-200 flex items-center justify-center text-xs font-bold text-zinc-400 group-hover:text-emerald-500 group-hover:border-emerald-500 transition-colors">
-                {i + 1}
+            <div key={i} className="flex items-start gap-4 p-5 rounded-3xl bg-white border border-zinc-100 hover:border-emerald-200 hover:shadow-md transition-all duration-300 group">
+              <div className="flex-shrink-0 w-10 h-10 rounded-2xl bg-zinc-50 border border-zinc-100 flex items-center justify-center text-sm font-black text-zinc-400 group-hover:bg-emerald-500 group-hover:text-white group-hover:border-emerald-500 transition-all duration-300">
+                {String(i + 1).padStart(2, '0')}
               </div>
-              <p className="text-sm text-zinc-700 font-medium">{guide}</p>
+              <p className="text-sm text-zinc-700 font-bold leading-snug pt-1">{guide}</p>
             </div>
           ))}
         </div>
       </div>
         
       {/* Recommended Products */}
-      <div className="space-y-8">
-        <div className="flex items-center justify-between">
+      <div className="space-y-10">
+        <div className="flex items-center gap-4">
           <h3 className="font-black text-2xl text-zinc-900 tracking-tight">추천 제본 상품</h3>
-          <div className="h-px flex-1 bg-zinc-100 mx-8 hidden md:block"></div>
+          <div className="h-px flex-1 bg-zinc-100"></div>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -158,33 +177,51 @@ const UsageProductDetail: React.FC<{ product: Product; onProductClick: (id: stri
             const recommendedProduct = PRODUCTS.find(p => p.id === item.id);
             if (!recommendedProduct) return null;
             return (
-              <div key={recommendedProduct.id} className="group bg-white p-8 rounded-[40px] border border-zinc-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col">
-                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6">
-                  <div className="space-y-1">
-                    <h4 className="font-black text-2xl text-zinc-900 group-hover:text-emerald-600 transition-colors">{recommendedProduct.name}</h4>
-                    <p className="text-sm text-zinc-400 font-medium">{recommendedProduct.tagline}</p>
-                  </div>
-                  <span className="inline-flex px-3 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-black rounded-full border border-emerald-100 whitespace-nowrap self-start">
+              <div key={recommendedProduct.id} className="group bg-white p-8 rounded-[48px] border border-zinc-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col relative overflow-hidden">
+                {/* Recommendation Badge - More prominent */}
+                <div className="absolute top-6 right-6 z-10">
+                  <span className="inline-flex px-4 py-1.5 bg-emerald-500 text-white text-[10px] font-black rounded-full shadow-lg shadow-emerald-500/20 uppercase tracking-wider">
                     {item.badge}
                   </span>
                 </div>
+
+                <div className="mb-8">
+                  <div className="w-16 h-16 rounded-3xl bg-zinc-50 flex items-center justify-center mb-6 group-hover:bg-emerald-50 transition-colors duration-500">
+                    <Layers size={32} className="text-zinc-400 group-hover:text-emerald-500 transition-colors duration-500" />
+                  </div>
+                  <h4 className="font-black text-2xl text-zinc-900 mb-2 group-hover:text-emerald-600 transition-colors duration-300">
+                    {recommendedProduct.name}
+                  </h4>
+                  <p className="text-sm text-zinc-400 font-bold leading-relaxed">
+                    {recommendedProduct.tagline}
+                  </p>
+                </div>
                 
-                <div className="space-y-4 mb-8">
-                  <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest">주요 특징</p>
-                  <div className="flex flex-wrap gap-2">
+                <div className="space-y-4 mb-10">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1 h-4 bg-emerald-500 rounded-full"></div>
+                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">주요 특징</p>
+                  </div>
+                  <div className="grid grid-cols-1 gap-2">
                     {item.features.map((feature, i) => (
-                      <span key={i} className="px-3 py-1.5 rounded-xl bg-zinc-50 text-zinc-600 text-xs font-semibold border border-zinc-100">
-                        {feature}
-                      </span>
+                      <div key={i} className="flex items-center gap-3 p-3 rounded-2xl bg-zinc-50 border border-zinc-100 group-hover:bg-white group-hover:border-emerald-100 transition-all duration-300">
+                        <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center shadow-sm">
+                          <CheckCircle2 size={12} className="text-emerald-500" />
+                        </div>
+                        <span className="text-xs font-bold text-zinc-700">
+                          {feature}
+                        </span>
+                      </div>
                     ))}
                   </div>
                 </div>
 
                 <button 
                   onClick={() => onProductClick(recommendedProduct.id)}
-                  className="mt-auto w-full py-4 rounded-2xl bg-zinc-900 text-white font-black text-sm hover:bg-emerald-600 transition-all duration-300 shadow-lg shadow-zinc-900/10 hover:shadow-emerald-600/20"
+                  className="mt-auto w-full py-5 rounded-[24px] bg-zinc-900 text-white font-black text-sm hover:bg-emerald-600 transition-all duration-300 shadow-xl shadow-zinc-900/10 hover:shadow-emerald-600/30 flex items-center justify-center gap-2 group/btn"
                 >
                   이 상품으로 주문하기
+                  <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
                 </button>
               </div>
             );
