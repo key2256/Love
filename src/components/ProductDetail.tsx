@@ -34,7 +34,7 @@ interface UsageRecommendation {
   title: string;
   description: string;
   recommendationText: string;
-  recommendedProductIds: string[];
+  recommendedProducts: { id: string; badge: string; features: string[] }[];
   selectionGuide: string[];
 }
 
@@ -43,42 +43,64 @@ const USAGE_RECOMMENDATIONS: Record<string, UsageRecommendation> = {
     title: '공부자료 제본',
     description: '시험 대비 요약본, 개인 정리노트, 프린트 묶음처럼 공부할 때 자주 보는 자료를 제본하는 상품입니다.',
     recommendationText: '가볍게 정리한 자료는 중철제본, 자주 펼쳐보며 필기할 자료는 스프링제본을 추천합니다.',
-    recommendedProductIds: ['binding-saddle', 'binding-spring'],
+    recommendedProducts: [
+      { id: 'binding-saddle', badge: '얇은 자료 추천', features: ['가벼움', '저렴함'] },
+      { id: 'binding-spring', badge: '필기용 추천', features: ['360도 펼침', '필기 용이'] }
+    ],
     selectionGuide: ['얇은 책자/간단한 자료 → 중철제본 추천', '자주 펼치고 필기할 자료 → 스프링제본 추천']
   },
   'usage-learning': {
     title: '학습자료 제본',
     description: '학원, 과외, 자습용 자료처럼 체계적으로 정리된 학습용 인쇄물을 제본하는 상품입니다.',
     recommendationText: '얇은 자료는 중철제본, 두꺼운 정리본은 무선제본, 필기와 펼침이 중요하면 스프링제본을 추천합니다.',
-    recommendedProductIds: ['binding-saddle', 'binding-wireless', 'binding-spring'],
+    recommendedProducts: [
+      { id: 'binding-saddle', badge: '얇은 자료 추천', features: ['가벼움', '저렴함'] },
+      { id: 'binding-wireless', badge: '두꺼운 정리본 추천', features: ['깔끔함', '보관 용이'] },
+      { id: 'binding-spring', badge: '필기용 추천', features: ['360도 펼침', '필기 용이'] }
+    ],
     selectionGuide: ['얇은 자료 → 중철제본 추천', '두꺼운 정리본/보고서 → 무선제본 추천', '자주 펼치고 필기할 자료 → 스프링제본 추천']
   },
   'usage-teaching': {
     title: '수업교안 제본',
     description: '강의용 프린트, 수업 자료, 설명용 교안처럼 전달력과 가독성이 중요한 자료를 위한 제본 상품입니다.',
     recommendationText: '간단한 수업 자료는 중철제본, 수업 중 펼쳐두고 사용할 자료는 스프링제본을 추천합니다.',
-    recommendedProductIds: ['binding-saddle', 'binding-spring'],
+    recommendedProducts: [
+      { id: 'binding-saddle', badge: '얇은 자료 추천', features: ['가벼움', '저렴함'] },
+      { id: 'binding-spring', badge: '필기용 추천', features: ['360도 펼침', '필기 용이'] }
+    ],
     selectionGuide: ['얇은 책자/간단한 자료 → 중철제본 추천', '자주 펼치고 필기할 자료 → 스프링제본 추천']
   },
   'usage-workbook': {
     title: '문제집 제본',
     description: '문제풀이 자료, 오답노트, 연습문제 모음처럼 반복해서 펼치고 직접 써가며 사용하는 자료에 적합한 상품입니다.',
     recommendationText: '필기와 반복 풀이에는 스프링/트윈링 제본, 두꺼운 문제집 형태로 만들고 싶다면 무선제본을 추천합니다.',
-    recommendedProductIds: ['binding-spring', 'binding-twinring', 'binding-wireless'],
+    recommendedProducts: [
+      { id: 'binding-spring', badge: '필기용 추천', features: ['360도 펼침', '필기 용이'] },
+      { id: 'binding-twinring', badge: '제출용 추천', features: ['고급스러움', '튼튼함'] },
+      { id: 'binding-wireless', badge: '두꺼운 정리본 추천', features: ['깔끔함', '보관 용이'] }
+    ],
     selectionGuide: ['자주 펼치고 필기할 자료 → 스프링/트윈링 제본 추천', '두꺼운 정리본/보고서 → 무선제본 추천']
   },
   'usage-book': {
     title: '단행본/소책자 제작',
     description: '개인 출판물, 브랜드북, 소책자, 작품집처럼 한 권의 완성된 인쇄물 형태로 만들고 싶은 경우에 적합합니다.',
     recommendationText: '기본적인 책자 제작은 무선제본, 감성적이고 정성스러운 제작은 실제본, 얇은 소책자는 중철제본을 추천합니다.',
-    recommendedProductIds: ['binding-wireless', 'binding-sewn', 'binding-saddle'],
+    recommendedProducts: [
+      { id: 'binding-wireless', badge: '두꺼운 정리본 추천', features: ['깔끔함', '보관 용이'] },
+      { id: 'binding-sewn', badge: '감성적인 제작물 추천', features: ['고급스러움', '완성도 높음'] },
+      { id: 'binding-saddle', badge: '얇은 자료 추천', features: ['가벼움', '저렴함'] }
+    ],
     selectionGuide: ['얇은 책자/간단한 자료 → 중철제본 추천', '두꺼운 정리본/보고서 → 무선제본 추천', '감성적이고 완성도 높은 제작물 → 실제본 추천']
   },
   'usage-submission': {
     title: '기관/학교 제출용 제본',
     description: '보고서, 발표자료, 제출용 문서, 기관 배포자료처럼 정돈된 인상과 깔끔한 마감이 중요한 제본 상품입니다.',
     recommendationText: '깔끔한 제출용 자료는 무선제본, 넘김이 편한 자료집은 트윈링제본, 완성도와 보관성을 높이고 싶다면 실제본을 추천합니다.',
-    recommendedProductIds: ['binding-wireless', 'binding-twinring', 'binding-sewn'],
+    recommendedProducts: [
+      { id: 'binding-wireless', badge: '두꺼운 정리본 추천', features: ['깔끔함', '보관 용이'] },
+      { id: 'binding-twinring', badge: '제출용 추천', features: ['고급스러움', '튼튼함'] },
+      { id: 'binding-sewn', badge: '감성적인 제작물 추천', features: ['고급스러움', '완성도 높음'] }
+    ],
     selectionGuide: ['두꺼운 정리본/보고서 → 무선제본 추천', '제출용/정돈된 자료 → 트윈링제본 추천', '감성적이고 완성도 높은 제작물 → 실제본 추천']
   }
 };
@@ -88,48 +110,68 @@ const UsageProductDetail: React.FC<{ product: Product; onProductClick: (id: stri
   if (!recommendation) return null;
 
   return (
-    <div className="space-y-16">
-      <div className="space-y-6">
-        <h1 className="text-5xl font-black tracking-tight">{recommendation.title}</h1>
-        <p className="text-xl text-zinc-600">{recommendation.description}</p>
+    <div className="space-y-12">
+      {/* Top Layout: 2-column */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="space-y-4">
+          <h1 className="text-4xl font-black tracking-tight text-zinc-900">{recommendation.title}</h1>
+          <p className="text-lg text-zinc-600 leading-relaxed">{recommendation.description}</p>
+        </div>
+        
+        {/* Recommendation Guide Box */}
         <div className="p-6 bg-emerald-50 rounded-2xl text-emerald-900 border border-emerald-100">
           <p className="font-bold text-sm mb-2">💡 추천 가이드</p>
-          <p className="text-sm">{recommendation.recommendationText}</p>
+          <p className="text-sm leading-relaxed">{recommendation.recommendationText}</p>
         </div>
       </div>
+
+      {/* Selection Guide Box - Prominent */}
+      <div className="bg-zinc-50 rounded-[24px] p-6 border border-zinc-100">
+        <h3 className="font-black text-lg mb-4 text-zinc-900">선택 가이드</h3>
+        <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {recommendation.selectionGuide.map((guide, i) => (
+            <li key={i} className="text-sm text-zinc-600 flex items-start gap-2">
+              <span className="text-emerald-500 font-bold mt-0.5">•</span>
+              {guide}
+            </li>
+          ))}
+        </ul>
+      </div>
         
+      {/* Recommended Products */}
       <div className="space-y-6">
-        <h3 className="font-black text-2xl">추천 제본 상품</h3>
+        <h3 className="font-black text-2xl text-zinc-900">추천 제본 상품</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {recommendation.recommendedProductIds.map(id => {
-            const recommendedProduct = PRODUCTS.find(p => p.id === id);
+          {recommendation.recommendedProducts.map(item => {
+            const recommendedProduct = PRODUCTS.find(p => p.id === item.id);
             if (!recommendedProduct) return null;
             return (
-              <div key={recommendedProduct.id} className="bg-white p-8 rounded-3xl border border-zinc-100 shadow-sm hover:shadow-lg transition-all flex flex-col">
-                <h4 className="font-black text-xl text-zinc-900 mb-2">{recommendedProduct.name}</h4>
-                <p className="text-sm text-zinc-500 mb-6">{recommendedProduct.tagline}</p>
+              <div key={recommendedProduct.id} className="bg-white p-6 rounded-3xl border border-zinc-100 shadow-sm hover:shadow-lg transition-all flex flex-col gap-4">
+                <div className="flex justify-between items-start gap-2">
+                  <h4 className="font-black text-xl text-zinc-900">{recommendedProduct.name}</h4>
+                  <span className="px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full whitespace-nowrap">{item.badge}</span>
+                </div>
+                <p className="text-sm text-zinc-500">{recommendedProduct.tagline}</p>
+                
+                <ul className="space-y-1">
+                  {item.features.map((feature, i) => (
+                    <li key={i} className="text-xs text-zinc-600 flex items-center gap-2">
+                      <span className="w-1 h-1 rounded-full bg-zinc-400"></span>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+
                 <button 
                   onClick={() => onProductClick(recommendedProduct.id)}
-                  className="mt-auto w-full py-4 rounded-xl bg-emerald-600 text-white font-bold text-sm hover:bg-emerald-700 transition-all"
+                  className="mt-4 w-full py-3 rounded-xl bg-zinc-900 text-white font-bold text-sm hover:bg-zinc-800 transition-all"
                 >
-                  상품 상세 보기
+                  이 상품으로 주문하기
                 </button>
               </div>
             );
           })}
         </div>
-      </div>
-
-      <div className="bg-zinc-50 rounded-[32px] p-8 border border-zinc-100">
-        <h3 className="font-black text-lg mb-4">선택 가이드</h3>
-        <ul className="space-y-2">
-          {recommendation.selectionGuide.map((guide, i) => (
-            <li key={i} className="text-sm text-zinc-600 flex items-start gap-2">
-              <span className="text-emerald-500 font-bold">•</span>
-              {guide}
-            </li>
-          ))}
-        </ul>
       </div>
     </div>
   );
