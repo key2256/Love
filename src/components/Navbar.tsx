@@ -5,7 +5,13 @@ import {
   User, 
   Menu, 
   X,
-  ChevronDown
+  ChevronDown,
+  FileText,
+  MessageSquare,
+  Briefcase,
+  MapPin,
+  HelpCircle,
+  Grid
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { CATEGORIES, SubCategoryGroup, PRODUCTS } from '../types';
@@ -40,6 +46,7 @@ export const Navbar = ({
   onCartClick
 }: NavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const [selectedSubGroup, setSelectedSubGroup] = useState<string | null>(null);
   const [selectedSubSubGroup, setSelectedSubSubGroup] = useState<string | null>(null);
@@ -523,125 +530,203 @@ export const Navbar = ({
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-8">
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={18} />
-                <input 
-                  type="text" 
-                  placeholder="제품 검색..." 
-                  value={searchQuery}
-                  onChange={(e) => {
-                    onSearchChange(e.target.value);
-                    setShowSuggestions(true);
-                  }}
-                  onFocus={() => setShowSuggestions(true)}
-                  onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                  className="w-full pl-12 pr-12 py-3 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
-                />
-                {showSuggestions && suggestions.length > 0 && (
-                  <div className="absolute top-full left-0 mt-2 w-full bg-white border border-zinc-100 rounded-2xl shadow-lg z-50 overflow-hidden">
-                    {suggestions.map((item: any, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => handleSuggestionClick(item)}
-                        className="w-full text-left px-6 py-3 text-sm hover:bg-zinc-50 transition-colors"
-                      >
-                        {item.name}
-                      </button>
-                    ))}
-                  </div>
-                )}
-                {searchQuery && (
-                  <button 
-                    onClick={() => onSearchChange('')}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 transition-colors"
+            <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-10">
+              {/* Search Section */}
+              <div className="space-y-4">
+                <div className="relative">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={18} />
+                  <input 
+                    type="text" 
+                    placeholder="어떤 제품을 찾으시나요?" 
+                    value={searchQuery}
+                    onChange={(e) => {
+                      onSearchChange(e.target.value);
+                      setShowSuggestions(true);
+                    }}
+                    onFocus={() => setShowSuggestions(true)}
+                    onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                    className="w-full pl-12 pr-12 py-4 bg-zinc-50 border border-zinc-100 rounded-[20px] text-sm font-bold focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all placeholder:text-zinc-400"
+                  />
+                  {searchQuery && (
+                    <button 
+                      onClick={() => onSearchChange('')}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full bg-zinc-200 text-zinc-500 hover:text-zinc-900 transition-all"
+                    >
+                      <X size={14} />
+                    </button>
+                  )}
+                </div>
+                
+                <AnimatePresence>
+                  {showSuggestions && suggestions.length > 0 && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="bg-white border border-zinc-100 rounded-2xl shadow-xl overflow-hidden"
+                    >
+                      {suggestions.map((item: any, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => {
+                            handleSuggestionClick(item);
+                            setIsMenuOpen(false);
+                          }}
+                          className="w-full text-left px-6 py-4 text-sm font-bold hover:bg-zinc-50 transition-colors flex items-center gap-3"
+                        >
+                          <Search size={14} className="text-zinc-300" />
+                          {item.name}
+                        </button>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Quick Access Grid */}
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { label: '카테고리', icon: Grid, action: () => setExpandedCategory(expandedCategory === 'all' ? null : 'all'), active: expandedCategory === 'all' },
+                  { label: '파일가이드', icon: FileText, action: () => { onNavigate('guide'); setIsMenuOpen(false); } },
+                  { label: '견적문의', icon: MessageSquare, action: () => { onNavigate('inquiry'); setIsMenuOpen(false); } },
+                ].map((item, idx) => (
+                  <button
+                    key={idx}
+                    onClick={item.action}
+                    className={`flex flex-col items-center justify-center gap-3 p-4 rounded-2xl border transition-all ${
+                      item.active 
+                        ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-100' 
+                        : 'bg-white border-zinc-100 text-zinc-600 hover:border-emerald-200 hover:bg-emerald-50/30'
+                    }`}
                   >
-                    <X size={18} />
+                    <item.icon size={20} className={item.active ? 'text-white' : 'text-emerald-600'} />
+                    <span className="text-[11px] font-black tracking-tight">{item.label}</span>
                   </button>
-                )}
+                ))}
               </div>
               
-              <div className="flex flex-col gap-6">
-                {CATEGORIES.map((cat) => (
-                  <div key={cat.id} className="space-y-3">
-                    <button 
-                      className={`text-lg font-black tracking-tight ${activeCategory === cat.id ? 'text-emerald-600' : 'text-zinc-900'}`}
-                      onClick={() => onCategorySelect(cat.id)}
-                    >
-                      {cat.name}
-                    </button>
-                    <div className="flex flex-col gap-4 pl-4 border-l-2 border-zinc-100">
-                      {cat.subCategories.map((sub, i) => {
-                        if (typeof sub === 'string') {
-                          return (
-                            <button 
-                              key={i}
+              {/* Categories Accordion */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between mb-4 px-1">
+                  <h3 className="text-xs font-black text-zinc-400 uppercase tracking-widest">제작 카테고리</h3>
+                </div>
+                <div className="space-y-2">
+                  {CATEGORIES.map((cat) => (
+                    <div key={cat.id} className="overflow-hidden">
+                      <button 
+                        onClick={() => setExpandedCategory(expandedCategory === cat.id ? null : cat.id)}
+                        className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all ${
+                          expandedCategory === cat.id 
+                            ? 'bg-zinc-900 text-white' 
+                            : 'bg-zinc-50 text-zinc-900 hover:bg-zinc-100'
+                        }`}
+                      >
+                        <span className="font-black tracking-tight">{cat.name}</span>
+                        <ChevronDown 
+                          size={18} 
+                          className={`transition-transform duration-300 ${expandedCategory === cat.id ? 'rotate-180' : ''}`} 
+                        />
+                      </button>
+                      
+                      <AnimatePresence>
+                        {expandedCategory === cat.id && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            className="bg-zinc-50/50 rounded-b-2xl -mt-2 pt-4 pb-2 px-4 space-y-1"
+                          >
+                            <button
                               onClick={() => {
                                 onCategorySelect(cat.id);
-                                onSubCategorySelect(sub);
+                                onSubCategorySelect('all');
                                 setIsMenuOpen(false);
                               }}
-                              className={`text-sm font-bold text-left ${activeSubCategory === sub && activeCategory === cat.id ? 'text-emerald-600' : 'text-zinc-500'}`}
+                              className="w-full text-left p-3 text-sm font-bold text-emerald-600 hover:bg-white rounded-xl transition-all"
                             >
-                              {sub}
+                              {cat.name} 전체보기
                             </button>
-                          );
-                        } else {
-                          return (
-                            <div key={i} className="space-y-3">
-                              <button 
-                                onClick={() => {
-                                  onCategorySelect(cat.id);
-                                  onSubCategorySelect(sub.groupName);
-                                  setIsMenuOpen(false);
-                                }}
-                                className={`text-sm font-black text-left ${activeSubCategory === sub.groupName && activeCategory === cat.id ? 'text-emerald-600' : 'text-zinc-900'}`}
-                              >
-                                {sub.groupName}
-                              </button>
-                              <div className="flex flex-wrap gap-2 pl-2">
-                                {sub.items.map((item, j) => {
-                                  const itemName = typeof item === 'string' ? item : item.groupName;
-                                  return (
-                                    <button 
-                                      key={`${i}-${j}`}
-                                      onClick={() => {
-                                        onCategorySelect(cat.id);
-                                        onSubCategorySelect(itemName);
-                                        setIsMenuOpen(false);
-                                      }}
-                                      className={`px-3 py-1.5 rounded-lg text-xs font-bold ${activeSubCategory === itemName && activeCategory === cat.id ? 'bg-zinc-900 text-white' : 'bg-zinc-100 text-zinc-500'}`}
-                                    >
-                                      {itemName}
-                                    </button>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          );
-                        }
-                      })}
+                            {cat.subCategories.map((sub, i) => {
+                              if (typeof sub === 'string') {
+                                return (
+                                  <button 
+                                    key={i}
+                                    onClick={() => {
+                                      onCategorySelect(cat.id);
+                                      onSubCategorySelect(sub);
+                                      setIsMenuOpen(false);
+                                    }}
+                                    className={`w-full text-left p-3 text-sm font-bold rounded-xl transition-all ${
+                                      activeSubCategory === sub && activeCategory === cat.id 
+                                        ? 'bg-white text-emerald-600 shadow-sm' 
+                                        : 'text-zinc-500 hover:bg-white'
+                                    }`}
+                                  >
+                                    {sub}
+                                  </button>
+                                );
+                              } else {
+                                return (
+                                  <div key={i} className="py-2 space-y-2">
+                                    <div className="px-3 text-[10px] font-black text-zinc-400 uppercase tracking-widest">
+                                      {sub.groupName}
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-2">
+                                      {sub.items.map((item, j) => {
+                                        const itemName = typeof item === 'string' ? item : item.groupName;
+                                        return (
+                                          <button 
+                                            key={`${i}-${j}`}
+                                            onClick={() => {
+                                              onCategorySelect(cat.id);
+                                              onSubCategorySelect(itemName);
+                                              setIsMenuOpen(false);
+                                            }}
+                                            className={`p-3 rounded-xl text-xs font-bold text-center transition-all ${
+                                              activeSubCategory === itemName && activeCategory === cat.id 
+                                                ? 'bg-zinc-900 text-white shadow-md' 
+                                                : 'bg-white text-zinc-500 border border-zinc-100 hover:border-emerald-200'
+                                            }`}
+                                          >
+                                            {itemName}
+                                          </button>
+                                        );
+                                      })}
+                                    </div>
+                                  </div>
+                                );
+                              }
+                            })}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
               
-              <div className="flex flex-col gap-4 pt-6 border-t border-zinc-100">
-                {[
-                  { label: '파일 가이드', view: 'guide' },
-                  { label: '견적 문의', view: 'inquiry' },
-                  { label: '제작 사례', view: 'portfolio' },
-                  { label: '오시는 길', view: 'location' },
-                  { label: '자주 묻는 질문', view: 'faq' },
-                ].map((item) => (
-                  <button 
-                    key={item.view}
-                    onClick={() => { onNavigate(item.view as any); setIsMenuOpen(false); }} 
-                    className={`text-left text-lg font-black tracking-tight ${currentView === item.view ? 'text-emerald-600' : 'text-zinc-900'}`}
-                  >
-                    {item.label}
-                  </button>
-                ))}
+              {/* Footer Links */}
+              <div className="pt-8 border-t border-zinc-100">
+                <div className="grid grid-cols-2 gap-4">
+                  {[
+                    { label: '제작 사례', view: 'portfolio', icon: Briefcase },
+                    { label: '오시는 길', view: 'location', icon: MapPin },
+                    { label: '자주 묻는 질문', view: 'faq', icon: HelpCircle },
+                  ].map((item) => (
+                    <button 
+                      key={item.view}
+                      onClick={() => { onNavigate(item.view as any); setIsMenuOpen(false); }} 
+                      className={`flex items-center gap-3 p-4 rounded-2xl transition-all ${
+                        currentView === item.view 
+                          ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' 
+                          : 'bg-zinc-50 text-zinc-600 hover:bg-zinc-100'
+                      }`}
+                    >
+                      <item.icon size={16} />
+                      <span className="text-sm font-bold">{item.label}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </motion.div>

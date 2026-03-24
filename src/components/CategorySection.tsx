@@ -45,7 +45,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({ onSelectCatego
                 transition={{ delay: idx * 0.1 }}
                 viewport={{ once: true }}
                 onClick={() => onSelectCategory(cat.id)}
-                className={`p-10 rounded-[40px] border transition-all flex flex-col items-center text-center group ${
+                className={`mb-12 p-10 rounded-[40px] border transition-all flex flex-col items-center text-center group ${
                   activeCategory === cat.id 
                     ? 'bg-emerald-600 border-emerald-600 text-white shadow-2xl shadow-emerald-600/20' 
                     : 'bg-zinc-50 border-zinc-100 text-zinc-900 hover:border-emerald-200 hover:bg-white'
