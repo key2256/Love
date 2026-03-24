@@ -23,6 +23,7 @@ interface PostcardCalculatorProps {
   discountRate: number;
   estimatedDeliveryDate: string;
   onGenerate: (customSize?: { width: string; height: string }) => void;
+  onAddToCart?: () => void;
 }
 
 export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
@@ -35,7 +36,8 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
   totalPrice,
   discountRate,
   estimatedDeliveryDate,
-  onGenerate
+  onGenerate,
+  onAddToCart
 }) => {
   const [selectedPostcardGroup, setSelectedPostcardGroup] = useState<string>('기본 대중형');
   const [expandedPostOption, setExpandedPostOption] = useState<string | null>(null);
@@ -199,7 +201,7 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
       <OrderTitleSection />
       <FileUploadSection />
       <NotesSection product={product} />
-      <ActionButtons onGenerate={onGenerate} />
+      <ActionButtons onGenerate={onGenerate} onAddToCart={onAddToCart} />
     </div>
   );
 };

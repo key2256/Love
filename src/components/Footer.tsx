@@ -38,7 +38,7 @@ export const Footer = ({ onNavigate, onLogoClick }: FooterProps) => {
             <h4 className="font-bold text-zinc-900 mb-6">고객 지원</h4>
             <ul className="space-y-3 text-sm text-zinc-500">
               <li><button onClick={() => onNavigate('guide')} className="hover:text-zinc-900 transition-colors">제작 가이드</button></li>
-              <li>자주 묻는 질문</li>
+              <li><button onClick={() => onNavigate('faq')} className="hover:text-zinc-900 transition-colors">자주 묻는 질문</button></li>
               <li>공지사항</li>
               <li><button onClick={() => onNavigate('location')} className="hover:text-zinc-900 transition-colors">오시는 길</button></li>
               <li>이용약관</li>

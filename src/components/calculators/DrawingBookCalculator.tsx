@@ -19,6 +19,7 @@ interface DrawingBookCalculatorProps {
   discountRate: number;
   estimatedDeliveryDate: string;
   onGenerate: (customSize?: { width: string; height: string }) => void;
+  onAddToCart?: () => void;
 }
 
 export const DrawingBookCalculator: React.FC<DrawingBookCalculatorProps> = ({
@@ -31,7 +32,8 @@ export const DrawingBookCalculator: React.FC<DrawingBookCalculatorProps> = ({
   totalPrice,
   discountRate,
   estimatedDeliveryDate,
-  onGenerate
+  onGenerate,
+  onAddToCart
 }) => {
   return (
     <div className="space-y-10">
@@ -90,7 +92,7 @@ export const DrawingBookCalculator: React.FC<DrawingBookCalculatorProps> = ({
       <OrderTitleSection />
       <FileUploadSection />
       <NotesSection product={product} />
-      <ActionButtons onGenerate={onGenerate} />
+      <ActionButtons onGenerate={onGenerate} onAddToCart={onAddToCart} />
     </div>
   );
 };

@@ -22,6 +22,7 @@ interface MemoPadCalculatorProps {
   discountRate: number;
   estimatedDeliveryDate: string;
   onGenerate: (customSize?: { width: string; height: string }) => void;
+  onAddToCart?: () => void;
 }
 
 export const MemoPadCalculator: React.FC<MemoPadCalculatorProps> = ({
@@ -34,7 +35,8 @@ export const MemoPadCalculator: React.FC<MemoPadCalculatorProps> = ({
   totalPrice,
   discountRate,
   estimatedDeliveryDate,
-  onGenerate
+  onGenerate,
+  onAddToCart
 }) => {
   const [customSize, setCustomSize] = useState({ width: '', height: '' });
 
@@ -310,7 +312,7 @@ export const MemoPadCalculator: React.FC<MemoPadCalculatorProps> = ({
           }
         }
         onGenerate(customSize);
-      }} />
+      }} onAddToCart={onAddToCart} />
     </div>
   );
 };

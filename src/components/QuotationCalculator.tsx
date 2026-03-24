@@ -2,7 +2,7 @@ import React from 'react';
 import { 
   Calculator
 } from 'lucide-react';
-import { Product, Quotation } from '../types';
+import { Product, Quotation, CartItem } from '../types';
 import { StickerCalculator } from './calculators/StickerCalculator';
 import { PostcardCalculator } from './calculators/PostcardCalculator';
 import { BusinessCardCalculator } from './calculators/BusinessCardCalculator';
@@ -18,9 +18,10 @@ import { useQuotationLogic } from '../hooks/useQuotationLogic';
 interface QuotationCalculatorProps {
   product: Product;
   onGenerateQuotation: (quotation: Quotation) => void;
+  onAddToCart: (item: CartItem) => void;
 }
 
-export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ product, onGenerateQuotation }) => {
+export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ product, onGenerateQuotation, onAddToCart }) => {
   const {
     quantity,
     setQuantity,
@@ -32,6 +33,17 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
     estimatedDeliveryDate,
     generateQuotation
   } = useQuotationLogic(product, onGenerateQuotation);
+
+  const handleAddToCart = () => {
+    onAddToCart({
+      id: `${product.id}-${Date.now()}`,
+      product,
+      options: selectedOptions,
+      quantity,
+      unitPrice,
+      totalPrice
+    });
+  };
 
   const getLayoutPattern = (product: Product) => {
     if (product.category === 'sticker') return 'STICKER';
@@ -72,6 +84,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
       discountRate,
       estimatedDeliveryDate,
       onGenerate: generateQuotation,
+      onAddToCart: handleAddToCart,
     };
 
     switch (pattern) {

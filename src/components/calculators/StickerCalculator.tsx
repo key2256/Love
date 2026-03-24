@@ -23,6 +23,7 @@ interface StickerCalculatorProps {
   discountRate: number;
   estimatedDeliveryDate: string;
   onGenerate: (customSize?: { width: string; height: string }) => void;
+  onAddToCart?: () => void;
 }
 
 export const StickerCalculator: React.FC<StickerCalculatorProps> = ({
@@ -35,7 +36,8 @@ export const StickerCalculator: React.FC<StickerCalculatorProps> = ({
   totalPrice,
   discountRate,
   estimatedDeliveryDate,
-  onGenerate
+  onGenerate,
+  onAddToCart
 }) => {
   const [expandedGroup, setExpandedGroup] = useState<string | null>('일반/기본 용지');
   const [expandedPostOption, setExpandedPostOption] = useState<string | null>(null);
@@ -229,7 +231,7 @@ export const StickerCalculator: React.FC<StickerCalculatorProps> = ({
       <OrderTitleSection />
       <FileUploadSection />
       <NotesSection product={product} />
-      <ActionButtons onGenerate={onGenerate} />
+      <ActionButtons onGenerate={onGenerate} onAddToCart={onAddToCart} />
     </div>
   );
 };

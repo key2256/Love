@@ -3,9 +3,10 @@ import { FileText, ShoppingCart, HelpCircle, CheckCircle2 } from 'lucide-react';
 
 interface ActionButtonsProps {
   onGenerate: (customSize?: { width: string; height: string }) => void;
+  onAddToCart?: () => void;
 }
 
-export const ActionButtons: React.FC<ActionButtonsProps> = ({ onGenerate }) => {
+export const ActionButtons: React.FC<ActionButtonsProps> = ({ onGenerate, onAddToCart }) => {
   return (
     <div className="grid grid-cols-1 gap-4 pt-4">
       <button 
@@ -16,7 +17,10 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({ onGenerate }) => {
         <span>견적서 발행하기</span>
       </button>
       <div className="grid grid-cols-2 gap-4">
-        <button className="py-4 bg-white border-2 border-zinc-900 text-zinc-900 font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-zinc-50 transition-all">
+        <button 
+          onClick={onAddToCart}
+          className="py-4 bg-white border-2 border-zinc-900 text-zinc-900 font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-zinc-50 transition-all"
+        >
           <ShoppingCart className="w-4 h-4" />
           <span>장바구니</span>
         </button>

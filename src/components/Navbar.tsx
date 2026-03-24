@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { CATEGORIES, SubCategoryGroup } from '../types';
 
 interface NavbarProps {
-  onNavigate: (view: 'home' | 'detail' | 'category' | 'guide' | 'inquiry' | 'custom_inquiry' | 'portfolio' | 'location') => void;
+  onNavigate: (view: 'home' | 'detail' | 'category' | 'guide' | 'inquiry' | 'custom_inquiry' | 'portfolio' | 'location' | 'faq') => void;
   onCategorySelect: (id: string) => void;
   onSubCategorySelect: (sub: string) => void;
   onLogoClick: () => void;
@@ -21,6 +21,8 @@ interface NavbarProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
   currentView: string;
+  cartCount: number;
+  onCartClick: () => void;
 }
 
 export const Navbar = ({ 
@@ -33,7 +35,9 @@ export const Navbar = ({
   isScrolled,
   searchQuery,
   onSearchChange,
-  currentView
+  currentView,
+  cartCount,
+  onCartClick
 }: NavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
@@ -222,11 +226,24 @@ export const Navbar = ({
               >
                 제작 사례
               </button>
+              <button 
+                onClick={() => onNavigate('faq')} 
+                className={`text-xs font-bold transition-colors ${currentView === 'faq' ? 'text-emerald-600' : 'text-zinc-400 hover:text-zinc-900'}`}
+              >
+                자주 묻는 질문
+              </button>
             </div>
 
-            <button className="p-2 rounded-full text-zinc-600 hover:bg-zinc-100 transition-colors relative">
+            <button 
+              onClick={onCartClick}
+              className="p-2 rounded-full text-zinc-600 hover:bg-zinc-100 transition-colors relative"
+            >
               <ShoppingCart size={20} />
-              <span className="absolute top-1 right-1 w-4 h-4 bg-emerald-500 text-zinc-900 text-[10px] flex items-center justify-center rounded-full font-bold">0</span>
+              {cartCount > 0 && (
+                <span className="absolute top-1 right-1 w-4 h-4 bg-emerald-500 text-zinc-900 text-[10px] flex items-center justify-center rounded-full font-bold">
+                  {cartCount}
+                </span>
+              )}
             </button>
             <button className="p-2 rounded-full text-zinc-600 hover:bg-zinc-100 transition-colors">
               <User size={20} />
@@ -541,6 +558,12 @@ export const Navbar = ({
                   className={`text-left text-lg font-black tracking-tight ${currentView === 'location' ? 'text-emerald-600' : 'text-zinc-900'}`}
                 >
                   오시는 길
+                </button>
+                <button 
+                  onClick={() => { onNavigate('faq'); setIsMenuOpen(false); }} 
+                  className={`text-left text-lg font-black tracking-tight ${currentView === 'faq' ? 'text-emerald-600' : 'text-zinc-900'}`}
+                >
+                  자주 묻는 질문
                 </button>
               </div>
             </div>

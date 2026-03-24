@@ -1,14 +1,16 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { Product } from '../types';
-import { ShoppingCart, CheckCircle2 } from 'lucide-react';
+import { ShoppingCart, CheckCircle2, Share2 } from 'lucide-react';
+import { SocialShare } from './SocialShare';
 
 interface ProductCardProps {
   product: Product;
   onClick: (id: string) => void;
+  onAddToCart: (product: Product) => void;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
+export const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, onAddToCart }) => {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -34,6 +36,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) =>
               1개부터 주문 가능
             </span>
           )}
+        </div>
+        <div className="absolute top-6 right-6 z-10" onClick={(e) => e.stopPropagation()}>
+          <SocialShare title={product.name} className="scale-75 origin-right" />
         </div>
         <div className="absolute inset-0 bg-emerald-600/0 group-hover:bg-emerald-600/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
           <div className="w-14 h-14 rounded-full bg-white text-emerald-600 flex items-center justify-center shadow-xl scale-0 group-hover:scale-100 transition-transform duration-500">
@@ -81,6 +86,28 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) =>
               {product.basePrice.toLocaleString()}원 <span className="text-xs font-medium text-zinc-400">~</span>
             </span>
           </div>
+        </div>
+
+        <div className="mt-8 grid grid-cols-2 gap-3 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+          <button 
+            onClick={(e) => {
+              e.stopPropagation();
+              onAddToCart(product);
+            }}
+            className="py-3 bg-emerald-600 text-white text-[11px] font-black rounded-xl hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2 uppercase tracking-widest"
+          >
+            <ShoppingCart className="w-3.5 h-3.5" />
+            담기
+          </button>
+          <button 
+            onClick={(e) => {
+              e.stopPropagation();
+              onClick(product.id);
+            }}
+            className="py-3 bg-zinc-900 text-white text-[11px] font-black rounded-xl hover:bg-zinc-800 transition-colors flex items-center justify-center gap-2 uppercase tracking-widest"
+          >
+            상세보기
+          </button>
         </div>
       </div>
     </motion.div>

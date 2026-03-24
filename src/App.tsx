@@ -9,8 +9,11 @@ import { ProductDetail } from './components/ProductDetail';
 import { QuotationDocument } from './components/QuotationDocument';
 import { Footer } from './components/Footer';
 import { Portfolio } from './components/Portfolio';
+import { FAQ } from './components/FAQ';
 import { InquiryForm } from './components/InquiryForm';
-import { PRODUCTS, CATEGORIES, Product, Quotation, ORDER_STEPS, PORTFOLIO_ITEMS, SUBCATEGORY_METADATA, SubCategoryGroup } from './types';
+import { Cart } from './components/Cart';
+import { PRODUCTS, CATEGORIES, Product, Quotation, ORDER_STEPS, PORTFOLIO_ITEMS, SUBCATEGORY_METADATA, SubCategoryGroup, CartItem } from './types';
+import { createDefaultCartItem } from './lib/cartUtils';
 import { FileUp, Send, CheckCircle2, MessageSquare, ArrowRight, Box, Search, Star, Zap, Calculator, MapPin, Phone, Mail, ChevronLeft, ChevronRight } from 'lucide-react';
 import { APIProvider, Map, AdvancedMarker, Pin } from '@vis.gl/react-google-maps';
 
@@ -23,7 +26,7 @@ const API_KEY =
   '';
 const hasValidKey = Boolean(API_KEY) && API_KEY !== 'YOUR_API_KEY';
 
-type View = 'home' | 'detail' | 'category' | 'guide' | 'inquiry' | 'quotation_doc' | 'custom_inquiry' | 'portfolio' | 'location';
+type View = 'home' | 'detail' | 'category' | 'guide' | 'inquiry' | 'quotation_doc' | 'custom_inquiry' | 'portfolio' | 'location' | 'faq';
 
 function App() {
   const [view, setView] = useState<View>('home');
@@ -36,6 +39,44 @@ function App() {
   const [visibleCount, setVisibleCount] = useState(8);
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [showCart, setShowCart] = useState(false);
+
+  const addToCart = (item: CartItem) => {
+    setCart(prev => {
+      // Check if item with same product and options already exists
+      const existingIndex = prev.findIndex(i => 
+        i.product.id === item.product.id && 
+        JSON.stringify(i.options) === JSON.stringify(item.options)
+      );
+
+      if (existingIndex > -1) {
+        const newCart = [...prev];
+        const existingItem = newCart[existingIndex];
+        const newQuantity = existingItem.quantity + item.quantity;
+        newCart[existingIndex] = {
+          ...existingItem,
+          quantity: newQuantity,
+          totalPrice: existingItem.unitPrice * newQuantity
+        };
+        return newCart;
+      }
+      return [...prev, item];
+    });
+    // Optional: show success feedback
+  };
+
+  const removeFromCart = (id: string) => {
+    setCart(prev => prev.filter(item => item.id !== id));
+  };
+
+  const updateCartQuantity = (id: string, quantity: number) => {
+    setCart(prev => prev.map(item => 
+      item.id === id ? { ...item, quantity, totalPrice: item.unitPrice * quantity } : item
+    ));
+  };
+
+  const clearCart = () => setCart([]);
 
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
@@ -249,6 +290,21 @@ function App() {
         searchQuery={searchQuery}
         onSearchChange={handleSearchChange}
         currentView={view}
+        cartCount={cart.length}
+        onCartClick={() => setShowCart(true)}
+      />
+
+      <Cart 
+        isOpen={showCart} 
+        onClose={() => setShowCart(false)} 
+        items={cart}
+        onRemove={removeFromCart}
+        onUpdateQuantity={updateCartQuantity}
+        onCheckout={() => {
+          setShowCart(false);
+          setShowInquiry(true);
+          setInquiryQuotation(undefined); // Could pass something to indicate cart checkout
+        }}
       />
 
       <AnimatePresence mode="wait">
@@ -519,6 +575,7 @@ function App() {
                         key={product.id} 
                         product={product} 
                         onClick={handleProductClick} 
+                        onAddToCart={(p) => addToCart(createDefaultCartItem(p))}
                       />
                     ))}
                   </div>
@@ -568,6 +625,7 @@ function App() {
               product={selectedProduct} 
               onBack={() => setView('home')} 
               onQuotationGenerated={handleQuotationGenerated}
+              onAddToCart={addToCart}
             />
           </motion.div>
         )}
@@ -778,6 +836,25 @@ function App() {
                 </div>
               </div>
             </div>
+          </motion.div>
+        )}
+        {view === 'faq' && (
+          <motion.div
+            key="faq"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+          >
+            <div className="max-w-7xl mx-auto px-4 pt-32">
+              <button 
+                onClick={() => setView('home')}
+                className="flex items-center gap-2 text-zinc-500 hover:text-zinc-900 transition-colors group mb-8"
+              >
+                <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                <span className="font-bold text-sm uppercase tracking-widest">이전으로</span>
+              </button>
+            </div>
+            <FAQ />
           </motion.div>
         )}
       </AnimatePresence>

@@ -25,6 +25,15 @@ export interface Product {
   notes?: string[];
 }
 
+export interface CartItem {
+  id: string;
+  product: Product;
+  options: Record<string, string>;
+  quantity: number;
+  totalPrice: number;
+  unitPrice: number;
+}
+
 export interface Quotation {
   id: string;
   productId: string;

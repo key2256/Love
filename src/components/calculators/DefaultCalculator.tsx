@@ -19,6 +19,7 @@ interface DefaultCalculatorProps {
   discountRate: number;
   estimatedDeliveryDate: string;
   onGenerate: (customSize?: { width: string; height: string }) => void;
+  onAddToCart?: () => void;
   pattern: string;
 }
 
@@ -33,6 +34,7 @@ export const DefaultCalculator: React.FC<DefaultCalculatorProps> = ({
   discountRate,
   estimatedDeliveryDate,
   onGenerate,
+  onAddToCart,
   pattern
 }) => {
   return (
@@ -97,7 +99,7 @@ export const DefaultCalculator: React.FC<DefaultCalculatorProps> = ({
       <OrderTitleSection />
       <FileUploadSection />
       <NotesSection product={product} />
-      <ActionButtons onGenerate={onGenerate} />
+      <ActionButtons onGenerate={onGenerate} onAddToCart={onAddToCart} />
     </div>
   );
 };

@@ -25,6 +25,7 @@ interface NoteCalculatorProps {
   discountRate: number;
   estimatedDeliveryDate: string;
   onGenerate: (customSize?: { width: string; height: string }) => void;
+  onAddToCart?: () => void;
   subPattern?: 'NOTE_SPIRAL' | 'NOTE_LEATHER' | 'NOTE_SADDLE';
 }
 
@@ -39,6 +40,7 @@ export const NoteCalculator: React.FC<NoteCalculatorProps> = ({
   discountRate,
   estimatedDeliveryDate,
   onGenerate,
+  onAddToCart,
   subPattern
 }) => {
   return (
@@ -278,7 +280,7 @@ export const NoteCalculator: React.FC<NoteCalculatorProps> = ({
       <OrderTitleSection />
       <FileUploadSection />
       <NotesSection product={product} />
-      <ActionButtons onGenerate={onGenerate} />
+      <ActionButtons onGenerate={onGenerate} onAddToCart={onAddToCart} />
     </div>
   );
 };

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { PORTFOLIO_ITEMS, CATEGORIES } from '../types';
-import { Search, Filter, ArrowRight, ChevronLeft } from 'lucide-react';
+import { Search, Filter, ArrowRight, ChevronLeft, Share2 } from 'lucide-react';
+import { SocialShare } from './SocialShare';
 
 interface PortfolioProps {
   onBack?: () => void;
@@ -88,13 +89,19 @@ export const Portfolio: React.FC<PortfolioProps> = ({ onBack }) => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
                     <p className="text-white/80 text-sm font-medium mb-2">{item.description}</p>
-                    <div className="flex gap-2">
-                      <span className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[10px] text-white font-bold uppercase tracking-wider">
-                        {item.material}
-                      </span>
-                      <span className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[10px] text-white font-bold uppercase tracking-wider">
-                        {item.finishing}
-                      </span>
+                    <div className="flex items-center justify-between">
+                      <div className="flex gap-2">
+                        <span className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[10px] text-white font-bold uppercase tracking-wider">
+                          {item.material}
+                        </span>
+                        <span className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[10px] text-white font-bold uppercase tracking-wider">
+                          {item.finishing}
+                        </span>
+                      </div>
+                      <SocialShare 
+                        title={item.title} 
+                        className="scale-75 origin-right" 
+                      />
                     </div>
                   </div>
                 </div>

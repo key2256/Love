@@ -20,20 +20,23 @@ import {
   Zap,
   Crown,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Share2
 } from 'lucide-react';
-import { Product, Quotation, PRODUCTS, CATEGORIES, PAPER_MATERIALS, PaperMaterial } from '../types';
+import { Product, Quotation, PRODUCTS, CATEGORIES, PAPER_MATERIALS, PaperMaterial, CartItem } from '../types';
 import { QuotationCalculator } from './QuotationCalculator';
 import { ProductIntroSection } from './calculators/shared/ProductIntroSection';
 import PaperMaterialCard from './PaperMaterialCard';
+import { SocialShare } from './SocialShare';
 
 interface ProductDetailProps {
   product: Product;
   onBack: () => void;
   onQuotationGenerated: (quotation: Quotation) => void;
+  onAddToCart: (item: CartItem) => void;
 }
 
-export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, onQuotationGenerated }) => {
+export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, onQuotationGenerated, onAddToCart }) => {
   const [activeTab, setActiveTab] = useState<'calc' | 'info'>('calc');
   const [selectedMaterialGroup, setSelectedMaterialGroup] = useState<PaperMaterial['group']>('일반/기본 용지');
   const [showAllMaterials, setShowAllMaterials] = useState(false);
@@ -58,13 +61,16 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, o
   return (
     <div className="min-h-screen bg-white pt-24 pb-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <button 
-          onClick={onBack}
-          className="flex items-center gap-2 text-zinc-500 hover:text-zinc-900 mb-8 transition-colors group"
-        >
-          <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-          <span className="font-bold">이전으로</span>
-        </button>
+        <div className="flex items-center justify-between mb-8">
+          <button 
+            onClick={onBack}
+            className="flex items-center gap-2 text-zinc-500 hover:text-zinc-900 transition-colors group"
+          >
+            <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+            <span className="font-bold">이전으로</span>
+          </button>
+          <SocialShare title={product.name} />
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-24">
           {/* Left: Images */}
@@ -119,6 +125,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, o
                 <QuotationCalculator 
                   product={product} 
                   onGenerateQuotation={onQuotationGenerated} 
+                  onAddToCart={onAddToCart}
                 />
                 
                 <div className="grid grid-cols-2 gap-4">
