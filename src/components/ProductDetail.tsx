@@ -22,9 +22,14 @@ import {
   ChevronDown,
   ChevronUp,
   Share2,
-  Upload
+  Upload,
+  Star,
+  StarHalf,
+  ThumbsUp,
+  MessageCircle,
+  Plus
 } from 'lucide-react';
-import { Product, Quotation, PRODUCTS, CATEGORIES, PAPER_MATERIALS, PaperMaterial, CartItem } from '../types';
+import { Product, Quotation, PRODUCTS, CATEGORIES, PAPER_MATERIALS, PaperMaterial, CartItem, Review } from '../types';
 import { QuotationCalculator } from './QuotationCalculator';
 import { ProductIntroSection } from './calculators/shared/ProductIntroSection';
 import PaperMaterialCard from './PaperMaterialCard';
@@ -229,6 +234,157 @@ const UsageProductDetail: React.FC<{ product: Product; onProductClick: (id: stri
         </div>
       </div>
     </div>
+  );
+};
+
+const ReviewSection: React.FC<{ productId: string }> = ({ productId }) => {
+  // Mock reviews data
+  const mockReviews: Review[] = [
+    {
+      id: 'r1',
+      productId,
+      userName: '김*현',
+      rating: 5,
+      comment: '색감이 너무 선명하고 예뻐요! 배송도 생각보다 빨라서 좋았습니다. 다음에도 여기서 주문할게요.',
+      date: '2024-03-15',
+      isVerified: true,
+      images: ['https://picsum.photos/seed/review1/400/400']
+    },
+    {
+      id: 'r2',
+      productId,
+      userName: '이*서',
+      rating: 4,
+      comment: '재질이 고급스럽고 마감이 깔끔합니다. 다만 칼선이 아주 미세하게 밀린 부분이 있었는데 크게 티는 안 나네요.',
+      date: '2024-03-12',
+      isVerified: true
+    },
+    {
+      id: 'r3',
+      productId,
+      userName: '박*민',
+      rating: 5,
+      comment: '가성비 최고입니다. 대량으로 주문했는데 파손 없이 잘 왔어요. 상담원분도 친절하셔서 기분 좋게 주문했습니다.',
+      date: '2024-03-10',
+      isVerified: true,
+      images: ['https://picsum.photos/seed/review2/400/400', 'https://picsum.photos/seed/review3/400/400']
+    }
+  ];
+
+  const averageRating = 4.8;
+  const totalReviews = 124;
+
+  const renderStars = (rating: number) => {
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      if (i <= Math.floor(rating)) {
+        stars.push(<Star key={i} size={16} className="fill-amber-400 text-amber-400" />);
+      } else if (i === Math.ceil(rating) && !Number.isInteger(rating)) {
+        stars.push(<StarHalf key={i} size={16} className="fill-amber-400 text-amber-400" />);
+      } else {
+        stars.push(<Star key={i} size={16} className="text-zinc-200" />);
+      }
+    }
+    return stars;
+  };
+
+  return (
+    <section className="py-32 border-t border-zinc-100">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-16">
+        <div>
+          <h2 className="text-4xl font-black mb-4 tracking-tight">구매 후기</h2>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1">
+              {renderStars(averageRating)}
+            </div>
+            <span className="text-2xl font-black text-zinc-900">{averageRating}</span>
+            <span className="text-zinc-400 font-bold">({totalReviews}개의 후기)</span>
+          </div>
+        </div>
+        <button className="flex items-center gap-2 px-8 py-4 bg-zinc-900 text-white rounded-2xl font-black text-sm hover:bg-emerald-600 transition-all shadow-xl shadow-zinc-900/10 hover:shadow-emerald-600/20">
+          <Plus size={18} />
+          후기 작성하기
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Rating Breakdown */}
+        <div className="lg:col-span-1 p-10 rounded-[40px] bg-zinc-50 border border-zinc-100 h-fit">
+          <h3 className="text-lg font-black mb-8">평점 비율</h3>
+          <div className="space-y-4">
+            {[5, 4, 3, 2, 1].map((star) => {
+              const percentages = { 5: 85, 4: 10, 3: 3, 2: 1, 1: 1 };
+              const percentage = percentages[star as keyof typeof percentages];
+              return (
+                <div key={star} className="flex items-center gap-4">
+                  <span className="text-xs font-bold text-zinc-500 w-4">{star}점</span>
+                  <div className="flex-1 h-2 bg-zinc-200 rounded-full overflow-hidden">
+                    <motion.div 
+                      initial={{ width: 0 }}
+                      whileInView={{ width: `${percentage}%` }}
+                      transition={{ duration: 1, delay: 0.2 }}
+                      className="h-full bg-amber-400"
+                    />
+                  </div>
+                  <span className="text-xs font-bold text-zinc-400 w-8">{percentage}%</span>
+                </div>
+              );
+            })}
+          </div>
+          <div className="mt-10 pt-10 border-t border-zinc-200">
+            <p className="text-sm text-zinc-500 font-medium leading-relaxed">
+              <b>98%</b>의 구매자가 이 상품을 추천합니다. <br />
+              실제 구매 고객님들이 남겨주신 소중한 후기입니다.
+            </p>
+          </div>
+        </div>
+
+        {/* Reviews List */}
+        <div className="lg:col-span-2 space-y-6">
+          {mockReviews.map((review) => (
+            <div key={review.id} className="p-8 rounded-[32px] bg-white border border-zinc-100 hover:border-emerald-200 transition-all group">
+              <div className="flex justify-between items-start mb-6">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-1">
+                    {renderStars(review.rating)}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-black text-zinc-900">{review.userName}</span>
+                    {review.isVerified && (
+                      <span className="px-2 py-0.5 bg-emerald-50 text-emerald-600 text-[10px] font-black rounded-md border border-emerald-100 uppercase tracking-tighter">
+                        구매인증
+                      </span>
+                    )}
+                    <span className="text-xs text-zinc-400 font-medium">{review.date}</span>
+                  </div>
+                </div>
+                <button className="text-zinc-300 hover:text-emerald-500 transition-colors">
+                  <ThumbsUp size={18} />
+                </button>
+              </div>
+              
+              <p className="text-zinc-600 leading-relaxed mb-6 font-medium">
+                {review.comment}
+              </p>
+
+              {review.images && review.images.length > 0 && (
+                <div className="flex gap-3">
+                  {review.images.map((img, idx) => (
+                    <div key={idx} className="w-24 h-24 rounded-2xl overflow-hidden border border-zinc-100 cursor-pointer hover:opacity-80 transition-opacity">
+                      <img src={img} alt="review" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+          
+          <button className="w-full py-6 rounded-[32px] bg-zinc-50 text-zinc-500 font-black text-sm hover:bg-zinc-100 transition-all border border-dashed border-zinc-200">
+            후기 더보기 (121개)
+          </button>
+        </div>
+      </div>
+    </section>
   );
 };
 
@@ -664,6 +820,9 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, o
                 </div>
               </section>
             )}
+
+            {/* Review Section */}
+            <ReviewSection productId={product.id} />
 
             {/* Similar Products Section */}
             {similarProducts.length > 0 && (

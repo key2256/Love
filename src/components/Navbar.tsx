@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { 
   Search, 
   ShoppingCart, 
@@ -51,6 +51,64 @@ export const Navbar = ({
   const [selectedSubGroup, setSelectedSubGroup] = useState<string | null>(null);
   const [selectedSubSubGroup, setSelectedSubSubGroup] = useState<string | null>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
+
+  // Focus management and body scroll lock
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+      
+      // Focus the drawer or first element when opened
+      const focusableElements = drawerRef.current?.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusableElements && focusableElements.length > 0) {
+        // Small delay to ensure animation has started/element is visible
+        const timer = setTimeout(() => {
+          (focusableElements[0] as HTMLElement).focus();
+        }, 100);
+        return () => clearTimeout(timer);
+      }
+    } else {
+      document.body.style.overflow = '';
+      // Return focus to menu button when closed
+      menuButtonRef.current?.focus();
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMenuOpen]);
+
+  // Focus trap logic
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!isMenuOpen || !drawerRef.current) return;
+
+    if (e.key === 'Escape') {
+      setIsMenuOpen(false);
+      return;
+    }
+
+    if (e.key === 'Tab') {
+      const focusableElements = drawerRef.current.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      const firstElement = focusableElements[0] as HTMLElement;
+      const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+      if (e.shiftKey) { // Shift + Tab
+        if (document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement.focus();
+        }
+      } else { // Tab
+        if (document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement.focus();
+        }
+      }
+    }
+  };
 
   const suggestions = useMemo(() => {
     if (!searchQuery) return [];
@@ -303,8 +361,12 @@ export const Navbar = ({
               <User size={20} />
             </button>
             <button 
+              ref={menuButtonRef}
               className="lg:hidden p-2 text-zinc-600 transition-colors"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-expanded={isMenuOpen}
+              aria-controls="mobile-menu"
+              aria-label={isMenuOpen ? "메뉴 닫기" : "메뉴 열기"}
             >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -513,6 +575,12 @@ export const Navbar = ({
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div 
+            ref={drawerRef}
+            id="mobile-menu"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="mobile-menu-title"
+            onKeyDown={handleKeyDown}
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
@@ -520,7 +588,7 @@ export const Navbar = ({
             className="fixed top-0 right-0 bottom-0 w-full max-w-sm bg-white z-[70] shadow-2xl lg:hidden flex flex-col"
           >
             <div className="p-6 border-b border-zinc-100 flex items-center justify-between">
-              <h2 className="text-xl font-black text-zinc-900">메뉴</h2>
+              <h2 id="mobile-menu-title" className="text-xl font-black text-zinc-900">메뉴</h2>
               <button 
                 onClick={() => setIsMenuOpen(false)}
                 className="p-2 rounded-full hover:bg-zinc-100 text-zinc-400 hover:text-zinc-900 transition-all"

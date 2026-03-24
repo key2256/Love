@@ -52,6 +52,17 @@ export interface SubCategoryGroup {
   items: (string | SubCategoryGroup)[];
 }
 
+export interface Review {
+  id: string;
+  productId: string;
+  userName: string;
+  rating: number;
+  comment: string;
+  date: string;
+  images?: string[];
+  isVerified?: boolean;
+}
+
 export interface Category {
   id: string;
   name: string;
