@@ -60,15 +60,13 @@ export const Cart: React.FC<CartProps> = ({
               </div>
               <div className="flex items-center gap-2">
                 {items.length > 0 && (
-                  <motion.button 
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                  <button 
                     onClick={onClear}
                     className="text-xs font-bold text-zinc-400 hover:text-red-500 transition-colors flex items-center gap-1"
                   >
                     <Trash2 className="w-3 h-3" />
                     전체 삭제
-                  </motion.button>
+                  </button>
                 )}
                 <button 
                   onClick={onClose}
@@ -110,12 +108,23 @@ export const Cart: React.FC<CartProps> = ({
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1 bg-zinc-100 rounded-full p-1">
                           <button 
-                            onClick={() => onUpdateQuantity(item.id, Math.max(item.product.minQuantity, item.quantity - 1))}
+                            onClick={() => onUpdateQuantity(item.id, Math.max(item.product.minQuantity || 1, item.quantity - 1))}
                             className="w-6 h-6 rounded-full flex items-center justify-center hover:bg-white text-zinc-500 transition-all"
                           >
                             <Minus className="w-3 h-3" />
                           </button>
-                          <span className="w-8 text-center text-xs font-bold text-zinc-900">{item.quantity}</span>
+                          <input
+                            type="number"
+                            value={item.quantity}
+                            min={item.product.minQuantity || 1}
+                            onChange={(e) => {
+                              const val = parseInt(e.target.value);
+                              if (!isNaN(val) && val >= (item.product.minQuantity || 1)) {
+                                onUpdateQuantity(item.id, val);
+                              }
+                            }}
+                            className="w-10 text-center text-xs font-bold text-zinc-900 bg-transparent focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          />
                           <button 
                             onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
                             className="w-6 h-6 rounded-full flex items-center justify-center hover:bg-white text-zinc-500 transition-all"
