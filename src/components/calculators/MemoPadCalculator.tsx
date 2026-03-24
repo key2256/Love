@@ -94,8 +94,8 @@ export const MemoPadCalculator: React.FC<MemoPadCalculatorProps> = ({
                         {val.label}
                       </span>
                       {val.priceModifier !== undefined && val.priceModifier !== 0 && (
-                        <span className={`block text-[9px] font-bold mt-0.5 ${
-                          selectedOptions[option.name] === val.label ? 'text-emerald-600' : 'text-zinc-400'
+                        <span className={`block text-[11px] font-black mt-1 ${
+                          selectedOptions[option.name] === val.label ? 'text-emerald-900' : 'text-emerald-600'
                         }`}>
                           {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
                         </span>
@@ -163,36 +163,46 @@ export const MemoPadCalculator: React.FC<MemoPadCalculatorProps> = ({
                     animate={{ opacity: 1, height: 'auto' }}
                     className="space-y-4 pt-2"
                   >
-                    <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">가로 (mm)</label>
-                        <input
-                          type="number"
-                          value={customSize.width}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            setCustomSize(prev => ({ ...prev, width: val }));
-                          }}
-                          placeholder="최대 90"
-                          className={`w-full px-4 py-3 rounded-xl bg-white border font-bold text-sm outline-none transition-all ${
-                            parseInt(customSize.width) > 90 ? 'border-red-500 text-red-600' : 'border-zinc-200 focus:border-emerald-500'
-                          }`}
-                        />
+                        <div className="relative">
+                          <input
+                            type="number"
+                            min="1"
+                            max="90"
+                            value={customSize.width}
+                            onChange={(e) => {
+                              const val = e.target.value.replace(/[^0-9]/g, '');
+                              setCustomSize(prev => ({ ...prev, width: val }));
+                            }}
+                            placeholder="최대 90"
+                            className={`w-full px-4 py-3 rounded-xl bg-white border font-bold text-sm outline-none transition-all ${
+                              parseInt(customSize.width) > 90 ? 'border-red-500 text-red-600' : 'border-zinc-200 focus:border-emerald-500'
+                            }`}
+                          />
+                          <span className="absolute right-4 top-3.5 text-xs font-bold text-zinc-400">mm</span>
+                        </div>
                       </div>
                       <div className="space-y-2">
                         <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">세로 (mm)</label>
-                        <input
-                          type="number"
-                          value={customSize.height}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            setCustomSize(prev => ({ ...prev, height: val }));
-                          }}
-                          placeholder="최대 90"
-                          className={`w-full px-4 py-3 rounded-xl bg-white border font-bold text-sm outline-none transition-all ${
-                            parseInt(customSize.height) > 90 ? 'border-red-500 text-red-600' : 'border-zinc-200 focus:border-emerald-500'
-                          }`}
-                        />
+                        <div className="relative">
+                          <input
+                            type="number"
+                            min="1"
+                            max="90"
+                            value={customSize.height}
+                            onChange={(e) => {
+                              const val = e.target.value.replace(/[^0-9]/g, '');
+                              setCustomSize(prev => ({ ...prev, height: val }));
+                            }}
+                            placeholder="최대 90"
+                            className={`w-full px-4 py-3 rounded-xl bg-white border font-bold text-sm outline-none transition-all ${
+                              parseInt(customSize.height) > 90 ? 'border-red-500 text-red-600' : 'border-zinc-200 focus:border-emerald-500'
+                            }`}
+                          />
+                          <span className="absolute right-4 top-3.5 text-xs font-bold text-zinc-400">mm</span>
+                        </div>
                       </div>
                     </div>
                     {(parseInt(customSize.width) > 90 || parseInt(customSize.height) > 90) && (
