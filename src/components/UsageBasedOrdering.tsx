@@ -158,31 +158,36 @@ export const UsageBasedOrdering: React.FC<UsageBasedOrderingProps> = ({ onBack, 
           </button>
           
           {/* 1. Title, 2. Description, 3. Recommendation Text */}
-          <div className="space-y-4">
+          <div className="space-y-6">
             <h1 className="text-5xl font-black tracking-tight">{selectedUsage.title}</h1>
             <p className="text-xl text-zinc-600">{selectedUsage.description}</p>
-            <p className="text-sm text-zinc-400">{selectedUsage.recommendationText}</p>
+            <div className="p-6 bg-emerald-50 rounded-2xl text-emerald-900 border border-emerald-100">
+              <p className="font-bold text-sm mb-2">💡 추천 가이드</p>
+              <p className="text-sm">{selectedUsage.recommendationText}</p>
+            </div>
           </div>
             
           {/* 4. Recommended Product Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {selectedUsage.recommendedProducts.map(rec => {
-              const product = allProducts.find(p => p.id === rec.id);
-              if (!product) return null;
-              return (
-                <div key={product.id} className="bg-white p-8 rounded-3xl border border-zinc-100 shadow-sm hover:shadow-lg transition-all flex flex-col">
-                  <h4 className="font-black text-xl text-zinc-900 mb-2">{rec.name}</h4>
-                  <p className="text-sm text-zinc-500 mb-2">{rec.description}</p>
-                  <p className="text-xs text-emerald-600 font-bold mb-6 italic">추천 이유: {rec.recommendationReason}</p>
-                  <button 
-                    onClick={() => onProductClick(product.id)}
-                    className="mt-auto w-full py-4 rounded-xl bg-zinc-900 text-white font-bold text-sm hover:bg-zinc-800 transition-all"
-                  >
-                    이 상품으로 주문하기
-                  </button>
-                </div>
-              );
-            })}
+          <div className="space-y-6">
+            <h3 className="font-black text-2xl">추천 제본 상품</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {selectedUsage.recommendedProducts.map(rec => {
+                const product = allProducts.find(p => p.id === rec.id);
+                if (!product) return null;
+                return (
+                  <div key={product.id} className="bg-white p-8 rounded-3xl border border-zinc-100 shadow-sm hover:shadow-lg transition-all flex flex-col">
+                    <h4 className="font-black text-xl text-zinc-900 mb-2">{rec.name}</h4>
+                    <p className="text-sm text-zinc-500 mb-6">{rec.description}</p>
+                    <button 
+                      onClick={() => onProductClick(product.id)}
+                      className="mt-auto w-full py-4 rounded-xl bg-emerald-600 text-white font-bold text-sm hover:bg-emerald-700 transition-all"
+                    >
+                      상품 상세 보기
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
           {/* 5. Selection Guide */}
@@ -196,26 +201,6 @@ export const UsageBasedOrdering: React.FC<UsageBasedOrderingProps> = ({ onBack, 
                 </li>
               ))}
             </ul>
-          </div>
-
-          {/* 6-8. Ordering Section (Simplified) */}
-          <div className="border-t border-zinc-100 pt-12 space-y-8">
-            <h3 className="text-2xl font-black">주문하기</h3>
-            <div className="p-6 bg-white rounded-2xl border border-zinc-100">
-              <p className="text-sm text-zinc-500 mb-4">위 추천 상품 중 하나를 선택하여 상세 페이지에서 주문을 진행해주세요.</p>
-              <div className="flex gap-4">
-                <button 
-                  className="px-6 py-3 rounded-xl bg-emerald-600 text-white font-bold text-sm hover:bg-emerald-700 flex items-center gap-2"
-                >
-                  <Upload size={16} /> 파일 업로드
-                </button>
-                <button 
-                  className="px-6 py-3 rounded-xl bg-zinc-900 text-white font-bold text-sm hover:bg-zinc-800 flex items-center gap-2"
-                >
-                  <ShoppingCart size={16} /> 장바구니
-                </button>
-              </div>
-            </div>
           </div>
         </motion.div>
       )}
