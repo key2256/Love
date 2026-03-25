@@ -118,6 +118,14 @@ service cloud.firestore {
              data.updatedAt is timestamp;
     }
 
+    function isValidUserView(data) {
+      return data.keys().hasAll(['userId', 'productId', 'viewedAt']) &&
+             data.userId is string &&
+             (isAuthenticated() ? data.userId == request.auth.uid : data.userId.matches("^naver_.*")) &&
+             data.productId is string && data.productId.size() <= 100 &&
+             data.viewedAt is timestamp;
+    }
+
     // ===============================================================
     // Collection Rules
     // ===============================================================
@@ -166,6 +174,15 @@ service cloud.firestore {
         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'updatedAt']) &&
         isValidOrder(request.resource.data)
       );
+      allow delete: if isAdmin();
+    }
+
+    match /userViews/{viewId} {
+      allow read: if (isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin())) || 
+                       (resource.data.userId.matches("^naver_.*"));
+      allow create: if (isAuthenticated() && isValidUserView(request.resource.data)) ||
+                       (request.resource.data.userId.matches("^naver_.*") && isValidUserView(request.resource.data));
+      allow update: if false;
       allow delete: if isAdmin();
     }
   }

@@ -59,6 +59,17 @@
         "updatedAt": { "type": "string", "format": "date-time", "description": "Last update timestamp" }
       },
       "required": ["userId", "items", "totalAmount", "shippingInfo", "paymentMethod", "status", "createdAt", "updatedAt"]
+    },
+    "UserView": {
+      "title": "UserView",
+      "description": "User's product viewing history",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "User's UID" },
+        "productId": { "type": "string", "description": "Product ID" },
+        "viewedAt": { "type": "string", "format": "date-time", "description": "View timestamp" }
+      },
+      "required": ["userId", "productId", "viewedAt"]
     }
   },
   "firestore": {
@@ -77,6 +88,10 @@
     "/orders/{orderId}": {
       "schema": { "$ref": "Order" },
       "description": "User's orders"
+    },
+    "/userViews/{viewId}": {
+      "schema": { "$ref": "UserView" },
+      "description": "User's product viewing history"
     }
   }
 }

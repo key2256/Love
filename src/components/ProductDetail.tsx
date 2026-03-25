@@ -34,6 +34,7 @@ import {
   Minimize2,
   RefreshCw
 } from 'lucide-react';
+import { trackView } from '../services/recommendationService';
 import { Product, Quotation, PRODUCTS, CATEGORIES, PAPER_MATERIALS, PaperMaterial, CartItem, Review } from '../types';
 import { createDefaultCartItem } from '../lib/cartUtils';
 import { QuotationCalculator } from './QuotationCalculator';
@@ -571,6 +572,10 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
   const [activeTab, setActiveTab] = useState<'calc' | 'info'>('calc');
   const { user } = useAuth();
 
+  useEffect(() => {
+    trackView(user?.uid, product.id);
+  }, [user?.uid, product.id]);
+
   const handleSaveDraft = async (options: Record<string, string>, quantity: number) => {
     if (!user) {
       toast.error('로그인이 필요한 서비스입니다.', {
@@ -757,7 +762,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
           <UsageProductDetail product={product} onProductClick={onProductClick} />
         ) : (
           <>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-24">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-24 items-start">
               {/* Left: Images */}
               <div className="space-y-4">
                 <div 
@@ -885,7 +890,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
               </div>
 
               {/* Right: Quotation Calculator */}
-              <div className="flex flex-col">
+              <div className="flex flex-col sticky top-24">
                 <ProductIntroSection product={product} />
 
                 <div className="flex gap-1 p-1.5 bg-zinc-100 rounded-[20px] my-10 w-fit">

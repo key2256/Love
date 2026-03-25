@@ -7,6 +7,7 @@ import { CategorySection } from './components/CategorySection';
 import { ProductCard } from './components/ProductCard';
 import { TrustSection } from './components/TrustSection';
 import { ProductDetail } from './components/ProductDetail';
+import { RecommendedProducts } from './components/RecommendedProducts';
 import { QuotationDocument } from './components/QuotationDocument';
 import { UsageBasedOrdering } from './components/UsageBasedOrdering';
 import { Footer } from './components/Footer';
@@ -756,6 +757,7 @@ function App() {
               initialOptions={initialDraftOptions}
               initialQuantity={initialDraftQuantity}
             />
+            <RecommendedProducts onProductClick={handleProductClick} />
           </motion.div>
         )}
 

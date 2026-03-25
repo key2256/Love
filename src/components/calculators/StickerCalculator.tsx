@@ -217,10 +217,15 @@ export const StickerCalculator: React.FC<StickerCalculatorProps> = ({
             const normalizedName = opt.name.replace(/\s/g, '');
             if (opt.name.includes('재질') || opt.name.includes('용지') || opt.name === '모양') return false;
             
+            // 접지 방향/형태는 '접지' 옵션이 '있음'일 때만 표시
+            if (['접지방향', '접지형태'].includes(normalizedName)) {
+              return selectedOptions['접지'] === '있음';
+            }
+
             const handledByIconGrid = [
               '코팅', '코팅종류', '코팅면수', '귀돌이', '귀돌이사용', '귀돌이크기', '귀돌이면수', '귀돌이방향', 
               '타공', '타공사용', '구멍크기', '타공크기', '타공설명', '명함케이스',
-              '오시', '오시줄수', '오시설명', '미싱', '미싱줄수', '미싱설명', '접지', '접지방향', '접지형태', 
+              '오시', '오시줄수', '오시설명', '미싱', '미싱줄수', '미싱설명', '접지', 
               '폴리백개별포장', '폴리백사이즈', '제작수량', '수량', '주문수량'
             ].includes(normalizedName);
             if (handledByIconGrid) return false;
