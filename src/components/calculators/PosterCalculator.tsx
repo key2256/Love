@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Settings2, ShoppingCart, Check } from 'lucide-react';
 import { Product } from '../../types';
 import { getIconForOption } from '../../lib/optionIcons';
@@ -10,6 +10,7 @@ import { ActionButtons } from './shared/ActionButtons';
 import { OptionGroup } from './shared/OptionGroup';
 import { OrderWizard } from './shared/OrderWizard';
 import { PosterPreview } from './shared/PosterPreview';
+import { MobileBottomSheet } from './shared/MobileBottomSheet';
 
 interface PosterCalculatorProps {
   product: Product;
@@ -42,6 +43,16 @@ export const PosterCalculator: React.FC<PosterCalculatorProps> = ({
   onSaveDraft,
   pattern
 }) => {
+  const [isMobile, setIsMobile] = useState(false);
+  const [openSheet, setOpenSheet] = useState<string | null>(null);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const getOption = (name: string) => product.options.find(o => o.name === name);
   
   const renderOption = (optionName: string, cols: number = 2) => {
@@ -138,7 +149,32 @@ export const PosterCalculator: React.FC<PosterCalculatorProps> = ({
 
   return (
     <div className="space-y-8">
-      <OrderWizard sections={sections} />
+      {isMobile ? (
+        <div className="space-y-4">
+          {sections.map(section => (
+            <button
+              key={section.id}
+              onClick={() => setOpenSheet(section.id)}
+              className="w-full p-6 bg-white border border-zinc-100 rounded-2xl flex items-center justify-between shadow-sm"
+            >
+              <span className="font-bold text-zinc-900">{section.title}</span>
+              <Check className="w-5 h-5 text-emerald-500" />
+            </button>
+          ))}
+          {sections.map(section => (
+            <MobileBottomSheet
+              key={section.id}
+              isOpen={openSheet === section.id}
+              onClose={() => setOpenSheet(null)}
+              title={section.title}
+            >
+              {section.children}
+            </MobileBottomSheet>
+          ))}
+        </div>
+      ) : (
+        <OrderWizard sections={sections} />
+      )}
     </div>
   );
 };

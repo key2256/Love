@@ -82,8 +82,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       toast.success('성공적으로 로그인되었습니다.');
     } catch (error: any) {
       console.error('Sign in error:', error);
-      if (error.code === 'auth/popup-closed-by-user') {
-        toast.error('로그인 팝업이 닫혔습니다. 다시 시도해주세요.');
+      if (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/user-cancelled') {
+        toast.error('로그인 시도가 취소되었습니다. 다시 시도해주세요.');
       } else {
         toast.error('로그인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
       }
