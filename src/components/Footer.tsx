@@ -1,4 +1,5 @@
 import React from 'react';
+import { getIconForCategory } from '../lib/icons';
 
 interface FooterProps {
   onNavigate: (view: any) => void;
@@ -35,7 +36,10 @@ export const Footer = ({ onNavigate, onLogoClick }: FooterProps) => {
           </div>
 
           <div>
-            <h4 className="font-bold text-zinc-900 mb-6">고객 지원</h4>
+            <h4 className="font-bold text-zinc-900 mb-6 flex items-center gap-2">
+              {React.createElement(getIconForCategory('calendar'), { size: 16 })}
+              고객 지원
+            </h4>
             <ul className="space-y-3 text-sm text-zinc-500">
               <li><button onClick={() => onNavigate('guide')} className="hover:text-zinc-900 transition-colors">제작 가이드</button></li>
               <li><button onClick={() => onNavigate('faq')} className="hover:text-zinc-900 transition-colors">자주 묻는 질문</button></li>
@@ -46,7 +50,10 @@ export const Footer = ({ onNavigate, onLogoClick }: FooterProps) => {
           </div>
 
           <div>
-            <h4 className="font-bold text-zinc-900 mb-6">Contact</h4>
+            <h4 className="font-bold text-zinc-900 mb-6 flex items-center gap-2">
+              {React.createElement(getIconForCategory('contact'), { size: 16 })}
+              Contact
+            </h4>
             <div className="text-sm text-zinc-500 space-y-3">
               <p>평일 10:00 - 18:00 (점심 12:30 - 13:30)</p>
               <p className="text-lg font-black text-zinc-900">1588-0000</p>

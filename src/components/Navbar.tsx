@@ -14,8 +14,10 @@ import {
   HelpCircle,
   Grid,
   Bookmark,
-  ShoppingBag
+  ShoppingBag,
+  Home
 } from 'lucide-react';
+import { getIconForCategory } from '../lib/icons';
 import { motion, AnimatePresence } from 'motion/react';
 import { CATEGORIES, SubCategoryGroup, PRODUCTS } from '../types';
 import { useAuth } from '../hooks/useAuth';
@@ -355,26 +357,30 @@ export const Navbar = ({
               </div>
               <button 
                 onClick={() => onNavigate('guide')} 
-                className={`text-xs font-bold transition-colors ${currentView === 'guide' ? 'text-emerald-600' : 'text-zinc-400 hover:text-zinc-900'}`}
+                className={`text-xs font-bold transition-colors flex items-center gap-2 ${currentView === 'guide' ? 'text-emerald-600' : 'text-zinc-400 hover:text-zinc-900'}`}
               >
+                {React.createElement(getIconForCategory('calendar'), { size: 16 })}
                 파일 가이드
               </button>
               <button 
                 onClick={() => onNavigate('inquiry')} 
-                className={`text-xs font-bold transition-colors ${currentView === 'inquiry' ? 'text-emerald-600' : 'text-zinc-400 hover:text-zinc-900'}`}
+                className={`text-xs font-bold transition-colors flex items-center gap-2 ${currentView === 'inquiry' ? 'text-emerald-600' : 'text-zinc-400 hover:text-zinc-900'}`}
               >
+                {React.createElement(getIconForCategory('pricing'), { size: 16 })}
                 견적 문의
               </button>
               <button 
                 onClick={() => onNavigate('portfolio')} 
-                className={`text-xs font-bold transition-colors ${currentView === 'portfolio' ? 'text-emerald-600' : 'text-zinc-400 hover:text-zinc-900'}`}
+                className={`text-xs font-bold transition-colors flex items-center gap-2 ${currentView === 'portfolio' ? 'text-emerald-600' : 'text-zinc-400 hover:text-zinc-900'}`}
               >
+                {React.createElement(getIconForCategory('logo'), { size: 16 })}
                 제작 사례
               </button>
               <button 
                 onClick={() => onNavigate('faq')} 
-                className={`text-xs font-bold transition-colors ${currentView === 'faq' ? 'text-emerald-600' : 'text-zinc-400 hover:text-zinc-900'}`}
+                className={`text-xs font-bold transition-colors flex items-center gap-2 ${currentView === 'faq' ? 'text-emerald-600' : 'text-zinc-400 hover:text-zinc-900'}`}
               >
+                {React.createElement(getIconForCategory('settings'), { size: 16 })}
                 자주 묻는 질문
               </button>
             </div>
@@ -392,7 +398,7 @@ export const Navbar = ({
             </button>
             <button 
               onClick={onDraftsClick}
-              className={`p-2 rounded-full transition-colors relative ${currentView === 'drafts' ? 'text-emerald-600 bg-emerald-50' : 'text-zinc-600 hover:bg-zinc-100'}`}
+              className={`hidden md:flex p-2 rounded-full transition-colors relative ${currentView === 'drafts' ? 'text-emerald-600 bg-emerald-50' : 'text-zinc-600 hover:bg-zinc-100'}`}
               title="임시저장 견적"
             >
               <Bookmark size={20} />

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Navbar } from './components/Navbar';
+import { BottomNav } from './components/BottomNav';
 import { Hero } from './components/Hero';
 import { CategorySection } from './components/CategorySection';
 import { ProductCard } from './components/ProductCard';
@@ -398,6 +399,19 @@ function App() {
         isOpen={isAuthModalOpen} 
         onClose={() => setIsAuthModalOpen(false)} 
         initialMode={authModalMode}
+      />
+
+      <BottomNav 
+        onNavigate={onNavigate}
+        onCartClick={() => setShowCart(true)}
+        onProfileClick={() => onNavigate('profile')}
+        onHomeClick={handleLogoClick}
+        onSearchClick={() => {
+          setView('category');
+          setActiveCategory('all');
+          setActiveSubCategory('all');
+        }}
+        cartCount={cart.length}
       />
 
       <Cart 
