@@ -847,12 +847,14 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
                     <>
                       <button 
                         onClick={(e) => { e.stopPropagation(); prevImage(); }}
+                        aria-label="이전 이미지"
                         className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 backdrop-blur-md rounded-2xl flex items-center justify-center text-zinc-900 shadow-xl border border-white/20 hover:bg-white transition-all opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0"
                       >
                         <ChevronLeft size={24} />
                       </button>
                       <button 
                         onClick={(e) => { e.stopPropagation(); nextImage(); }}
+                        aria-label="다음 이미지"
                         className="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 backdrop-blur-md rounded-2xl flex items-center justify-center text-zinc-900 shadow-xl border border-white/20 hover:bg-white transition-all opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0"
                       >
                         <ChevronRight size={24} />

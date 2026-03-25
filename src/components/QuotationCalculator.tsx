@@ -11,6 +11,7 @@ import { MemoPadCalculator } from './calculators/MemoPadCalculator';
 import { NoteCalculator } from './calculators/NoteCalculator';
 import { DrawingBookCalculator } from './calculators/DrawingBookCalculator';
 import { FoldedBusinessCardCalculator } from './calculators/FoldedBusinessCardCalculator';
+import { GeneralBindingCalculator } from './calculators/GeneralBindingCalculator';
 import { SaddleBindingCalculator } from './calculators/SaddleBindingCalculator';
 import { PerfectBindingCalculator } from './calculators/PerfectBindingCalculator';
 import { SpringBindingCalculator } from './calculators/SpringBindingCalculator';
@@ -73,6 +74,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({
     if (product.id === 'bc-template') return 'DESIGN_CARD';
     if (product.id === 'bc-standard' || product.id === 'bc-premium') return 'BUSINESS_CARD';
     if (product.id === 'bc-folded') return 'FOLDED_BUSINESS_CARD';
+    if (product.category === 'binding-booklet') return 'GENERAL_BINDING';
     if (product.id === 'binding-saddle') return 'SADDLE_BINDING';
     if (product.id === 'binding-wireless') return 'PERFECT_BINDING';
     if (product.id === 'binding-spring') return 'SPRING_BINDING';
@@ -135,6 +137,8 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({
         return <FoldedBusinessCardCalculator {...calculatorProps} />;
       case 'SADDLE_BINDING':
         return <SaddleBindingCalculator {...calculatorProps} pattern={pattern} />;
+      case 'GENERAL_BINDING':
+        return <GeneralBindingCalculator {...calculatorProps} pattern={pattern} />;
       case 'PERFECT_BINDING':
         return <PerfectBindingCalculator {...calculatorProps} pattern={pattern} />;
       case 'SPRING_BINDING':

@@ -14,4 +14,7 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+  *:focus-visible {
+    @apply outline-none ring-2 ring-emerald-500 ring-offset-2;
+  }
 }
