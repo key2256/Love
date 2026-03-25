@@ -195,7 +195,15 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
       active: selectedOptions['명함케이스'] !== '없음' && selectedOptions['명함케이스'] !== undefined, 
       hidden: !config?.allowedPostProcessing?.includes('명함케이스')
     }
-  ].filter(item => !item.hidden);
+  ].filter(item => {
+    if (pattern === 'BUSINESS_CARD' && product.id === 'bc-standard') {
+      return ['코팅', '코팅 종류', '귀돌이', '타공', '케이스'].includes(item.name);
+    }
+    if (pattern === 'FOLDED_BUSINESS_CARD') {
+      return ['코팅', '귀돌이', '타공', '오시', '접지', '특수 효과', '케이스'].includes(item.name);
+    }
+    return !item.hidden;
+  });
 
   return (
     <div className="space-y-6 pt-4 border-t border-zinc-100">

@@ -185,10 +185,13 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
         >
           {currentStep === 0 && (
             <div className="space-y-8">
-              {product.options.filter(opt => opt.name.includes('용지')).map((option) => (
+              {product.options.filter(opt => {
+                if (opt.name === '용지 타입' || opt.name === '상세 용지 (고급지)') return false;
+                return opt.name.includes('용지');
+              }).map((option) => (
                 <OptionGroup 
                   key={option.name} 
-                  label={option.name} 
+                  label="용지 선택" 
                   icon={Layers}
                   tooltip={FOLDED_CARD_TERM_TOOLTIPS['용지']}
                 >
@@ -207,6 +210,10 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
               {product.options.filter(opt => {
                 const normalizedName = opt.name.replace(/\s/g, '');
                 if (opt.name.includes('용지')) return false;
+                
+                // Keep 규격, 가로형, 인쇄도수
+                const allowedOptions = ['규격', '규격(mm)', '가로형', '인쇄도수', '인쇄 도수'];
+                if (allowedOptions.includes(opt.name)) return true;
                 
                 const handledByIconGrid = [
                   '코팅', '코팅종류', '코팅면수', '귀돌이', '귀돌이사용', '귀돌이크기', '귀돌이면수', '귀돌이방향', 

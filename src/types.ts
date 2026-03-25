@@ -3851,9 +3851,13 @@ export const PRODUCTS: Product[] = [
         ...POSTCARD_COMMON_OPTIONS.PAPER_GROUP,
         values: [
           { label: '기본 대중형', priceModifier: 0 },
+          { label: '고급 감성형', priceModifier: 0 },
+          { label: '친환경/내추럴형', priceModifier: 0 },
         ]
       },
       POSTCARD_COMMON_OPTIONS.PAPER_SELECT_BASIC,
+      POSTCARD_COMMON_OPTIONS.PAPER_SELECT_PREMIUM,
+      POSTCARD_COMMON_OPTIONS.PAPER_SELECT_ECO,
       POSTCARD_COMMON_OPTIONS.PRINT_COLOR,
       POSTCARD_COMMON_OPTIONS.WHITE_INK,
       ...POSTCARD_COMMON_OPTIONS.SHAPE_CUTTING,
@@ -4065,6 +4069,14 @@ export const PRODUCTS: Product[] = [
     minQuantity: 100,
     basePrice: 14700,
     options: [
+      {
+        name: '규격(mm)',
+        type: 'select',
+        values: [
+          { label: '90x50', priceModifier: 0 },
+          { label: '직접입력', priceModifier: 0 },
+        ]
+      },
       {
         name: '접지 형태',
         type: 'radio',

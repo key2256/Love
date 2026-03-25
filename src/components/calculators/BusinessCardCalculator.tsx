@@ -177,7 +177,7 @@ export const BusinessCardCalculator: React.FC<BusinessCardCalculatorProps> = ({
 
     return (
       <div className="grid grid-cols-2 gap-3">
-        {option.values?.map((val: any, index: number) => (
+        {option.values?.filter((val: any) => val.label !== '직접입력').map((val: any, index: number) => (
           <button
             key={val.label + index}
             onClick={() => handleOptionChange(option.name, val.label)}
@@ -238,11 +238,16 @@ export const BusinessCardCalculator: React.FC<BusinessCardCalculatorProps> = ({
                 if (forbiddenKeywords.some(keyword => opt.name.includes(keyword))) return false;
               }
               
+              // Remove specific options for premium business cards
+              if (product.id === 'bc-premium') {
+                const allowedOptions = ['인쇄도수', '규격(mm)'];
+                if (!allowedOptions.includes(opt.name)) return false;
+              }
+              
               const handledByIconGrid = [
                 '코팅', '코팅종류', '코팅면수', '귀돌이', '귀돌이사용', '귀돌이크기', '귀돌이면수', '귀돌이방향', 
                 '타공', '타공사용', '구멍크기', '타공크기', '타공설명', '명함케이스',
-                '오시', '오시줄수', '오시설명', '미싱', '미싱줄수', '미싱설명', '접지', '접지방향', '접지형태', 
-                '폴리백개별포장', '폴리백사이즈', '제작수량', '수량', '주문수량', '디자인템플릿'
+                '제작수량', '수량', '주문수량', '디자인템플릿'
               ].includes(normalizedName);
               if (handledByIconGrid) return false;
 
