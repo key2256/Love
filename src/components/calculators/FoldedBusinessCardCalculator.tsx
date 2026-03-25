@@ -55,7 +55,8 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
   const [expandedPostOption, setExpandedPostOption] = useState<string | null>(null);
 
   const steps = [
-    { title: '용지 및 상세 옵션', icon: Box },
+    { title: '용지 선택', icon: Box },
+    { title: '상세 옵션', icon: Settings2 },
     { title: '주문 정보', icon: ShoppingCart }
   ];
 
@@ -209,7 +210,7 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
         >
           {currentStep === 0 && (
             <div className="space-y-8">
-              {product.options.filter(opt => opt.name.includes('용지')).slice(0, 1).map((option) => (
+              {product.options.filter(opt => opt.name === '용지').map((option) => (
                 <OptionGroup 
                   key={option.name} 
                   label="용지 선택" 
@@ -220,6 +221,15 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
                 </OptionGroup>
               ))}
               
+              <StepNavigation 
+                onNext={() => setCurrentStep(1)} 
+                nextLabel="상세 옵션 선택하기"
+              />
+            </div>
+          )}
+
+          {currentStep === 1 && (
+            <div className="space-y-8">
               {product.options.filter(opt => {
                 const allowedOptions = ['규격', '규격(mm)', '인쇄도수', '인쇄 도수'];
                 return allowedOptions.includes(opt.name);
@@ -239,19 +249,20 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
                 selectedBusinessCardGroup={selectedBusinessCardGroup}
               />
               <StepNavigation 
-                onNext={() => setCurrentStep(1)} 
+                onPrev={() => setCurrentStep(0)}
+                onNext={() => setCurrentStep(2)} 
                 nextLabel="주문 정보 입력하기"
               />
             </div>
           )}
 
-          {currentStep === 1 && (
+          {currentStep === 2 && (
             <div className="space-y-8">
               <QuantitySection product={product} quantity={quantity} setQuantity={setQuantity} />
               <OrderTitleSection />
               <FileUploadSection />
               <StepNavigation 
-                onPrev={() => setCurrentStep(0)} 
+                onPrev={() => setCurrentStep(1)} 
               />
             </div>
           )}

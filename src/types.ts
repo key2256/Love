@@ -4068,12 +4068,15 @@ export const PRODUCTS: Product[] = [
     minQuantity: 100,
     basePrice: 14700,
     options: [
+      BUSINESS_CARD_COMMON_OPTIONS.SIZE,
       {
-        name: '규격(mm)',
+        name: '용지',
         type: 'select',
         values: [
-          { label: '90x50', priceModifier: 0 },
-          { label: '직접입력', priceModifier: 0 },
+          ...BUSINESS_CARD_MATERIALS.filter(m => m.group === '기본 대중형').map(m => ({
+            label: `${m.name} ${m.weight}`,
+            priceModifier: 0
+          }))
         ]
       },
       {
@@ -4084,58 +4087,14 @@ export const PRODUCTS: Product[] = [
           { label: '3단 명함', priceModifier: 5000 },
         ]
       },
-      {
-        name: '방향',
-        type: 'radio',
-        values: [
-          { label: '가로형', priceModifier: 0 },
-          { label: '세로형', priceModifier: 0 },
-        ]
-      },
-      {
-        name: '용지 타입',
-        type: 'radio',
-        values: [
-          { label: '일반지', priceModifier: 0 },
-          { label: '고급지', priceModifier: 0 },
-        ]
-      },
-      {
-        name: '상세 용지 (일반지)',
-        type: 'select',
-        visibleIf: { optionName: '용지 타입', value: '일반지' },
-        values: [
-          { label: '아트지 250g', priceModifier: 0 },
-          { label: '아트지 300g', priceModifier: 500 },
-          { label: '스노우 250g', priceModifier: 0 },
-          { label: '스노우 300g', priceModifier: 500 },
-          { label: '모조지 220g', priceModifier: 0 },
-          { label: '크라프트보드 240g', priceModifier: 1000 },
-          { label: '인바이런먼트 크라프트 216g', priceModifier: 1500 },
-        ]
-      },
-      {
-        name: '상세 용지 (고급지)',
-        type: 'select',
-        visibleIf: { optionName: '용지 타입', value: '고급지' },
-        values: [
-          { label: '반누보화이트 250g', priceModifier: 2000 },
-          { label: '랑데뷰내츄럴 240g', priceModifier: 2500 },
-          { label: '랑데뷰울트라화이트 240g', priceModifier: 2500 },
-          { label: '몽블랑화이트 240g', priceModifier: 2500 },
-          { label: '띤또레또 250g', priceModifier: 3000 },
-          { label: '골드시리오펄 300g', priceModifier: 4000 },
-        ]
-      },
       BUSINESS_CARD_COMMON_OPTIONS.PRINT_COLOR,
       BUSINESS_CARD_COMMON_OPTIONS.WHITE_INK,
       ...BUSINESS_CARD_COMMON_OPTIONS.COATING,
       ...BUSINESS_CARD_COMMON_OPTIONS.ROUNDING,
       ...BUSINESS_CARD_COMMON_OPTIONS.PUNCHING,
       ...BUSINESS_CARD_COMMON_OPTIONS.SHAPE_CUTTING,
-      ...BUSINESS_CARD_COMMON_OPTIONS.CREASING,
+      ...BUSINESS_CARD_COMMON_OPTIONS.CREASING.filter(opt => opt.name !== '접지 형태'),
       ...BUSINESS_CARD_COMMON_OPTIONS.PERFORATION,
-      ...BUSINESS_CARD_COMMON_OPTIONS.FOLDING,
       ...BUSINESS_CARD_COMMON_OPTIONS.PACKAGING,
       BUSINESS_CARD_COMMON_OPTIONS.POST_PROCESSING,
       BUSINESS_CARD_COMMON_OPTIONS.CASE

@@ -77,7 +77,7 @@ export const SummarySection: React.FC<SummarySectionProps> = ({
                   displayVal = `직접입력 (${customSize.width || 0}x${customSize.height || 0}mm)`;
                 }
                 return (
-                  <span key={key} className="px-2 py-1 bg-white rounded-md text-[10px] font-bold text-zinc-400 border border-zinc-100">
+                  <span key={`${key}-${val}`} className="px-2 py-1 bg-white rounded-md text-[10px] font-bold text-zinc-400 border border-zinc-100">
                     {displayVal}
                   </span>
                 );

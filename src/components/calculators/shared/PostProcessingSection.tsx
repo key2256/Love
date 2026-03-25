@@ -207,7 +207,7 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
       return ['코팅', '코팅 종류', '귀돌이', '타공', '케이스'].includes(item.name);
     }
     if (pattern === 'FOLDED_BUSINESS_CARD') {
-      return ['코팅', '귀돌이', '타공', '오시', '접지', '특수 효과', '케이스'].includes(item.name);
+      return ['코팅', '귀돌이', '타공', '오시', '접지', '특수 효과', '케이스'].includes(item.name) && !item.hidden;
     }
     return !item.hidden;
   });
@@ -235,28 +235,32 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
         <div className="grid grid-cols-4 gap-3">
           {postOptions.map(item => {
             const isExpanded = expandedPostOption === item.id;
+            const isDisabled = (item as any).disabled;
             return (
               <div
                 key={item.id}
-                onClick={() => setExpandedPostOption(isExpanded ? null : item.id)}
+                onClick={() => !isDisabled && setExpandedPostOption(isExpanded ? null : item.id)}
                 onKeyDown={(e) => {
+                  if (isDisabled) return;
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     setExpandedPostOption(isExpanded ? null : item.id);
                   }
                 }}
                 role="button"
-                tabIndex={0}
-                className={`flex flex-col items-center gap-2 group transition-all cursor-pointer outline-none ${
-                  isExpanded ? 'scale-110' : 'hover:scale-105'
+                tabIndex={isDisabled ? -1 : 0}
+                className={`flex flex-col items-center gap-2 group transition-all outline-none ${
+                  isDisabled ? 'opacity-40 cursor-not-allowed' : isExpanded ? 'scale-110 cursor-pointer' : 'hover:scale-105 cursor-pointer'
                 }`}
               >
                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all shadow-sm ${
-                  isExpanded 
-                    ? 'bg-emerald-600 text-white shadow-emerald-600/20' 
-                    : item.active
-                      ? 'bg-emerald-50 text-emerald-600 border border-emerald-100'
-                      : 'bg-white text-zinc-400 border border-zinc-100 group-hover:border-zinc-300'
+                  isDisabled
+                    ? 'bg-zinc-100 text-zinc-300 border border-zinc-200'
+                    : isExpanded 
+                      ? 'bg-emerald-600 text-white shadow-emerald-600/20' 
+                      : item.active
+                        ? 'bg-emerald-50 text-emerald-600 border border-emerald-100'
+                        : 'bg-white text-zinc-400 border border-zinc-100 group-hover:border-zinc-300'
                 }`}>
                   {item.icon}
                 </div>

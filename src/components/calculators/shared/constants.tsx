@@ -286,7 +286,7 @@ export const PRODUCT_CONFIG: Record<string, {
   },
   'bc-folded': {
     defaultGroup: '기본 대중형',
-    groups: ['기본 대중형', '고급 감성형'],
+    groups: ['기본 대중형'],
     allowedPostProcessing: ['코팅', '귀돌이', '타공', '오시', '미싱', '폴리백 개별포장', '후가공 옵션', '명함케이스'],
   }
 };
