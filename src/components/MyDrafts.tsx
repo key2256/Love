@@ -9,9 +9,10 @@ import { PRODUCTS } from '../types';
 interface MyDraftsProps {
   onBack: () => void;
   onLoadDraft: (draft: Draft) => void;
+  onAuthClick: (mode: 'login' | 'signup' | 'reset') => void;
 }
 
-export const MyDrafts: React.FC<MyDraftsProps> = ({ onBack, onLoadDraft }) => {
+export const MyDrafts: React.FC<MyDraftsProps> = ({ onBack, onLoadDraft, onAuthClick }) => {
   const { user } = useAuth();
   const [drafts, setDrafts] = useState<Draft[]>([]);
   const [loading, setLoading] = useState(true);
@@ -58,8 +59,14 @@ export const MyDrafts: React.FC<MyDraftsProps> = ({ onBack, onLoadDraft }) => {
         <h3 className="text-2xl font-black text-zinc-900 mb-2">로그인이 필요합니다</h3>
         <p className="text-zinc-500 mb-8">저장된 견적을 확인하려면 로그인을 해주세요.</p>
         <button 
+          onClick={() => onAuthClick('login')}
+          className="px-8 py-3 rounded-2xl bg-emerald-600 text-white font-bold text-sm hover:bg-emerald-700 transition-all mb-3 w-full max-w-[200px]"
+        >
+          로그인하기
+        </button>
+        <button 
           onClick={onBack}
-          className="px-8 py-3 rounded-2xl bg-zinc-900 text-white font-bold text-sm hover:bg-zinc-800 transition-all"
+          className="px-8 py-3 rounded-2xl bg-zinc-100 text-zinc-600 font-bold text-sm hover:bg-zinc-200 transition-all w-full max-w-[200px]"
         >
           홈으로 돌아가기
         </button>

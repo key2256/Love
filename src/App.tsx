@@ -15,6 +15,7 @@ import { InquiryForm } from './components/InquiryForm';
 import { Cart } from './components/Cart';
 import { MyDrafts } from './components/MyDrafts';
 import MyOrders from './components/MyOrders';
+import { AuthModal } from './components/AuthModal';
 import { Draft } from './services/draftService';
 import { PRODUCTS, CATEGORIES, Product, Quotation, ORDER_STEPS, PORTFOLIO_ITEMS, SUBCATEGORY_METADATA, SubCategoryGroup, CartItem } from './types';
 import { createDefaultCartItem } from './lib/cartUtils';
@@ -49,6 +50,8 @@ function App() {
   const [bypassMapCheck, setBypassMapCheck] = useState(false);
   const [initialDraftOptions, setInitialDraftOptions] = useState<Record<string, string> | undefined>(undefined);
   const [initialDraftQuantity, setInitialDraftQuantity] = useState<number | undefined>(undefined);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState<'login' | 'signup' | 'reset'>('login');
 
   const addToCart = (item: CartItem) => {
     setCart(prev => {
@@ -202,6 +205,11 @@ function App() {
       setInitialDraftQuantity(undefined);
     }
     window.scrollTo(0, 0);
+  };
+
+  const openAuthModal = (mode: 'login' | 'signup' | 'reset' = 'login') => {
+    setAuthModalMode(mode);
+    setIsAuthModalOpen(true);
   };
 
   const handleLoadDraft = (draft: Draft) => {
@@ -378,6 +386,13 @@ function App() {
         onCartClick={() => setShowCart(true)}
         onDraftsClick={() => onNavigate('drafts')}
         onOrdersClick={() => onNavigate('orders')}
+        onAuthClick={openAuthModal}
+      />
+
+      <AuthModal 
+        isOpen={isAuthModalOpen} 
+        onClose={() => setIsAuthModalOpen(false)} 
+        initialMode={authModalMode}
       />
 
       <Cart 
@@ -714,6 +729,7 @@ function App() {
               onProductClick={handleProductClick}
               onQuotationGenerated={handleQuotationGenerated}
               onAddToCart={addToCart}
+              onAuthClick={openAuthModal}
               initialOptions={initialDraftOptions}
               initialQuantity={initialDraftQuantity}
             />
@@ -730,6 +746,7 @@ function App() {
             <MyDrafts 
               onBack={() => setView('home')}
               onLoadDraft={handleLoadDraft}
+              onAuthClick={openAuthModal}
             />
           </motion.div>
         )}

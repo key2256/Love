@@ -552,6 +552,7 @@ interface ProductDetailProps {
   onProductClick: (id: string) => void;
   onQuotationGenerated: (quotation: Quotation) => void;
   onAddToCart: (item: CartItem) => void;
+  onAuthClick: (mode: 'login' | 'signup' | 'reset') => void;
   initialOptions?: Record<string, string>;
   initialQuantity?: number;
 }
@@ -562,20 +563,21 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
   onProductClick, 
   onQuotationGenerated, 
   onAddToCart,
+  onAuthClick,
   initialOptions,
   initialQuantity
 }) => {
   const isUsageBased = product.id.startsWith('usage-');
   const [activeTab, setActiveTab] = useState<'calc' | 'info'>('calc');
-  const { user, signIn } = useAuth();
+  const { user } = useAuth();
 
   const handleSaveDraft = async (options: Record<string, string>, quantity: number) => {
     if (!user) {
       toast.error('로그인이 필요한 서비스입니다.', {
-        description: '임시저장을 위해 구글 로그인을 진행해주세요.',
+        description: '임시저장을 위해 로그인을 진행해주세요.',
         action: {
           label: '로그인',
-          onClick: () => signIn()
+          onClick: () => onAuthClick('login')
         }
       });
       return;
