@@ -149,3 +149,9 @@ export const POSTCARD_CONFIG: Record<string, {
     allowedGroups: ['기본 대중형', '고급 감성형'],
   }
 };
+
+export const BUSINESS_CARD_TEMPLATES = [
+  { id: 'tpl-basic-1', name: '심플 화이트', imageUrl: 'https://picsum.photos/seed/bizcard1/200/300' },
+  { id: 'tpl-basic-2', name: '모던 블랙', imageUrl: 'https://picsum.photos/seed/bizcard2/200/300' },
+  { id: 'tpl-basic-3', name: '내추럴 크라프트', imageUrl: 'https://picsum.photos/seed/bizcard3/200/300' },
+];

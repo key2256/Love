@@ -11,6 +11,7 @@ import { NotesSection } from './shared/NotesSection';
 import { PostProcessingSection } from './shared/PostProcessingSection';
 import { OptionGroup } from './shared/OptionGroup';
 import { SHAPE_ICONS, PRODUCT_CONFIG } from './shared/constants';
+import { StickerPreview } from './shared/StickerPreview';
 import { CalculatorAccordion } from './shared/CalculatorAccordion';
 
 interface StickerCalculatorProps {
@@ -199,6 +200,7 @@ export const StickerCalculator: React.FC<StickerCalculatorProps> = ({
       icon: Box,
       children: (
         <div className="space-y-8">
+          <StickerPreview selectedOptions={selectedOptions} />
           {product.options.filter(opt => opt.name.includes('재질') || opt.name.includes('용지') || opt.name === '모양').map((option) => (
             <OptionGroup key={option.name} label={option.name} icon={option.name === '모양' ? undefined : Layers}>
               {renderOption(option)}

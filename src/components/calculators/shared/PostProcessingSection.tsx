@@ -28,6 +28,7 @@ interface PostProcessingSectionProps {
   expandedPostOption: string | null;
   setExpandedPostOption: (option: string | null) => void;
   materialOptionName?: string;
+  isTemplateProduct?: boolean;
 }
 
 export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
@@ -37,7 +38,8 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
   pattern,
   expandedPostOption,
   setExpandedPostOption,
-  materialOptionName
+  materialOptionName,
+  isTemplateProduct
 }) => {
   const getPriceLabel = (optionName: string, valueLabel: string) => {
     const option = product.options.find(o => o.name === optionName);
@@ -75,6 +77,7 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
   };
 
   const config = PRODUCT_CONFIG[product.id];
+  const isTemplate = isTemplateProduct || product.id === 'bc-template';
 
   const postOptions = [
     { 
@@ -82,7 +85,7 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
       name: '모양커팅', 
       icon: <Shapes className="w-5 h-5" />, 
       active: true, 
-      hidden: !config?.allowedPostProcessing?.includes('모양커팅')
+      hidden: !config?.allowedPostProcessing?.includes('모양커팅') || isTemplate
     },
     { 
       id: 'coating', 
@@ -110,28 +113,28 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
       name: '오시', 
       icon: <Paintbrush className="w-5 h-5" />, 
       active: selectedOptions['오시'] === '있음', 
-      hidden: !config?.allowedPostProcessing?.includes('오시')
+      hidden: !config?.allowedPostProcessing?.includes('오시') || isTemplate
     },
     { 
       id: 'perforation', 
       name: '미싱', 
       icon: <Scissors className="w-5 h-5" />, 
       active: selectedOptions['미싱'] === '있음', 
-      hidden: !config?.allowedPostProcessing?.includes('미싱')
+      hidden: !config?.allowedPostProcessing?.includes('미싱') || isTemplate
     },
     { 
       id: 'folding', 
       name: '접지', 
       icon: <FileUp className="w-5 h-5" />, 
       active: selectedOptions['접지'] === '있음', 
-      hidden: !config?.allowedPostProcessing?.includes('접지')
+      hidden: !config?.allowedPostProcessing?.includes('접지') || isTemplate
     },
     { 
       id: 'packaging', 
       name: '포장', 
       icon: <ShoppingCart className="w-5 h-5" />, 
       active: selectedOptions['폴리백 개별포장'] === '있음' || selectedOptions['폴리백 개별 포장'] === '있음', 
-      hidden: !config?.allowedPostProcessing?.includes('폴리백 개별포장') && !config?.allowedPostProcessing?.includes('폴리백 개별 포장')
+      hidden: (!config?.allowedPostProcessing?.includes('폴리백 개별포장') && !config?.allowedPostProcessing?.includes('폴리백 개별 포장')) || isTemplate
     },
     { 
       id: 'white-printing', 
@@ -139,14 +142,14 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
       icon: <Paintbrush className="w-5 h-5" />, 
       active: selectedOptions['화이트 인쇄'] === '있음', 
       hidden: !config?.allowedPostProcessing?.includes('화이트 인쇄') || 
-              (materialOptionName ? selectedOptions[materialOptionName] !== '투명/PET' : (selectedOptions['재질'] !== '투명/PET' && selectedOptions['용지'] !== '투명/PET'))
+              (materialOptionName ? selectedOptions[materialOptionName] !== '투명/PET' : (selectedOptions['재질'] !== '투명/PET' && selectedOptions['용지'] !== '투명/PET')) || isTemplate
     },
     { 
       id: 'special-effects', 
       name: '특수 효과', 
       icon: <Sparkles className="w-5 h-5" />, 
       active: selectedOptions['후가공 옵션'] !== '없음' && selectedOptions['후가공 옵션'] !== undefined, 
-      hidden: !config?.allowedPostProcessing?.includes('후가공 옵션')
+      hidden: !config?.allowedPostProcessing?.includes('후가공 옵션') || isTemplate
     },
     { 
       id: 'case', 

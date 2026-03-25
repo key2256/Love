@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Box, Layers, Settings2, ShoppingCart } from 'lucide-react';
 import { Product, BUSINESS_CARD_MATERIALS } from '../../types';
+import { BUSINESS_CARD_TEMPLATES } from './constants';
 import { QuantitySection } from './shared/QuantitySection';
 import { SummarySection } from './shared/SummarySection';
 import { FileUploadSection } from './shared/FileUploadSection';
@@ -176,7 +177,7 @@ export const BusinessCardCalculator: React.FC<BusinessCardCalculatorProps> = ({
     {
       id: 'basic',
       title: '용지 선택',
-      icon: Box,
+      icon: Layers,
       children: (
         <div className="space-y-8">
           {product.options.filter(opt => opt.name.includes('용지')).map((option) => (
@@ -197,11 +198,17 @@ export const BusinessCardCalculator: React.FC<BusinessCardCalculatorProps> = ({
             const normalizedName = opt.name.replace(/\s/g, '');
             if (opt.name.includes('용지')) return false;
             
+            // Filter out forbidden options for template products
+            if (product.id === 'bc-template') {
+              const forbiddenKeywords = ['화이트', '모양', '템플릿', '후가공'];
+              if (forbiddenKeywords.some(keyword => opt.name.includes(keyword))) return false;
+            }
+            
             const handledByIconGrid = [
               '코팅', '코팅종류', '코팅면수', '귀돌이', '귀돌이사용', '귀돌이크기', '귀돌이면수', '귀돌이방향', 
               '타공', '타공사용', '구멍크기', '타공크기', '타공설명', '명함케이스',
               '오시', '오시줄수', '오시설명', '미싱', '미싱줄수', '미싱설명', '접지', '접지방향', '접지형태', 
-              '폴리백개별포장', '폴리백사이즈', '제작수량', '수량', '주문수량'
+              '폴리백개별포장', '폴리백사이즈', '제작수량', '수량', '주문수량', '디자인템플릿'
             ].includes(normalizedName);
             if (handledByIconGrid) return false;
 
@@ -217,14 +224,17 @@ export const BusinessCardCalculator: React.FC<BusinessCardCalculatorProps> = ({
             </OptionGroup>
           ))}
 
-          <PostProcessingSection 
-            product={product} 
-            selectedOptions={selectedOptions} 
-            handleOptionChange={handleOptionChange} 
-            pattern="BUSINESS_CARD"
-            expandedPostOption={expandedPostOption}
-            setExpandedPostOption={setExpandedPostOption}
-          />
+          {product.id !== 'bc-template' && (
+            <PostProcessingSection 
+              product={product} 
+              selectedOptions={selectedOptions} 
+              handleOptionChange={handleOptionChange} 
+              pattern="BUSINESS_CARD"
+              expandedPostOption={expandedPostOption}
+              setExpandedPostOption={setExpandedPostOption}
+              isTemplateProduct={product.id === 'bc-template'}
+            />
+          )}
         </div>
       )
     },
