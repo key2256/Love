@@ -24,33 +24,93 @@ const STATUS_CONFIG = {
   pending: {
     label: '결제대기',
     icon: Clock,
-    color: 'text-amber-600 bg-amber-50 border-amber-100',
+    color: 'text-amber-700 bg-amber-50 border-amber-200',
+    pulse: 'bg-amber-400',
     step: 1
   },
   processing: {
     label: '제작중',
     icon: Package,
-    color: 'text-blue-600 bg-blue-50 border-blue-100',
+    color: 'text-blue-700 bg-blue-50 border-blue-200',
+    pulse: 'bg-blue-400',
     step: 2
   },
   shipped: {
     label: '배송중',
     icon: Truck,
-    color: 'text-indigo-600 bg-indigo-50 border-indigo-100',
+    color: 'text-indigo-700 bg-indigo-50 border-indigo-200',
+    pulse: 'bg-indigo-400',
     step: 3
   },
   delivered: {
     label: '배송완료',
     icon: CheckCircle2,
-    color: 'text-emerald-600 bg-emerald-50 border-emerald-100',
+    color: 'text-emerald-700 bg-emerald-50 border-emerald-200',
+    pulse: null,
     step: 4
   },
   cancelled: {
     label: '주문취소',
     icon: AlertCircle,
-    color: 'text-rose-600 bg-rose-50 border-rose-100',
+    color: 'text-rose-700 bg-rose-50 border-rose-200',
+    pulse: null,
     step: 0
   }
+};
+
+const OrderStepper = ({ currentStatus }: { currentStatus: string }) => {
+  const steps = [
+    { key: 'pending', label: '결제대기' },
+    { key: 'processing', label: '제작중' },
+    { key: 'shipped', label: '배송중' },
+    { key: 'delivered', label: '배송완료' }
+  ];
+
+  const currentStepIndex = steps.findIndex(s => s.key === currentStatus);
+  const isCancelled = currentStatus === 'cancelled';
+
+  if (isCancelled) return null;
+
+  return (
+    <div className="mt-6 mb-2 px-2">
+      <div className="relative flex justify-between">
+        {/* Progress Line */}
+        <div className="absolute top-1/2 left-0 w-full h-0.5 bg-zinc-100 -translate-y-1/2 z-0" />
+        <div 
+          className="absolute top-1/2 left-0 h-0.5 bg-zinc-900 -translate-y-1/2 z-0 transition-all duration-500" 
+          style={{ width: `${Math.max(0, currentStepIndex) * (100 / (steps.length - 1))}%` }}
+        />
+
+        {steps.map((step, index) => {
+          const isActive = index <= currentStepIndex;
+          const isCurrent = index === currentStepIndex;
+          const Config = STATUS_CONFIG[step.key as keyof typeof STATUS_CONFIG];
+          const StepIcon = Config.icon;
+
+          return (
+            <div key={step.key} className="relative z-10 flex flex-col items-center">
+              <div 
+                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 border-2 ${
+                  isCurrent 
+                    ? 'bg-zinc-900 border-zinc-900 text-white scale-110 shadow-lg shadow-zinc-200' 
+                    : isActive 
+                      ? 'bg-white border-zinc-900 text-zinc-900' 
+                      : 'bg-white border-zinc-200 text-zinc-300'
+                }`}
+              >
+                <StepIcon size={14} />
+              </div>
+              <span className={`mt-2 text-[10px] font-bold whitespace-nowrap ${
+                isCurrent ? 'text-zinc-900' : isActive ? 'text-zinc-500' : 'text-zinc-300'
+              }`}>
+                {step.label}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
 };
 
 export default function MyOrders() {
@@ -59,6 +119,8 @@ export default function MyOrders() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [cancellingOrderId, setCancellingOrderId] = useState<string | null>(null);
+
+  const orderToCancel = orders.find(o => o.id === cancellingOrderId);
 
   const handleCancelOrder = async (orderId: string) => {
     try {
@@ -220,13 +282,21 @@ export default function MyOrders() {
                             ))}
                           </div>
                         </div>
-                        <div className={`px-3 py-1 rounded-full border text-xs font-bold flex items-center gap-1.5 ${config.color}`}>
-                          <StatusIcon size={12} />
+                        <div className={`px-4 py-1.5 rounded-full border text-xs font-black flex items-center gap-2 shadow-sm ${config.color}`}>
+                          {config.pulse && (
+                            <span className="relative flex h-2 w-2">
+                              <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${config.pulse}`}></span>
+                              <span className={`relative inline-flex rounded-full h-2 w-2 ${config.pulse}`}></span>
+                            </span>
+                          )}
+                          <StatusIcon size={14} />
                           {config.label}
                         </div>
                       </div>
 
-                      <div className="flex items-end justify-between mt-4">
+                      <OrderStepper currentStatus={order.status} />
+
+                      <div className="flex items-end justify-between mt-6">
                         <div className="text-sm text-zinc-500">
                           총 {order.items?.reduce((sum, item) => sum + item.quantity, 0).toLocaleString()}개
                         </div>
@@ -293,6 +363,7 @@ export default function MyOrders() {
               </div>
               <h3 className="text-lg font-bold text-zinc-900 mb-2">주문을 취소하시겠습니까?</h3>
               <p className="text-zinc-500 mb-6">
+                주문번호: <span className="font-bold text-zinc-900">{orderToCancel?.id.slice(0, 8).toUpperCase()}</span><br />
                 취소된 주문은 복구할 수 없습니다. 정말로 취소하시겠습니까?
               </p>
               <div className="flex gap-3">

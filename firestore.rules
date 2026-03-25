@@ -105,14 +105,13 @@ service cloud.firestore {
     }
 
     function isValidOrder(data) {
-      return data.keys().hasAll(['userId', 'productId', 'productName', 'options', 'quantity', 'totalPrice', 'status', 'createdAt', 'updatedAt']) &&
+      return data.keys().hasAll(['userId', 'items', 'totalAmount', 'shippingInfo', 'paymentMethod', 'status', 'createdAt', 'updatedAt']) &&
              data.userId is string && 
              (isAuthenticated() ? data.userId == request.auth.uid : data.userId.matches("^naver_.*")) &&
-             data.productId is string && data.productId.size() <= 100 &&
-             data.productName is string && data.productName.size() <= 200 &&
-             data.options is map && data.options.size() <= 50 &&
-             data.quantity is number && data.quantity > 0 &&
-             data.totalPrice is number && data.totalPrice >= 0 &&
+             data.items is list &&
+             data.totalAmount is number && data.totalAmount >= 0 &&
+             data.shippingInfo is map &&
+             data.paymentMethod in ['card', 'transfer', 'vbank', 'paypal', 'bank_transfer'] &&
              data.status in ['pending', 'processing', 'shipped', 'delivered', 'cancelled'] &&
              data.createdAt is timestamp &&
              data.updatedAt is timestamp;
@@ -158,7 +157,15 @@ service cloud.firestore {
                        (resource.data.userId.matches("^naver_.*"));
       allow create: if (isAuthenticated() && isValidOrder(request.resource.data)) ||
                        (request.resource.data.userId.matches("^naver_.*") && isValidOrder(request.resource.data));
-      allow update, delete: if isAdmin();
+      allow update: if isAdmin() || (
+        // User can cancel their own order if it's pending or processing
+        (isAuthenticated() && resource.data.userId == request.auth.uid || resource.data.userId.matches("^naver_.*")) &&
+        resource.data.status in ['pending', 'processing'] &&
+        request.resource.data.status == 'cancelled' &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'updatedAt']) &&
+        isValidOrder(request.resource.data)
+      );
+      allow delete: if isAdmin();
     }
   }
 }

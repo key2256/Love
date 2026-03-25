@@ -12,7 +12,9 @@ import {
   User,
   MessageSquare,
   ChevronRight,
-  AlertCircle
+  AlertCircle,
+  Wallet,
+  Banknote
 } from 'lucide-react';
 import { CartItem, ShippingInfo, Order } from '../types';
 import { useAuth } from '../hooks/useAuth';
@@ -40,7 +42,7 @@ export default function Checkout({ items, onBack, onSuccess }: CheckoutProps) {
     memo: ''
   });
 
-  const [paymentMethod, setPaymentMethod] = useState<'card' | 'transfer' | 'vbank'>('card');
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'transfer' | 'vbank' | 'paypal' | 'bank_transfer'>('card');
 
   const totalAmount = items.reduce((sum, item) => sum + item.totalPrice, 0);
   const shippingFee = totalAmount >= 50000 ? 0 : 3000;
@@ -90,38 +92,95 @@ export default function Checkout({ items, onBack, onSuccess }: CheckoutProps) {
     }
   };
 
+  const steps = [
+    { id: 'shipping', label: '배송 정보', icon: Truck },
+    { id: 'payment', label: '결제 수단', icon: CreditCard },
+    { id: 'confirmation', label: '주문 완료', icon: CheckCircle2 },
+  ];
+
+  const currentStepIndex = steps.findIndex(s => s.id === step);
+
+  const ProgressBar = () => (
+    <div className="max-w-3xl mx-auto mb-16 px-4">
+      <div className="relative">
+        {/* Background Line */}
+        <div className="absolute top-1/2 left-0 w-full h-1 bg-zinc-100 -translate-y-1/2 rounded-full" />
+        
+        {/* Progress Line */}
+        <motion.div 
+          className="absolute top-1/2 left-0 h-1 bg-emerald-500 -translate-y-1/2 rounded-full origin-left"
+          initial={{ width: "0%" }}
+          animate={{ width: `${(currentStepIndex / (steps.length - 1)) * 100}%` }}
+          transition={{ duration: 0.5, ease: "easeInOut" }}
+        />
+
+        {/* Steps */}
+        <div className="relative flex justify-between">
+          {steps.map((s, idx) => {
+            const isCompleted = idx < currentStepIndex;
+            const isActive = idx === currentStepIndex;
+            const Icon = s.icon;
+
+            return (
+              <div key={s.id} className="flex flex-col items-center gap-3">
+                <motion.div
+                  animate={{
+                    scale: isActive ? 1.1 : 1,
+                    backgroundColor: isCompleted || isActive ? "#10b981" : "#f4f4f5",
+                    color: isCompleted || isActive ? "#ffffff" : "#a1a1aa",
+                  }}
+                  className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-sm z-10 transition-colors`}
+                >
+                  {isCompleted ? <CheckCircle2 size={20} /> : <Icon size={20} />}
+                </motion.div>
+                <span className={`text-[11px] font-black uppercase tracking-widest transition-colors ${
+                  isActive ? 'text-zinc-900' : 'text-zinc-400'
+                }`}>
+                  {s.label}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+
   if (step === 'confirmation') {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          className="mb-8 flex justify-center"
-        >
-          <div className="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center">
-            <CheckCircle2 size={48} />
-          </div>
-        </motion.div>
-        
-        <h1 className="text-4xl font-black text-zinc-900 mb-4">주문이 완료되었습니다!</h1>
-        <p className="text-zinc-500 mb-12 text-lg">
-          정성껏 제작하여 안전하게 배송해 드리겠습니다.<br />
-          주문 내역은 마이페이지에서 확인하실 수 있습니다.
-        </p>
+      <div className="max-w-6xl mx-auto px-4 py-12">
+        <ProgressBar />
+        <div className="max-w-2xl mx-auto py-12 text-center">
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="mb-8 flex justify-center"
+          >
+            <div className="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center">
+              <CheckCircle2 size={48} />
+            </div>
+          </motion.div>
+          
+          <h1 className="text-4xl font-black text-zinc-900 mb-4">주문이 완료되었습니다!</h1>
+          <p className="text-zinc-500 mb-12 text-lg">
+            정성껏 제작하여 안전하게 배송해 드리겠습니다.<br />
+            주문 내역은 마이페이지에서 확인하실 수 있습니다.
+          </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button
-            onClick={onSuccess}
-            className="px-12 py-4 bg-emerald-600 text-white rounded-2xl font-black text-sm hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-100"
-          >
-            쇼핑 계속하기
-          </button>
-          <button
-            onClick={() => window.location.reload()} // Simple way to go to home/orders
-            className="px-12 py-4 bg-zinc-900 text-white rounded-2xl font-black text-sm hover:bg-zinc-800 transition-all shadow-xl shadow-zinc-100"
-          >
-            주문 내역 확인
-          </button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button
+              onClick={onSuccess}
+              className="px-12 py-4 bg-emerald-600 text-white rounded-2xl font-black text-sm hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-100"
+            >
+              쇼핑 계속하기
+            </button>
+            <button
+              onClick={() => window.location.reload()} // Simple way to go to home/orders
+              className="px-12 py-4 bg-zinc-900 text-white rounded-2xl font-black text-sm hover:bg-zinc-800 transition-all shadow-xl shadow-zinc-100"
+            >
+              주문 내역 확인
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -129,6 +188,8 @@ export default function Checkout({ items, onBack, onSuccess }: CheckoutProps) {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-12">
+      <ProgressBar />
+      
       <button
         onClick={onBack}
         className="flex items-center gap-2 text-zinc-400 hover:text-zinc-900 font-bold mb-8 transition-colors group"
@@ -140,18 +201,7 @@ export default function Checkout({ items, onBack, onSuccess }: CheckoutProps) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
         {/* Left Column: Forms */}
         <div className="lg:col-span-7 space-y-8">
-          {/* Steps Indicator */}
-          <div className="flex items-center gap-4 mb-8">
-            <div className={`flex items-center gap-2 ${step === 'shipping' ? 'text-emerald-600' : 'text-zinc-400'}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-xs ${step === 'shipping' ? 'bg-emerald-600 text-white' : 'bg-zinc-100'}`}>1</div>
-              <span className="font-bold text-sm">배송 정보</span>
-            </div>
-            <div className="h-px w-8 bg-zinc-100" />
-            <div className={`flex items-center gap-2 ${step === 'payment' ? 'text-emerald-600' : 'text-zinc-400'}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-xs ${step === 'payment' ? 'bg-emerald-600 text-white' : 'bg-zinc-100'}`}>2</div>
-              <span className="font-bold text-sm">결제 수단</span>
-            </div>
-          </div>
+          {/* Steps Indicator Removed - Replaced by ProgressBar */}
 
           {step === 'shipping' ? (
             <motion.form 
@@ -284,11 +334,13 @@ export default function Checkout({ items, onBack, onSuccess }: CheckoutProps) {
                   결제 수단 선택
                 </h2>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                   {[
                     { id: 'card', label: '신용/체크카드', icon: CreditCard },
                     { id: 'transfer', label: '실시간 계좌이체', icon: MessageSquare },
-                    { id: 'vbank', label: '가상계좌', icon: ShoppingBag }
+                    { id: 'vbank', label: '가상계좌', icon: ShoppingBag },
+                    { id: 'paypal', label: '페이팔 (PayPal)', icon: Wallet },
+                    { id: 'bank_transfer', label: '무통장 입금', icon: Banknote }
                   ].map((method) => (
                     <button
                       key={method.id}

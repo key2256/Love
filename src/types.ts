@@ -62,7 +62,7 @@ export interface Order {
   items: CartItem[];
   totalAmount: number;
   shippingInfo: ShippingInfo;
-  paymentMethod: 'card' | 'transfer' | 'vbank';
+  paymentMethod: 'card' | 'transfer' | 'vbank' | 'paypal' | 'bank_transfer';
   status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
   createdAt: any;
   updatedAt: any;
