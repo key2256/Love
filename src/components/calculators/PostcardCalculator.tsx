@@ -225,26 +225,34 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
         >
           {currentStep === 0 && (
             <div className="space-y-8">
-              {product.options.filter(opt => opt.name.includes('용지') && opt.name !== '용지 그룹').map((option, index) => (
-                <OptionGroup 
-                  key={option.name + index} 
-                  label={option.name} 
-                  icon={Layers}
-                  tooltip={POSTCARD_TERM_TOOLTIPS[option.name]}
-                >
-                  {renderOption(option)}
-                </OptionGroup>
-              ))}
+              {product.options.filter(opt => opt.name.includes('용지') && opt.name !== '용지 그룹').map((option, index) => {
+                const content = renderOption(option);
+                if (!content) return null;
+                return (
+                  <OptionGroup 
+                    key={option.name + index} 
+                    label={option.name} 
+                    icon={Layers}
+                    tooltip={POSTCARD_TERM_TOOLTIPS[option.name]}
+                  >
+                    {content}
+                  </OptionGroup>
+                );
+              })}
 
-              {product.options.filter(opt => opt.name === '모양').map((option, index) => (
-                <OptionGroup 
-                  key={option.name + index} 
-                  label={option.name}
-                  tooltip={POSTCARD_TERM_TOOLTIPS[option.name]}
-                >
-                  {renderOption(option)}
-                </OptionGroup>
-              ))}
+              {product.options.filter(opt => opt.name === '모양').map((option, index) => {
+                const content = renderOption(option);
+                if (!content) return null;
+                return (
+                  <OptionGroup 
+                    key={option.name + index} 
+                    label={option.name}
+                    tooltip={POSTCARD_TERM_TOOLTIPS[option.name]}
+                  >
+                    {content}
+                  </OptionGroup>
+                );
+              })}
               <StepNavigation 
                 onNext={() => setCurrentStep(1)} 
                 nextLabel="상세 옵션 선택하기"
