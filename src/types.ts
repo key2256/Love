@@ -164,6 +164,34 @@ export const BUSINESS_CARD_COMMON_OPTIONS = {
       { label: '양면 칼라', priceModifier: 2000 },
     ]
   },
+  WHITE_INK: {
+    name: '화이트 인쇄',
+    type: 'radio' as const,
+    values: [
+      { label: '없음', priceModifier: 0 },
+      { label: '있음', priceModifier: 3000 },
+    ]
+  },
+  COATING: [
+    {
+      name: '코팅',
+      type: 'radio' as const,
+      values: [
+        { label: '없음', priceModifier: 0 },
+        { label: '있음', priceModifier: 1000 },
+      ]
+    },
+    {
+      name: '코팅 종류',
+      type: 'select' as const,
+      values: [
+        { label: '무광 코팅', priceModifier: 0 },
+        { label: '유광 코팅', priceModifier: 0 },
+        { label: '벨벳 코팅', priceModifier: 2000 },
+        { label: '샌드 코팅', priceModifier: 2000 },
+      ]
+    }
+  ],
   ROUNDING: [
     {
       name: '귀돌이',
@@ -199,7 +227,162 @@ export const BUSINESS_CARD_COMMON_OPTIONS = {
         { label: '하단우', priceModifier: 0 },
       ]
     }
-  ]
+  ],
+  PUNCHING: [
+    {
+      name: '타공',
+      type: 'radio' as const,
+      values: [
+        { label: '없음', priceModifier: 0 },
+        { label: '있음', priceModifier: 1000 },
+      ]
+    },
+    {
+      name: '타공 크기',
+      type: 'radio' as const,
+      values: [
+        { label: '4mm', priceModifier: 0 },
+        { label: '6mm', priceModifier: 0 },
+        { label: '8mm', priceModifier: 0 },
+      ]
+    },
+    {
+      name: '타공 설명',
+      type: 'text' as const,
+      placeholder: '예: 중앙 상단 1개 / 좌측 상단 1개 등'
+    }
+  ],
+  SHAPE_CUTTING: [
+    {
+      name: '모양커팅',
+      type: 'radio' as const,
+      values: [
+        { label: '없음', priceModifier: 0 },
+        { label: '있음', priceModifier: 5000 },
+      ]
+    },
+    {
+      name: '모양 선택',
+      type: 'radio' as const,
+      values: [
+        { label: '정사각형', priceModifier: 0 },
+        { label: '티켓형', priceModifier: 1000 },
+        { label: '원형', priceModifier: 1500 },
+        { label: '자유형', priceModifier: 3000 },
+      ]
+    }
+  ],
+  CREASING: [
+    {
+      name: '오시',
+      type: 'radio' as const,
+      values: [
+        { label: '없음', priceModifier: 0 },
+        { label: '있음', priceModifier: 1000 },
+      ]
+    },
+    {
+      name: '오시 줄 수',
+      type: 'radio' as const,
+      values: [
+        { label: '1줄', priceModifier: 0 },
+        { label: '2줄', priceModifier: 500 },
+        { label: '3줄', priceModifier: 1000 },
+      ]
+    },
+    {
+      name: '오시 설명',
+      type: 'text' as const,
+      placeholder: '예: 중앙 세로 1줄 / 상단 20mm 지점 가로 1줄 등'
+    }
+  ],
+  PERFORATION: [
+    {
+      name: '미싱',
+      type: 'radio' as const,
+      values: [
+        { label: '없음', priceModifier: 0 },
+        { label: '있음', priceModifier: 1000 },
+      ]
+    },
+    {
+      name: '미싱 줄 수',
+      type: 'radio' as const,
+      values: [
+        { label: '1줄', priceModifier: 0 },
+        { label: '2줄', priceModifier: 500 },
+        { label: '3줄', priceModifier: 1000 },
+      ]
+    },
+    {
+      name: '미싱 설명',
+      type: 'text' as const,
+      placeholder: '예: 중앙 세로 1줄 / 우측 30mm 지점 세로 1줄 등'
+    }
+  ],
+  FOLDING: [
+    {
+      name: '접지',
+      type: 'radio' as const,
+      values: [
+        { label: '없음', priceModifier: 0 },
+        { label: '있음', priceModifier: 1500 },
+      ]
+    },
+    {
+      name: '접지 방향',
+      type: 'radio' as const,
+      values: [
+        { label: '가로형', priceModifier: 0 },
+        { label: '세로형', priceModifier: 0 },
+      ]
+    },
+    {
+      name: '접지 형태',
+      type: 'select' as const,
+      values: [
+        { label: '2단접지', priceModifier: 0 },
+        { label: '3단접지', priceModifier: 500 },
+        { label: '4단접지', priceModifier: 1000 },
+        { label: '대문접지', priceModifier: 1000 },
+        { label: '반대문접지', priceModifier: 1000 },
+        { label: '4단 병풍접지', priceModifier: 1500 },
+        { label: 'N모양 3단접지', priceModifier: 1000 },
+      ]
+    }
+  ],
+  PACKAGING: [
+    {
+      name: '폴리백 개별포장',
+      type: 'radio' as const,
+      values: [
+        { label: '없음', priceModifier: 0 },
+        { label: '있음', priceModifier: 500 },
+      ]
+    }
+  ],
+  POST_PROCESSING: {
+    name: '후가공 옵션',
+    type: 'select' as const,
+    values: [
+      { label: '없음', priceModifier: 0 },
+      { label: '금박', priceModifier: 15000 },
+      { label: '은박', priceModifier: 15000 },
+      { label: '홀로그램박', priceModifier: 18000 },
+      { label: '부분 UV 코팅', priceModifier: 12000 },
+      { label: '형압', priceModifier: 20000 },
+      { label: '엠보싱', priceModifier: 15000 },
+    ]
+  },
+  CASE: {
+    name: '명함케이스',
+    type: 'select' as const,
+    values: [
+      { label: '기본 종이케이스', priceModifier: 0 },
+      { label: '플라스틱 케이스', priceModifier: 500 },
+      { label: '고급 가죽 케이스', priceModifier: 5000 },
+    ]
+  }
 };
 
 export const getBusinessCardMaterials = (type: 'standard' | 'premium' | 'template') => {
@@ -709,6 +892,14 @@ export const POSTCARD_COMMON_OPTIONS = {
       { label: '양면 칼라', priceModifier: 2000 },
     ]
   },
+  WHITE_INK: {
+    name: '화이트 인쇄',
+    type: 'radio' as const,
+    values: [
+      { label: '없음', priceModifier: 0 },
+      { label: '있음', priceModifier: 3000 },
+    ]
+  },
   COATING: [
     {
       name: '코팅',
@@ -793,7 +984,18 @@ export const POSTCARD_COMMON_OPTIONS = {
       name: '모양커팅',
       type: 'radio' as const,
       values: [
-        { label: '기본 포함', priceModifier: 0 },
+        { label: '없음', priceModifier: 0 },
+        { label: '있음', priceModifier: 5000 },
+      ]
+    },
+    {
+      name: '모양 선택',
+      type: 'radio' as const,
+      values: [
+        { label: '정사각형', priceModifier: 0 },
+        { label: '티켓형', priceModifier: 1000 },
+        { label: '원형', priceModifier: 1500 },
+        { label: '자유형', priceModifier: 3000 },
       ]
     }
   ],
@@ -899,7 +1101,7 @@ export const POSTCARD_COMMON_OPTIONS = {
     }
   ],
   EFFECT: {
-    name: '후가공 효과',
+    name: '후가공 옵션',
     type: 'select' as const,
     values: [
       { label: '없음', priceModifier: 0 },
@@ -1875,6 +2077,119 @@ export const STICKER_COMMON_OPTIONS = {
       ]
     }
   ],
+  PUNCHING: [
+    {
+      name: '타공',
+      type: 'radio' as const,
+      values: [
+        { label: '없음', priceModifier: 0 },
+        { label: '있음', priceModifier: 1000 },
+      ]
+    },
+    {
+      name: '타공 크기',
+      type: 'radio' as const,
+      values: [
+        { label: '4mm', priceModifier: 0 },
+        { label: '6mm', priceModifier: 0 },
+        { label: '8mm', priceModifier: 0 },
+      ]
+    },
+    {
+      name: '타공 설명',
+      type: 'text' as const,
+      placeholder: '예: 중앙 상단 1개 / 좌측 상단 1개 등'
+    }
+  ],
+  SHAPE_CUTTING: [
+    {
+      name: '모양커팅',
+      type: 'radio' as const,
+      values: [
+        { label: '없음', priceModifier: 0 },
+        { label: '있음', priceModifier: 5000 },
+      ]
+    }
+  ],
+  CREASING: [
+    {
+      name: '오시',
+      type: 'radio' as const,
+      values: [
+        { label: '없음', priceModifier: 0 },
+        { label: '있음', priceModifier: 1000 },
+      ]
+    },
+    {
+      name: '오시 줄 수',
+      type: 'radio' as const,
+      values: [
+        { label: '1줄', priceModifier: 0 },
+        { label: '2줄', priceModifier: 500 },
+        { label: '3줄', priceModifier: 1000 },
+      ]
+    },
+    {
+      name: '오시 설명',
+      type: 'text' as const,
+      placeholder: '예: 중앙 세로 1줄 / 상단 20mm 지점 가로 1줄 등'
+    }
+  ],
+  PERFORATION: [
+    {
+      name: '미싱',
+      type: 'radio' as const,
+      values: [
+        { label: '없음', priceModifier: 0 },
+        { label: '있음', priceModifier: 1000 },
+      ]
+    },
+    {
+      name: '미싱 줄 수',
+      type: 'radio' as const,
+      values: [
+        { label: '1줄', priceModifier: 0 },
+        { label: '2줄', priceModifier: 500 },
+        { label: '3줄', priceModifier: 1000 },
+      ]
+    },
+    {
+      name: '미싱 설명',
+      type: 'text' as const,
+      placeholder: '예: 중앙 세로 1줄 / 우측 30mm 지점 세로 1줄 등'
+    }
+  ],
+  FOLDING: [
+    {
+      name: '접지',
+      type: 'radio' as const,
+      values: [
+        { label: '없음', priceModifier: 0 },
+        { label: '있음', priceModifier: 1500 },
+      ]
+    },
+    {
+      name: '접지 방향',
+      type: 'radio' as const,
+      values: [
+        { label: '가로형', priceModifier: 0 },
+        { label: '세로형', priceModifier: 0 },
+      ]
+    },
+    {
+      name: '접지 형태',
+      type: 'select' as const,
+      values: [
+        { label: '2단접지', priceModifier: 0 },
+        { label: '3단접지', priceModifier: 500 },
+        { label: '4단접지', priceModifier: 1000 },
+        { label: '대문접지', priceModifier: 1000 },
+        { label: '반대문접지', priceModifier: 1000 },
+        { label: '4단 병풍접지', priceModifier: 1500 },
+        { label: 'N모양 3단접지', priceModifier: 1000 },
+      ]
+    }
+  ],
   POST_PROCESSING: {
     name: '후가공 옵션',
     type: 'select' as const,
@@ -1886,6 +2201,15 @@ export const STICKER_COMMON_OPTIONS = {
       { label: '부분 UV 코팅', priceModifier: 12000 },
       { label: '형압', priceModifier: 20000 },
       { label: '엠보싱', priceModifier: 15000 },
+    ]
+  },
+  CASE: {
+    name: '명함케이스',
+    type: 'select' as const,
+    values: [
+      { label: '기본 종이케이스', priceModifier: 0 },
+      { label: '플라스틱 케이스', priceModifier: 500 },
+      { label: '고급 가죽 케이스', priceModifier: 5000 },
     ]
   }
 };
@@ -1953,6 +2277,11 @@ export const PRODUCTS: Product[] = [
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
       ...STICKER_COMMON_OPTIONS.COATING,
       ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PUNCHING,
+      ...STICKER_COMMON_OPTIONS.SHAPE_CUTTING,
+      ...STICKER_COMMON_OPTIONS.CREASING,
+      ...STICKER_COMMON_OPTIONS.PERFORATION,
+      ...STICKER_COMMON_OPTIONS.FOLDING,
       ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING,
       {
@@ -2020,6 +2349,11 @@ export const PRODUCTS: Product[] = [
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
       ...STICKER_COMMON_OPTIONS.COATING,
       ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PUNCHING,
+      ...STICKER_COMMON_OPTIONS.SHAPE_CUTTING,
+      ...STICKER_COMMON_OPTIONS.CREASING,
+      ...STICKER_COMMON_OPTIONS.PERFORATION,
+      ...STICKER_COMMON_OPTIONS.FOLDING,
       ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
@@ -2061,6 +2395,11 @@ export const PRODUCTS: Product[] = [
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
       ...STICKER_COMMON_OPTIONS.COATING,
       ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PUNCHING,
+      ...STICKER_COMMON_OPTIONS.SHAPE_CUTTING,
+      ...STICKER_COMMON_OPTIONS.CREASING,
+      ...STICKER_COMMON_OPTIONS.PERFORATION,
+      ...STICKER_COMMON_OPTIONS.FOLDING,
       ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
@@ -2102,6 +2441,11 @@ export const PRODUCTS: Product[] = [
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
       ...STICKER_COMMON_OPTIONS.COATING,
       ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PUNCHING,
+      ...STICKER_COMMON_OPTIONS.SHAPE_CUTTING,
+      ...STICKER_COMMON_OPTIONS.CREASING,
+      ...STICKER_COMMON_OPTIONS.PERFORATION,
+      ...STICKER_COMMON_OPTIONS.FOLDING,
       ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
@@ -2143,6 +2487,11 @@ export const PRODUCTS: Product[] = [
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
       ...STICKER_COMMON_OPTIONS.COATING,
       ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PUNCHING,
+      ...STICKER_COMMON_OPTIONS.SHAPE_CUTTING,
+      ...STICKER_COMMON_OPTIONS.CREASING,
+      ...STICKER_COMMON_OPTIONS.PERFORATION,
+      ...STICKER_COMMON_OPTIONS.FOLDING,
       ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING,
       {
@@ -2199,6 +2548,11 @@ export const PRODUCTS: Product[] = [
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
       ...STICKER_COMMON_OPTIONS.COATING,
       ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PUNCHING,
+      ...STICKER_COMMON_OPTIONS.SHAPE_CUTTING,
+      ...STICKER_COMMON_OPTIONS.CREASING,
+      ...STICKER_COMMON_OPTIONS.PERFORATION,
+      ...STICKER_COMMON_OPTIONS.FOLDING,
       ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
@@ -2229,6 +2583,11 @@ export const PRODUCTS: Product[] = [
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
       ...STICKER_COMMON_OPTIONS.COATING,
       ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PUNCHING,
+      ...STICKER_COMMON_OPTIONS.SHAPE_CUTTING,
+      ...STICKER_COMMON_OPTIONS.CREASING,
+      ...STICKER_COMMON_OPTIONS.PERFORATION,
+      ...STICKER_COMMON_OPTIONS.FOLDING,
       ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
@@ -2259,6 +2618,11 @@ export const PRODUCTS: Product[] = [
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
       ...STICKER_COMMON_OPTIONS.COATING,
       ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PUNCHING,
+      ...STICKER_COMMON_OPTIONS.SHAPE_CUTTING,
+      ...STICKER_COMMON_OPTIONS.CREASING,
+      ...STICKER_COMMON_OPTIONS.PERFORATION,
+      ...STICKER_COMMON_OPTIONS.FOLDING,
       ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
@@ -2297,6 +2661,11 @@ export const PRODUCTS: Product[] = [
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
       ...STICKER_COMMON_OPTIONS.COATING,
       ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PUNCHING,
+      ...STICKER_COMMON_OPTIONS.SHAPE_CUTTING,
+      ...STICKER_COMMON_OPTIONS.CREASING,
+      ...STICKER_COMMON_OPTIONS.PERFORATION,
+      ...STICKER_COMMON_OPTIONS.FOLDING,
       ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
@@ -2344,6 +2713,11 @@ export const PRODUCTS: Product[] = [
       },
       ...STICKER_COMMON_OPTIONS.COATING,
       ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PUNCHING,
+      ...STICKER_COMMON_OPTIONS.SHAPE_CUTTING,
+      ...STICKER_COMMON_OPTIONS.CREASING,
+      ...STICKER_COMMON_OPTIONS.PERFORATION,
+      ...STICKER_COMMON_OPTIONS.FOLDING,
       ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
@@ -2400,6 +2774,11 @@ export const PRODUCTS: Product[] = [
       },
       ...STICKER_COMMON_OPTIONS.COATING,
       ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PUNCHING,
+      ...STICKER_COMMON_OPTIONS.SHAPE_CUTTING,
+      ...STICKER_COMMON_OPTIONS.CREASING,
+      ...STICKER_COMMON_OPTIONS.PERFORATION,
+      ...STICKER_COMMON_OPTIONS.FOLDING,
       ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
@@ -2433,6 +2812,11 @@ export const PRODUCTS: Product[] = [
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
       ...STICKER_COMMON_OPTIONS.COATING,
       ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PUNCHING,
+      ...STICKER_COMMON_OPTIONS.SHAPE_CUTTING,
+      ...STICKER_COMMON_OPTIONS.CREASING,
+      ...STICKER_COMMON_OPTIONS.PERFORATION,
+      ...STICKER_COMMON_OPTIONS.FOLDING,
       ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
@@ -2480,6 +2864,11 @@ export const PRODUCTS: Product[] = [
       },
       ...STICKER_COMMON_OPTIONS.COATING,
       ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PUNCHING,
+      ...STICKER_COMMON_OPTIONS.SHAPE_CUTTING,
+      ...STICKER_COMMON_OPTIONS.CREASING,
+      ...STICKER_COMMON_OPTIONS.PERFORATION,
+      ...STICKER_COMMON_OPTIONS.FOLDING,
       ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
@@ -2513,6 +2902,11 @@ export const PRODUCTS: Product[] = [
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
       ...STICKER_COMMON_OPTIONS.COATING,
       ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PUNCHING,
+      ...STICKER_COMMON_OPTIONS.SHAPE_CUTTING,
+      ...STICKER_COMMON_OPTIONS.CREASING,
+      ...STICKER_COMMON_OPTIONS.PERFORATION,
+      ...STICKER_COMMON_OPTIONS.FOLDING,
       ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
@@ -2543,6 +2937,11 @@ export const PRODUCTS: Product[] = [
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
       ...STICKER_COMMON_OPTIONS.COATING,
       ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PUNCHING,
+      ...STICKER_COMMON_OPTIONS.SHAPE_CUTTING,
+      ...STICKER_COMMON_OPTIONS.CREASING,
+      ...STICKER_COMMON_OPTIONS.PERFORATION,
+      ...STICKER_COMMON_OPTIONS.FOLDING,
       ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
@@ -2572,6 +2971,11 @@ export const PRODUCTS: Product[] = [
       ...STICKER_COMMON_OPTIONS.COATING,
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
       ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PUNCHING,
+      ...STICKER_COMMON_OPTIONS.SHAPE_CUTTING,
+      ...STICKER_COMMON_OPTIONS.CREASING,
+      ...STICKER_COMMON_OPTIONS.PERFORATION,
+      ...STICKER_COMMON_OPTIONS.FOLDING,
       ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
@@ -2618,6 +3022,11 @@ export const PRODUCTS: Product[] = [
       STICKER_COMMON_OPTIONS.CUTTING_METHOD,
       ...STICKER_COMMON_OPTIONS.COATING,
       ...STICKER_COMMON_OPTIONS.ROUNDING,
+      ...STICKER_COMMON_OPTIONS.PUNCHING,
+      ...STICKER_COMMON_OPTIONS.SHAPE_CUTTING,
+      ...STICKER_COMMON_OPTIONS.CREASING,
+      ...STICKER_COMMON_OPTIONS.PERFORATION,
+      ...STICKER_COMMON_OPTIONS.FOLDING,
       ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING
     ],
@@ -2649,6 +3058,11 @@ export const PRODUCTS: Product[] = [
       },
       STICKER_COMMON_OPTIONS.WHITE_INK,
       ...STICKER_COMMON_OPTIONS.COATING,
+      ...STICKER_COMMON_OPTIONS.PUNCHING,
+      ...STICKER_COMMON_OPTIONS.SHAPE_CUTTING,
+      ...STICKER_COMMON_OPTIONS.CREASING,
+      ...STICKER_COMMON_OPTIONS.PERFORATION,
+      ...STICKER_COMMON_OPTIONS.FOLDING,
       ...STICKER_COMMON_OPTIONS.PACKAGING,
       STICKER_COMMON_OPTIONS.POST_PROCESSING,
       {
@@ -3168,9 +3582,13 @@ export const PRODUCTS: Product[] = [
     basePrice: 35000,
     options: [
       {
-        name: '규격 안내',
-        type: 'text',
-        description: 'A4(210x297mm) 고정입니다.'
+        name: '규격',
+        type: 'select',
+        values: [
+          { label: 'A4 (210x297mm)', priceModifier: 0 },
+          { label: 'A5 (148x210mm)', priceModifier: -1000 },
+          { label: 'B5 (182x257mm)', priceModifier: -500 },
+        ]
       },
       {
         name: '인쇄 색상',
@@ -3305,9 +3723,11 @@ export const PRODUCTS: Product[] = [
       },
       POSTCARD_COMMON_OPTIONS.PAPER_SELECT_BASIC,
       POSTCARD_COMMON_OPTIONS.PRINT_COLOR,
+      POSTCARD_COMMON_OPTIONS.WHITE_INK,
       ...POSTCARD_COMMON_OPTIONS.COATING,
       ...POSTCARD_COMMON_OPTIONS.ROUNDING,
       ...POSTCARD_COMMON_OPTIONS.PUNCHING,
+      ...POSTCARD_COMMON_OPTIONS.SHAPE_CUTTING,
       ...POSTCARD_COMMON_OPTIONS.CREASING,
       ...POSTCARD_COMMON_OPTIONS.PERFORATION,
       ...POSTCARD_COMMON_OPTIONS.FOLDING,
@@ -3352,9 +3772,15 @@ export const PRODUCTS: Product[] = [
         ]
       },
       POSTCARD_COMMON_OPTIONS.PRINT_COLOR,
+      POSTCARD_COMMON_OPTIONS.WHITE_INK,
       ...POSTCARD_COMMON_OPTIONS.COATING,
       ...POSTCARD_COMMON_OPTIONS.ROUNDING,
       ...POSTCARD_COMMON_OPTIONS.PUNCHING,
+      ...POSTCARD_COMMON_OPTIONS.SHAPE_CUTTING,
+      ...POSTCARD_COMMON_OPTIONS.CREASING,
+      ...POSTCARD_COMMON_OPTIONS.PERFORATION,
+      ...POSTCARD_COMMON_OPTIONS.FOLDING,
+      ...POSTCARD_COMMON_OPTIONS.PACKAGING,
       {
         name: '제작 수량',
         type: 'select',
@@ -3379,16 +3805,7 @@ export const PRODUCTS: Product[] = [
     minQuantity: 50,
     basePrice: 15000,
     options: [
-      {
-        name: '모양 선택',
-        type: 'radio',
-        values: [
-          { label: '라운드형', priceModifier: 0 },
-          { label: '티켓형', priceModifier: 1000 },
-          { label: '원형', priceModifier: 1500 },
-          { label: '자유형', priceModifier: 3000 },
-        ]
-      },
+      ...POSTCARD_COMMON_OPTIONS.SHAPE_CUTTING,
       {
         name: '사이즈',
         type: 'select',
@@ -3411,11 +3828,14 @@ export const PRODUCTS: Product[] = [
       POSTCARD_COMMON_OPTIONS.PAPER_SELECT_PREMIUM,
       POSTCARD_COMMON_OPTIONS.PAPER_SELECT_ECO,
       POSTCARD_COMMON_OPTIONS.PRINT_COLOR,
+      POSTCARD_COMMON_OPTIONS.WHITE_INK,
       ...POSTCARD_COMMON_OPTIONS.SHAPE_CUTTING,
       ...POSTCARD_COMMON_OPTIONS.COATING,
       ...POSTCARD_COMMON_OPTIONS.ROUNDING,
       ...POSTCARD_COMMON_OPTIONS.PUNCHING,
       ...POSTCARD_COMMON_OPTIONS.CREASING,
+      ...POSTCARD_COMMON_OPTIONS.PERFORATION,
+      ...POSTCARD_COMMON_OPTIONS.FOLDING,
       ...POSTCARD_COMMON_OPTIONS.PACKAGING,
       {
         name: '제작 수량',
@@ -3454,8 +3874,11 @@ export const PRODUCTS: Product[] = [
       POSTCARD_COMMON_OPTIONS.PAPER_SELECT_ECO,
       POSTCARD_COMMON_OPTIONS.PAPER_SELECT_SPECIAL,
       POSTCARD_COMMON_OPTIONS.PRINT_COLOR,
+      POSTCARD_COMMON_OPTIONS.WHITE_INK,
+      ...POSTCARD_COMMON_OPTIONS.COATING,
       ...POSTCARD_COMMON_OPTIONS.ROUNDING,
       ...POSTCARD_COMMON_OPTIONS.PUNCHING,
+      ...POSTCARD_COMMON_OPTIONS.SHAPE_CUTTING,
       ...POSTCARD_COMMON_OPTIONS.CREASING,
       ...POSTCARD_COMMON_OPTIONS.PERFORATION,
       ...POSTCARD_COMMON_OPTIONS.FOLDING,
@@ -3496,8 +3919,11 @@ export const PRODUCTS: Product[] = [
       POSTCARD_COMMON_OPTIONS.PAPER_SELECT_BASIC,
       POSTCARD_COMMON_OPTIONS.PAPER_SELECT_PREMIUM,
       POSTCARD_COMMON_OPTIONS.PRINT_COLOR,
+      POSTCARD_COMMON_OPTIONS.WHITE_INK,
+      ...POSTCARD_COMMON_OPTIONS.COATING,
       ...POSTCARD_COMMON_OPTIONS.ROUNDING,
       ...POSTCARD_COMMON_OPTIONS.PUNCHING,
+      ...POSTCARD_COMMON_OPTIONS.SHAPE_CUTTING,
       ...POSTCARD_COMMON_OPTIONS.CREASING,
       ...POSTCARD_COMMON_OPTIONS.PERFORATION,
       ...POSTCARD_COMMON_OPTIONS.FOLDING,
@@ -3538,55 +3964,17 @@ export const PRODUCTS: Product[] = [
         values: getBusinessCardMaterials('standard')
       },
       BUSINESS_CARD_COMMON_OPTIONS.PRINT_COLOR,
-      {
-        name: '코팅',
-        type: 'select',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '무광', priceModifier: 1000 },
-          { label: '유광', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '코팅 면수',
-        type: 'radio',
-        values: [
-          { label: '단면', priceModifier: 0 },
-          { label: '양면', priceModifier: 500 },
-        ]
-      },
+      BUSINESS_CARD_COMMON_OPTIONS.WHITE_INK,
+      ...BUSINESS_CARD_COMMON_OPTIONS.COATING,
       ...BUSINESS_CARD_COMMON_OPTIONS.ROUNDING,
-      {
-        name: '타공',
-        type: 'radio',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '있음', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '타공 크기',
-        type: 'radio',
-        values: [
-          { label: '4mm', priceModifier: 0 },
-          { label: '6mm', priceModifier: 0 },
-          { label: '8mm', priceModifier: 0 },
-        ]
-      },
-      {
-        name: '타공 설명',
-        type: 'text',
-        placeholder: '예: 2공 / 좌측 상단 1개, 우측 상단 1개 / 간격 50mm'
-      },
-      {
-        name: '명함케이스',
-        type: 'select',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '종이 케이스', priceModifier: 500 },
-          { label: '플라스틱 케이스', priceModifier: 1000 },
-        ]
-      }
+      ...BUSINESS_CARD_COMMON_OPTIONS.PUNCHING,
+      ...BUSINESS_CARD_COMMON_OPTIONS.SHAPE_CUTTING,
+      ...BUSINESS_CARD_COMMON_OPTIONS.CREASING,
+      ...BUSINESS_CARD_COMMON_OPTIONS.PERFORATION,
+      ...BUSINESS_CARD_COMMON_OPTIONS.FOLDING,
+      ...BUSINESS_CARD_COMMON_OPTIONS.PACKAGING,
+      BUSINESS_CARD_COMMON_OPTIONS.POST_PROCESSING,
+      BUSINESS_CARD_COMMON_OPTIONS.CASE
     ],
     features: ['1장부터 제작 가능', '다양한 용지 선택', '정밀 재단'],
     leadTime: '1~2 영업일',
@@ -3619,38 +4007,17 @@ export const PRODUCTS: Product[] = [
         values: getBusinessCardMaterials('premium')
       },
       BUSINESS_CARD_COMMON_OPTIONS.PRINT_COLOR,
+      BUSINESS_CARD_COMMON_OPTIONS.WHITE_INK,
+      ...BUSINESS_CARD_COMMON_OPTIONS.COATING,
       ...BUSINESS_CARD_COMMON_OPTIONS.ROUNDING,
-      {
-        name: '타공',
-        type: 'radio',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '있음', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '타공 크기',
-        type: 'radio',
-        values: [
-          { label: '4mm', priceModifier: 0 },
-          { label: '6mm', priceModifier: 0 },
-          { label: '8mm', priceModifier: 0 },
-        ]
-      },
-      {
-        name: '타공 설명',
-        type: 'text',
-        placeholder: '예: 2공 / 좌측 상단 1개, 우측 상단 1개 / 간격 50mm'
-      },
-      {
-        name: '명함케이스',
-        type: 'select',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '종이 케이스', priceModifier: 500 },
-          { label: '플라스틱 케이스', priceModifier: 1000 },
-        ]
-      }
+      ...BUSINESS_CARD_COMMON_OPTIONS.PUNCHING,
+      ...BUSINESS_CARD_COMMON_OPTIONS.SHAPE_CUTTING,
+      ...BUSINESS_CARD_COMMON_OPTIONS.CREASING,
+      ...BUSINESS_CARD_COMMON_OPTIONS.PERFORATION,
+      ...BUSINESS_CARD_COMMON_OPTIONS.FOLDING,
+      ...BUSINESS_CARD_COMMON_OPTIONS.PACKAGING,
+      BUSINESS_CARD_COMMON_OPTIONS.POST_PROCESSING,
+      BUSINESS_CARD_COMMON_OPTIONS.CASE
     ],
     features: ['고급 후가공', '프리미엄 용지', '독특한 질감'],
     leadTime: '4~5 영업일',
@@ -3721,32 +4088,17 @@ export const PRODUCTS: Product[] = [
         ]
       },
       BUSINESS_CARD_COMMON_OPTIONS.PRINT_COLOR,
-      {
-        name: '코팅',
-        type: 'radio',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '무광 코팅', priceModifier: 1000 },
-          { label: '유광 코팅', priceModifier: 1000 },
-        ]
-      },
-      {
-        name: '용도',
-        type: 'radio',
-        values: [
-          { label: '일반 명함용', priceModifier: 0 },
-          { label: '쿠폰용', priceModifier: 0 },
-          { label: '도장 쿠폰용', priceModifier: 0 },
-        ]
-      },
-      {
-        name: '명함케이스',
-        type: 'radio',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '추가 구매', priceModifier: 500 },
-        ]
-      }
+      BUSINESS_CARD_COMMON_OPTIONS.WHITE_INK,
+      ...BUSINESS_CARD_COMMON_OPTIONS.COATING,
+      ...BUSINESS_CARD_COMMON_OPTIONS.ROUNDING,
+      ...BUSINESS_CARD_COMMON_OPTIONS.PUNCHING,
+      ...BUSINESS_CARD_COMMON_OPTIONS.SHAPE_CUTTING,
+      ...BUSINESS_CARD_COMMON_OPTIONS.CREASING,
+      ...BUSINESS_CARD_COMMON_OPTIONS.PERFORATION,
+      ...BUSINESS_CARD_COMMON_OPTIONS.FOLDING,
+      ...BUSINESS_CARD_COMMON_OPTIONS.PACKAGING,
+      BUSINESS_CARD_COMMON_OPTIONS.POST_PROCESSING,
+      BUSINESS_CARD_COMMON_OPTIONS.CASE
     ],
     features: ['넓은 수납 공간', '다양한 레이아웃', '쿠폰/안내문 활용'],
     leadTime: '3~4 영업일',
@@ -3792,25 +4144,17 @@ export const PRODUCTS: Product[] = [
         values: getBusinessCardMaterials('template')
       },
       BUSINESS_CARD_COMMON_OPTIONS.PRINT_COLOR,
-      {
-        name: '수량',
-        type: 'radio',
-        values: [
-          { label: '100매', priceModifier: 0 },
-          { label: '200매', priceModifier: 8000 },
-          { label: '500매', priceModifier: 25000 },
-        ]
-      },
-      {
-        name: '코팅',
-        type: 'select',
-        values: [
-          { label: '없음', priceModifier: 0 },
-          { label: '무광 코팅', priceModifier: 1000 },
-          { label: '유광 코팅', priceModifier: 1000 },
-        ]
-      },
+      BUSINESS_CARD_COMMON_OPTIONS.WHITE_INK,
+      ...BUSINESS_CARD_COMMON_OPTIONS.COATING,
       ...BUSINESS_CARD_COMMON_OPTIONS.ROUNDING,
+      ...BUSINESS_CARD_COMMON_OPTIONS.PUNCHING,
+      ...BUSINESS_CARD_COMMON_OPTIONS.SHAPE_CUTTING,
+      ...BUSINESS_CARD_COMMON_OPTIONS.CREASING,
+      ...BUSINESS_CARD_COMMON_OPTIONS.PERFORATION,
+      ...BUSINESS_CARD_COMMON_OPTIONS.FOLDING,
+      ...BUSINESS_CARD_COMMON_OPTIONS.PACKAGING,
+      BUSINESS_CARD_COMMON_OPTIONS.POST_PROCESSING,
+      BUSINESS_CARD_COMMON_OPTIONS.CASE,
       {
         name: '이름',
         type: 'text',
@@ -4253,9 +4597,13 @@ export const PRODUCTS: Product[] = [
     basePrice: 45000,
     options: [
       {
-        name: '규격 안내',
-        type: 'text',
-        description: 'A4(210x297mm) 고정입니다.'
+        name: '규격',
+        type: 'select',
+        values: [
+          { label: 'A4 (210x297mm)', priceModifier: 0 },
+          { label: 'A5 (148x210mm)', priceModifier: -1000 },
+          { label: 'B5 (182x257mm)', priceModifier: -500 },
+        ]
       },
       {
         name: '인쇄 색상',

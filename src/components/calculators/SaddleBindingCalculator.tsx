@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Layers, Settings2, ShoppingCart } from 'lucide-react';
 import { Product } from '../../types';
+import { getIconForOption } from '../../lib/optionIcons';
 import { QuantitySection } from './shared/QuantitySection';
 import { SummarySection } from './shared/SummarySection';
 import { FileUploadSection } from './shared/FileUploadSection';
@@ -50,24 +51,28 @@ export const SaddleBindingCalculator: React.FC<SaddleBindingCalculatorProps> = (
     return (
       <OptionGroup key={option.name} label={option.name}>
         <div className={`grid grid-cols-2 md:grid-cols-${cols} gap-3`}>
-          {option.values?.map((val) => (
-            <button
-              key={val.label}
-              onClick={() => handleOptionChange(option.name, val.label)}
-              className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden ${
-                selectedOptions[option.name] === val.label
-                  ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/20'
-                  : 'bg-white border-zinc-200 text-zinc-600 hover:border-emerald-200'
-              }`}
-            >
-              <span className="relative z-10">{val.label}</span>
-              {val.priceModifier !== undefined && val.priceModifier !== 0 && (
-                <span className={`block text-[10px] mt-1 opacity-70 ${selectedOptions[option.name] === val.label ? 'text-white' : 'text-zinc-400'}`}>
-                  {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
-                </span>
-              )}
-            </button>
-          ))}
+          {option.values?.map((val) => {
+            const Icon = getIconForOption(option.name, val.label);
+            return (
+              <button
+                key={val.label}
+                onClick={() => handleOptionChange(option.name, val.label)}
+                className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden flex flex-col items-center justify-center gap-2 ${
+                  selectedOptions[option.name] === val.label
+                    ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/20'
+                    : 'bg-white border-zinc-200 text-zinc-600 hover:border-emerald-200'
+                }`}
+              >
+                {Icon && <Icon className="w-6 h-6" />}
+                <span className="relative z-10">{val.label}</span>
+                {val.priceModifier !== undefined && val.priceModifier !== 0 && (
+                  <span className={`block text-[10px] mt-1 opacity-70 ${selectedOptions[option.name] === val.label ? 'text-white' : 'text-zinc-400'}`}>
+                    {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
       </OptionGroup>
     );
@@ -80,9 +85,7 @@ export const SaddleBindingCalculator: React.FC<SaddleBindingCalculatorProps> = (
       icon: Box,
       children: (
         <div className="space-y-8">
-          <InfoCard 
-            content="A4 (210x297mm) 고정 / 별도 크기 선택 없음"
-          />
+          {renderOption('규격', 3)}
           {renderOption('표지 용지', 2)}
           {renderOption('내지 용지', 2)}
           {renderOption('페이지 수', 2)}
