@@ -213,7 +213,6 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
           {currentStep === 0 && (
             <div className="space-y-8">
               {product.options.filter(opt => {
-                if (opt.name === '용지 타입' || opt.name === '상세 용지 (고급지)') return false;
                 return opt.name.includes('용지');
               }).map((option) => (
                 <OptionGroup 
