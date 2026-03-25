@@ -1,14 +1,38 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { FileUp } from 'lucide-react';
 
 export const FileUploadSection: React.FC = () => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      console.log('File selected:', file.name);
+      // 여기에 실제 파일 업로드 로직을 추가하세요.
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2">
         <div className="w-1 h-4 bg-emerald-500 rounded-full" />
         <label className="text-sm font-black text-zinc-900 uppercase tracking-tight">파일 업로드</label>
       </div>
-      <div className="p-8 rounded-2xl border-2 border-dashed border-zinc-200 bg-zinc-50 flex flex-col items-center justify-center gap-4 group hover:border-emerald-500 transition-all cursor-pointer">
+      <input 
+        type="file" 
+        ref={fileInputRef} 
+        onChange={handleFileChange} 
+        className="hidden" 
+        accept=".pdf"
+      />
+      <div 
+        onClick={handleClick}
+        className="p-8 rounded-2xl border-2 border-dashed border-zinc-200 bg-zinc-50 flex flex-col items-center justify-center gap-4 group hover:border-emerald-500 transition-all cursor-pointer"
+      >
         <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center text-zinc-400 group-hover:text-emerald-500 transition-colors">
           <FileUp className="w-6 h-6" />
         </div>
