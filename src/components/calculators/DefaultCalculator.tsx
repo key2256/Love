@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Layers, Settings2, ShoppingCart } from 'lucide-react';
+import { Box, Layers, Settings2, ShoppingCart, CheckCircle2 } from 'lucide-react';
 import { Product } from '../../types';
 import { QuantitySection } from './shared/QuantitySection';
 import { SummarySection } from './shared/SummarySection';
@@ -72,13 +72,16 @@ export const DefaultCalculator: React.FC<DefaultCalculatorProps> = ({
               <button
                 key={val.label}
                 onClick={() => handleOptionChange(option.name, val.label)}
-                className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden ${
+                className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden flex items-center justify-between ${
                   selectedOptions[option.name] === val.label
                     ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/20'
                     : 'bg-white border-zinc-200 text-zinc-600 hover:border-emerald-200'
                 }`}
               >
                 <span className="relative z-10">{val.label}</span>
+                {selectedOptions[option.name] === val.label && (
+                  <CheckCircle2 className="w-4 h-4 text-white" />
+                )}
                 {val.priceModifier !== undefined && val.priceModifier !== 0 && (
                   <span className={`block text-[10px] mt-1 opacity-70 ${selectedOptions[option.name] === val.label ? 'text-white' : 'text-zinc-400'}`}>
                     {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
@@ -92,31 +95,34 @@ export const DefaultCalculator: React.FC<DefaultCalculatorProps> = ({
     );
   };
 
-  const sections = [
+  const optionGroups = [
     {
       id: 'basic',
       title: '기본 사양 및 용지',
       icon: Box,
-      children: (
-        <div className="space-y-8">
-          {product.options
-            .filter(o => o.name.includes('용지') || o.name.includes('규격') || o.name.includes('사이즈'))
-            .map(o => renderOption(o.name, 2))}
-        </div>
-      )
+      filter: (o: any) => o.name.includes('용지') || o.name.includes('규격') || o.name.includes('사이즈')
     },
     {
       id: 'options',
       title: '상세 옵션',
       icon: Settings2,
+      filter: (o: any) => !o.name.includes('용지') && !o.name.includes('규격') && !o.name.includes('사이즈')
+    }
+  ];
+
+  const sections = [
+    ...optionGroups.map(group => ({
+      id: group.id,
+      title: group.title,
+      icon: group.icon,
       children: (
         <div className="space-y-8">
           {product.options
-            .filter(o => !o.name.includes('용지') && !o.name.includes('규격') && !o.name.includes('사이즈'))
+            .filter(group.filter)
             .map(o => renderOption(o.name, 2))}
         </div>
       )
-    },
+    })),
     {
       id: 'order',
       title: '수량 및 주문 정보',

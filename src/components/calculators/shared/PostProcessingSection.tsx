@@ -16,6 +16,7 @@ import { Product } from '../../../types';
 import { 
   FOLDING_DIRECTION_ICONS, 
   FOLDING_TYPE_ICONS, 
+  SHAPE_ICONS,
   PRODUCT_CONFIG 
 } from './constants';
 
@@ -38,6 +39,41 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
   setExpandedPostOption,
   materialOptionName
 }) => {
+  const getPriceLabel = (optionName: string, valueLabel: string) => {
+    const option = product.options.find(o => o.name === optionName);
+    const value = option?.values.find(v => v.label === valueLabel);
+    if (!value || !value.priceModifier || value.priceModifier === 0) return '';
+    return ` (+${value.priceModifier.toLocaleString()}원)`;
+  };
+
+  const renderOptionButtons = (optionName: string, currentVal: string, onChange: (val: string) => void, columns: number = 2) => {
+    const option = product.options.find(o => o.name === optionName);
+    if (!option || !option.values) return null;
+
+    return (
+      <div className={`grid gap-2 grid-cols-${columns}`}>
+        {option.values.map(v => (
+          <button
+            key={v.label}
+            onClick={() => onChange(v.label)}
+            className={`py-3 px-2 rounded-xl text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-1 ${
+              currentVal === v.label
+                ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
+                : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
+            }`}
+          >
+            <span>{v.label}</span>
+            {v.priceModifier && v.priceModifier !== 0 && (
+              <span className={`text-[9px] ${currentVal === v.label ? 'text-emerald-300' : 'text-emerald-600'}`}>
+                +{v.priceModifier.toLocaleString()}원
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
+    );
+  };
+
   const config = PRODUCT_CONFIG[product.id];
 
   const postOptions = [
@@ -181,23 +217,61 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                   <button onClick={() => setExpandedPostOption(null)} className="text-[10px] font-bold text-zinc-400 hover:text-zinc-600">닫기</button>
                 </div>
                 <div className="space-y-4">
-                  <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-100">
-                    <div className="flex items-center gap-2 mb-2">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                      <span className="text-xs font-bold text-emerald-900">기본 포함 항목</span>
+                  {product.id === 'stk-postcard-shape' ? (
+                    <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-100">
+                      <div className="flex items-center gap-2 mb-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                        <span className="text-xs font-bold text-emerald-900">기본 포함 항목</span>
+                      </div>
+                      <p className="text-[11px] text-emerald-700 leading-relaxed">
+                        모양 엽서는 모양커팅 가공이 기본 포함됩니다.
+                      </p>
                     </div>
-                    <p className="text-[11px] text-emerald-700 leading-relaxed">
-                      모양 엽서는 모양커팅 가공이 기본 포함됩니다.
-                    </p>
-                  </div>
-                  <div className="grid grid-cols-1 gap-2">
-                    <button
-                      disabled
-                      className="py-3 rounded-xl text-[11px] font-bold border bg-zinc-900 border-zinc-900 text-white shadow-md cursor-default"
-                    >
-                      기본 포함
-                    </button>
-                  </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 gap-2">
+                        {product.options.find(o => o.name === '모양커팅')?.values.map(v => (
+                          <button
+                            key={v.label}
+                            onClick={() => handleOptionChange('모양커팅', v.label)}
+                            className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
+                              selectedOptions['모양커팅'] === v.label
+                                ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
+                                : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
+                            }`}
+                          >
+                            {v.label}{getPriceLabel('모양커팅', v.label)}
+                          </button>
+                        ))}
+                      </div>
+                      {selectedOptions['모양커팅'] === '있음' && (
+                        <div className="space-y-3 animate-in fade-in slide-in-from-top-1">
+                          <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">모양 선택</span>
+                          <div className="grid grid-cols-4 gap-2">
+                            {product.options.find(o => o.name === '모양커팅 형태')?.values.map(v => (
+                              <div key={v.label} className="flex flex-col items-center gap-2">
+                                <button
+                                  onClick={() => handleOptionChange('모양커팅 형태', v.label)}
+                                  className={`w-14 h-14 rounded-2xl border-2 flex items-center justify-center transition-all ${
+                                    selectedOptions['모양커팅 형태'] === v.label
+                                      ? 'bg-emerald-500 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)] scale-110'
+                                      : 'bg-zinc-50 border-zinc-100 hover:border-zinc-200'
+                                  }`}
+                                >
+                                  <div className={`transition-colors ${selectedOptions['모양커팅 형태'] === v.label ? 'text-white' : 'text-zinc-900'}`}>
+                                    {SHAPE_ICONS[v.label] || <Shapes className="w-6 h-6" />}
+                                  </div>
+                                </button>
+                                <span className={`text-[9px] font-bold transition-colors text-center leading-tight ${selectedOptions['모양커팅 형태'] === v.label ? 'text-emerald-700' : 'text-zinc-500'}`}>
+                                  {v.label}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </motion.div>
@@ -229,13 +303,18 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                               handleOptionChange('코팅', v.label);
                               if (v.label === '없음') handleOptionChange('코팅 면수', '단면');
                             }}
-                            className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
+                            className={`py-3 rounded-xl text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-1 ${
                               selectedOptions['코팅'] === v.label
                                 ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
                                 : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
                             }`}
                           >
-                            {v.label}
+                            <span>{v.label}</span>
+                            {v.priceModifier && v.priceModifier !== 0 && (
+                              <span className={`text-[9px] ${selectedOptions['코팅'] === v.label ? 'text-emerald-300' : 'text-emerald-600'}`}>
+                                +{v.priceModifier.toLocaleString()}원
+                              </span>
+                            )}
                           </button>
                         ))}
                       </div>
@@ -247,13 +326,18 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                         <button
                           key={side.label}
                           onClick={() => handleOptionChange('코팅 면수', side.label)}
-                          className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
+                          className={`py-3 rounded-xl text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-1 ${
                             selectedOptions['코팅 면수'] === side.label
                               ? 'bg-emerald-600 border-emerald-600 text-white shadow-md'
                               : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
                           }`}
                         >
-                          {side.label}
+                          <span>{side.label}</span>
+                          {side.priceModifier && side.priceModifier !== 0 && (
+                            <span className={`text-[9px] ${selectedOptions['코팅 면수'] === side.label ? 'text-emerald-100' : 'text-emerald-600'}`}>
+                              +{side.priceModifier.toLocaleString()}원
+                            </span>
+                          )}
                         </button>
                       ))}
                     </div>
@@ -282,13 +366,18 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                       <button
                         key={v.label}
                         onClick={() => handleOptionChange('귀돌이', v.label)}
-                        className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
+                        className={`py-3 rounded-xl text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-1 ${
                           selectedOptions['귀돌이'] === v.label
                             ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
                             : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
                         }`}
                       >
-                        {v.label}
+                        <span>{v.label}</span>
+                        {v.priceModifier && v.priceModifier !== 0 && (
+                          <span className={`text-[9px] ${selectedOptions['귀돌이'] === v.label ? 'text-emerald-300' : 'text-emerald-600'}`}>
+                            +{v.priceModifier.toLocaleString()}원
+                          </span>
+                        )}
                       </button>
                     ))}
                   </div>
@@ -302,13 +391,16 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                               <button
                                 key={v.label}
                                 onClick={() => handleOptionChange('귀돌이 크기', v.label)}
-                                className={`py-2 rounded-lg text-[11px] font-bold border transition-all ${
+                                className={`py-2 rounded-lg text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-0.5 ${
                                   selectedOptions['귀돌이 크기'] === v.label
                                     ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
                                     : 'bg-white border-zinc-200 text-zinc-500'
                                 }`}
                               >
-                                {v.label}
+                                <span>{v.label}</span>
+                                {v.priceModifier && v.priceModifier !== 0 && (
+                                  <span className="text-[8px] opacity-70">+{v.priceModifier.toLocaleString()}원</span>
+                                )}
                               </button>
                             ))}
                           </div>
@@ -320,13 +412,16 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                               <button
                                 key={v.label}
                                 onClick={() => handleOptionChange('귀돌이 면수', v.label)}
-                                className={`py-2 rounded-lg text-[11px] font-bold border transition-all ${
+                                className={`py-2 rounded-lg text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-0.5 ${
                                   selectedOptions['귀돌이 면수'] === v.label
                                     ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
                                     : 'bg-white border-zinc-200 text-zinc-500'
                                 }`}
                               >
-                                {v.label}
+                                <span>{v.label}</span>
+                                {v.priceModifier && v.priceModifier !== 0 && (
+                                  <span className="text-[8px] opacity-70">+{v.priceModifier.toLocaleString()}원</span>
+                                )}
                               </button>
                             ))}
                           </div>
@@ -384,13 +479,18 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                       <button
                         key={v.label}
                         onClick={() => handleOptionChange('타공', v.label)}
-                        className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
+                        className={`py-3 rounded-xl text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-1 ${
                           selectedOptions['타공'] === v.label
                             ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
                             : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
                         }`}
                       >
-                        {v.label}
+                        <span>{v.label}</span>
+                        {v.priceModifier && v.priceModifier !== 0 && (
+                          <span className={`text-[9px] ${selectedOptions['타공'] === v.label ? 'text-emerald-300' : 'text-emerald-600'}`}>
+                            +{v.priceModifier.toLocaleString()}원
+                          </span>
+                        )}
                       </button>
                     ))}
                   </div>
@@ -403,13 +503,16 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                             <button
                               key={v.label}
                               onClick={() => handleOptionChange('타공 크기', v.label)}
-                              className={`py-2 rounded-lg text-[11px] font-bold border transition-all ${
+                              className={`py-2 rounded-lg text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-0.5 ${
                                 selectedOptions['타공 크기'] === v.label
                                   ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
                                   : 'bg-white border-zinc-200 text-zinc-500'
                               }`}
                             >
-                              {v.label}
+                              <span>{v.label}</span>
+                              {v.priceModifier && v.priceModifier !== 0 && (
+                                <span className="text-[8px] opacity-70">+{v.priceModifier.toLocaleString()}원</span>
+                              )}
                             </button>
                           ))}
                         </div>
@@ -450,13 +553,18 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                       <button
                         key={v.label}
                         onClick={() => handleOptionChange('오시', v.label)}
-                        className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
+                        className={`py-3 rounded-xl text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-1 ${
                           selectedOptions['오시'] === v.label
                             ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
                             : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
                         }`}
                       >
-                        {v.label}
+                        <span>{v.label}</span>
+                        {v.priceModifier && v.priceModifier !== 0 && (
+                          <span className={`text-[9px] ${selectedOptions['오시'] === v.label ? 'text-emerald-300' : 'text-emerald-600'}`}>
+                            +{v.priceModifier.toLocaleString()}원
+                          </span>
+                        )}
                       </button>
                     ))}
                   </div>
@@ -469,13 +577,16 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                             <button
                               key={v.label}
                               onClick={() => handleOptionChange('오시 줄 수', v.label)}
-                              className={`py-2 rounded-lg text-[11px] font-bold border transition-all ${
+                              className={`py-2 rounded-lg text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-0.5 ${
                                 selectedOptions['오시 줄 수'] === v.label
                                   ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
                                   : 'bg-white border-zinc-200 text-zinc-500'
                               }`}
                             >
-                              {v.label}
+                              <span>{v.label}</span>
+                              {v.priceModifier && v.priceModifier !== 0 && (
+                                <span className="text-[8px] opacity-70">+{v.priceModifier.toLocaleString()}원</span>
+                              )}
                             </button>
                           ))}
                         </div>
@@ -516,13 +627,18 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                       <button
                         key={v.label}
                         onClick={() => handleOptionChange('미싱', v.label)}
-                        className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
+                        className={`py-3 rounded-xl text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-1 ${
                           selectedOptions['미싱'] === v.label
                             ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
                             : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
                         }`}
                       >
-                        {v.label}
+                        <span>{v.label}</span>
+                        {v.priceModifier && v.priceModifier !== 0 && (
+                          <span className={`text-[9px] ${selectedOptions['미싱'] === v.label ? 'text-emerald-300' : 'text-emerald-600'}`}>
+                            +{v.priceModifier.toLocaleString()}원
+                          </span>
+                        )}
                       </button>
                     ))}
                   </div>
@@ -535,13 +651,16 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                             <button
                               key={v.label}
                               onClick={() => handleOptionChange('미싱 줄 수', v.label)}
-                              className={`py-2 rounded-lg text-[11px] font-bold border transition-all ${
+                              className={`py-2 rounded-lg text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-0.5 ${
                                 selectedOptions['미싱 줄 수'] === v.label
                                   ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
                                   : 'bg-white border-zinc-200 text-zinc-500'
                               }`}
                             >
-                              {v.label}
+                              <span>{v.label}</span>
+                              {v.priceModifier && v.priceModifier !== 0 && (
+                                <span className="text-[8px] opacity-70">+{v.priceModifier.toLocaleString()}원</span>
+                              )}
                             </button>
                           ))}
                         </div>
@@ -582,13 +701,18 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                       <button
                         key={v.label}
                         onClick={() => handleOptionChange('접지', v.label)}
-                        className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
+                        className={`py-3 rounded-xl text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-1 ${
                           selectedOptions['접지'] === v.label
                             ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
                             : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
                         }`}
                       >
-                        {v.label}
+                        <span>{v.label}</span>
+                        {v.priceModifier && v.priceModifier !== 0 && (
+                          <span className={`text-[9px] ${selectedOptions['접지'] === v.label ? 'text-emerald-300' : 'text-emerald-600'}`}>
+                            +{v.priceModifier.toLocaleString()}원
+                          </span>
+                        )}
                       </button>
                     ))}
                   </div>
@@ -613,6 +737,9 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                               </button>
                               <span className={`text-[10px] font-bold transition-colors ${selectedOptions['접지 방향'] === v.label ? 'text-emerald-700' : 'text-zinc-500'}`}>
                                 {v.label === '가로형' ? '가로접지방향' : '세로접지방향'}
+                                {v.priceModifier && v.priceModifier !== 0 && (
+                                  <span className="block text-[8px] opacity-70">+{v.priceModifier.toLocaleString()}원</span>
+                                )}
                               </span>
                             </div>
                           ))}
@@ -637,6 +764,9 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                               </button>
                               <span className={`text-[9px] font-bold text-center leading-tight px-1 transition-colors ${selectedOptions['접지 형태'] === v.label ? 'text-emerald-700' : 'text-zinc-500'}`}>
                                 {v.label}
+                                {v.priceModifier && v.priceModifier !== 0 && (
+                                  <span className="block text-[8px] opacity-70">+{v.priceModifier.toLocaleString()}원</span>
+                                )}
                               </span>
                             </div>
                           ))}
@@ -679,13 +809,18 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                       <button
                         key={v.label}
                         onClick={() => handleOptionChange('폴리백 개별포장', v.label)}
-                        className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
+                        className={`py-3 rounded-xl text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-1 ${
                           selectedOptions['폴리백 개별포장'] === v.label
                             ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
                             : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
                         }`}
                       >
-                        {v.label}
+                        <span>{v.label}</span>
+                        {v.priceModifier && v.priceModifier !== 0 && (
+                          <span className={`text-[9px] ${selectedOptions['폴리백 개별포장'] === v.label ? 'text-emerald-300' : 'text-emerald-600'}`}>
+                            +{v.priceModifier.toLocaleString()}원
+                          </span>
+                        )}
                       </button>
                     ))}
                   </div>
@@ -698,13 +833,16 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                             <button
                               key={v.label}
                               onClick={() => handleOptionChange('폴리백 사이즈', v.label)}
-                              className={`py-2 rounded-lg text-[11px] font-bold border transition-all ${
+                              className={`py-2 rounded-lg text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-0.5 ${
                                 selectedOptions['폴리백 사이즈'] === v.label
                                   ? 'bg-emerald-100 border-emerald-500 text-emerald-700'
                                   : 'bg-white border-zinc-200 text-zinc-500'
                               }`}
                             >
-                              {v.label}
+                              <span>{v.label}</span>
+                              {v.priceModifier && v.priceModifier !== 0 && (
+                                <span className="text-[8px] opacity-70">+{v.priceModifier.toLocaleString()}원</span>
+                              )}
                             </button>
                           ))}
                         </div>
@@ -735,13 +873,18 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                     <button
                       key={v.label}
                       onClick={() => handleOptionChange('화이트 인쇄', v.label)}
-                      className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
+                      className={`py-3 rounded-xl text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-1 ${
                         selectedOptions['화이트 인쇄'] === v.label
                           ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
                           : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
                       }`}
                     >
-                      {v.label}
+                      <span>{v.label}</span>
+                      {v.priceModifier && v.priceModifier !== 0 && (
+                        <span className={`text-[9px] ${selectedOptions['화이트 인쇄'] === v.label ? 'text-emerald-300' : 'text-emerald-600'}`}>
+                          +{v.priceModifier.toLocaleString()}원
+                        </span>
+                      )}
                     </button>
                   ))}
                 </div>
@@ -772,13 +915,18 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                           <button
                             key={v.label}
                             onClick={() => handleOptionChange('후가공 옵션', v.label)}
-                            className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
+                            className={`py-3 rounded-xl text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-1 ${
                               selectedOptions['후가공 옵션'] === v.label
                                 ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
                                 : 'bg-white border-zinc-200 text-zinc-500 hover:border-emerald-200'
                             }`}
                           >
-                            {v.label}
+                            <span>{v.label}</span>
+                            {v.priceModifier && v.priceModifier !== 0 && (
+                              <span className={`text-[9px] ${selectedOptions['후가공 옵션'] === v.label ? 'text-emerald-300' : 'text-emerald-600'}`}>
+                                +{v.priceModifier.toLocaleString()}원
+                              </span>
+                            )}
                           </button>
                         ))}
                       </div>
@@ -813,7 +961,12 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                           : 'bg-white border-zinc-100 text-zinc-500 hover:border-zinc-300'
                       }`}
                     >
-                      <span>{v.label}</span>
+                      <div className="flex flex-col">
+                        <span>{v.label}</span>
+                        {v.priceModifier && v.priceModifier !== 0 && (
+                          <span className="text-[9px] text-emerald-600">+{v.priceModifier.toLocaleString()}원</span>
+                        )}
+                      </div>
                       {selectedOptions['명함케이스'] === v.label && <CheckCircle2 className="w-4 h-4 text-emerald-500" />}
                     </button>
                   ))}

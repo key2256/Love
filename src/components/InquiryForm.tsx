@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Send, Upload, X, FileText, User, Mail, Phone, MessageSquare, CheckCircle2 } from 'lucide-react';
 import { Quotation } from '../types';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, getDoc, doc } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from '../lib/firebase';
 import { useAuth } from '../hooks/useAuth';
 import { toast } from 'sonner';
@@ -19,13 +19,41 @@ export const InquiryForm: React.FC<InquiryFormProps> = ({ quotation, onClose, is
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
+    name: user?.displayName || '',
+    email: user?.email || '',
     phone: '',
     message: quotation 
       ? `[견적 정보]\n품명: ${quotation.productName}\n수량: ${quotation.quantity.toLocaleString()}개\n옵션: ${Object.entries(quotation.options).map(([k, v]) => `${k}: ${v}`).join(', ')}\n총 금액: ${quotation.totalPrice.toLocaleString()}원\n\n[문의 내용]\n`
       : ''
   });
+
+  React.useEffect(() => {
+    const fetchUserData = async () => {
+      if (user?.uid) {
+        try {
+          const userDoc = await getDoc(doc(db, 'users', user.uid));
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            setFormData(prev => ({
+              ...prev,
+              name: prev.name || userData.name || '',
+              email: prev.email || userData.email || '',
+              phone: prev.phone || userData.phone || ''
+            }));
+          }
+        } catch (error) {
+          console.error('Error fetching user data for pre-fill:', error);
+        }
+      }
+    };
+    fetchUserData();
+  }, [user]);
+
+  const validatePhone = (phone: string) => {
+    if (!phone) return true; // Optional
+    const phoneRegex = /^01[0-9]-?[0-9]{3,4}-?[0-9]{4}$/;
+    return phoneRegex.test(phone);
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -40,6 +68,12 @@ export const InquiryForm: React.FC<InquiryFormProps> = ({ quotation, onClose, is
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+
+    if (formData.phone && !validatePhone(formData.phone)) {
+      toast.error('올바른 연락처 형식이 아닙니다. (예: 010-0000-0000)');
+      setIsSubmitting(false);
+      return;
+    }
 
     const path = 'inquiries';
     try {
@@ -147,10 +181,9 @@ export const InquiryForm: React.FC<InquiryFormProps> = ({ quotation, onClose, is
 
         <div className="space-y-2">
           <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest flex items-center gap-2">
-            <Phone className="w-3 h-3" /> 연락처
+            <Phone className="w-3 h-3" /> 연락처 (선택)
           </label>
           <input 
-            required
             type="tel"
             value={formData.phone}
             onChange={e => setFormData(prev => ({ ...prev, phone: e.target.value }))}
