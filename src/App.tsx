@@ -14,6 +14,7 @@ import { FAQ } from './components/FAQ';
 import { InquiryForm } from './components/InquiryForm';
 import { Cart } from './components/Cart';
 import { MyDrafts } from './components/MyDrafts';
+import MyOrders from './components/MyOrders';
 import { Draft } from './services/draftService';
 import { PRODUCTS, CATEGORIES, Product, Quotation, ORDER_STEPS, PORTFOLIO_ITEMS, SUBCATEGORY_METADATA, SubCategoryGroup, CartItem } from './types';
 import { createDefaultCartItem } from './lib/cartUtils';
@@ -30,7 +31,7 @@ const API_KEY =
   '';
 const hasValidKey = Boolean(API_KEY) && API_KEY !== 'YOUR_API_KEY';
 
-type View = 'home' | 'detail' | 'category' | 'guide' | 'inquiry' | 'quotation_doc' | 'custom_inquiry' | 'portfolio' | 'location' | 'faq' | 'usage_ordering' | 'drafts';
+type View = 'home' | 'detail' | 'category' | 'guide' | 'inquiry' | 'quotation_doc' | 'custom_inquiry' | 'portfolio' | 'location' | 'faq' | 'usage_ordering' | 'drafts' | 'orders';
 
 function App() {
   const [view, setView] = useState<View>('home');
@@ -376,6 +377,7 @@ function App() {
         cartCount={cart.length}
         onCartClick={() => setShowCart(true)}
         onDraftsClick={() => onNavigate('drafts')}
+        onOrdersClick={() => onNavigate('orders')}
       />
 
       <Cart 
@@ -729,6 +731,17 @@ function App() {
               onBack={() => setView('home')}
               onLoadDraft={handleLoadDraft}
             />
+          </motion.div>
+        )}
+
+        {view === 'orders' && (
+          <motion.div
+            key="orders"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+          >
+            <MyOrders />
           </motion.div>
         )}
 

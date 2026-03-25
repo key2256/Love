@@ -38,6 +38,19 @@ service cloud.firestore {
     //   - createdAt: timestamp (required, immutable) - Submission timestamp
     //   - userId: string (optional, immutable) - User's UID if logged in
     //
+    // Collection: orders
+    // Document ID: orderId (randomly generated)
+    // Fields:
+    //   - userId: string (required, immutable) - User's UID
+    //   - productId: string (required) - Product ID
+    //   - productName: string (required) - Product Name
+    //   - options: map (required) - Selected customization options
+    //   - quantity: number (required, > 0) - Ordered quantity
+    //   - totalPrice: number (required, >= 0) - Total order price
+    //   - status: string (required) - Order status
+    //   - createdAt: timestamp (required, immutable) - Order creation timestamp
+    //   - updatedAt: timestamp (required) - Last update timestamp
+    //
     // ===============================================================
 
     // ===============================================================
@@ -87,6 +100,19 @@ service cloud.firestore {
              (!('userId' in data) || (data.userId is string && data.userId == request.auth.uid));
     }
 
+    function isValidOrder(data) {
+      return data.keys().hasAll(['userId', 'productId', 'productName', 'options', 'quantity', 'totalPrice', 'status', 'createdAt', 'updatedAt']) &&
+             data.userId is string && data.userId == request.auth.uid &&
+             data.productId is string && data.productId.size() <= 100 &&
+             data.productName is string && data.productName.size() <= 200 &&
+             data.options is map && data.options.size() <= 50 &&
+             data.quantity is number && data.quantity > 0 &&
+             data.totalPrice is number && data.totalPrice >= 0 &&
+             data.status in ['pending', 'processing', 'shipped', 'delivered', 'cancelled'] &&
+             data.createdAt is timestamp &&
+             data.updatedAt is timestamp;
+    }
+
     // ===============================================================
     // Collection Rules
     // ===============================================================
@@ -115,6 +141,12 @@ service cloud.firestore {
     match /inquiries/{inquiryId} {
       allow read: if isAdmin();
       allow create: if isValidInquiry(request.resource.data);
+      allow update, delete: if isAdmin();
+    }
+
+    match /orders/{orderId} {
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && isValidOrder(request.resource.data);
       allow update, delete: if isAdmin();
     }
   }

@@ -12,7 +12,8 @@ import {
   MapPin,
   HelpCircle,
   Grid,
-  Bookmark
+  Bookmark,
+  ShoppingBag
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { CATEGORIES, SubCategoryGroup, PRODUCTS } from '../types';
@@ -31,6 +32,7 @@ interface NavbarProps {
   cartCount: number;
   onCartClick: () => void;
   onDraftsClick: () => void;
+  onOrdersClick: () => void;
 }
 
 export const Navbar = ({ 
@@ -46,9 +48,11 @@ export const Navbar = ({
   currentView,
   cartCount,
   onCartClick,
-  onDraftsClick
+  onDraftsClick,
+  onOrdersClick
 }: NavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const [selectedSubGroup, setSelectedSubGroup] = useState<string | null>(null);
@@ -383,9 +387,65 @@ export const Navbar = ({
             >
               <Bookmark size={20} />
             </button>
-            <button className="p-2 rounded-full text-zinc-600 hover:bg-zinc-100 transition-colors">
-              <User size={20} />
-            </button>
+            <div className="relative">
+              <button 
+                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                className={`p-2 rounded-full transition-colors ${isUserMenuOpen ? 'text-emerald-600 bg-emerald-50' : 'text-zinc-600 hover:bg-zinc-100'}`}
+              >
+                <User size={20} />
+              </button>
+              
+              <AnimatePresence>
+                {isUserMenuOpen && (
+                  <>
+                    <div 
+                      className="fixed inset-0 z-40" 
+                      onClick={() => setIsUserMenuOpen(false)} 
+                    />
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      className="absolute right-0 mt-2 w-48 bg-white border border-zinc-100 rounded-2xl shadow-xl z-50 overflow-hidden"
+                    >
+                      <div className="p-2">
+                        <button
+                          onClick={() => {
+                            onOrdersClick();
+                            setIsUserMenuOpen(false);
+                          }}
+                          className="w-full text-left px-4 py-2.5 text-sm font-bold text-zinc-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all flex items-center gap-3"
+                        >
+                          <ShoppingBag size={16} />
+                          주문 내역
+                        </button>
+                        <button
+                          onClick={() => {
+                            onDraftsClick();
+                            setIsUserMenuOpen(false);
+                          }}
+                          className="w-full text-left px-4 py-2.5 text-sm font-bold text-zinc-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all flex items-center gap-3"
+                        >
+                          <Bookmark size={16} />
+                          임시저장 견적
+                        </button>
+                        <div className="h-[1px] bg-zinc-100 my-1 mx-2" />
+                        <button
+                          onClick={() => {
+                            // Handle logout or profile
+                            setIsUserMenuOpen(false);
+                          }}
+                          className="w-full text-left px-4 py-2.5 text-sm font-bold text-zinc-600 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all flex items-center gap-3"
+                        >
+                          <X size={16} />
+                          로그아웃
+                        </button>
+                      </div>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
             <button 
               ref={menuButtonRef}
               className="lg:hidden p-2 text-zinc-600 transition-colors"

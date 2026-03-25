@@ -41,6 +41,24 @@
         "userId": { "type": "string", "description": "User's UID if logged in" }
       },
       "required": ["name", "email", "phone", "message", "createdAt"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "User's past order history",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Order ID" },
+        "userId": { "type": "string", "description": "User's UID" },
+        "productId": { "type": "string", "description": "Product ID" },
+        "productName": { "type": "string", "description": "Product Name" },
+        "options": { "type": "object", "description": "Selected customization options" },
+        "quantity": { "type": "number", "description": "Ordered quantity" },
+        "totalPrice": { "type": "number", "description": "Total order price" },
+        "status": { "type": "string", "description": "Order status (pending, processing, shipped, delivered, cancelled)" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Order creation timestamp" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Last update timestamp" }
+      },
+      "required": ["userId", "productId", "productName", "options", "quantity", "totalPrice", "status", "createdAt", "updatedAt"]
     }
   },
   "firestore": {
@@ -55,6 +73,10 @@
     "/inquiries/{inquiryId}": {
       "schema": { "$ref": "Inquiry" },
       "description": "User's inquiries"
+    },
+    "/orders/{orderId}": {
+      "schema": { "$ref": "Order" },
+      "description": "User's orders"
     }
   }
 }

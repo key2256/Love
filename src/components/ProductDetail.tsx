@@ -624,7 +624,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
       });
     }
 
-    return filtered.slice(0, 4).map(item => item.product);
+    return filtered.slice(0, 8).map(item => item.product);
   }, [product, selectedMaterialFilter]);
 
   const categoryMaterialGroups = useMemo(() => {
@@ -1277,15 +1277,45 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
                   ))}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                  {similarProducts.map(p => (
-                    <ProductCard 
-                      key={p.id} 
-                      product={p} 
-                      onClick={onProductClick}
-                      onAddToCart={(prod) => onAddToCart(createDefaultCartItem(prod))}
-                    />
-                  ))}
+                <div className="relative group/carousel">
+                  <div 
+                    className="flex overflow-x-auto snap-x snap-mandatory gap-8 pb-8 no-scrollbar scroll-smooth"
+                    style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                  >
+                    {similarProducts.map(p => (
+                      <div key={p.id} className="min-w-[280px] md:min-w-[320px] snap-start">
+                        <ProductCard 
+                          product={p} 
+                          onClick={onProductClick}
+                          onAddToCart={(prod) => onAddToCart(createDefaultCartItem(prod))}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {/* Carousel Navigation */}
+                  <div className="absolute top-1/2 -left-4 -translate-y-1/2 opacity-0 group-hover/carousel:opacity-100 transition-opacity hidden lg:block">
+                    <button 
+                      onClick={(e) => {
+                        const container = e.currentTarget.parentElement?.nextElementSibling as HTMLElement;
+                        container.scrollBy({ left: -400, behavior: 'smooth' });
+                      }}
+                      className="w-12 h-12 bg-white rounded-full shadow-xl border border-zinc-100 flex items-center justify-center text-zinc-900 hover:bg-emerald-50 hover:text-emerald-600 transition-all"
+                    >
+                      <ChevronLeft size={24} />
+                    </button>
+                  </div>
+                  <div className="absolute top-1/2 -right-4 -translate-y-1/2 opacity-0 group-hover/carousel:opacity-100 transition-opacity hidden lg:block">
+                    <button 
+                      onClick={(e) => {
+                        const container = e.currentTarget.parentElement?.previousElementSibling as HTMLElement;
+                        container.scrollBy({ left: 400, behavior: 'smooth' });
+                      }}
+                      className="w-12 h-12 bg-white rounded-full shadow-xl border border-zinc-100 flex items-center justify-center text-zinc-900 hover:bg-emerald-50 hover:text-emerald-600 transition-all"
+                    >
+                      <ChevronRight size={24} />
+                    </button>
+                  </div>
                 </div>
               </section>
             )}

@@ -47,6 +47,19 @@ export interface Quotation {
   createdAt: string;
 }
 
+export interface Order {
+  id: string;
+  userId: string;
+  productId: string;
+  productName: string;
+  options: Record<string, string>;
+  quantity: number;
+  totalPrice: number;
+  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  createdAt: any;
+  updatedAt: any;
+}
+
 export interface SubCategoryGroup {
   groupName: string;
   items: (string | SubCategoryGroup)[];
