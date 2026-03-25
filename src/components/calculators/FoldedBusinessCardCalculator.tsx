@@ -140,12 +140,10 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
       );
     }
 
-    // 규격 직접입력 제거
     if (option.name.includes('규격')) {
-      const filteredValues = option.values.filter((v: any) => v.label !== '직접입력');
       return (
         <div className="grid grid-cols-2 gap-3">
-          {filteredValues.map((val: any) => (
+          {option.values?.map((val: any) => (
             <button
               key={val.label}
               onClick={() => handleOptionChange(option.name, val.label)}

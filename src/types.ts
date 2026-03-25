@@ -153,7 +153,6 @@ export const BUSINESS_CARD_COMMON_OPTIONS = {
     values: [
       { label: '90x50 (표준)', priceModifier: 0 },
       { label: '85x55 (신용카드형)', priceModifier: 0 },
-      { label: '직접입력', priceModifier: 0 },
     ]
   },
   PRINT_COLOR: {

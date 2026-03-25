@@ -133,7 +133,10 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
               (pattern === 'FOLDED_BUSINESS_CARD' && selectedOptions['용지'] && 
                BUSINESS_CARD_MATERIALS.find(m => `${m.name} ${m.weight}` === selectedOptions['용지'])?.group !== '기본 대중형'),
       disabled: pattern === 'FOLDED_BUSINESS_CARD' && selectedOptions['용지'] && 
-                BUSINESS_CARD_MATERIALS.find(m => `${m.name} ${m.weight}` === selectedOptions['용지'])?.group !== '기본 대중형'
+                BUSINESS_CARD_MATERIALS.find(m => `${m.name} ${m.weight}` === selectedOptions['용지'])?.group !== '기본 대중형',
+      warningMessage: pattern === 'FOLDED_BUSINESS_CARD' && selectedOptions['용지'] && 
+                      BUSINESS_CARD_MATERIALS.find(m => `${m.name} ${m.weight}` === selectedOptions['용지'])?.group !== '기본 대중형' 
+                      ? '고급 감성형 용지는 코팅을 지원하지 않습니다.' : undefined
     },
     { 
       id: 'rounding', 
@@ -277,6 +280,11 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                     </TermTooltip>
                   )}
                 </div>
+                {(item as any).warningMessage && (
+                  <span className="text-[9px] text-red-500 font-bold mt-1 text-center">
+                    { (item as any).warningMessage }
+                  </span>
+                )}
               </div>
             );
           })}
