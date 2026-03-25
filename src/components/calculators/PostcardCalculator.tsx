@@ -283,6 +283,17 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
                   if (hiddenForPremiumPostcard.includes(normalizedName)) return false;
                 }
                 
+                if (product.id === 'stk-postcard-premium') {
+                  const hiddenForPremiumPostcard = [
+                    '화이트인쇄',
+                    '모양커팅',
+                    '모양선택',
+                    '모양커팅형태',
+                    '후가공옵션',
+                  ];
+                  if (hiddenForPremiumPostcard.includes(normalizedName)) return false;
+                }
+                
                 if (product.id === 'stk-postcard-standard' || product.id === 'stk-postcard-special') {
                   const hiddenForPostcard = [
                     '화이트인쇄',

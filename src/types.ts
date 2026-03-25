@@ -3892,11 +3892,15 @@ export const PRODUCTS: Product[] = [
       {
         ...POSTCARD_COMMON_OPTIONS.PAPER_GROUP,
         values: [
+          { label: '기본 대중형', priceModifier: 0 },
           { label: '고급 감성형', priceModifier: 0 },
           { label: '친환경/내추럴형', priceModifier: 0 },
           { label: '컬러/특수지형', priceModifier: 0 },
         ]
       },
+      POSTCARD_COMMON_OPTIONS.PAPER_SELECT_BASIC,
+      POSTCARD_COMMON_OPTIONS.PAPER_SELECT_PREMIUM,
+      POSTCARD_COMMON_OPTIONS.PAPER_SELECT_ECO,
       POSTCARD_COMMON_OPTIONS.PAPER_SELECT_SPECIAL,
       POSTCARD_COMMON_OPTIONS.PRINT_COLOR,
       POSTCARD_COMMON_OPTIONS.WHITE_INK,
