@@ -129,7 +129,11 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
       name: '코팅', 
       icon: <Layers className="w-5 h-5" />, 
       active: selectedOptions['코팅'] !== '없음' && selectedOptions['코팅'] !== undefined, 
-      hidden: !config?.allowedPostProcessing?.includes('코팅') || (pattern === 'FOLDED_BUSINESS_CARD' && selectedOptions['용지'] && !selectedOptions['용지'].includes('기본 대중형'))
+      hidden: !config?.allowedPostProcessing?.includes('코팅') || 
+              (pattern === 'FOLDED_BUSINESS_CARD' && selectedOptions['용지'] && 
+               !BUSINESS_CARD_MATERIALS.find(m => `${m.name} ${m.weight}` === selectedOptions['용지'])?.group.includes('기본 대중형')),
+      disabled: pattern === 'FOLDED_BUSINESS_CARD' && selectedOptions['용지'] && 
+                !BUSINESS_CARD_MATERIALS.find(m => `${m.name} ${m.weight}` === selectedOptions['용지'])?.group.includes('기본 대중형')
     },
     { 
       id: 'rounding', 

@@ -78,7 +78,7 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
     }
   }, [product.id]);
 
-  const renderOption = (option: any) => {
+    const renderOption = (option: any) => {
     if (option.name.includes('용지')) {
       return (
         <div className="space-y-6">
@@ -136,6 +136,28 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
               );
             })}
           </div>
+        </div>
+      );
+    }
+
+    // 규격 직접입력 제거
+    if (option.name.includes('규격')) {
+      const filteredValues = option.values.filter((v: any) => v.label !== '직접입력');
+      return (
+        <div className="grid grid-cols-2 gap-3">
+          {filteredValues.map((val: any) => (
+            <button
+              key={val.label}
+              onClick={() => handleOptionChange(option.name, val.label)}
+              className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden ${
+                selectedOptions[option.name] === val.label
+                  ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/20'
+                  : 'bg-white border-zinc-200 text-zinc-600 hover:border-emerald-200'
+              }`}
+            >
+              <span className="relative z-10">{val.label}</span>
+            </button>
+          ))}
         </div>
       );
     }
@@ -216,8 +238,8 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
                 const normalizedName = opt.name.replace(/\s/g, '');
                 if (opt.name.includes('용지')) return false;
                 
-                // Whitelist: 규격, 방향, 인쇄도수만 표시
-                const allowedOptions = ['규격', '규격(mm)', '방향', '인쇄도수', '인쇄 도수'];
+                // Whitelist: 규격, 인쇄도수만 표시 (방향 제거)
+                const allowedOptions = ['규격', '규격(mm)', '인쇄도수', '인쇄 도수'];
                 return allowedOptions.includes(opt.name);
               }).map((option) => (
                 <OptionGroup key={option.name} label={option.name}>
