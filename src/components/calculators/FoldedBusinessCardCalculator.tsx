@@ -49,14 +49,13 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
   onAddToCart,
   onSaveDraft
 }) => {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [selectedBusinessCardGroup, setSelectedBusinessCardGroup] = useState<string>('기본 대중형');
-  const [expandedPostOption, setExpandedPostOption] = useState<string | null>(null);
   const config = PRODUCT_CONFIG[product.id];
+  const [currentStep, setCurrentStep] = useState(0);
+  const [selectedBusinessCardGroup, setSelectedBusinessCardGroup] = useState<string>(config?.defaultGroup || '기본 대중형');
+  const [expandedPostOption, setExpandedPostOption] = useState<string | null>(null);
 
   const steps = [
-    { title: '용지 선택', icon: Box },
-    { title: '상세 옵션', icon: Settings2 },
+    { title: '용지 및 상세 옵션', icon: Box },
     { title: '주문 정보', icon: ShoppingCart }
   ];
 
@@ -78,7 +77,7 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
     }
   }, [product.id]);
 
-    const renderOption = (option: any) => {
+  const renderOption = (option: any) => {
     if (option.name.includes('용지')) {
       return (
         <div className="space-y-6">
@@ -210,9 +209,7 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
         >
           {currentStep === 0 && (
             <div className="space-y-8">
-              {product.options.filter(opt => {
-                return opt.name.includes('용지');
-              }).map((option) => (
+              {product.options.filter(opt => opt.name.includes('용지')).slice(0, 1).map((option) => (
                 <OptionGroup 
                   key={option.name} 
                   label="용지 선택" 
@@ -222,20 +219,8 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
                   {renderOption(option)}
                 </OptionGroup>
               ))}
-              <StepNavigation 
-                onNext={() => setCurrentStep(1)} 
-                nextLabel="상세 옵션 선택하기"
-              />
-            </div>
-          )}
-
-          {currentStep === 1 && (
-            <div className="space-y-8">
+              
               {product.options.filter(opt => {
-                const normalizedName = opt.name.replace(/\s/g, '');
-                if (opt.name.includes('용지')) return false;
-                
-                // Whitelist: 규격, 인쇄도수만 표시 (방향 제거)
                 const allowedOptions = ['규격', '규격(mm)', '인쇄도수', '인쇄 도수'];
                 return allowedOptions.includes(opt.name);
               }).map((option) => (
@@ -251,22 +236,22 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
                 pattern="FOLDED_BUSINESS_CARD"
                 expandedPostOption={expandedPostOption}
                 setExpandedPostOption={setExpandedPostOption}
+                selectedBusinessCardGroup={selectedBusinessCardGroup}
               />
               <StepNavigation 
-                onPrev={() => setCurrentStep(0)} 
-                onNext={() => setCurrentStep(2)} 
+                onNext={() => setCurrentStep(1)} 
                 nextLabel="주문 정보 입력하기"
               />
             </div>
           )}
 
-          {currentStep === 2 && (
+          {currentStep === 1 && (
             <div className="space-y-8">
               <QuantitySection product={product} quantity={quantity} setQuantity={setQuantity} />
               <OrderTitleSection />
               <FileUploadSection />
               <StepNavigation 
-                onPrev={() => setCurrentStep(1)} 
+                onPrev={() => setCurrentStep(0)} 
               />
             </div>
           )}
