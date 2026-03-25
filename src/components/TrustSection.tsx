@@ -55,8 +55,8 @@ export const TrustSection = ({ onNavigate }: TrustSectionProps) => {
               <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 {item.icon}
               </div>
-              <h3 className="text-lg font-bold text-zinc-900 mb-2">{item.title}</h3>
-              <p className="text-sm text-zinc-500 mb-6 leading-relaxed">
+              <h3 className="text-lg font-bold text-zinc-900 mb-3">{item.title}</h3>
+              <p className="text-sm text-zinc-500 mb-8 leading-loose tracking-wide">
                 {item.description}
               </p>
               <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest group-hover:underline">

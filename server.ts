@@ -3,8 +3,18 @@ import { createServer as createViteServer } from "vite";
 import path from "path";
 import axios from "axios";
 import dotenv from "dotenv";
+import Stripe from "stripe";
 
 dotenv.config();
+
+// Lazy initialize Stripe
+let stripe: Stripe | null = null;
+const getStripe = () => {
+  if (!stripe && process.env.STRIPE_SECRET_KEY) {
+    stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+  }
+  return stripe;
+};
 
 async function startServer() {
   const app = express();
@@ -20,6 +30,26 @@ async function startServer() {
   };
 
   app.use(express.json());
+
+  // API Route: Create Payment Intent
+  app.post("/api/create-payment-intent", async (req, res) => {
+    const stripeClient = getStripe();
+    if (!stripeClient) {
+      return res.status(500).json({ error: "Stripe not configured" });
+    }
+    
+    const { amount, currency } = req.body;
+    try {
+      const paymentIntent = await stripeClient.paymentIntents.create({
+        amount,
+        currency: currency || 'krw',
+      });
+      res.json({ clientSecret: paymentIntent.client_secret });
+    } catch (error) {
+      console.error("Stripe Error:", error);
+      res.status(500).json({ error: "Failed to create payment intent" });
+    }
+  });
 
   // API Route: Get Naver Auth URL
   app.get("/api/auth/naver/url", (req, res) => {

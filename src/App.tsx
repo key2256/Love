@@ -505,8 +505,8 @@ function App() {
                       <div className="w-16 h-16 rounded-3xl bg-white/20 flex items-center justify-center text-white mb-8 group-hover:scale-110 transition-transform">
                         <Calculator className="w-6 h-6" />
                       </div>
-                      <h3 className="text-xl font-black mb-2">빠른 견적 계산기</h3>
-                      <p className="text-sm text-zinc-400 leading-relaxed mb-6">원하는 사양을 선택하고 실시간 제작 비용을 바로 확인하세요.</p>
+                      <h3 className="text-2xl md:text-xl font-black mb-3 text-white">빠른 견적 계산기</h3>
+                      <p className="text-base md:text-sm text-emerald-50 leading-normal mb-8">원하는 사양을 선택하고 실시간 제작 비용을 바로 확인하세요.</p>
                       <div className="flex items-center gap-2 text-emerald-400 font-bold text-sm">
                         <span>계산기 바로가기</span>
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

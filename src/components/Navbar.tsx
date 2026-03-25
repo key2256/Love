@@ -736,7 +736,7 @@ export const Navbar = ({
                 </div>
                 <div>
                   <h2 id="mobile-menu-title" className="text-lg font-black text-zinc-900 leading-none">전체 메뉴</h2>
-                  <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-1">Navigation</p>
+                  <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider mt-1">Navigation</p>
                 </div>
               </div>
               <button 
@@ -829,7 +829,7 @@ export const Navbar = ({
                     }`}
                   >
                     <item.icon size={20} className={item.active ? 'text-white' : 'text-emerald-600'} />
-                    <span className="text-[11px] font-black tracking-tight">{item.label}</span>
+                    <span className="text-xs font-black tracking-normal">{item.label}</span>
                   </button>
                 ))}
               </motion.div>
@@ -842,7 +842,7 @@ export const Navbar = ({
                 className="space-y-4"
               >
                 <div className="flex items-center justify-between px-1">
-                  <h3 className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">제작 카테고리</h3>
+                  <h3 className="text-xs font-black text-zinc-400 uppercase tracking-wider">제작 카테고리</h3>
                   <div className="h-[1px] flex-1 bg-zinc-100 ml-4" />
                 </div>
                 <div className="space-y-3">
@@ -908,7 +908,7 @@ export const Navbar = ({
                                 } else {
                                   return (
                                     <div key={i} className="py-4 space-y-3">
-                                      <div className="px-4 text-[9px] font-black text-zinc-400 uppercase tracking-[0.15em] flex items-center gap-2">
+                                      <div className="px-4 text-xs font-black text-zinc-400 uppercase tracking-wider flex items-center gap-2">
                                         {sub.groupName}
                                         <div className="h-[1px] flex-1 bg-zinc-200/50" />
                                       </div>

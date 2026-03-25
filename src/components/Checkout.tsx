@@ -21,6 +21,7 @@ import { useAuth } from '../hooks/useAuth';
 import { db } from '../lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { toast } from 'sonner';
+import StripeCheckout from './StripeCheckout';
 
 interface CheckoutProps {
   items: CartItem[];
@@ -57,16 +58,11 @@ export default function Checkout({ items, onBack, onSuccess }: CheckoutProps) {
     setStep('payment');
   };
 
-  const handlePaymentSubmit = async () => {
+  const createOrder = async () => {
     if (!user) {
       toast.error('로그인이 필요합니다.');
       return;
     }
-
-    setIsProcessing(true);
-    
-    // Mock payment processing delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
 
     try {
       const orderData: Omit<Order, 'id'> = {
@@ -87,9 +83,22 @@ export default function Checkout({ items, onBack, onSuccess }: CheckoutProps) {
     } catch (error) {
       console.error('Error creating order:', error);
       toast.error('주문 처리 중 오류가 발생했습니다.');
-    } finally {
-      setIsProcessing(false);
     }
+  };
+
+  const handlePaymentSubmit = async () => {
+    if (paymentMethod === 'card') {
+      // Stripe handles this via StripeCheckout
+      return;
+    }
+
+    setIsProcessing(true);
+    
+    // Mock payment processing delay for other methods
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    await createOrder();
+    setIsProcessing(false);
   };
 
   const steps = [
@@ -357,42 +366,51 @@ export default function Checkout({ items, onBack, onSuccess }: CheckoutProps) {
                   ))}
                 </div>
 
-                <div className="p-6 bg-zinc-50 rounded-3xl border border-zinc-100">
-                  <div className="flex items-start gap-3 text-zinc-500">
-                    <AlertCircle size={18} className="shrink-0 mt-0.5" />
-                    <p className="text-xs leading-relaxed">
-                      완두프린트는 안전한 결제를 위해 보안 표준을 준수합니다. <br />
-                      결제 완료 후 제작이 시작되며, 제작 시작 후에는 취소가 어려울 수 있습니다.
-                    </p>
+                {paymentMethod === 'card' ? (
+                  <div className="p-6 bg-white rounded-3xl border border-zinc-100 shadow-sm">
+                    <h3 className="text-lg font-black text-zinc-900 mb-4">카드 결제</h3>
+                    <StripeCheckout amount={finalAmount} onPaymentSuccess={createOrder} />
                   </div>
-                </div>
+                ) : (
+                  <div className="p-6 bg-zinc-50 rounded-3xl border border-zinc-100">
+                    <div className="flex items-start gap-3 text-zinc-500">
+                      <AlertCircle size={18} className="shrink-0 mt-0.5" />
+                      <p className="text-xs leading-relaxed">
+                        완두프린트는 안전한 결제를 위해 보안 표준을 준수합니다. <br />
+                        결제 완료 후 제작이 시작되며, 제작 시작 후에는 취소가 어려울 수 있습니다.
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
 
-              <div className="flex gap-4">
-                <button
-                  onClick={() => setStep('shipping')}
-                  className="flex-1 py-6 bg-zinc-100 text-zinc-600 rounded-[24px] font-black text-sm uppercase tracking-widest hover:bg-zinc-200 transition-all"
-                >
-                  이전 단계
-                </button>
-                <button
-                  onClick={handlePaymentSubmit}
-                  disabled={isProcessing}
-                  className="flex-[2] py-6 bg-emerald-600 text-white rounded-[24px] font-black text-sm uppercase tracking-widest shadow-xl shadow-emerald-600/20 hover:bg-emerald-700 hover:-translate-y-1 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
-                >
-                  {isProcessing ? (
-                    <>
-                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      결제 처리 중...
-                    </>
-                  ) : (
-                    <>
-                      {finalAmount.toLocaleString()}원 결제하기
-                      <CheckCircle2 className="w-5 h-5" />
-                    </>
-                  )}
-                </button>
-              </div>
+              {paymentMethod !== 'card' && (
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => setStep('shipping')}
+                    className="flex-1 py-6 bg-zinc-100 text-zinc-600 rounded-[24px] font-black text-sm uppercase tracking-widest hover:bg-zinc-200 transition-all"
+                  >
+                    이전 단계
+                  </button>
+                  <button
+                    onClick={handlePaymentSubmit}
+                    disabled={isProcessing}
+                    className="flex-[2] py-6 bg-emerald-600 text-white rounded-[24px] font-black text-sm uppercase tracking-widest shadow-xl shadow-emerald-600/20 hover:bg-emerald-700 hover:-translate-y-1 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                  >
+                    {isProcessing ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        결제 처리 중...
+                      </>
+                    ) : (
+                      <>
+                        {finalAmount.toLocaleString()}원 결제하기
+                        <CheckCircle2 className="w-5 h-5" />
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
             </motion.div>
           )}
         </div>
