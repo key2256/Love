@@ -118,7 +118,9 @@ export default function MyPage({ onNavigate }: MyPageProps) {
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-2">
               <h1 className="text-3xl font-black text-zinc-900">{user.displayName || '사용자'}</h1>
               <span className="px-3 py-1 bg-zinc-100 text-zinc-500 text-xs font-bold rounded-full uppercase tracking-wider">
-                {user.providerData[0]?.providerId === 'google.com' ? 'Google' : user.uid.startsWith('naver_') ? 'Naver' : 'Email'}
+                {user.providerData?.[0]?.providerId === 'google.com' ? 'Google' : 
+                 user.uid?.startsWith('naver_') ? 'Naver' : 
+                 user.providerData?.[0]?.providerId === 'password' ? 'Email' : 'User'}
               </span>
             </div>
             <p className="text-zinc-500 font-medium mb-6">{user.email}</p>
