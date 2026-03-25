@@ -34,6 +34,7 @@ interface NavbarProps {
   onCartClick: () => void;
   onDraftsClick: () => void;
   onOrdersClick: () => void;
+  onProfileClick: () => void;
   onAuthClick: (mode: 'login' | 'signup' | 'reset') => void;
 }
 
@@ -52,6 +53,7 @@ export const Navbar = ({
   onCartClick,
   onDraftsClick,
   onOrdersClick,
+  onProfileClick,
   onAuthClick
 }: NavbarProps) => {
   const { user, logout } = useAuth();
@@ -424,6 +426,16 @@ export const Navbar = ({
                         <p className="text-[10px] font-medium text-zinc-500 truncate">{user.email}</p>
                       </div>
                       <div className="p-2">
+                        <button
+                          onClick={() => {
+                            onProfileClick();
+                            setIsUserMenuOpen(false);
+                          }}
+                          className="w-full text-left px-4 py-2.5 text-sm font-bold text-zinc-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all flex items-center gap-3"
+                        >
+                          <User size={16} />
+                          마이페이지
+                        </button>
                         <button
                           onClick={() => {
                             onOrdersClick();

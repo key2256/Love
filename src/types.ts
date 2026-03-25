@@ -47,14 +47,22 @@ export interface Quotation {
   createdAt: string;
 }
 
+export interface ShippingInfo {
+  recipientName: string;
+  phoneNumber: string;
+  address: string;
+  detailAddress: string;
+  zipCode: string;
+  memo?: string;
+}
+
 export interface Order {
   id: string;
   userId: string;
-  productId: string;
-  productName: string;
-  options: Record<string, string>;
-  quantity: number;
-  totalPrice: number;
+  items: CartItem[];
+  totalAmount: number;
+  shippingInfo: ShippingInfo;
+  paymentMethod: 'card' | 'transfer' | 'vbank';
   status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
   createdAt: any;
   updatedAt: any;

@@ -28,13 +28,20 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    // Initialize from localStorage for custom providers (like Naver)
+    const savedUser = localStorage.getItem('wandoo_user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         try {
+          // Clear custom user if Firebase user exists to avoid conflicts
+          localStorage.removeItem('wandoo_user');
+          
           // Ensure user document exists in Firestore
           const userDocRef = doc(db, 'users', firebaseUser.uid);
           const userDoc = await getDoc(userDocRef);
@@ -44,7 +51,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               uid: firebaseUser.uid,
               name: firebaseUser.displayName || 'Anonymous',
               email: firebaseUser.email || '',
-              role: 'user'
+              photoURL: firebaseUser.photoURL || '',
+              role: 'user',
+              provider: firebaseUser.providerData[0]?.providerId || 'email',
+              createdAt: new Date().toISOString()
             });
           }
           setUser(firebaseUser);
@@ -53,7 +63,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           handleFirestoreError(error, OperationType.GET, `users/${firebaseUser.uid}`);
         }
       } else {
-        setUser(null);
+        // Only clear if not a custom user (like Naver)
+        const savedUser = localStorage.getItem('wandoo_user');
+        if (!savedUser) {
+          setUser(null);
+        }
       }
       setLoading(false);
     });
@@ -154,8 +168,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       // Manually set user state since this isn't a Firebase Auth user
-      // In a real app, you'd use Firebase Custom Token
-      setUser({
+      const customUser = {
         uid: userData.uid,
         email: userData.email,
         displayName: userData.name,
@@ -171,7 +184,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         getIdTokenResult: async () => ({} as any),
         reload: async () => {},
         toJSON: () => ({})
-      } as any);
+      } as any;
+
+      setUser(customUser);
+      localStorage.setItem('wandoo_user', JSON.stringify(customUser));
       
       toast.success('네이버 계정으로 로그인되었습니다.');
     } catch (error) {
@@ -183,6 +199,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = async () => {
     try {
       await signOut(auth);
+      localStorage.removeItem('wandoo_user');
+      setUser(null);
       toast.success('로그아웃되었습니다.');
     } catch (error) {
       console.error('Logout error:', error);

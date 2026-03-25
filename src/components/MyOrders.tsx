@@ -83,7 +83,8 @@ export default function MyOrders() {
   }, []);
 
   const filteredOrders = orders.filter(order => {
-    const matchesSearch = order.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const productNames = order.items?.map(item => item.product.name).join(' ') || '';
+    const matchesSearch = productNames.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          order.id.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
     return matchesSearch && matchesStatus;
@@ -192,10 +193,12 @@ export default function MyOrders() {
                       <div className="flex items-start justify-between gap-4 mb-2">
                         <div>
                           <h3 className="text-lg font-bold text-zinc-900 mb-1 truncate">
-                            {order.productName}
+                            {order.items && order.items.length > 0 
+                              ? `${order.items[0].product.name}${order.items.length > 1 ? ` 외 ${order.items.length - 1}건` : ''}`
+                              : '주문 상품 정보 없음'}
                           </h3>
                           <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-zinc-500">
-                            {Object.entries(order.options).map(([key, value]) => (
+                            {order.items && order.items.length > 0 && Object.entries(order.items[0].options).map(([key, value]) => (
                               <span key={key}>{key}: {value}</span>
                             ))}
                           </div>
@@ -208,10 +211,10 @@ export default function MyOrders() {
 
                       <div className="flex items-end justify-between mt-4">
                         <div className="text-sm text-zinc-500">
-                          수량: {order.quantity.toLocaleString()}개
+                          총 {order.items?.reduce((sum, item) => sum + item.quantity, 0).toLocaleString()}개
                         </div>
                         <div className="text-lg font-bold text-zinc-900">
-                          {order.totalPrice.toLocaleString()}원
+                          {order.totalAmount.toLocaleString()}원
                         </div>
                       </div>
                     </div>

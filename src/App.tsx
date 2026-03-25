@@ -15,7 +15,10 @@ import { InquiryForm } from './components/InquiryForm';
 import { Cart } from './components/Cart';
 import { MyDrafts } from './components/MyDrafts';
 import MyOrders from './components/MyOrders';
+import MyPage from './components/MyPage';
+import Checkout from './components/Checkout';
 import { AuthModal } from './components/AuthModal';
+import { useAuth } from './hooks/useAuth';
 import { Draft } from './services/draftService';
 import { PRODUCTS, CATEGORIES, Product, Quotation, ORDER_STEPS, PORTFOLIO_ITEMS, SUBCATEGORY_METADATA, SubCategoryGroup, CartItem } from './types';
 import { createDefaultCartItem } from './lib/cartUtils';
@@ -32,9 +35,10 @@ const API_KEY =
   '';
 const hasValidKey = Boolean(API_KEY) && API_KEY !== 'YOUR_API_KEY';
 
-type View = 'home' | 'detail' | 'category' | 'guide' | 'inquiry' | 'quotation_doc' | 'custom_inquiry' | 'portfolio' | 'location' | 'faq' | 'usage_ordering' | 'drafts' | 'orders';
+type View = 'home' | 'detail' | 'category' | 'guide' | 'inquiry' | 'quotation_doc' | 'custom_inquiry' | 'portfolio' | 'location' | 'faq' | 'usage_ordering' | 'drafts' | 'orders' | 'profile' | 'checkout';
 
 function App() {
+  const { user } = useAuth();
   const [view, setView] = useState<View>('home');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [currentQuotation, setCurrentQuotation] = useState<Quotation | null>(null);
@@ -386,6 +390,7 @@ function App() {
         onCartClick={() => setShowCart(true)}
         onDraftsClick={() => onNavigate('drafts')}
         onOrdersClick={() => onNavigate('orders')}
+        onProfileClick={() => onNavigate('profile')}
         onAuthClick={openAuthModal}
       />
 
@@ -403,9 +408,13 @@ function App() {
         onUpdateQuantity={updateCartQuantity}
         onClear={clearCart}
         onCheckout={() => {
+          if (!user) {
+            setAuthModalMode('login');
+            setIsAuthModalOpen(true);
+            return;
+          }
           setShowCart(false);
-          setShowInquiry(true);
-          setInquiryQuotation(undefined); // Could pass something to indicate cart checkout
+          setView('checkout');
         }}
       />
 
@@ -759,6 +768,40 @@ function App() {
             exit={{ opacity: 0, y: -20 }}
           >
             <MyOrders />
+          </motion.div>
+        )}
+
+        {view === 'profile' && (
+          <motion.div
+            key="profile"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+          >
+            <MyPage 
+              onNavigate={(v) => {
+                if (v === 'home') setView('home');
+                else setView(v);
+              }}
+            />
+          </motion.div>
+        )}
+
+        {view === 'checkout' && (
+          <motion.div
+            key="checkout"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+          >
+            <Checkout 
+              items={cart} 
+              onBack={() => setView('home')} 
+              onSuccess={() => {
+                clearCart();
+                setView('home');
+              }} 
+            />
           </motion.div>
         )}
 
