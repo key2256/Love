@@ -11,7 +11,7 @@ import { MemoPadCalculator } from './calculators/MemoPadCalculator';
 import { NoteCalculator } from './calculators/NoteCalculator';
 import { DrawingBookCalculator } from './calculators/DrawingBookCalculator';
 import { FoldedBusinessCardCalculator } from './calculators/FoldedBusinessCardCalculator';
-import { GeneralBindingCalculator } from './calculators/GeneralBindingCalculator';
+import { GeneralBindingCalculatorV2 } from './calculators/GeneralBindingCalculatorV2';
 import { SaddleBindingCalculator } from './calculators/SaddleBindingCalculator';
 import { PerfectBindingCalculator } from './calculators/PerfectBindingCalculator';
 import { SpringBindingCalculator } from './calculators/SpringBindingCalculator';
@@ -138,7 +138,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({
       case 'SADDLE_BINDING':
         return <SaddleBindingCalculator {...calculatorProps} pattern={pattern} />;
       case 'GENERAL_BINDING':
-        return <GeneralBindingCalculator {...calculatorProps} pattern={pattern} />;
+        return <GeneralBindingCalculatorV2 {...calculatorProps} pattern={pattern} />;
       case 'PERFECT_BINDING':
         return <PerfectBindingCalculator {...calculatorProps} pattern={pattern} />;
       case 'SPRING_BINDING':
