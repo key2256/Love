@@ -106,13 +106,19 @@ export const Cart: React.FC<CartProps> = ({
                         ))}
                       </div>
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1 bg-zinc-100 rounded-full p-1">
-                          <button 
+                        <div className="flex items-center gap-1 bg-zinc-50 border border-zinc-100 rounded-xl p-1 shadow-sm">
+                          <motion.button 
+                            whileTap={{ scale: 0.9 }}
                             onClick={() => onUpdateQuantity(item.id, Math.max(item.product.minQuantity || 1, item.quantity - 1))}
-                            className="w-6 h-6 rounded-full flex items-center justify-center hover:bg-white text-zinc-500 transition-all"
+                            disabled={item.quantity <= (item.product.minQuantity || 1)}
+                            className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all ${
+                              item.quantity <= (item.product.minQuantity || 1)
+                                ? 'text-zinc-200 cursor-not-allowed'
+                                : 'hover:bg-white hover:text-zinc-900 text-zinc-400 hover:shadow-sm'
+                            }`}
                           >
-                            <Minus className="w-3 h-3" />
-                          </button>
+                            <Minus className="w-3.5 h-3.5" />
+                          </motion.button>
                           <input
                             type="number"
                             value={item.quantity}
@@ -123,14 +129,15 @@ export const Cart: React.FC<CartProps> = ({
                                 onUpdateQuantity(item.id, val);
                               }
                             }}
-                            className="w-10 text-center text-xs font-bold text-zinc-900 bg-transparent focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            className="w-12 text-center text-xs font-black text-zinc-900 bg-transparent focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           />
-                          <button 
+                          <motion.button 
+                            whileTap={{ scale: 0.9 }}
                             onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
-                            className="w-6 h-6 rounded-full flex items-center justify-center hover:bg-white text-zinc-500 transition-all"
+                            className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-zinc-900 hover:text-white text-zinc-400 transition-all hover:shadow-lg hover:shadow-zinc-900/20"
                           >
-                            <Plus className="w-3 h-3" />
-                          </button>
+                            <Plus className="w-3.5 h-3.5" />
+                          </motion.button>
                         </div>
                         <p className="font-black text-zinc-900">
                           {item.totalPrice.toLocaleString()}원
