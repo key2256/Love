@@ -1809,6 +1809,19 @@ export const CATEGORIES: Category[] = [
         items: ['별도 상담 제작', '대량 제작 문의', '샘플 제작']
       }
     ]
+  },
+  { 
+    id: 'poster', 
+    name: '포스터', 
+    icon: 'Image', 
+    description: '공간을 채우는 선명한 포스터 제작',
+    entryPhrase: '공간의 분위기를 바꾸는 포스터',
+    subCategories: [
+      {
+        groupName: '일반 포스터',
+        items: ['일반 포스터']
+      }
+    ]
   }
 ];
 
@@ -3688,6 +3701,24 @@ export const PRODUCTS: Product[] = [
           { label: 'A3 (297x420)', priceModifier: 0 },
           { label: 'A2 (420x594)', priceModifier: 5000 },
           { label: 'A1 (594x841)', priceModifier: 15000 },
+        ]
+      },
+      {
+        name: '용지 종류',
+        type: 'select',
+        values: [
+          { label: '아트지 150g', priceModifier: 0 },
+          { label: '스노우지 150g', priceModifier: 1000 },
+          { label: '랑데뷰 190g', priceModifier: 3000 },
+        ]
+      },
+      {
+        name: '코팅',
+        type: 'radio',
+        values: [
+          { label: '코팅 없음', priceModifier: 0 },
+          { label: '무광 코팅', priceModifier: 2000 },
+          { label: '유광 코팅', priceModifier: 2000 },
         ]
       }
     ],

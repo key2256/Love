@@ -9,9 +9,9 @@ import { BusinessCardCalculator } from './calculators/BusinessCardCalculator';
 import { DesignCardCalculator } from './calculators/DesignCardCalculator';
 import { MemoPadCalculator } from './calculators/MemoPadCalculator';
 import { NoteCalculator } from './calculators/NoteCalculator';
+import { PosterCalculator } from './calculators/PosterCalculator';
 import { DrawingBookCalculator } from './calculators/DrawingBookCalculator';
 import { FoldedBusinessCardCalculator } from './calculators/FoldedBusinessCardCalculator';
-import { GeneralBindingCalculatorV3 } from './calculators/GeneralBindingCalculatorV3';
 import { SaddleBindingCalculator } from './calculators/SaddleBindingCalculator';
 import { PerfectBindingCalculator } from './calculators/PerfectBindingCalculator';
 import { SpringBindingCalculator } from './calculators/SpringBindingCalculator';
@@ -74,7 +74,6 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({
     if (product.id === 'bc-template') return 'DESIGN_CARD';
     if (product.id === 'bc-standard' || product.id === 'bc-premium') return 'BUSINESS_CARD';
     if (product.id === 'bc-folded') return 'FOLDED_BUSINESS_CARD';
-    if (product.category === 'binding-booklet') return 'GENERAL_BINDING';
     if (product.id === 'binding-saddle') return 'SADDLE_BINDING';
     if (product.id === 'binding-wireless') return 'PERFECT_BINDING';
     if (product.id === 'binding-spring') return 'SPRING_BINDING';
@@ -83,6 +82,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({
     if (product.id === 'binding-wireless-budget' || product.id === 'binding-spring-budget' || product.id === 'binding-twinring-budget') return 'BUDGET_BINDING';
     if (product.id === 'memo-standard') return 'MEMO_PAD';
     if (product.id === 'note-spring' || product.id === 'note-leather' || product.id === 'note-saddle') return 'NOTE';
+    if (product.id === 'poster-standard') return 'POSTER';
     if (product.id === 'drawing-pro' || product.id === 'drawing-student') return 'DRAWING_BOOK';
     if (product.category === 'card-paper') return 'PAPER_GOODS';
     if (product.category === 'binding-booklet' || product.id === 'note-spring') return 'BINDING_GOODS';
@@ -131,6 +131,8 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({
         return <MemoPadCalculator {...calculatorProps} />;
       case 'NOTE':
         return <NoteCalculator {...calculatorProps} subPattern={noteSubPattern} />;
+      case 'POSTER':
+        return <PosterCalculator {...calculatorProps} pattern={pattern} />;
       case 'DRAWING_BOOK':
         return <DrawingBookCalculator {...calculatorProps} />;
       case 'FOLDED_BUSINESS_CARD':
@@ -147,8 +149,6 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({
         return <SewnBindingCalculator {...calculatorProps} pattern={pattern} />;
       case 'BUDGET_BINDING':
         return <BudgetBindingCalculator {...calculatorProps} description={product.description} pattern={pattern} />;
-      case 'GENERAL_BINDING':
-        return <GeneralBindingCalculatorV3 {...calculatorProps} pattern={pattern} />;
       default:
         return <DefaultCalculator {...calculatorProps} pattern={pattern} />;
     }
