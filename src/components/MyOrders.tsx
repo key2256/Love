@@ -14,7 +14,8 @@ import {
   ShoppingBag
 } from 'lucide-react';
 import { db, auth, handleFirestoreError, OperationType } from '../lib/firebase';
-import { collection, query, where, orderBy, onSnapshot, Timestamp } from 'firebase/firestore';
+import { collection, query, where, orderBy, onSnapshot, Timestamp, doc, updateDoc } from 'firebase/firestore';
+import { toast } from 'sonner';
 import { Order } from '../types';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
@@ -57,6 +58,22 @@ export default function MyOrders() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [cancellingOrderId, setCancellingOrderId] = useState<string | null>(null);
+
+  const handleCancelOrder = async (orderId: string) => {
+    try {
+      const orderRef = doc(db, 'orders', orderId);
+      await updateDoc(orderRef, {
+        status: 'cancelled',
+        updatedAt: Timestamp.now()
+      });
+      toast.success('주문이 취소되었습니다.');
+      setCancellingOrderId(null);
+    } catch (error) {
+      handleFirestoreError(error, OperationType.UPDATE, `orders/${orderId}`);
+      toast.error('주문 취소 중 오류가 발생했습니다.');
+    }
+  };
 
   useEffect(() => {
     if (!auth.currentUser) return;
@@ -222,8 +239,11 @@ export default function MyOrders() {
 
                   {/* Order Footer / Actions */}
                   <div className="px-6 py-4 bg-white border-t border-zinc-100 flex justify-end gap-3">
-                    {order.status === 'pending' && (
-                      <button className="px-4 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 border border-zinc-200 rounded-lg hover:bg-zinc-50 transition-all">
+                    {['pending', 'processing'].includes(order.status) && (
+                      <button 
+                        onClick={() => setCancellingOrderId(order.id)}
+                        className="px-4 py-2 text-sm font-medium text-rose-600 hover:text-rose-700 border border-rose-200 rounded-lg hover:bg-rose-50 transition-all"
+                      >
                         주문취소
                       </button>
                     )}
@@ -257,6 +277,42 @@ export default function MyOrders() {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Cancellation Confirmation Modal */}
+      <AnimatePresence>
+        {cancellingOrderId && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-xl"
+            >
+              <div className="w-12 h-12 bg-rose-100 rounded-full flex items-center justify-center mb-4">
+                <AlertCircle className="text-rose-600" size={24} />
+              </div>
+              <h3 className="text-lg font-bold text-zinc-900 mb-2">주문을 취소하시겠습니까?</h3>
+              <p className="text-zinc-500 mb-6">
+                취소된 주문은 복구할 수 없습니다. 정말로 취소하시겠습니까?
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setCancellingOrderId(null)}
+                  className="flex-1 px-4 py-2 text-sm font-medium text-zinc-600 bg-zinc-100 rounded-lg hover:bg-zinc-200 transition-all"
+                >
+                  아니오
+                </button>
+                <button
+                  onClick={() => handleCancelOrder(cancellingOrderId)}
+                  className="flex-1 px-4 py-2 text-sm font-medium text-white bg-rose-600 rounded-lg hover:bg-rose-700 transition-all"
+                >
+                  네, 취소합니다
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
