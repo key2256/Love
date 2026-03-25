@@ -132,9 +132,9 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
       icon: <Layers className="w-5 h-5" />, 
       active: selectedOptions['코팅'] !== '없음' && selectedOptions['코팅'] !== undefined, 
       hidden: !config?.allowedPostProcessing?.includes('코팅') || 
-              (pattern === 'FOLDED_BUSINESS_CARD' && selectedBusinessCardGroup !== '기본 대중형'),
-      disabled: pattern === 'FOLDED_BUSINESS_CARD' && selectedBusinessCardGroup !== '기본 대중형',
-      warningMessage: pattern === 'FOLDED_BUSINESS_CARD' && selectedBusinessCardGroup !== '기본 대중형' 
+              (pattern === 'FOLDED_BUSINESS_CARD' && selectedBusinessCardGroup === '고급 감성형'),
+      disabled: pattern === 'FOLDED_BUSINESS_CARD' && selectedBusinessCardGroup === '고급 감성형',
+      warningMessage: pattern === 'FOLDED_BUSINESS_CARD' && selectedBusinessCardGroup === '고급 감성형' 
                       ? '고급 감성형 용지는 코팅을 지원하지 않습니다.' : undefined
     },
     { 
