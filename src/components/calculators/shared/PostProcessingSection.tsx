@@ -122,7 +122,7 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
       name: '모양커팅', 
       icon: <Shapes className="w-5 h-5" />, 
       active: true, 
-      hidden: !config?.allowedPostProcessing?.includes('모양커팅') || isTemplate
+      hidden: !config?.allowedPostProcessing?.includes('모양커팅') || isTemplate || product.id === 'stk-postcard-standard'
     },
     { 
       id: 'coating', 
