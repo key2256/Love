@@ -85,7 +85,7 @@ export const QuantitySection: React.FC<QuantitySectionProps> = ({
             key={add}
             whileHover={{ y: -2 }}
             whileTap={{ y: 0 }}
-            onClick={() => setQuantity(prev => prev + add)}
+            onClick={() => setQuantity(quantity + add)}
             className="group relative py-3.5 rounded-2xl bg-white border border-zinc-200 text-zinc-600 text-xs font-black hover:border-emerald-500 hover:text-emerald-600 transition-all overflow-hidden"
           >
             <span className="relative z-10">+{add.toLocaleString()}개</span>

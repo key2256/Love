@@ -11,7 +11,7 @@ import {
   orderBy,
   Timestamp
 } from 'firebase/firestore';
-import { db } from '../lib/firebase';
+import { db, handleFirestoreError, OperationType } from '../lib/firebase';
 
 export interface Draft {
   id: string;
@@ -50,36 +50,52 @@ export const saveDraft = async ({
     updatedAt: serverTimestamp()
   };
 
-  if (draftId) {
-    const draftRef = doc(db, 'drafts', draftId);
-    await updateDoc(draftRef, draftData);
-    return draftId;
-  } else {
-    const draftsRef = collection(db, 'drafts');
-    const docRef = await addDoc(draftsRef, {
-      ...draftData,
-      createdAt: serverTimestamp()
-    });
-    return docRef.id;
+  const path = 'drafts';
+  try {
+    if (draftId) {
+      const draftRef = doc(db, path, draftId);
+      await updateDoc(draftRef, draftData);
+      return draftId;
+    } else {
+      const draftsRef = collection(db, path);
+      const docRef = await addDoc(draftsRef, {
+        ...draftData,
+        createdAt: serverTimestamp()
+      });
+      return docRef.id;
+    }
+  } catch (error) {
+    handleFirestoreError(error, OperationType.WRITE, path);
   }
 };
 
 export const getDrafts = async (userId: string): Promise<Draft[]> => {
-  const draftsRef = collection(db, 'drafts');
-  const q = query(
-    draftsRef, 
-    where('userId', '==', userId),
-    orderBy('updatedAt', 'desc')
-  );
-  
-  const querySnapshot = await getDocs(q);
-  return querySnapshot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data()
-  } as Draft));
+  const path = 'drafts';
+  try {
+    const draftsRef = collection(db, path);
+    const q = query(
+      draftsRef, 
+      where('userId', '==', userId),
+      orderBy('updatedAt', 'desc')
+    );
+    
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    } as Draft));
+  } catch (error) {
+    handleFirestoreError(error, OperationType.LIST, path);
+    return []; // Should not reach here as handleFirestoreError throws
+  }
 };
 
 export const deleteDraft = async (draftId: string) => {
-  const draftRef = doc(db, 'drafts', draftId);
-  await deleteDoc(draftRef);
+  const path = 'drafts';
+  try {
+    const draftRef = doc(db, path, draftId);
+    await deleteDoc(draftRef);
+  } catch (error) {
+    handleFirestoreError(error, OperationType.DELETE, path);
+  }
 };

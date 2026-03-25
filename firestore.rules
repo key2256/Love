@@ -28,6 +28,18 @@ service cloud.firestore {
     //
     // ===============================================================
 
+    // Collection: inquiries
+    // Document ID: inquiryId (randomly generated)
+    // Fields:
+    //   - name: string (required, 1-100 chars) - User's name
+    //   - email: string (required, valid email) - User's email
+    //   - phone: string (required, 1-20 chars) - User's phone number
+    //   - message: string (required, 1-5000 chars) - Inquiry message
+    //   - createdAt: timestamp (required, immutable) - Submission timestamp
+    //   - userId: string (optional, immutable) - User's UID if logged in
+    //
+    // ===============================================================
+
     // ===============================================================
     // Helper Functions
     // ===============================================================
@@ -49,8 +61,8 @@ service cloud.firestore {
     function isValidUser(data) {
       return data.keys().hasAll(['uid', 'name', 'email', 'role']) &&
              data.keys().hasOnly(['uid', 'name', 'email', 'role']) &&
-             data.uid is string && data.uid.size() > 0 &&
-             data.name is string && data.name.size() > 0 && data.name.size() <= 50 &&
+             data.uid is string && data.uid.size() > 0 && data.uid.size() <= 128 &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
              data.email is string && data.email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$") &&
              data.role in ['admin', 'user'];
     }
@@ -58,11 +70,21 @@ service cloud.firestore {
     function isValidDraft(data) {
       return data.keys().hasAll(['userId', 'productId', 'options', 'quantity', 'createdAt', 'updatedAt']) &&
              data.userId is string && data.userId == request.auth.uid &&
-             data.productId is string &&
-             data.options is map &&
+             data.productId is string && data.productId.size() <= 100 &&
+             data.options is map && data.options.size() <= 50 &&
              data.quantity is number && data.quantity > 0 &&
              data.createdAt is timestamp &&
              data.updatedAt is timestamp;
+    }
+
+    function isValidInquiry(data) {
+      return data.keys().hasAll(['name', 'email', 'phone', 'message', 'createdAt']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
+             data.email is string && data.email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$") &&
+             data.phone is string && data.phone.size() > 0 && data.phone.size() <= 30 &&
+             data.message is string && data.message.size() > 0 && data.message.size() <= 10000 &&
+             data.createdAt is timestamp &&
+             (!('userId' in data) || (data.userId is string && data.userId == request.auth.uid));
     }
 
     // ===============================================================
@@ -88,6 +110,12 @@ service cloud.firestore {
                        request.resource.data.userId == resource.data.userId &&
                        request.resource.data.createdAt == resource.data.createdAt;
       allow delete: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+
+    match /inquiries/{inquiryId} {
+      allow read: if isAdmin();
+      allow create: if isValidInquiry(request.resource.data);
+      allow update, delete: if isAdmin();
     }
   }
 }

@@ -27,6 +27,20 @@
         "updatedAt": { "type": "string", "format": "date-time", "description": "Last update timestamp" }
       },
       "required": ["userId", "productId", "options", "quantity", "createdAt", "updatedAt"]
+    },
+    "Inquiry": {
+      "title": "Inquiry",
+      "description": "User's inquiry or contact form submission",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "User's name" },
+        "email": { "type": "string", "description": "User's email" },
+        "phone": { "type": "string", "description": "User's phone number" },
+        "message": { "type": "string", "description": "Inquiry message" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Submission timestamp" },
+        "userId": { "type": "string", "description": "User's UID if logged in" }
+      },
+      "required": ["name", "email", "phone", "message", "createdAt"]
     }
   },
   "firestore": {
@@ -37,6 +51,10 @@
     "/drafts/{draftId}": {
       "schema": { "$ref": "Draft" },
       "description": "User's saved drafts"
+    },
+    "/inquiries/{inquiryId}": {
+      "schema": { "$ref": "Inquiry" },
+      "description": "User's inquiries"
     }
   }
 }

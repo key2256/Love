@@ -11,7 +11,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({ onGenerate, onAddT
   return (
     <div className="grid grid-cols-1 gap-4 pt-4">
       <button 
-        onClick={onGenerate}
+        onClick={() => onGenerate()}
         className="w-full py-5 bg-zinc-900 text-white font-black rounded-2xl flex items-center justify-center gap-3 hover:bg-zinc-800 transition-all shadow-xl shadow-zinc-900/20 active:scale-[0.98]"
       >
         <FileText className="w-5 h-5 text-emerald-400" />

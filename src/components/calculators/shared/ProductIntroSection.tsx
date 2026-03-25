@@ -12,9 +12,9 @@ export const ProductIntroSection: React.FC<ProductIntroSectionProps> = ({ produc
         <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-50 px-2 py-0.5 rounded-full">
           {product.category}
         </span>
-        {product.subcategory && (
+        {product.subCategory && (
           <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">
-            {product.subcategory}
+            {product.subCategory}
           </span>
         )}
       </div>

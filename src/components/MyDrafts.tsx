@@ -136,7 +136,7 @@ export const MyDrafts: React.FC<MyDraftsProps> = ({ onBack, onLoadDraft }) => {
                         <div className="w-1 h-1 rounded-full bg-zinc-200" />
                         <div className="flex items-center gap-1 text-[10px] text-zinc-400 font-bold">
                           <Clock className="w-3 h-3" />
-                          {draft.updatedAt.toLocaleDateString()}
+                          {draft.updatedAt.toDate().toLocaleDateString()}
                         </div>
                       </div>
                       <h3 className="text-lg font-black text-zinc-900 mb-2 truncate">{draft.productName}</h3>

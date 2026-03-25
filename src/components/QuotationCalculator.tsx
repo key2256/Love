@@ -134,19 +134,19 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({
       case 'FOLDED_BUSINESS_CARD':
         return <FoldedBusinessCardCalculator {...calculatorProps} />;
       case 'SADDLE_BINDING':
-        return <SaddleBindingCalculator {...calculatorProps} />;
+        return <SaddleBindingCalculator {...calculatorProps} pattern={pattern} />;
       case 'PERFECT_BINDING':
-        return <PerfectBindingCalculator {...calculatorProps} />;
+        return <PerfectBindingCalculator {...calculatorProps} pattern={pattern} />;
       case 'SPRING_BINDING':
-        return <SpringBindingCalculator {...calculatorProps} />;
+        return <SpringBindingCalculator {...calculatorProps} pattern={pattern} />;
       case 'TWINRING_BINDING':
-        return <TwinRingBindingCalculator {...calculatorProps} />;
+        return <TwinRingBindingCalculator {...calculatorProps} pattern={pattern} />;
       case 'SEWN_BINDING':
-        return <SewnBindingCalculator {...calculatorProps} />;
+        return <SewnBindingCalculator {...calculatorProps} pattern={pattern} />;
       case 'BUDGET_BINDING':
-        return <BudgetBindingCalculator {...calculatorProps} description={product.description} />;
+        return <BudgetBindingCalculator {...calculatorProps} description={product.description} pattern={pattern} />;
       default:
-        return <DefaultCalculator {...calculatorProps} />;
+        return <DefaultCalculator {...calculatorProps} pattern={pattern} />;
     }
   };
 

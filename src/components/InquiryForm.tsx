@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Send, Upload, X, FileText, User, Mail, Phone, MessageSquare, CheckCircle2 } from 'lucide-react';
 import { Quotation } from '../types';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db, handleFirestoreError, OperationType } from '../lib/firebase';
+import { useAuth } from '../hooks/useAuth';
+import { toast } from 'sonner';
 
 interface InquiryFormProps {
   quotation?: Quotation;
@@ -10,7 +14,9 @@ interface InquiryFormProps {
 }
 
 export const InquiryForm: React.FC<InquiryFormProps> = ({ quotation, onClose, isInline = false }) => {
+  const { user } = useAuth();
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
   const [formData, setFormData] = useState({
     name: '',
@@ -31,12 +37,31 @@ export const InquiryForm: React.FC<InquiryFormProps> = ({ quotation, onClose, is
     setFiles(prev => prev.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate API call
-    setTimeout(() => {
+    setIsSubmitting(true);
+
+    const path = 'inquiries';
+    try {
+      await addDoc(collection(db, path), {
+        ...formData,
+        userId: user?.uid || null,
+        createdAt: serverTimestamp()
+      });
       setIsSubmitted(true);
-    }, 1000);
+      toast.success('문의가 성공적으로 접수되었습니다.');
+    } catch (error) {
+      console.error('Inquiry submission error:', error);
+      try {
+        handleFirestoreError(error, OperationType.WRITE, path);
+      } catch (err: any) {
+        // If it's a permission error, ErrorBoundary will catch it if we rethrow
+        // But for a form, we might want to just show a toast if it's not a fatal app crash
+        toast.error('문의 접수 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const SuccessContent = (
@@ -195,10 +220,15 @@ export const InquiryForm: React.FC<InquiryFormProps> = ({ quotation, onClose, is
 
         <button 
           type="submit"
-          className="w-full py-6 bg-emerald-600 text-white font-black rounded-2xl flex items-center justify-center gap-3 hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-600/20 active:scale-[0.98]"
+          disabled={isSubmitting}
+          className="w-full py-6 bg-emerald-600 text-white font-black rounded-2xl flex items-center justify-center gap-3 hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-600/20 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <Send className="w-5 h-5" />
-          <span>문의하기 접수</span>
+          {isSubmitting ? (
+            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+          ) : (
+            <Send className="w-5 h-5" />
+          )}
+          <span>{isSubmitting ? '접수 중...' : '문의하기 접수'}</span>
         </button>
       </form>
     </motion.div>

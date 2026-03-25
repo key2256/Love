@@ -7,7 +7,8 @@ import {
   User 
 } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { auth, db } from '../lib/firebase';
+import { auth, db, handleFirestoreError, OperationType } from '../lib/firebase';
+import { toast } from 'sonner';
 
 interface AuthContextType {
   user: User | null;
@@ -25,19 +26,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
-        // Ensure user document exists in Firestore
-        const userDocRef = doc(db, 'users', firebaseUser.uid);
-        const userDoc = await getDoc(userDocRef);
-        
-        if (!userDoc.exists()) {
-          await setDoc(userDocRef, {
-            uid: firebaseUser.uid,
-            name: firebaseUser.displayName || 'Anonymous',
-            email: firebaseUser.email || '',
-            role: 'user'
-          });
+        try {
+          // Ensure user document exists in Firestore
+          const userDocRef = doc(db, 'users', firebaseUser.uid);
+          const userDoc = await getDoc(userDocRef);
+          
+          if (!userDoc.exists()) {
+            await setDoc(userDocRef, {
+              uid: firebaseUser.uid,
+              name: firebaseUser.displayName || 'Anonymous',
+              email: firebaseUser.email || '',
+              role: 'user'
+            });
+          }
+          setUser(firebaseUser);
+        } catch (error) {
+          console.error('Error syncing user data:', error);
+          handleFirestoreError(error, OperationType.GET, `users/${firebaseUser.uid}`);
         }
-        setUser(firebaseUser);
       } else {
         setUser(null);
       }
@@ -51,16 +57,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
-    } catch (error) {
+      toast.success('성공적으로 로그인되었습니다.');
+    } catch (error: any) {
       console.error('Sign in error:', error);
+      if (error.code === 'auth/popup-closed-by-user') {
+        toast.error('로그인 팝업이 닫혔습니다. 다시 시도해주세요.');
+      } else {
+        toast.error('로그인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      }
     }
   };
 
   const logout = async () => {
     try {
       await signOut(auth);
+      toast.success('로그아웃되었습니다.');
     } catch (error) {
       console.error('Logout error:', error);
+      toast.error('로그아웃 중 오류가 발생했습니다.');
     }
   };
 

@@ -46,9 +46,7 @@ export const DrawingBookCalculator: React.FC<DrawingBookCalculatorProps> = ({
     if (!option) return null;
 
     // Handle visibleIf
-    if (typeof option.visibleIf === 'function') {
-      if (!option.visibleIf(selectedOptions)) return null;
-    } else if (option.visibleIf) {
+    if (option.visibleIf) {
       const parentVal = selectedOptions[option.visibleIf.optionName];
       if (parentVal !== option.visibleIf.value) return null;
     }
