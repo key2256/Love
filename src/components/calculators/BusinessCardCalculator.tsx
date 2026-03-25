@@ -200,6 +200,9 @@ export const BusinessCardCalculator: React.FC<BusinessCardCalculatorProps> = ({
             
             // Filter out forbidden options for template products
             if (product.id === 'bc-template') {
+              const forbidden = ['화이트 인쇄', '모양커팅', '모양 선택', '후가공 옵션', '템플릿 카테고리', '템플릿 선택', '디자인 템플릿'];
+              if (forbidden.includes(opt.name)) return false;
+              
               const forbiddenKeywords = ['화이트', '모양', '템플릿', '후가공'];
               if (forbiddenKeywords.some(keyword => opt.name.includes(keyword))) return false;
             }
