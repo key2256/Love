@@ -70,6 +70,11 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
           handleOptionChange(materialOption.name, `${defaultMaterial.name} ${defaultMaterial.weight}`);
         }
       }
+      
+      // Auto-select '있음' for 접지
+      if (product.id.includes('folded')) {
+        handleOptionChange('접지', '있음');
+      }
     }
   }, [product.id]);
 

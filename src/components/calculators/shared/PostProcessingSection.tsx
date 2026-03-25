@@ -163,9 +163,9 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
       id: 'folding', 
       name: '접지', 
       icon: <FileUp className="w-5 h-5" />, 
-      active: selectedOptions['접지'] === '있음', 
+      active: true, 
       hidden: !config?.allowedPostProcessing?.includes('접지') || isTemplate || product.id === 'stk-postcard-standard',
-      required: pattern === 'FOLDED_BUSINESS_CARD'
+      isBasicInclusion: pattern === 'FOLDED_BUSINESS_CARD'
     },
     { 
       id: 'packaging', 
@@ -215,6 +215,11 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
             후가공 선택
           </label>
         </div>
+        {pattern === 'FOLDED_BUSINESS_CARD' && (
+          <div className="px-3 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded-full">
+            접지 가공 기본 포함
+          </div>
+        )}
         <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
           아이콘을 클릭하여 상세 옵션 선택
         </span>
@@ -768,7 +773,7 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                 </div>
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-2">
-                    {product.options.find(o => o.name === '접지')?.values.map((v, index) => (
+                    {product.options.find(o => o.name === '접지')?.values.filter(v => v.label !== '없음').map((v, index) => (
                       <button
                         key={v.label + index}
                         onClick={() => handleOptionChange('접지', v.label)}
