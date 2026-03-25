@@ -69,9 +69,9 @@ export const MemoPadCalculator: React.FC<MemoPadCalculatorProps> = ({
           {product.options.find(o => o.name === '모양 선택') && (
             <OptionGroup label="모양 선택">
               <div className="grid grid-cols-2 gap-3">
-                {product.options.find(o => o.name === '모양 선택')?.values?.map((val) => (
+                {product.options.find(o => o.name === '모양 선택')?.values?.map((val, index) => (
                   <button
-                    key={val.label}
+                    key={val.label + index}
                     onClick={() => handleOptionChange('모양 선택', val.label)}
                     className={`group p-4 rounded-[28px] border-2 transition-all flex flex-col items-center gap-3 ${
                       selectedOptions['모양 선택'] === val.label

@@ -289,9 +289,9 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                   ) : (
                     <div className="space-y-4">
                       <div className="grid grid-cols-2 gap-2">
-                        {product.options.find(o => o.name === '모양커팅')?.values.map(v => (
+                        {product.options.find(o => o.name === '모양커팅')?.values.map((v, index) => (
                           <button
-                            key={v.label}
+                            key={v.label + index}
                             onClick={() => handleOptionChange('모양커팅', v.label)}
                             className={`py-3 rounded-xl text-[11px] font-bold border transition-all ${
                               selectedOptions['모양커팅'] === v.label
@@ -307,8 +307,8 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                         <div className="space-y-3 animate-in fade-in slide-in-from-top-1">
                           <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">모양 선택</span>
                           <div className="grid grid-cols-4 gap-2">
-                            {product.options.find(o => o.name === '모양커팅 형태')?.values.map(v => (
-                              <div key={v.label} className="flex flex-col items-center gap-2">
+                            {product.options.find(o => o.name === '모양커팅 형태')?.values.map((v, index) => (
+                              <div key={v.label + index} className="flex flex-col items-center gap-2">
                                 <button
                                   onClick={() => handleOptionChange('모양커팅 형태', v.label)}
                                   className={`w-14 h-14 rounded-2xl border-2 flex items-center justify-center transition-all ${
