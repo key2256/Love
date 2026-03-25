@@ -116,7 +116,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         uid: firebaseUser.uid,
         name: name,
         email: email,
-        role: 'user'
+        role: 'user',
+        createdAt: new Date().toISOString(),
+        provider: 'email'
       });
       
       toast.success('회원가입이 완료되었습니다.');
@@ -158,7 +160,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         email: naverUser.email || '',
         photoURL: naverUser.profile_image || '',
         provider: 'naver',
-        role: 'user'
+        role: 'user',
+        createdAt: new Date().toISOString()
       };
 
       if (!userDoc.exists()) {
@@ -192,6 +195,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       toast.success('네이버 계정으로 로그인되었습니다.');
     } catch (error) {
       console.error('Naver sync error:', error);
+      handleFirestoreError(error, OperationType.WRITE, `users/naver_${naverUser.id}`);
       toast.error('네이버 로그인 처리 중 오류가 발생했습니다.');
     }
   };

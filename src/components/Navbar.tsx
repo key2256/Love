@@ -6,6 +6,7 @@ import {
   Menu, 
   X,
   ChevronDown,
+  ChevronRight,
   FileText,
   MessageSquare,
   Briefcase,
@@ -85,27 +86,30 @@ export const Navbar = ({
 
   // Focus management and body scroll lock
   useEffect(() => {
+    const mainContent = document.getElementById('root');
     if (isMenuOpen) {
       document.body.style.overflow = 'hidden';
+      mainContent?.setAttribute('aria-hidden', 'true');
       
-      // Focus the drawer or first element when opened
+      // Focus the first element when opened
       const focusableElements = drawerRef.current?.querySelectorAll(
         'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
       );
       if (focusableElements && focusableElements.length > 0) {
-        // Small delay to ensure animation has started/element is visible
         const timer = setTimeout(() => {
           (focusableElements[0] as HTMLElement).focus();
-        }, 100);
+        }, 200); // Slightly longer delay for smoother transition
         return () => clearTimeout(timer);
       }
     } else {
       document.body.style.overflow = '';
+      mainContent?.removeAttribute('aria-hidden');
       // Return focus to menu button when closed
       menuButtonRef.current?.focus();
     }
     return () => {
       document.body.style.overflow = '';
+      mainContent?.removeAttribute('aria-hidden');
     };
   }, [isMenuOpen]);
 
@@ -697,7 +701,8 @@ export const Navbar = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsMenuOpen(false)}
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] lg:hidden"
+            className="fixed inset-0 bg-zinc-900/60 backdrop-blur-md z-[60] lg:hidden"
+            aria-hidden="true"
           />
         )}
       </AnimatePresence>
@@ -715,25 +720,38 @@ export const Navbar = ({
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed top-0 right-0 bottom-0 w-full max-w-sm bg-white z-[70] shadow-2xl lg:hidden flex flex-col"
+            transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+            className="fixed top-0 right-0 bottom-0 w-full max-w-sm bg-white z-[70] shadow-2xl lg:hidden flex flex-col overflow-hidden"
           >
-            <div className="p-6 border-b border-zinc-100 flex items-center justify-between">
-              <h2 id="mobile-menu-title" className="text-xl font-black text-zinc-900">메뉴</h2>
+            <div className="p-6 border-b border-zinc-100 flex items-center justify-between bg-white sticky top-0 z-10">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-600 flex items-center justify-center text-white">
+                  <Menu size={20} />
+                </div>
+                <div>
+                  <h2 id="mobile-menu-title" className="text-lg font-black text-zinc-900 leading-none">전체 메뉴</h2>
+                  <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-1">Navigation</p>
+                </div>
+              </div>
               <button 
                 onClick={() => setIsMenuOpen(false)}
-                className="p-2 rounded-full hover:bg-zinc-100 text-zinc-400 hover:text-zinc-900 transition-all"
+                className="w-10 h-10 rounded-2xl bg-zinc-50 flex items-center justify-center text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition-all"
                 aria-label="메뉴 닫기"
               >
-                <X size={24} />
+                <X size={20} />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-10">
+            <div className="flex-1 overflow-y-auto p-6 space-y-10 pb-20">
               {/* Search Section */}
-              <div className="space-y-4">
-                <div className="relative">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={18} />
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="space-y-4"
+              >
+                <div className="relative group">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-emerald-500 transition-colors" size={18} />
                   <input 
                     type="text" 
                     placeholder="어떤 제품을 찾으시나요?" 
@@ -744,12 +762,13 @@ export const Navbar = ({
                     }}
                     onFocus={() => setShowSuggestions(true)}
                     onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                    className="w-full pl-12 pr-12 py-4 bg-zinc-50 border border-zinc-100 rounded-[20px] text-sm font-bold focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all placeholder:text-zinc-400"
+                    className="w-full pl-12 pr-12 py-4 bg-zinc-50 border border-zinc-100 rounded-[24px] text-sm font-bold focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all placeholder:text-zinc-400"
                   />
                   {searchQuery && (
                     <button 
                       onClick={() => onSearchChange('')}
                       className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full bg-zinc-200 text-zinc-500 hover:text-zinc-900 transition-all"
+                      aria-label="검색어 지우기"
                     >
                       <X size={14} />
                     </button>
@@ -759,9 +778,9 @@ export const Navbar = ({
                 <AnimatePresence>
                   {showSuggestions && suggestions.length > 0 && (
                     <motion.div 
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
                       className="bg-white border border-zinc-100 rounded-2xl shadow-xl overflow-hidden"
                     >
                       {suggestions.map((item: any, idx) => (
@@ -771,19 +790,24 @@ export const Navbar = ({
                             handleSuggestionClick(item);
                             setIsMenuOpen(false);
                           }}
-                          className="w-full text-left px-6 py-4 text-sm font-bold hover:bg-zinc-50 transition-colors flex items-center gap-3"
+                          className="w-full text-left px-6 py-4 text-sm font-bold hover:bg-zinc-50 transition-colors flex items-center gap-3 border-b border-zinc-50 last:border-0"
                         >
-                          <Search size={14} className="text-zinc-300" />
+                          <Search size={14} className="text-emerald-500" />
                           {item.name}
                         </button>
                       ))}
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </div>
+              </motion.div>
 
               {/* Quick Access Grid */}
-              <div className="grid grid-cols-3 gap-3">
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="grid grid-cols-3 gap-3"
+              >
                 {[
                   { label: '카테고리', icon: Grid, action: () => setExpandedCategory(expandedCategory === 'all' ? null : 'all'), active: expandedCategory === 'all' },
                   { label: '파일가이드', icon: FileText, action: () => { onNavigate('guide'); setIsMenuOpen(false); } },
@@ -794,7 +818,7 @@ export const Navbar = ({
                     onClick={item.action}
                     className={`flex flex-col items-center justify-center gap-3 p-4 rounded-2xl border transition-all ${
                       item.active 
-                        ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-100' 
+                        ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-100 scale-[1.02]' 
                         : 'bg-white border-zinc-100 text-zinc-600 hover:border-emerald-200 hover:bg-emerald-50/30'
                     }`}
                   >
@@ -802,29 +826,35 @@ export const Navbar = ({
                     <span className="text-[11px] font-black tracking-tight">{item.label}</span>
                   </button>
                 ))}
-              </div>
+              </motion.div>
               
               {/* Categories Accordion */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between mb-4 px-1">
-                  <h3 className="text-xs font-black text-zinc-400 uppercase tracking-widest">제작 카테고리</h3>
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="space-y-4"
+              >
+                <div className="flex items-center justify-between px-1">
+                  <h3 className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">제작 카테고리</h3>
+                  <div className="h-[1px] flex-1 bg-zinc-100 ml-4" />
                 </div>
-                <div className="space-y-2">
-                  {CATEGORIES.map((cat) => (
+                <div className="space-y-3">
+                  {CATEGORIES.map((cat, idx) => (
                     <div key={cat.id} className="overflow-hidden">
                       <button 
                         onClick={() => setExpandedCategory(expandedCategory === cat.id ? null : cat.id)}
-                        className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all ${
+                        className={`w-full flex items-center justify-between p-5 rounded-3xl transition-all ${
                           expandedCategory === cat.id 
-                            ? 'bg-zinc-900 text-white' 
+                            ? 'bg-zinc-900 text-white shadow-xl shadow-zinc-200' 
                             : 'bg-zinc-50 text-zinc-900 hover:bg-zinc-100'
                         }`}
+                        aria-expanded={expandedCategory === cat.id}
                       >
-                        <span className="font-black tracking-tight">{cat.name}</span>
-                        <ChevronDown 
-                          size={18} 
-                          className={`transition-transform duration-300 ${expandedCategory === cat.id ? 'rotate-180' : ''}`} 
-                        />
+                        <span className="font-black tracking-tight text-base">{cat.name}</span>
+                        <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all ${expandedCategory === cat.id ? 'bg-white/10 rotate-180' : 'bg-zinc-200/50'}`}>
+                          <ChevronDown size={16} />
+                        </div>
                       </button>
                       
                       <AnimatePresence>
@@ -833,7 +863,8 @@ export const Navbar = ({
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: 'auto', opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
-                            className="bg-zinc-50/50 rounded-b-2xl -mt-2 pt-4 pb-2 px-4 space-y-1"
+                            transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+                            className="bg-zinc-50/50 rounded-b-[32px] -mt-4 pt-8 pb-4 px-4 space-y-2"
                           >
                             <button
                               onClick={() => {
@@ -841,72 +872,84 @@ export const Navbar = ({
                                 onSubCategorySelect('all');
                                 setIsMenuOpen(false);
                               }}
-                              className="w-full text-left p-3 text-sm font-bold text-emerald-600 hover:bg-white rounded-xl transition-all"
+                              className="w-full text-left p-4 text-sm font-black text-emerald-600 hover:bg-white rounded-2xl transition-all flex items-center justify-between group"
                             >
                               {cat.name} 전체보기
+                              <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
                             </button>
-                            {cat.subCategories.map((sub, i) => {
-                              if (typeof sub === 'string') {
-                                return (
-                                  <button 
-                                    key={i}
-                                    onClick={() => {
-                                      onCategorySelect(cat.id);
-                                      onSubCategorySelect(sub);
-                                      setIsMenuOpen(false);
-                                    }}
-                                    className={`w-full text-left p-3 text-sm font-bold rounded-xl transition-all ${
-                                      activeSubCategory === sub && activeCategory === cat.id 
-                                        ? 'bg-white text-emerald-600 shadow-sm' 
-                                        : 'text-zinc-500 hover:bg-white'
-                                    }`}
-                                  >
-                                    {sub}
-                                  </button>
-                                );
-                              } else {
-                                return (
-                                  <div key={i} className="py-2 space-y-2">
-                                    <div className="px-3 text-[10px] font-black text-zinc-400 uppercase tracking-widest">
-                                      {sub.groupName}
+                            <div className="space-y-1">
+                              {cat.subCategories.map((sub, i) => {
+                                if (typeof sub === 'string') {
+                                  const isActive = activeSubCategory === sub && activeCategory === cat.id;
+                                  return (
+                                    <button 
+                                      key={i}
+                                      onClick={() => {
+                                        onCategorySelect(cat.id);
+                                        onSubCategorySelect(sub);
+                                        setIsMenuOpen(false);
+                                      }}
+                                      className={`w-full text-left p-4 text-sm font-bold rounded-2xl transition-all flex items-center justify-between ${
+                                        isActive 
+                                          ? 'bg-white text-emerald-600 shadow-sm' 
+                                          : 'text-zinc-500 hover:bg-white'
+                                      }`}
+                                    >
+                                      {sub}
+                                      {isActive && <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
+                                    </button>
+                                  );
+                                } else {
+                                  return (
+                                    <div key={i} className="py-4 space-y-3">
+                                      <div className="px-4 text-[9px] font-black text-zinc-400 uppercase tracking-[0.15em] flex items-center gap-2">
+                                        {sub.groupName}
+                                        <div className="h-[1px] flex-1 bg-zinc-200/50" />
+                                      </div>
+                                      <div className="grid grid-cols-2 gap-2">
+                                        {sub.items.map((item, j) => {
+                                          const itemName = typeof item === 'string' ? item : item.groupName;
+                                          const isActive = activeSubCategory === itemName && activeCategory === cat.id;
+                                          return (
+                                            <button 
+                                              key={`${i}-${j}`}
+                                              onClick={() => {
+                                                onCategorySelect(cat.id);
+                                                onSubCategorySelect(itemName);
+                                                setIsMenuOpen(false);
+                                              }}
+                                              className={`p-4 rounded-2xl text-xs font-bold text-center transition-all border ${
+                                                isActive 
+                                                  ? 'bg-zinc-900 border-zinc-900 text-white shadow-lg shadow-zinc-200' 
+                                                  : 'bg-white border-zinc-100 text-zinc-500 hover:border-emerald-200'
+                                              }`}
+                                            >
+                                              {itemName}
+                                            </button>
+                                          );
+                                        })}
+                                      </div>
                                     </div>
-                                    <div className="grid grid-cols-2 gap-2">
-                                      {sub.items.map((item, j) => {
-                                        const itemName = typeof item === 'string' ? item : item.groupName;
-                                        return (
-                                          <button 
-                                            key={`${i}-${j}`}
-                                            onClick={() => {
-                                              onCategorySelect(cat.id);
-                                              onSubCategorySelect(itemName);
-                                              setIsMenuOpen(false);
-                                            }}
-                                            className={`p-3 rounded-xl text-xs font-bold text-center transition-all ${
-                                              activeSubCategory === itemName && activeCategory === cat.id 
-                                                ? 'bg-zinc-900 text-white shadow-md' 
-                                                : 'bg-white text-zinc-500 border border-zinc-100 hover:border-emerald-200'
-                                            }`}
-                                          >
-                                            {itemName}
-                                          </button>
-                                        );
-                                      })}
-                                    </div>
-                                  </div>
-                                );
-                              }
-                            })}
+                                  );
+                                }
+                              })}
+                            </div>
                           </motion.div>
                         )}
                       </AnimatePresence>
                     </div>
                   ))}
                 </div>
-              </div>
+              </motion.div>
               
               {/* Footer Links */}
-              <div className="pt-8 border-t border-zinc-100">
-                <div className="grid grid-cols-2 gap-4">
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="pt-10 border-t border-zinc-100"
+              >
+                <div className="grid grid-cols-2 gap-3">
                   {[
                     { label: '제작 사례', view: 'portfolio', icon: Briefcase },
                     { label: '오시는 길', view: 'location', icon: MapPin },
@@ -915,18 +958,18 @@ export const Navbar = ({
                     <button 
                       key={item.view}
                       onClick={() => { onNavigate(item.view as any); setIsMenuOpen(false); }} 
-                      className={`flex items-center gap-3 p-4 rounded-2xl transition-all ${
+                      className={`flex items-center gap-3 p-4 rounded-2xl transition-all border ${
                         currentView === item.view 
-                          ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' 
-                          : 'bg-zinc-50 text-zinc-600 hover:bg-zinc-100'
+                          ? 'bg-emerald-50 text-emerald-600 border-emerald-100 shadow-sm' 
+                          : 'bg-zinc-50 border-transparent text-zinc-600 hover:bg-zinc-100'
                       }`}
                     >
-                      <item.icon size={16} />
-                      <span className="text-sm font-bold">{item.label}</span>
+                      <item.icon size={16} className={currentView === item.view ? 'text-emerald-600' : 'text-zinc-400'} />
+                      <span className="text-xs font-bold">{item.label}</span>
                     </button>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             </div>
           </motion.div>
         )}

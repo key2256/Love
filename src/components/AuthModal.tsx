@@ -69,7 +69,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
         if (!response.ok) throw new Error('Failed to get Naver auth URL');
         const { url } = await response.json();
         
-        window.open(url, 'naver_login', 'width=600,height=700');
+        const popup = window.open(url, 'naver_login', 'width=600,height=700');
+        if (!popup) {
+          toast.error('팝업이 차단되었습니다. 팝업 허용 후 다시 시도해주세요.');
+        }
       } catch (error) {
         console.error('Naver login error:', error);
         toast.error('네이버 로그인 창을 열 수 없습니다.');
