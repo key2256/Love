@@ -209,7 +209,7 @@ export const PRODUCT_CONFIG: Record<string, {
   'stk-postcard-standard': {
     defaultGroup: '기본 대중형',
     groups: ['기본 대중형'],
-    allowedPostProcessing: ['모양커팅', '코팅', '귀돌이', '타공', '오시', '미싱', '접지', '폴리백 개별포장', '후가공 옵션'],
+    allowedPostProcessing: ['모양커팅', '코팅', '귀돌이', '타공', '오시', '미싱', '폴리백 개별포장'],
   },
   'stk-postcard-special': {
     defaultGroup: '기본 대중형',

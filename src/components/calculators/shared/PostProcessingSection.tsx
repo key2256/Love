@@ -122,7 +122,7 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
       name: '모양커팅', 
       icon: <Shapes className="w-5 h-5" />, 
       active: true, 
-      hidden: !config?.allowedPostProcessing?.includes('모양커팅') || isTemplate || product.id === 'stk-postcard-standard'
+      hidden: !config?.allowedPostProcessing?.includes('모양커팅') || isTemplate
     },
     { 
       id: 'coating', 
@@ -164,7 +164,7 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
       name: '접지', 
       icon: <FileUp className="w-5 h-5" />, 
       active: selectedOptions['접지'] === '있음', 
-      hidden: !config?.allowedPostProcessing?.includes('접지') || isTemplate
+      hidden: !config?.allowedPostProcessing?.includes('접지') || isTemplate || product.id === 'stk-postcard-standard'
     },
     { 
       id: 'packaging', 
@@ -186,7 +186,7 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
       name: '특수 효과', 
       icon: <Sparkles className="w-5 h-5" />, 
       active: selectedOptions['후가공 옵션'] !== '없음' && selectedOptions['후가공 옵션'] !== undefined, 
-      hidden: !config?.allowedPostProcessing?.includes('후가공 옵션') || isTemplate
+      hidden: !config?.allowedPostProcessing?.includes('후가공 옵션') || isTemplate || product.id === 'stk-postcard-standard'
     },
     { 
       id: 'case', 

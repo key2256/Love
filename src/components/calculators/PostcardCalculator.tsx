@@ -255,6 +255,17 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
                 const normalizedName = opt.name.replace(/\s/g, '');
                 if (opt.name.includes('용지')) return false;
                 
+                if (product.id === 'stk-postcard-standard') {
+                  const hiddenForGeneralPostcard = [
+                    '화이트인쇄',
+                    '모양커팅',
+                    '모양선택',
+                    '모양커팅형태',
+                    '후가공옵션',
+                  ];
+                  if (hiddenForGeneralPostcard.includes(normalizedName)) return false;
+                }
+                
                 const handledByIconGrid = [
                   '코팅', '코팅종류', '코팅면수', '귀돌이', '귀돌이사용', '귀돌이크기', '귀돌이면수', '귀돌이방향', 
                   '타공', '타공사용', '구멍크기', '타공크기', '타공설명', '명함케이스',
