@@ -78,7 +78,7 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
       return (
         <div className="space-y-6">
           <div className="flex flex-wrap gap-2 mb-4">
-            {(config?.groups || ['기본 대중형', '고급 감성형', '최고급 프리미엄']).map(group => (
+            {(config?.groups || ['기본 대중형', '고급 감성형']).map(group => (
               <button
                 key={group}
                 onClick={() => setSelectedBusinessCardGroup(group)}
@@ -211,8 +211,8 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
                 const normalizedName = opt.name.replace(/\s/g, '');
                 if (opt.name.includes('용지')) return false;
                 
-                // Keep 규격, 가로형, 인쇄도수
-                const allowedOptions = ['규격', '규격(mm)', '가로형', '인쇄도수', '인쇄 도수'];
+                // Keep 규격, 방향, 인쇄도수
+                const allowedOptions = ['규격', '규격(mm)', '방향', '인쇄도수', '인쇄 도수'];
                 if (allowedOptions.includes(opt.name)) return true;
                 
                 const handledByIconGrid = [

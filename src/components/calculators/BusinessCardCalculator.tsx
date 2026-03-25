@@ -238,6 +238,12 @@ export const BusinessCardCalculator: React.FC<BusinessCardCalculatorProps> = ({
                 if (forbiddenKeywords.some(keyword => opt.name.includes(keyword))) return false;
               }
               
+              // Only allow '규격(mm)' and '인쇄도수' for standard business cards
+              if (product.id === 'bc-standard') {
+                const allowedOptions = ['규격(mm)', '인쇄도수'];
+                if (!allowedOptions.includes(opt.name)) return false;
+              }
+              
               // Remove specific options for premium business cards
               if (product.id === 'bc-premium') {
                 const allowedOptions = ['인쇄도수', '규격(mm)'];
@@ -245,7 +251,7 @@ export const BusinessCardCalculator: React.FC<BusinessCardCalculatorProps> = ({
               }
               
               const handledByIconGrid = [
-                '코팅', '코팅종류', '코팅면수', '귀돌이', '귀돌이사용', '귀돌이크기', '귀돌이면수', '귀돌이방향', 
+                '코팅면수', '귀돌이', '귀돌이사용', '귀돌이크기', '귀돌이면수', '귀돌이방향', 
                 '타공', '타공사용', '구멍크기', '타공크기', '타공설명', '명함케이스',
                 '제작수량', '수량', '주문수량', '디자인템플릿'
               ].includes(normalizedName);

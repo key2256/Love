@@ -129,7 +129,7 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
       name: '코팅', 
       icon: <Layers className="w-5 h-5" />, 
       active: selectedOptions['코팅'] !== '없음' && selectedOptions['코팅'] !== undefined, 
-      hidden: !config?.allowedPostProcessing?.includes('코팅')
+      hidden: !config?.allowedPostProcessing?.includes('코팅') || (pattern === 'FOLDED_BUSINESS_CARD' && selectedOptions['용지'] && !selectedOptions['용지'].includes('기본 대중형'))
     },
     { 
       id: 'rounding', 
@@ -164,7 +164,8 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
       name: '접지', 
       icon: <FileUp className="w-5 h-5" />, 
       active: selectedOptions['접지'] === '있음', 
-      hidden: !config?.allowedPostProcessing?.includes('접지') || isTemplate || product.id === 'stk-postcard-standard'
+      hidden: !config?.allowedPostProcessing?.includes('접지') || isTemplate || product.id === 'stk-postcard-standard',
+      required: pattern === 'FOLDED_BUSINESS_CARD'
     },
     { 
       id: 'packaging', 
@@ -254,6 +255,9 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                   }`}>
                     {item.name}
                   </span>
+                  {(item as any).required && (
+                    <span className="text-[10px] font-black text-red-500 ml-0.5">*</span>
+                  )}
                   {POST_TERM_TOOLTIPS[item.name] && (
                     <TermTooltip 
                       term={item.name} 
