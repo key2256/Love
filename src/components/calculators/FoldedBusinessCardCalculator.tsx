@@ -216,24 +216,9 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
                 const normalizedName = opt.name.replace(/\s/g, '');
                 if (opt.name.includes('용지')) return false;
                 
-                // Keep 규격, 방향, 인쇄도수
+                // Whitelist: 규격, 방향, 인쇄도수만 표시
                 const allowedOptions = ['규격', '규격(mm)', '방향', '인쇄도수', '인쇄 도수'];
-                if (allowedOptions.includes(opt.name)) return true;
-                
-                const handledByIconGrid = [
-                  '코팅', '코팅종류', '코팅면수', '귀돌이', '귀돌이사용', '귀돌이크기', '귀돌이면수', '귀돌이방향', 
-                  '타공', '타공사용', '구멍크기', '타공크기', '타공설명', '명함케이스',
-                  '오시', '오시줄수', '오시설명', '미싱', '미싱줄수', '미싱설명', '접지', '접지방향', '접지형태', 
-                  '폴리백개별포장', '폴리백사이즈', '제작수량', '수량', '주문수량'
-                ].includes(normalizedName);
-                if (handledByIconGrid) return false;
-
-                if (opt.visibleIf) {
-                  const parentVal = selectedOptions[opt.visibleIf.optionName];
-                  if (parentVal !== opt.visibleIf.value) return false;
-                }
-
-                return true;
+                return allowedOptions.includes(opt.name);
               }).map((option) => (
                 <OptionGroup key={option.name} label={option.name}>
                   {renderOption(option)}
