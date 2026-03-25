@@ -11,7 +11,8 @@ import {
   Briefcase,
   MapPin,
   HelpCircle,
-  Grid
+  Grid,
+  Bookmark
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { CATEGORIES, SubCategoryGroup, PRODUCTS } from '../types';
@@ -29,6 +30,7 @@ interface NavbarProps {
   currentView: string;
   cartCount: number;
   onCartClick: () => void;
+  onDraftsClick: () => void;
 }
 
 export const Navbar = ({ 
@@ -43,7 +45,8 @@ export const Navbar = ({
   onSearchChange,
   currentView,
   cartCount,
-  onCartClick
+  onCartClick,
+  onDraftsClick
 }: NavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
@@ -372,6 +375,13 @@ export const Navbar = ({
                   {cartCount}
                 </span>
               )}
+            </button>
+            <button 
+              onClick={onDraftsClick}
+              className={`p-2 rounded-full transition-colors relative ${currentView === 'drafts' ? 'text-emerald-600 bg-emerald-50' : 'text-zinc-600 hover:bg-zinc-100'}`}
+              title="임시저장 견적"
+            >
+              <Bookmark size={20} />
             </button>
             <button className="p-2 rounded-full text-zinc-600 hover:bg-zinc-100 transition-colors">
               <User size={20} />

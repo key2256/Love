@@ -25,9 +25,19 @@ interface QuotationCalculatorProps {
   product: Product;
   onGenerateQuotation: (quotation: Quotation) => void;
   onAddToCart: (item: CartItem) => void;
+  onSaveDraft?: (options: Record<string, string>, quantity: number) => void;
+  initialOptions?: Record<string, string>;
+  initialQuantity?: number;
 }
 
-export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ product, onGenerateQuotation, onAddToCart }) => {
+export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ 
+  product, 
+  onGenerateQuotation, 
+  onAddToCart,
+  onSaveDraft,
+  initialOptions,
+  initialQuantity
+}) => {
   const {
     quantity,
     setQuantity,
@@ -38,7 +48,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
     discountRate,
     estimatedDeliveryDate,
     generateQuotation
-  } = useQuotationLogic(product, onGenerateQuotation);
+  } = useQuotationLogic(product, onGenerateQuotation, initialOptions, initialQuantity);
 
   const handleAddToCart = () => {
     onAddToCart({
@@ -49,6 +59,12 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
       unitPrice,
       totalPrice
     });
+  };
+
+  const handleSaveDraft = () => {
+    if (onSaveDraft) {
+      onSaveDraft(selectedOptions, quantity);
+    }
   };
 
   const getLayoutPattern = (product: Product) => {
@@ -97,6 +113,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({ produc
       estimatedDeliveryDate,
       onGenerate: generateQuotation,
       onAddToCart: handleAddToCart,
+      onSaveDraft: handleSaveDraft,
     };
 
     switch (pattern) {

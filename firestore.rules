@@ -15,6 +15,17 @@ service cloud.firestore {
     //   - email: string (required, valid email) - User email address
     //   - role: string (required, 'admin' or 'user') - User role
     //
+    // Collection: drafts
+    // Document ID: draftId (randomly generated)
+    // Fields:
+    //   - userId: string (required, immutable) - Owner's UID
+    //   - productId: string (required) - Product ID
+    //   - productName: string (optional) - Product Name
+    //   - options: map (required) - Selected customization options
+    //   - quantity: number (required, > 0) - Selected quantity
+    //   - createdAt: timestamp (required, immutable) - Creation timestamp
+    //   - updatedAt: timestamp (required) - Last update timestamp
+    //
     // ===============================================================
 
     // ===============================================================
@@ -44,6 +55,16 @@ service cloud.firestore {
              data.role in ['admin', 'user'];
     }
 
+    function isValidDraft(data) {
+      return data.keys().hasAll(['userId', 'productId', 'options', 'quantity', 'createdAt', 'updatedAt']) &&
+             data.userId is string && data.userId == request.auth.uid &&
+             data.productId is string &&
+             data.options is map &&
+             data.quantity is number && data.quantity > 0 &&
+             data.createdAt is timestamp &&
+             data.updatedAt is timestamp;
+    }
+
     // ===============================================================
     // Collection Rules
     // ===============================================================
@@ -57,6 +78,16 @@ service cloud.firestore {
                        isOwner(userId) && request.resource.data.uid == resource.data.uid &&
                        (request.resource.data.role == resource.data.role || isAdmin());
       allow delete: if isAdmin();
+    }
+
+    match /drafts/{draftId} {
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && isValidDraft(request.resource.data);
+      allow update: if isAuthenticated() && isValidDraft(request.resource.data) &&
+                       resource.data.userId == request.auth.uid &&
+                       request.resource.data.userId == resource.data.userId &&
+                       request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
     }
   }
 }

@@ -1,9 +1,16 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Product, Quotation } from '../types';
 
-export const useQuotationLogic = (product: Product, onGenerateQuotation: (quotation: Quotation) => void) => {
-  const [quantity, setQuantity] = useState(product.minQuantity);
+export const useQuotationLogic = (
+  product: Product, 
+  onGenerateQuotation: (quotation: Quotation) => void,
+  initialOptions?: Record<string, string>,
+  initialQuantity?: number
+) => {
+  const [quantity, setQuantity] = useState(initialQuantity || product.minQuantity);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>(() => {
+    if (initialOptions) return initialOptions;
+    
     const initial: Record<string, string> = {};
     product.options.forEach(opt => {
       if (opt.type === 'text') {

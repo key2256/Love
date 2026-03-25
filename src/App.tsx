@@ -13,10 +13,13 @@ import { Portfolio } from './components/Portfolio';
 import { FAQ } from './components/FAQ';
 import { InquiryForm } from './components/InquiryForm';
 import { Cart } from './components/Cart';
+import { MyDrafts } from './components/MyDrafts';
+import { Draft } from './services/draftService';
 import { PRODUCTS, CATEGORIES, Product, Quotation, ORDER_STEPS, PORTFOLIO_ITEMS, SUBCATEGORY_METADATA, SubCategoryGroup, CartItem } from './types';
 import { createDefaultCartItem } from './lib/cartUtils';
 import { FileUp, Send, CheckCircle2, MessageSquare, ArrowRight, Box, Search, Star, Zap, Calculator, MapPin, Phone, Mail, ChevronLeft, ChevronRight, AlertTriangle, Info } from 'lucide-react';
 import { APIProvider, Map, AdvancedMarker, Pin } from '@vis.gl/react-google-maps';
+import { Toaster } from 'sonner';
 
 const center = { lat: 37.6438, lng: 126.7868 }; // Approximate coordinates for Ilsan-donggu, Goyang-si
 
@@ -27,7 +30,7 @@ const API_KEY =
   '';
 const hasValidKey = Boolean(API_KEY) && API_KEY !== 'YOUR_API_KEY';
 
-type View = 'home' | 'detail' | 'category' | 'guide' | 'inquiry' | 'quotation_doc' | 'custom_inquiry' | 'portfolio' | 'location' | 'faq' | 'usage_ordering';
+type View = 'home' | 'detail' | 'category' | 'guide' | 'inquiry' | 'quotation_doc' | 'custom_inquiry' | 'portfolio' | 'location' | 'faq' | 'usage_ordering' | 'drafts';
 
 function App() {
   const [view, setView] = useState<View>('home');
@@ -43,6 +46,8 @@ function App() {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [showCart, setShowCart] = useState(false);
   const [bypassMapCheck, setBypassMapCheck] = useState(false);
+  const [initialDraftOptions, setInitialDraftOptions] = useState<Record<string, string> | undefined>(undefined);
+  const [initialDraftQuantity, setInitialDraftQuantity] = useState<number | undefined>(undefined);
 
   const addToCart = (item: CartItem) => {
     setCart(prev => {
@@ -102,6 +107,8 @@ function App() {
     setActiveCategory('all');
     setActiveSubCategory('all');
     setVisibleCount(8);
+    setInitialDraftOptions(undefined);
+    setInitialDraftQuantity(undefined);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -110,6 +117,8 @@ function App() {
     if (product) {
       setSelectedProduct(product);
       setView('detail');
+      setInitialDraftOptions(undefined);
+      setInitialDraftQuantity(undefined);
       window.scrollTo(0, 0);
     }
   };
@@ -187,7 +196,22 @@ function App() {
 
   const onNavigate = (v: View) => {
     setView(v);
+    if (v !== 'detail') {
+      setInitialDraftOptions(undefined);
+      setInitialDraftQuantity(undefined);
+    }
     window.scrollTo(0, 0);
+  };
+
+  const handleLoadDraft = (draft: Draft) => {
+    const product = PRODUCTS.find(p => p.id === draft.productId);
+    if (product) {
+      setSelectedProduct(product);
+      setInitialDraftOptions(draft.options);
+      setInitialDraftQuantity(draft.quantity);
+      setView('detail');
+      window.scrollTo(0, 0);
+    }
   };
 
   const filteredProducts = PRODUCTS.filter(p => {
@@ -336,6 +360,7 @@ function App() {
 
   return (
     <APIProvider apiKey={API_KEY} version="weekly">
+      <Toaster position="top-center" richColors />
       <div className="min-h-screen bg-white font-sans text-zinc-900 selection:bg-emerald-100 selection:text-emerald-900">
       <Navbar 
         onNavigate={onNavigate} 
@@ -350,6 +375,7 @@ function App() {
         currentView={view}
         cartCount={cart.length}
         onCartClick={() => setShowCart(true)}
+        onDraftsClick={() => onNavigate('drafts')}
       />
 
       <Cart 
@@ -686,6 +712,22 @@ function App() {
               onProductClick={handleProductClick}
               onQuotationGenerated={handleQuotationGenerated}
               onAddToCart={addToCart}
+              initialOptions={initialDraftOptions}
+              initialQuantity={initialDraftQuantity}
+            />
+          </motion.div>
+        )}
+
+        {view === 'drafts' && (
+          <motion.div
+            key="drafts"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+          >
+            <MyDrafts 
+              onBack={() => setView('home')}
+              onLoadDraft={handleLoadDraft}
             />
           </motion.div>
         )}

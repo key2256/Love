@@ -1,12 +1,13 @@
 import React from 'react';
-import { FileText, ShoppingCart, HelpCircle, CheckCircle2 } from 'lucide-react';
+import { FileText, ShoppingCart, HelpCircle, CheckCircle2, Bookmark } from 'lucide-react';
 
 interface ActionButtonsProps {
   onGenerate: (customSize?: { width: string; height: string }) => void;
   onAddToCart?: () => void;
+  onSaveDraft?: () => void;
 }
 
-export const ActionButtons: React.FC<ActionButtonsProps> = ({ onGenerate, onAddToCart }) => {
+export const ActionButtons: React.FC<ActionButtonsProps> = ({ onGenerate, onAddToCart, onSaveDraft }) => {
   return (
     <div className="grid grid-cols-1 gap-4 pt-4">
       <button 
@@ -24,15 +25,24 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({ onGenerate, onAddT
           <ShoppingCart className="w-4 h-4" />
           <span>장바구니</span>
         </button>
+        <button 
+          onClick={onSaveDraft}
+          className="py-4 bg-white border-2 border-zinc-900 text-zinc-900 font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-zinc-50 transition-all"
+        >
+          <Bookmark className="w-4 h-4" />
+          <span>임시저장</span>
+        </button>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
         <button className="py-4 bg-emerald-50 text-emerald-700 font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-emerald-100 transition-all border border-emerald-100">
           <HelpCircle className="w-4 h-4" />
           <span>1:1 문의</span>
         </button>
+        <button className="py-4 bg-zinc-100 text-zinc-600 font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-zinc-200 transition-all">
+          <CheckCircle2 className="w-4 h-4" />
+          <span>바로구매</span>
+        </button>
       </div>
-      <button className="w-full py-4 bg-zinc-100 text-zinc-600 font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-zinc-200 transition-all">
-        <CheckCircle2 className="w-4 h-4" />
-        <span>바로구매</span>
-      </button>
     </div>
   );
 };

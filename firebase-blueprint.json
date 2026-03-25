@@ -11,12 +11,32 @@
         "role": { "type": "string", "description": "User role (admin, user)" }
       },
       "required": ["uid", "name", "email", "role"]
+    },
+    "Draft": {
+      "title": "Draft",
+      "description": "User's saved product customization draft",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Draft ID" },
+        "userId": { "type": "string", "description": "Owner's UID" },
+        "productId": { "type": "string", "description": "Product ID" },
+        "productName": { "type": "string", "description": "Product Name" },
+        "options": { "type": "object", "description": "Selected customization options" },
+        "quantity": { "type": "number", "description": "Selected quantity" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Last update timestamp" }
+      },
+      "required": ["userId", "productId", "options", "quantity", "createdAt", "updatedAt"]
     }
   },
   "firestore": {
     "/users/{userId}": {
       "schema": { "$ref": "User" },
       "description": "User profile collection"
+    },
+    "/drafts/{draftId}": {
+      "schema": { "$ref": "Draft" },
+      "description": "User's saved drafts"
     }
   }
 }

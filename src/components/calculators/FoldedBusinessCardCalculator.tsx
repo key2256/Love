@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Layers, Info } from 'lucide-react';
+import { Box, Layers, Settings2, ShoppingCart } from 'lucide-react';
 import { Product, BUSINESS_CARD_MATERIALS } from '../../types';
 import { QuantitySection } from './shared/QuantitySection';
 import { SummarySection } from './shared/SummarySection';
@@ -11,6 +11,7 @@ import { NotesSection } from './shared/NotesSection';
 import { PostProcessingSection } from './shared/PostProcessingSection';
 import { OptionGroup } from './shared/OptionGroup';
 import { PRODUCT_CONFIG } from './shared/constants';
+import { CalculatorAccordion } from './shared/CalculatorAccordion';
 
 interface FoldedBusinessCardCalculatorProps {
   product: Product;
@@ -24,6 +25,7 @@ interface FoldedBusinessCardCalculatorProps {
   estimatedDeliveryDate: string;
   onGenerate: (customSize?: { width: string; height: string }) => void;
   onAddToCart?: () => void;
+  onSaveDraft?: () => void;
 }
 
 export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculatorProps> = ({
@@ -37,7 +39,8 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
   discountRate,
   estimatedDeliveryDate,
   onGenerate,
-  onAddToCart
+  onAddToCart,
+  onSaveDraft
 }) => {
   const [selectedBusinessCardGroup, setSelectedBusinessCardGroup] = useState<string>('기본 대중형');
   const [expandedPostOption, setExpandedPostOption] = useState<string | null>(null);
@@ -56,11 +59,10 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
     }
   }, [product.id]);
 
-  return (
-    <div className="space-y-10">
-      {/* 1. Material Selection (Grouped) */}
-      {product.options.filter(opt => opt.name.includes('용지')).map((option) => (
-        <OptionGroup key={option.name} label={option.name} icon={Layers}>
+  const renderOption = (option: any) => {
+    if (option.name.includes('용지')) {
+      return (
+        <div className="space-y-6">
           <div className="flex flex-wrap gap-2 mb-4">
             {(config?.groups || ['기본 대중형', '고급 감성형', '최고급 프리미엄']).map(group => (
               <button
@@ -77,10 +79,10 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
             ))}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {option.values?.filter(val => {
+            {option.values?.filter((val: any) => {
               const material = BUSINESS_CARD_MATERIALS.find(m => `${m.name} ${m.weight}` === val.label);
               return material?.group === selectedBusinessCardGroup;
-            }).map((val) => {
+            }).map((val: any) => {
               const material = BUSINESS_CARD_MATERIALS.find(m => `${m.name} ${m.weight}` === val.label);
               const isSelected = selectedOptions[option.name] === val.label;
               return (
@@ -115,73 +117,120 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
               );
             })}
           </div>
-        </OptionGroup>
-      ))}
+        </div>
+      );
+    }
 
-      {/* 2. Standard Options */}
-      {product.options.filter(opt => {
-        const normalizedName = opt.name.replace(/\s/g, '');
-        if (opt.name.includes('용지')) return false;
-        
-        const handledByIconGrid = [
-          '코팅', '코팅종류', '코팅면수', '귀돌이', '귀돌이사용', '귀돌이크기', '귀돌이면수', '귀돌이방향', 
-          '타공', '타공사용', '구멍크기', '타공크기', '타공설명', '명함케이스',
-          '오시', '오시줄수', '오시설명', '미싱', '미싱줄수', '미싱설명', '접지', '접지방향', '접지형태', 
-          '폴리백개별포장', '폴리백사이즈', '제작수량', '수량', '주문수량'
-        ].includes(normalizedName);
-        if (handledByIconGrid) return false;
+    if (option.type === 'text') {
+      return (
+        <input
+          type="text"
+          value={selectedOptions[option.name]}
+          onChange={(e) => handleOptionChange(option.name, e.target.value)}
+          placeholder={option.placeholder || `${option.name}을 입력해주세요.`}
+          className="w-full px-6 py-4 rounded-2xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none font-bold text-sm transition-colors"
+        />
+      );
+    }
 
-        if (opt.visibleIf) {
-          const parentVal = selectedOptions[opt.visibleIf.optionName];
-          if (parentVal !== opt.visibleIf.value) return false;
-        }
+    return (
+      <div className="grid grid-cols-2 gap-3">
+        {option.values?.map((val: any) => (
+          <button
+            key={val.label}
+            onClick={() => handleOptionChange(option.name, val.label)}
+            className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden ${
+              selectedOptions[option.name] === val.label
+                ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/20'
+                : 'bg-white border-zinc-200 text-zinc-600 hover:border-emerald-200'
+            }`}
+          >
+            <span className="relative z-10">{val.label}</span>
+            {val.priceModifier !== undefined && val.priceModifier !== 0 && (
+              <span className={`block text-[10px] mt-1 opacity-70 ${selectedOptions[option.name] === val.label ? 'text-white' : 'text-zinc-400'}`}>
+                {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
+    );
+  };
 
-        return true;
-      }).map((option) => (
-        <OptionGroup key={option.name} label={option.name}>
-          {option.type === 'text' ? (
-            <input
-              type="text"
-              value={selectedOptions[option.name]}
-              onChange={(e) => handleOptionChange(option.name, e.target.value)}
-              placeholder={option.placeholder || `${option.name}을 입력해주세요.`}
-              className="w-full px-6 py-4 rounded-2xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none font-bold text-sm transition-colors"
-            />
-          ) : (
-            <div className="grid grid-cols-2 gap-3">
-              {option.values?.map((val) => (
-                <button
-                  key={val.label}
-                  onClick={() => handleOptionChange(option.name, val.label)}
-                  className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden ${
-                    selectedOptions[option.name] === val.label
-                      ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/20'
-                      : 'bg-white border-zinc-200 text-zinc-600 hover:border-emerald-200'
-                  }`}
-                >
-                  <span className="relative z-10">{val.label}</span>
-                  {val.priceModifier !== undefined && val.priceModifier !== 0 && (
-                    <span className={`block text-[10px] mt-1 opacity-70 ${selectedOptions[option.name] === val.label ? 'text-white' : 'text-zinc-400'}`}>
-                      {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
-                    </span>
-                  )}
-                </button>
-              ))}
-            </div>
-          )}
-        </OptionGroup>
-      ))}
+  const sections = [
+    {
+      id: 'basic',
+      title: '용지 선택',
+      icon: Box,
+      children: (
+        <div className="space-y-8">
+          {product.options.filter(opt => opt.name.includes('용지')).map((option) => (
+            <OptionGroup key={option.name} label={option.name} icon={Layers}>
+              {renderOption(option)}
+            </OptionGroup>
+          ))}
+        </div>
+      )
+    },
+    {
+      id: 'options',
+      title: '상세 옵션 및 후가공',
+      icon: Settings2,
+      children: (
+        <div className="space-y-8">
+          {product.options.filter(opt => {
+            const normalizedName = opt.name.replace(/\s/g, '');
+            if (opt.name.includes('용지')) return false;
+            
+            const handledByIconGrid = [
+              '코팅', '코팅종류', '코팅면수', '귀돌이', '귀돌이사용', '귀돌이크기', '귀돌이면수', '귀돌이방향', 
+              '타공', '타공사용', '구멍크기', '타공크기', '타공설명', '명함케이스',
+              '오시', '오시줄수', '오시설명', '미싱', '미싱줄수', '미싱설명', '접지', '접지방향', '접지형태', 
+              '폴리백개별포장', '폴리백사이즈', '제작수량', '수량', '주문수량'
+            ].includes(normalizedName);
+            if (handledByIconGrid) return false;
 
-      <PostProcessingSection 
-        product={product} 
-        selectedOptions={selectedOptions} 
-        handleOptionChange={handleOptionChange} 
-        pattern="FOLDED_BUSINESS_CARD"
-        expandedPostOption={expandedPostOption}
-        setExpandedPostOption={setExpandedPostOption}
-      />
+            if (opt.visibleIf) {
+              const parentVal = selectedOptions[opt.visibleIf.optionName];
+              if (parentVal !== opt.visibleIf.value) return false;
+            }
 
-      <QuantitySection product={product} quantity={quantity} setQuantity={setQuantity} />
+            return true;
+          }).map((option) => (
+            <OptionGroup key={option.name} label={option.name}>
+              {renderOption(option)}
+            </OptionGroup>
+          ))}
+
+          <PostProcessingSection 
+            product={product} 
+            selectedOptions={selectedOptions} 
+            handleOptionChange={handleOptionChange} 
+            pattern="FOLDED_BUSINESS_CARD"
+            expandedPostOption={expandedPostOption}
+            setExpandedPostOption={setExpandedPostOption}
+          />
+        </div>
+      )
+    },
+    {
+      id: 'order',
+      title: '수량 및 주문 정보',
+      icon: ShoppingCart,
+      children: (
+        <div className="space-y-8">
+          <QuantitySection product={product} quantity={quantity} setQuantity={setQuantity} />
+          <OrderTitleSection />
+          <FileUploadSection />
+        </div>
+      )
+    }
+  ];
+
+  return (
+    <div className="space-y-8">
+      <CalculatorAccordion sections={sections} />
+
       <SummarySection 
         product={product} 
         selectedOptions={selectedOptions} 
@@ -192,10 +241,10 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
         pattern="FOLDED_BUSINESS_CARD"
         customSize={{ width: '', height: '' }}
       />
-      <OrderTitleSection />
-      <FileUploadSection />
+      
       <NotesSection product={product} />
-      <ActionButtons onGenerate={onGenerate} onAddToCart={onAddToCart} />
+      
+      <ActionButtons onGenerate={onGenerate} onAddToCart={onAddToCart} onSaveDraft={onSaveDraft} />
     </div>
   );
 };

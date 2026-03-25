@@ -37,6 +37,9 @@ import {
 import { Product, Quotation, PRODUCTS, CATEGORIES, PAPER_MATERIALS, PaperMaterial, CartItem, Review } from '../types';
 import { createDefaultCartItem } from '../lib/cartUtils';
 import { QuotationCalculator } from './QuotationCalculator';
+import { useAuth } from '../hooks/useAuth';
+import { saveDraft } from '../services/draftService';
+import { toast } from 'sonner';
 import { ProductIntroSection } from './calculators/shared/ProductIntroSection';
 import PaperMaterialCard from './PaperMaterialCard';
 import { SocialShare } from './SocialShare';
@@ -474,11 +477,53 @@ interface ProductDetailProps {
   onProductClick: (id: string) => void;
   onQuotationGenerated: (quotation: Quotation) => void;
   onAddToCart: (item: CartItem) => void;
+  initialOptions?: Record<string, string>;
+  initialQuantity?: number;
 }
 
-export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, onProductClick, onQuotationGenerated, onAddToCart }) => {
+export const ProductDetail: React.FC<ProductDetailProps> = ({ 
+  product, 
+  onBack, 
+  onProductClick, 
+  onQuotationGenerated, 
+  onAddToCart,
+  initialOptions,
+  initialQuantity
+}) => {
   const isUsageBased = product.id.startsWith('usage-');
   const [activeTab, setActiveTab] = useState<'calc' | 'info'>('calc');
+  const { user, signIn } = useAuth();
+
+  const handleSaveDraft = async (options: Record<string, string>, quantity: number) => {
+    if (!user) {
+      toast.error('로그인이 필요한 서비스입니다.', {
+        description: '임시저장을 위해 구글 로그인을 진행해주세요.',
+        action: {
+          label: '로그인',
+          onClick: () => signIn()
+        }
+      });
+      return;
+    }
+
+    try {
+      await saveDraft({
+        userId: user.uid,
+        productId: product.id,
+        productName: product.name,
+        options,
+        quantity
+      });
+      toast.success('임시저장 완료!', {
+        description: '마이페이지에서 저장된 견적을 확인하실 수 있습니다.'
+      });
+    } catch (error) {
+      console.error('Draft save error:', error);
+      toast.error('저장 실패', {
+        description: '잠시 후 다시 시도해주세요.'
+      });
+    }
+  };
   const [selectedMaterialGroup, setSelectedMaterialGroup] = useState<PaperMaterial['group']>('일반/기본 용지');
   const [showAllMaterials, setShowAllMaterials] = useState(false);
   
@@ -787,6 +832,9 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, o
                       product={product} 
                       onGenerateQuotation={onQuotationGenerated} 
                       onAddToCart={onAddToCart}
+                      onSaveDraft={handleSaveDraft}
+                      initialOptions={initialOptions}
+                      initialQuantity={initialQuantity}
                     />
                     
                     <div className="grid grid-cols-2 gap-4">

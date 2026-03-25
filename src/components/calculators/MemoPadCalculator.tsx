@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { FileText, Layers, Check, AlertCircle } from 'lucide-react';
+import { FileText, Layers, Check, AlertCircle, Box, Settings2, ShoppingCart } from 'lucide-react';
 import { Product } from '../../types';
 import { QuantitySection } from './shared/QuantitySection';
 import { SummarySection } from './shared/SummarySection';
@@ -10,6 +10,7 @@ import { ActionButtons } from './shared/ActionButtons';
 import { NotesSection } from './shared/NotesSection';
 import { OptionGroup } from './shared/OptionGroup';
 import { SHAPE_ICONS, MEMO_SIZE_ICONS } from './shared/constants';
+import { CalculatorAccordion } from './shared/CalculatorAccordion';
 
 interface MemoPadCalculatorProps {
   product: Product;
@@ -23,6 +24,7 @@ interface MemoPadCalculatorProps {
   estimatedDeliveryDate: string;
   onGenerate: (customSize?: { width: string; height: string }) => void;
   onAddToCart?: () => void;
+  onSaveDraft?: () => void;
 }
 
 export const MemoPadCalculator: React.FC<MemoPadCalculatorProps> = ({
@@ -36,52 +38,49 @@ export const MemoPadCalculator: React.FC<MemoPadCalculatorProps> = ({
   discountRate,
   estimatedDeliveryDate,
   onGenerate,
-  onAddToCart
+  onAddToCart,
+  onSaveDraft
 }) => {
   const [customSize, setCustomSize] = useState({ width: '', height: '' });
 
-  return (
-    <div className="space-y-10">
-      {product.options.filter(opt => {
-        const normalizedName = opt.name.replace(/\s/g, '');
-        const handledByIconGrid = ['제작수량', '수량', '주문수량'].includes(normalizedName);
-        if (handledByIconGrid) return false;
-        return true;
-      }).map((option) => (
-        <React.Fragment key={option.name}>
-          {option.name === '두께' && (
-            <OptionGroup label="기본 용지 사양" icon={FileText}>
-              <div className="p-6 rounded-3xl bg-zinc-50 border border-zinc-100 flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-white border border-zinc-200 flex items-center justify-center shadow-sm">
-                  <FileText className="w-6 h-6 text-zinc-400" />
-                </div>
-                <div>
-                  <p className="text-sm font-black text-zinc-900">백색 모조지 70g</p>
-                  <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-0.5">Fixed Specification</p>
-                  <p className="text-[10px] text-zinc-500 mt-1 leading-relaxed">
-                    필기감이 우수하고 잉크 번짐이 적어<br />
-                    메모지 제작에 가장 최적화된 용지입니다.
-                  </p>
-                </div>
+  const sections = [
+    {
+      id: 'basic',
+      title: '기본 사양 및 규격',
+      icon: Box,
+      children: (
+        <div className="space-y-8">
+          <OptionGroup label="기본 용지 사양" icon={FileText}>
+            <div className="p-6 rounded-3xl bg-zinc-50 border border-zinc-100 flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-white border border-zinc-200 flex items-center justify-center shadow-sm">
+                <FileText className="w-6 h-6 text-zinc-400" />
               </div>
-            </OptionGroup>
-          )}
+              <div>
+                <p className="text-sm font-black text-zinc-900">백색 모조지 70g</p>
+                <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-0.5">Fixed Specification</p>
+                <p className="text-[10px] text-zinc-500 mt-1 leading-relaxed">
+                  필기감이 우수하고 잉크 번짐이 적어<br />
+                  메모지 제작에 가장 최적화된 용지입니다.
+                </p>
+              </div>
+            </div>
+          </OptionGroup>
 
-          <OptionGroup label={option.name}>
-            {option.name === '모양 선택' ? (
+          {product.options.find(o => o.name === '모양 선택') && (
+            <OptionGroup label="모양 선택">
               <div className="grid grid-cols-2 gap-3">
-                {option.values?.map((val) => (
+                {product.options.find(o => o.name === '모양 선택')?.values?.map((val) => (
                   <button
                     key={val.label}
-                    onClick={() => handleOptionChange(option.name, val.label)}
+                    onClick={() => handleOptionChange('모양 선택', val.label)}
                     className={`group p-4 rounded-[28px] border-2 transition-all flex flex-col items-center gap-3 ${
-                      selectedOptions[option.name] === val.label
+                      selectedOptions['모양 선택'] === val.label
                         ? 'bg-emerald-50 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.1)]'
                         : 'bg-white border-zinc-100 hover:border-zinc-200'
                     }`}
                   >
                     <div className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all ${
-                      selectedOptions[option.name] === val.label
+                      selectedOptions['모양 선택'] === val.label
                         ? 'bg-emerald-500 text-white scale-110 shadow-lg'
                         : 'bg-zinc-50 text-zinc-400 group-hover:bg-zinc-100 group-hover:text-zinc-600'
                     }`}>
@@ -89,26 +88,23 @@ export const MemoPadCalculator: React.FC<MemoPadCalculatorProps> = ({
                     </div>
                     <div className="text-center">
                       <span className={`text-[11px] font-black uppercase tracking-widest ${
-                        selectedOptions[option.name] === val.label ? 'text-emerald-900' : 'text-zinc-500'
+                        selectedOptions['모양 선택'] === val.label ? 'text-emerald-900' : 'text-zinc-500'
                       }`}>
                         {val.label}
                       </span>
-                      {val.priceModifier !== undefined && val.priceModifier !== 0 && (
-                        <span className={`block text-[11px] font-black mt-1 ${
-                          selectedOptions[option.name] === val.label ? 'text-emerald-900' : 'text-emerald-600'
-                        }`}>
-                          {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
-                        </span>
-                      )}
                     </div>
                   </button>
                 ))}
               </div>
-            ) : option.name === '사이즈' ? (
+            </OptionGroup>
+          )}
+
+          {product.options.find(o => o.name === '사이즈') && (
+            <OptionGroup label="사이즈">
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-3">
-                  {option.values?.map((val) => {
-                    const isSelected = selectedOptions[option.name] === val.label;
+                  {product.options.find(o => o.name === '사이즈')?.values?.map((val) => {
+                    const isSelected = selectedOptions['사이즈'] === val.label;
                     const [sizeText, unit] = val.label.split(' mm');
                     const subLabel = val.label === '90 x 90 mm' ? '정사각형' :
                                    val.label === '90 x 60 mm' ? '가로형' :
@@ -118,7 +114,7 @@ export const MemoPadCalculator: React.FC<MemoPadCalculatorProps> = ({
                     return (
                       <button
                         key={val.label}
-                        onClick={() => handleOptionChange(option.name, val.label)}
+                        onClick={() => handleOptionChange('사이즈', val.label)}
                         className={`group p-4 rounded-[28px] border-2 transition-all flex flex-col items-center gap-3 ${
                           isSelected
                             ? 'bg-emerald-50 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.1)]'
@@ -163,7 +159,7 @@ export const MemoPadCalculator: React.FC<MemoPadCalculatorProps> = ({
                     animate={{ opacity: 1, height: 'auto' }}
                     className="space-y-4 pt-2"
                   >
-                      <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">가로 (mm)</label>
                         <div className="relative">
@@ -211,22 +207,31 @@ export const MemoPadCalculator: React.FC<MemoPadCalculatorProps> = ({
                         직접입력은 최대 90 x 90mm 이하만 가능합니다.
                       </p>
                     )}
-                    <p className="text-[10px] font-bold text-zinc-400 italic ml-1">
-                      * 90 x 90mm 이내로 입력해주세요.
-                    </p>
                   </motion.div>
                 )}
               </div>
-            ) : option.name === '두께' ? (
+            </OptionGroup>
+          )}
+        </div>
+      )
+    },
+    {
+      id: 'options',
+      title: '매수 및 상세 옵션',
+      icon: Settings2,
+      children: (
+        <div className="space-y-8">
+          {product.options.find(o => o.name === '두께') && (
+            <OptionGroup label="두께 (매수)">
               <div className="grid grid-cols-1 gap-3">
-                {option.values?.map((val) => {
-                  const isSelected = selectedOptions[option.name] === val.label;
+                {product.options.find(o => o.name === '두께')?.values?.map((val) => {
+                  const isSelected = selectedOptions['두께'] === val.label;
                   const [title, sheets] = val.label.split(' · ');
                   
                   return (
                     <button
                       key={val.label}
-                      onClick={() => handleOptionChange(option.name, val.label)}
+                      onClick={() => handleOptionChange('두께', val.label)}
                       className={`group p-5 rounded-3xl border-2 transition-all flex items-center justify-between ${
                         isSelected
                           ? 'bg-emerald-50 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.1)]'
@@ -272,7 +277,14 @@ export const MemoPadCalculator: React.FC<MemoPadCalculatorProps> = ({
                   );
                 })}
               </div>
-            ) : (
+            </OptionGroup>
+          )}
+
+          {product.options.filter(opt => {
+            const normalizedName = opt.name.replace(/\s/g, '');
+            return !['제작수량', '수량', '주문수량', '모양 선택', '사이즈', '두께'].includes(normalizedName);
+          }).map((option) => (
+            <OptionGroup key={option.name} label={option.name}>
               <div className="grid grid-cols-2 gap-3">
                 {option.values?.map((val) => (
                   <button
@@ -293,12 +305,29 @@ export const MemoPadCalculator: React.FC<MemoPadCalculatorProps> = ({
                   </button>
                 ))}
               </div>
-            )}
-          </OptionGroup>
-        </React.Fragment>
-      ))}
+            </OptionGroup>
+          ))}
+        </div>
+      )
+    },
+    {
+      id: 'order',
+      title: '수량 및 주문 정보',
+      icon: ShoppingCart,
+      children: (
+        <div className="space-y-8">
+          <QuantitySection product={product} quantity={quantity} setQuantity={setQuantity} />
+          <OrderTitleSection />
+          <FileUploadSection />
+        </div>
+      )
+    }
+  ];
 
-      <QuantitySection product={product} quantity={quantity} setQuantity={setQuantity} />
+  return (
+    <div className="space-y-8">
+      <CalculatorAccordion sections={sections} />
+      
       <SummarySection 
         product={product} 
         selectedOptions={selectedOptions} 
@@ -309,20 +338,24 @@ export const MemoPadCalculator: React.FC<MemoPadCalculatorProps> = ({
         pattern="MEMO_PAD"
         customSize={customSize}
       />
-      <OrderTitleSection />
-      <FileUploadSection />
+      
       <NotesSection product={product} />
-      <ActionButtons onGenerate={() => {
-        if (selectedOptions['사이즈'] === '직접입력') {
-          const w = parseInt(customSize.width) || 0;
-          const h = parseInt(customSize.height) || 0;
-          if (w > 90 || h > 90) {
-            alert('직접입력 사이즈는 최대 90 x 90 mm 이하만 가능합니다.');
-            return;
+      
+      <ActionButtons 
+        onGenerate={() => {
+          if (selectedOptions['사이즈'] === '직접입력') {
+            const w = parseInt(customSize.width) || 0;
+            const h = parseInt(customSize.height) || 0;
+            if (w > 90 || h > 90) {
+              alert('직접입력 사이즈는 최대 90 x 90 mm 이하만 가능합니다.');
+              return;
+            }
           }
-        }
-        onGenerate(customSize);
-      }} onAddToCart={onAddToCart} />
+          onGenerate(customSize);
+        }} 
+        onAddToCart={onAddToCart}
+        onSaveDraft={onSaveDraft}
+      />
     </div>
   );
 };

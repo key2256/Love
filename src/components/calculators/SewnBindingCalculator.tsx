@@ -1,4 +1,5 @@
 import React from 'react';
+import { Box, Layers, Settings2, ShoppingCart } from 'lucide-react';
 import { Product } from '../../types';
 import { QuantitySection } from './shared/QuantitySection';
 import { SummarySection } from './shared/SummarySection';
@@ -7,6 +8,7 @@ import { OrderTitleSection } from './shared/OrderTitleSection';
 import { ActionButtons } from './shared/ActionButtons';
 import { OptionGroup } from './shared/OptionGroup';
 import { InfoCard } from './shared/InfoCard';
+import { CalculatorAccordion } from './shared/CalculatorAccordion';
 
 interface SewnBindingCalculatorProps {
   product: Product;
@@ -20,6 +22,7 @@ interface SewnBindingCalculatorProps {
   estimatedDeliveryDate: string;
   onGenerate: (customSize?: { width: string; height: string }) => void;
   onAddToCart?: () => void;
+  onSaveDraft?: () => void;
   pattern: string;
 }
 
@@ -35,66 +38,100 @@ export const SewnBindingCalculator: React.FC<SewnBindingCalculatorProps> = ({
   estimatedDeliveryDate,
   onGenerate,
   onAddToCart,
+  onSaveDraft,
   pattern
 }) => {
   const getOption = (name: string) => product.options.find(o => o.name === name);
   
-  const optionsToRender = [
-    { name: '인쇄 색상', cols: 2 },
-    { name: '표지 인쇄', cols: 2 },
-    { name: '내지 인쇄', cols: 2 },
-    { name: '표지 용지', cols: 3 },
-    { name: '내지 용지', cols: 3 },
-    { name: '페이지 수', cols: 2 },
-    { name: '제본 방향', cols: 2 },
-    { name: '표지 코팅', cols: 3 },
+  const renderOption = (optionName: string, cols: number = 2) => {
+    const option = getOption(optionName);
+    if (!option) return null;
+
+    return (
+      <OptionGroup key={option.name} label={optionName}>
+        <div className={`grid grid-cols-2 md:grid-cols-${cols} gap-3`}>
+          {option.values?.map((val) => (
+            <button
+              key={val.label}
+              onClick={() => handleOptionChange(option.name, val.label)}
+              className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden ${
+                selectedOptions[option.name] === val.label
+                  ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/20'
+                  : 'bg-white border-zinc-200 text-zinc-600 hover:border-emerald-200'
+              }`}
+            >
+              <span className="relative z-10">{val.label}</span>
+              {val.priceModifier !== undefined && val.priceModifier !== 0 && (
+                <span className={`block text-[10px] mt-1 opacity-70 ${selectedOptions[option.name] === val.label ? 'text-white' : 'text-zinc-400'}`}>
+                  {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+      </OptionGroup>
+    );
+  };
+
+  const sections = [
+    {
+      id: 'basic',
+      title: '기본 사양 및 용지',
+      icon: Box,
+      children: (
+        <div className="space-y-8">
+          <InfoCard 
+            title="작업 규격 안내"
+            content={[
+              "A4 (210x297mm) 고정",
+              "별도 크기 선택 없음"
+            ]}
+          />
+          {renderOption('표지 용지', 3)}
+          {renderOption('내지 용지', 3)}
+          {renderOption('페이지 수', 2)}
+        </div>
+      )
+    },
+    {
+      id: 'options',
+      title: '인쇄 및 제본 옵션',
+      icon: Settings2,
+      children: (
+        <div className="space-y-8">
+          {renderOption('인쇄 색상', 2)}
+          {renderOption('표지 인쇄', 2)}
+          {renderOption('내지 인쇄', 2)}
+          {renderOption('제본 방향', 2)}
+          {renderOption('표지 코팅', 3)}
+          <InfoCard 
+            title="실제본 안내"
+            content={[
+              "실제본: 실로 묶는 방식",
+              "감성 자료집 / 보관용 책자 / 정성스러운 제작물에 적합",
+              "일반 제본보다 제작 공정이 섬세한 편입니다"
+            ]}
+          />
+        </div>
+      )
+    },
+    {
+      id: 'order',
+      title: '수량 및 주문 정보',
+      icon: ShoppingCart,
+      children: (
+        <div className="space-y-8">
+          <QuantitySection product={product} quantity={quantity} setQuantity={setQuantity} />
+          <OrderTitleSection />
+          <FileUploadSection />
+        </div>
+      )
+    }
   ];
 
   return (
-    <div className="space-y-10">
-      <InfoCard 
-        title="작업 규격 안내"
-        content={[
-          "A4 (210x297mm) 고정",
-          "별도 크기 선택 없음"
-        ]}
-      />
-
-      <QuantitySection product={product} quantity={quantity} setQuantity={setQuantity} />
-
-      {optionsToRender.map((optConfig) => {
-        const option = getOption(optConfig.name);
-        if (!option) return null;
-        
-        return (
-          <OptionGroup key={option.name} label={option.name}>
-            <div className={`grid grid-cols-2 md:grid-cols-${optConfig.cols} gap-3`}>
-              {option.values?.map((val) => (
-                <button
-                  key={val.label}
-                  onClick={() => handleOptionChange(option.name, val.label)}
-                  className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden ${
-                    selectedOptions[option.name] === val.label
-                      ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/20'
-                      : 'bg-white border-zinc-200 text-zinc-600 hover:border-emerald-200'
-                  }`}
-                >
-                  <span className="relative z-10">{val.label}</span>
-                </button>
-              ))}
-            </div>
-          </OptionGroup>
-        );
-      })}
-
-      <InfoCard 
-        title="실제본 안내"
-        content={[
-          "실제본: 실로 묶는 방식",
-          "감성 자료집 / 보관용 책자 / 정성스러운 제작물에 적합",
-          "일반 제본보다 제작 공정이 섬세한 편입니다"
-        ]}
-      />
+    <div className="space-y-8">
+      <CalculatorAccordion sections={sections} />
 
       <SummarySection 
         product={product} 
@@ -107,9 +144,7 @@ export const SewnBindingCalculator: React.FC<SewnBindingCalculatorProps> = ({
         customSize={{ width: '', height: '' }}
       />
       
-      <OrderTitleSection />
-      <FileUploadSection />
-      <ActionButtons onGenerate={onGenerate} onAddToCart={onAddToCart} />
+      <ActionButtons onGenerate={onGenerate} onAddToCart={onAddToCart} onSaveDraft={onSaveDraft} />
     </div>
   );
 };
