@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
-import { Box, Layers, Settings2, ShoppingCart } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Box, Layers, Settings2, ShoppingCart, ArrowRight, ArrowLeft } from 'lucide-react';
 import { Product, BUSINESS_CARD_MATERIALS } from '../../types';
 import { QuantitySection } from './shared/QuantitySection';
 import { SummarySection } from './shared/SummarySection';
@@ -11,7 +11,14 @@ import { NotesSection } from './shared/NotesSection';
 import { PostProcessingSection } from './shared/PostProcessingSection';
 import { OptionGroup } from './shared/OptionGroup';
 import { PRODUCT_CONFIG } from './shared/constants';
-import { CalculatorAccordion } from './shared/CalculatorAccordion';
+import { Stepper, StepNavigation, TermTooltip } from '../UXComponents';
+
+const FOLDED_CARD_TERM_TOOLTIPS: Record<string, { description: string; imageUrl?: string }> = {
+  '용지': {
+    description: '접지 명함 제작에 사용되는 종이의 재질과 두께를 선택합니다. 접히는 부분의 터짐을 방지하기 위해 적절한 두께의 종이를 추천합니다.',
+    imageUrl: 'https://picsum.photos/seed/folded-card-paper/400/250'
+  }
+};
 
 interface FoldedBusinessCardCalculatorProps {
   product: Product;
@@ -42,9 +49,16 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
   onAddToCart,
   onSaveDraft
 }) => {
+  const [currentStep, setCurrentStep] = useState(0);
   const [selectedBusinessCardGroup, setSelectedBusinessCardGroup] = useState<string>('기본 대중형');
   const [expandedPostOption, setExpandedPostOption] = useState<string | null>(null);
   const config = PRODUCT_CONFIG[product.id];
+
+  const steps = [
+    { title: '용지 선택', icon: Box },
+    { title: '상세 옵션', icon: Settings2 },
+    { title: '주문 정보', icon: ShoppingCart }
+  ];
 
   useEffect(() => {
     if (config) {
@@ -157,79 +171,91 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
     );
   };
 
-  const sections = [
-    {
-      id: 'basic',
-      title: '용지 선택',
-      icon: Box,
-      children: (
-        <div className="space-y-8">
-          {product.options.filter(opt => opt.name.includes('용지')).map((option) => (
-            <OptionGroup key={option.name} label={option.name} icon={Layers}>
-              {renderOption(option)}
-            </OptionGroup>
-          ))}
-        </div>
-      )
-    },
-    {
-      id: 'options',
-      title: '상세 옵션 및 후가공',
-      icon: Settings2,
-      children: (
-        <div className="space-y-8">
-          {product.options.filter(opt => {
-            const normalizedName = opt.name.replace(/\s/g, '');
-            if (opt.name.includes('용지')) return false;
-            
-            const handledByIconGrid = [
-              '코팅', '코팅종류', '코팅면수', '귀돌이', '귀돌이사용', '귀돌이크기', '귀돌이면수', '귀돌이방향', 
-              '타공', '타공사용', '구멍크기', '타공크기', '타공설명', '명함케이스',
-              '오시', '오시줄수', '오시설명', '미싱', '미싱줄수', '미싱설명', '접지', '접지방향', '접지형태', 
-              '폴리백개별포장', '폴리백사이즈', '제작수량', '수량', '주문수량'
-            ].includes(normalizedName);
-            if (handledByIconGrid) return false;
-
-            if (opt.visibleIf) {
-              const parentVal = selectedOptions[opt.visibleIf.optionName];
-              if (parentVal !== opt.visibleIf.value) return false;
-            }
-
-            return true;
-          }).map((option) => (
-            <OptionGroup key={option.name} label={option.name}>
-              {renderOption(option)}
-            </OptionGroup>
-          ))}
-
-          <PostProcessingSection 
-            product={product} 
-            selectedOptions={selectedOptions} 
-            handleOptionChange={handleOptionChange} 
-            pattern="FOLDED_BUSINESS_CARD"
-            expandedPostOption={expandedPostOption}
-            setExpandedPostOption={setExpandedPostOption}
-          />
-        </div>
-      )
-    },
-    {
-      id: 'order',
-      title: '수량 및 주문 정보',
-      icon: ShoppingCart,
-      children: (
-        <div className="space-y-8">
-          <QuantitySection product={product} quantity={quantity} setQuantity={setQuantity} />
-          <OrderTitleSection />
-          <FileUploadSection />
-        </div>
-      )
-    }
-  ];
-
   return (
     <div className="space-y-8">
-      <CalculatorAccordion sections={sections} />
+      <Stepper steps={steps} currentStep={currentStep} onStepClick={setCurrentStep} />
+
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentStep}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -20 }}
+          transition={{ duration: 0.3 }}
+        >
+          {currentStep === 0 && (
+            <div className="space-y-8">
+              {product.options.filter(opt => opt.name.includes('용지')).map((option) => (
+                <OptionGroup 
+                  key={option.name} 
+                  label={option.name} 
+                  icon={Layers}
+                  tooltip={FOLDED_CARD_TERM_TOOLTIPS['용지']}
+                >
+                  {renderOption(option)}
+                </OptionGroup>
+              ))}
+              <StepNavigation 
+                onNext={() => setCurrentStep(1)} 
+                nextLabel="상세 옵션 선택하기"
+              />
+            </div>
+          )}
+
+          {currentStep === 1 && (
+            <div className="space-y-8">
+              {product.options.filter(opt => {
+                const normalizedName = opt.name.replace(/\s/g, '');
+                if (opt.name.includes('용지')) return false;
+                
+                const handledByIconGrid = [
+                  '코팅', '코팅종류', '코팅면수', '귀돌이', '귀돌이사용', '귀돌이크기', '귀돌이면수', '귀돌이방향', 
+                  '타공', '타공사용', '구멍크기', '타공크기', '타공설명', '명함케이스',
+                  '오시', '오시줄수', '오시설명', '미싱', '미싱줄수', '미싱설명', '접지', '접지방향', '접지형태', 
+                  '폴리백개별포장', '폴리백사이즈', '제작수량', '수량', '주문수량'
+                ].includes(normalizedName);
+                if (handledByIconGrid) return false;
+
+                if (opt.visibleIf) {
+                  const parentVal = selectedOptions[opt.visibleIf.optionName];
+                  if (parentVal !== opt.visibleIf.value) return false;
+                }
+
+                return true;
+              }).map((option) => (
+                <OptionGroup key={option.name} label={option.name}>
+                  {renderOption(option)}
+                </OptionGroup>
+              ))}
+
+              <PostProcessingSection 
+                product={product} 
+                selectedOptions={selectedOptions} 
+                handleOptionChange={handleOptionChange} 
+                pattern="FOLDED_BUSINESS_CARD"
+                expandedPostOption={expandedPostOption}
+                setExpandedPostOption={setExpandedPostOption}
+              />
+              <StepNavigation 
+                onPrev={() => setCurrentStep(0)} 
+                onNext={() => setCurrentStep(2)} 
+                nextLabel="주문 정보 입력하기"
+              />
+            </div>
+          )}
+
+          {currentStep === 2 && (
+            <div className="space-y-8">
+              <QuantitySection product={product} quantity={quantity} setQuantity={setQuantity} />
+              <OrderTitleSection />
+              <FileUploadSection />
+              <StepNavigation 
+                onPrev={() => setCurrentStep(1)} 
+              />
+            </div>
+          )}
+        </motion.div>
+      </AnimatePresence>
 
       <SummarySection 
         product={product} 

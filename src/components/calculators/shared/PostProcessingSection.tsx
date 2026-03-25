@@ -10,7 +10,8 @@ import {
   ShoppingCart, 
   Package,
   CheckCircle2,
-  Sparkles
+  Sparkles,
+  Info
 } from 'lucide-react';
 import { Product } from '../../../types';
 import { 
@@ -19,6 +20,42 @@ import {
   SHAPE_ICONS,
   PRODUCT_CONFIG 
 } from './constants';
+import { TermTooltip } from '../../UXComponents';
+
+const POST_TERM_TOOLTIPS: Record<string, { description: string; imageUrl?: string }> = {
+  '모양커팅': {
+    description: '원하는 모양대로 칼선을 내어 자르는 가공입니다. 자유로운 형태의 스티커나 엽서 제작 시 사용합니다.',
+    imageUrl: 'https://picsum.photos/seed/shape/400/250'
+  },
+  '코팅': {
+    description: '인쇄물 표면에 얇은 필름을 입혀 내구성을 높이고 광택을 조절하는 가공입니다. 유광/무광 선택이 가능합니다.',
+    imageUrl: 'https://picsum.photos/seed/coating/400/250'
+  },
+  '귀돌이': {
+    description: '명함의 모서리를 둥글게 깎는 가공입니다. 부드러운 인상을 주며 모서리 마모를 방지합니다.',
+    imageUrl: 'https://picsum.photos/seed/corner/400/250'
+  },
+  '타공': {
+    description: '종이에 구멍을 뚫는 가공입니다. 택(Tag)이나 고리를 걸 때 사용합니다.',
+    imageUrl: 'https://picsum.photos/seed/hole/400/250'
+  },
+  '오시': {
+    description: '종이가 잘 접히도록 누름 자국을 내는 가공입니다. 두꺼운 종이가 터지는 것을 방지합니다.',
+    imageUrl: 'https://picsum.photos/seed/crease/400/250'
+  },
+  '미싱': {
+    description: '손으로 쉽게 뜯을 수 있도록 점선 모양의 구멍을 내는 가공입니다. 쿠폰이나 티켓에 주로 사용됩니다.',
+    imageUrl: 'https://picsum.photos/seed/perforation/400/250'
+  },
+  '접지': {
+    description: '인쇄물을 일정한 형태로 접는 가공입니다. 리플렛이나 안내문 제작 시 필수적인 단계입니다.',
+    imageUrl: 'https://picsum.photos/seed/fold/400/250'
+  },
+  '화이트 인쇄': {
+    description: '투명지나 유색지에 흰색 잉크를 먼저 인쇄하여 색상을 선명하게 표현하는 기법입니다.',
+    imageUrl: 'https://picsum.photos/seed/white/400/250'
+  }
+};
 
 interface PostProcessingSectionProps {
   product: Product;
@@ -77,7 +114,7 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
   };
 
   const config = PRODUCT_CONFIG[product.id];
-  const isTemplate = isTemplateProduct || product.id === 'bc-template';
+  const isTemplate = !!isTemplateProduct;
 
   const postOptions = [
     { 
@@ -85,7 +122,7 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
       name: '모양커팅', 
       icon: <Shapes className="w-5 h-5" />, 
       active: true, 
-      hidden: !config?.allowedPostProcessing?.includes('모양커팅') || isTemplate
+      hidden: !config?.allowedPostProcessing?.includes('모양커팅') || isTemplate || product.id === 'stk-postcard-standard'
     },
     { 
       id: 'coating', 
@@ -142,7 +179,7 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
       icon: <Paintbrush className="w-5 h-5" />, 
       active: selectedOptions['화이트 인쇄'] === '있음', 
       hidden: !config?.allowedPostProcessing?.includes('화이트 인쇄') || 
-              (materialOptionName ? selectedOptions[materialOptionName] !== '투명/PET' : (selectedOptions['재질'] !== '투명/PET' && selectedOptions['용지'] !== '투명/PET')) || isTemplate
+              (materialOptionName ? selectedOptions[materialOptionName] !== '투명/PET' : (selectedOptions['재질'] !== '투명/PET' && selectedOptions['용지'] !== '투명/PET')) || isTemplate || product.id === 'stk-postcard-standard'
     },
     { 
       id: 'special-effects', 
@@ -179,10 +216,18 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
           {postOptions.map(item => {
             const isExpanded = expandedPostOption === item.id;
             return (
-              <button
+              <div
                 key={item.id}
                 onClick={() => setExpandedPostOption(isExpanded ? null : item.id)}
-                className={`flex flex-col items-center gap-2 group transition-all ${
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setExpandedPostOption(isExpanded ? null : item.id);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                className={`flex flex-col items-center gap-2 group transition-all cursor-pointer outline-none ${
                   isExpanded ? 'scale-110' : 'hover:scale-105'
                 }`}
               >
@@ -195,12 +240,23 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                 }`}>
                   {item.icon}
                 </div>
-                <span className={`text-[10px] font-black whitespace-nowrap transition-colors ${
-                  isExpanded ? 'text-emerald-600' : item.active ? 'text-zinc-900' : 'text-zinc-400'
-                }`}>
-                  {item.name}
-                </span>
-              </button>
+                <div className="flex items-center gap-1">
+                  <span className={`text-[10px] font-black whitespace-nowrap transition-colors ${
+                    isExpanded ? 'text-emerald-600' : item.active ? 'text-zinc-900' : 'text-zinc-400'
+                  }`}>
+                    {item.name}
+                  </span>
+                  {POST_TERM_TOOLTIPS[item.name] && (
+                    <TermTooltip 
+                      term={item.name} 
+                      description={POST_TERM_TOOLTIPS[item.name].description} 
+                      imageUrl={POST_TERM_TOOLTIPS[item.name].imageUrl}
+                    >
+                      <span className="sr-only">정보</span>
+                    </TermTooltip>
+                  )}
+                </div>
+              </div>
             );
           })}
         </div>

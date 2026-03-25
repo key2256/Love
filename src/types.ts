@@ -4143,6 +4143,11 @@ export const PRODUCTS: Product[] = [
     recommendation: '도장 쿠폰용 선택 시 모조지 / 크라프트보드 / 인바이런먼트 크라프트 추천. 도장 후 빠르게 건조되고 번짐이 적음.'
   },
   {
+    /**
+     * [ISOLATED PRODUCT: bc-template]
+     * 이 품목은 전용 구조로 고정되어 있습니다.
+     * 공통 옵션 시스템이나 리팩토링의 영향을 받지 않도록 보호 처리되었습니다.
+     */
     id: 'bc-template',
     name: '디자인 템플릿 명함',
     category: 'card-paper',
@@ -4152,22 +4157,6 @@ export const PRODUCTS: Product[] = [
     minQuantity: 100,
     basePrice: 12000,
     options: [
-      {
-        name: '템플릿 카테고리',
-        type: 'select',
-        values: [
-          { label: '심플/비즈니스', priceModifier: 0 },
-          { label: '감성/브랜드', priceModifier: 0 },
-          { label: '크리에이터/작가', priceModifier: 0 },
-          { label: '카페/베이커리', priceModifier: 0 },
-          { label: '뷰티/샵', priceModifier: 0 },
-          { label: '이벤트/쿠폰형', priceModifier: 0 },
-        ]
-      },
-      {
-        name: '템플릿 선택',
-        type: 'text',
-      },
       BUSINESS_CARD_COMMON_OPTIONS.SIZE,
       {
         name: '용지',
@@ -4175,16 +4164,9 @@ export const PRODUCTS: Product[] = [
         values: getBusinessCardMaterials('template')
       },
       BUSINESS_CARD_COMMON_OPTIONS.PRINT_COLOR,
-      BUSINESS_CARD_COMMON_OPTIONS.WHITE_INK,
       ...BUSINESS_CARD_COMMON_OPTIONS.COATING,
       ...BUSINESS_CARD_COMMON_OPTIONS.ROUNDING,
       ...BUSINESS_CARD_COMMON_OPTIONS.PUNCHING,
-      ...BUSINESS_CARD_COMMON_OPTIONS.SHAPE_CUTTING,
-      ...BUSINESS_CARD_COMMON_OPTIONS.CREASING,
-      ...BUSINESS_CARD_COMMON_OPTIONS.PERFORATION,
-      ...BUSINESS_CARD_COMMON_OPTIONS.FOLDING,
-      ...BUSINESS_CARD_COMMON_OPTIONS.PACKAGING,
-      BUSINESS_CARD_COMMON_OPTIONS.POST_PROCESSING,
       BUSINESS_CARD_COMMON_OPTIONS.CASE,
       {
         name: '이름',

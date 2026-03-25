@@ -7,8 +7,22 @@ export const useQuotationLogic = (
   initialOptions?: Record<string, string>,
   initialQuantity?: number
 ) => {
-  const [quantity, setQuantity] = useState(initialQuantity || product.minQuantity);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>(() => {
+    // 1. Check URL parameters first
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlProductId = urlParams.get('productId');
+    
+    if (urlProductId === product.id) {
+      const urlOptions: Record<string, string> = {};
+      urlParams.forEach((value, key) => {
+        if (key.startsWith('opt_')) {
+          urlOptions[key.replace('opt_', '')] = value;
+        }
+      });
+      if (Object.keys(urlOptions).length > 0) return urlOptions;
+    }
+
+    // 2. Fallback to initialOptions or defaults
     if (initialOptions) return initialOptions;
     
     const initial: Record<string, string> = {};
@@ -22,6 +36,17 @@ export const useQuotationLogic = (
       }
     });
     return initial;
+  });
+
+  const [quantity, setQuantity] = useState(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlProductId = urlParams.get('productId');
+    const urlQuantity = urlParams.get('quantity');
+    
+    if (urlProductId === product.id && urlQuantity) {
+      return parseInt(urlQuantity);
+    }
+    return initialQuantity || product.minQuantity;
   });
   const [totalPrice, setTotalPrice] = useState(0);
   const [unitPrice, setUnitPrice] = useState(0);

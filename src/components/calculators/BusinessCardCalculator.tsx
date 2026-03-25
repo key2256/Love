@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Box, Layers, Settings2, ShoppingCart } from 'lucide-react';
+import { Box, Layers, Settings2, ShoppingCart, Info } from 'lucide-react';
 import { Product, BUSINESS_CARD_MATERIALS } from '../../types';
 import { BUSINESS_CARD_TEMPLATES } from './constants';
 import { QuantitySection } from './shared/QuantitySection';
@@ -12,7 +12,26 @@ import { NotesSection } from './shared/NotesSection';
 import { PostProcessingSection } from './shared/PostProcessingSection';
 import { OptionGroup } from './shared/OptionGroup';
 import { PRODUCT_CONFIG } from './shared/constants';
-import { CalculatorAccordion } from './shared/CalculatorAccordion';
+import { Stepper, StepNavigation } from '../UXComponents';
+
+const TERM_TOOLTIPS: Record<string, { description: string; imageUrl?: string }> = {
+  '귀돌이': {
+    description: '명함의 모서리를 둥글게 깎는 가공입니다. 부드러운 인상을 주며 모서리 마모를 방지합니다.',
+    imageUrl: 'https://picsum.photos/seed/corner/400/250'
+  },
+  '오시': {
+    description: '종이가 잘 접히도록 누름 자국을 내는 가공입니다. 두꺼운 종이가 터지는 것을 방지합니다.',
+    imageUrl: 'https://picsum.photos/seed/crease/400/250'
+  },
+  '미싱': {
+    description: '손으로 쉽게 뜯을 수 있도록 점선 모양의 구멍을 내는 가공입니다. 쿠폰이나 티켓에 주로 사용됩니다.',
+    imageUrl: 'https://picsum.photos/seed/perforation/400/250'
+  },
+  '타공': {
+    description: '종이에 구멍을 뚫는 가공입니다. 택(Tag)이나 고리를 걸 때 사용합니다.',
+    imageUrl: 'https://picsum.photos/seed/hole/400/250'
+  }
+};
 
 interface BusinessCardCalculatorProps {
   product: Product;
@@ -45,7 +64,14 @@ export const BusinessCardCalculator: React.FC<BusinessCardCalculatorProps> = ({
 }) => {
   const [selectedBusinessCardGroup, setSelectedBusinessCardGroup] = useState<string>('기본 대중형');
   const [expandedPostOption, setExpandedPostOption] = useState<string | null>(null);
+  const [currentStep, setCurrentStep] = useState(0);
   const config = PRODUCT_CONFIG[product.id];
+
+  const steps = [
+    { id: 'basic', title: '용지 선택', icon: Layers },
+    { id: 'options', title: '상세 옵션', icon: Settings2 },
+    { id: 'order', title: '주문 정보', icon: ShoppingCart }
+  ];
 
   useEffect(() => {
     if (config) {
@@ -173,61 +199,69 @@ export const BusinessCardCalculator: React.FC<BusinessCardCalculatorProps> = ({
     );
   };
 
-  const sections = [
-    {
-      id: 'basic',
-      title: '용지 선택',
-      icon: Layers,
-      children: (
-        <div className="space-y-8">
-          {product.options.filter(opt => opt.name.includes('용지')).map((option) => (
-            <OptionGroup key={option.name} label={option.name} icon={Layers}>
-              {renderOption(option)}
-            </OptionGroup>
-          ))}
-        </div>
-      )
-    },
-    {
-      id: 'options',
-      title: '상세 옵션 및 후가공',
-      icon: Settings2,
-      children: (
-        <div className="space-y-8">
-          {product.options.filter(opt => {
-            const normalizedName = opt.name.replace(/\s/g, '');
-            if (opt.name.includes('용지')) return false;
-            
-            // Filter out forbidden options for template products
-            if (product.id === 'bc-template') {
-              const forbidden = ['화이트 인쇄', '모양커팅', '모양 선택', '후가공 옵션', '템플릿 카테고리', '템플릿 선택', '디자인 템플릿'];
-              if (forbidden.includes(opt.name)) return false;
+  return (
+    <div className="space-y-8">
+      <Stepper steps={steps} currentStep={currentStep} onStepClick={setCurrentStep} />
+
+      <div className="min-h-[400px]">
+        {currentStep === 0 && (
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="space-y-8"
+          >
+            {product.options.filter(opt => opt.name.includes('용지')).map((option) => (
+              <OptionGroup key={option.name} label={option.name} icon={Layers}>
+                {renderOption(option)}
+              </OptionGroup>
+            ))}
+            <StepNavigation onNext={() => setCurrentStep(1)} isFirst={true} isLast={false} />
+          </motion.div>
+        )}
+
+        {currentStep === 1 && (
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="space-y-8"
+          >
+            {product.options.filter(opt => {
+              const normalizedName = opt.name.replace(/\s/g, '');
+              if (opt.name.includes('용지')) return false;
               
-              const forbiddenKeywords = ['화이트', '모양', '템플릿', '후가공'];
-              if (forbiddenKeywords.some(keyword => opt.name.includes(keyword))) return false;
-            }
-            
-            const handledByIconGrid = [
-              '코팅', '코팅종류', '코팅면수', '귀돌이', '귀돌이사용', '귀돌이크기', '귀돌이면수', '귀돌이방향', 
-              '타공', '타공사용', '구멍크기', '타공크기', '타공설명', '명함케이스',
-              '오시', '오시줄수', '오시설명', '미싱', '미싱줄수', '미싱설명', '접지', '접지방향', '접지형태', 
-              '폴리백개별포장', '폴리백사이즈', '제작수량', '수량', '주문수량', '디자인템플릿'
-            ].includes(normalizedName);
-            if (handledByIconGrid) return false;
+              // Filter out forbidden options for template products
+              if (product.id === 'bc-template') {
+                const forbidden = ['화이트 인쇄', '모양커팅', '모양 선택', '후가공 옵션', '템플릿 카테고리', '템플릿 선택', '디자인 템플릿'];
+                if (forbidden.includes(opt.name)) return false;
+                
+                const forbiddenKeywords = ['화이트', '모양', '템플릿', '후가공'];
+                if (forbiddenKeywords.some(keyword => opt.name.includes(keyword))) return false;
+              }
+              
+              const handledByIconGrid = [
+                '코팅', '코팅종류', '코팅면수', '귀돌이', '귀돌이사용', '귀돌이크기', '귀돌이면수', '귀돌이방향', 
+                '타공', '타공사용', '구멍크기', '타공크기', '타공설명', '명함케이스',
+                '오시', '오시줄수', '오시설명', '미싱', '미싱줄수', '미싱설명', '접지', '접지방향', '접지형태', 
+                '폴리백개별포장', '폴리백사이즈', '제작수량', '수량', '주문수량', '디자인템플릿'
+              ].includes(normalizedName);
+              if (handledByIconGrid) return false;
 
-            if (opt.visibleIf) {
-              const parentVal = selectedOptions[opt.visibleIf.optionName];
-              if (parentVal !== opt.visibleIf.value) return false;
-            }
+              if (opt.visibleIf) {
+                const parentVal = selectedOptions[opt.visibleIf.optionName];
+                if (parentVal !== opt.visibleIf.value) return false;
+              }
 
-            return true;
-          }).map((option) => (
-            <OptionGroup key={option.name} label={option.name}>
-              {renderOption(option)}
-            </OptionGroup>
-          ))}
+              return true;
+            }).map((option) => (
+              <OptionGroup 
+                key={option.name} 
+                label={option.name}
+                tooltip={TERM_TOOLTIPS[option.name]}
+              >
+                {renderOption(option)}
+              </OptionGroup>
+            ))}
 
-          {product.id !== 'bc-template' && (
             <PostProcessingSection 
               product={product} 
               selectedOptions={selectedOptions} 
@@ -235,29 +269,24 @@ export const BusinessCardCalculator: React.FC<BusinessCardCalculatorProps> = ({
               pattern="BUSINESS_CARD"
               expandedPostOption={expandedPostOption}
               setExpandedPostOption={setExpandedPostOption}
-              isTemplateProduct={product.id === 'bc-template'}
             />
-          )}
-        </div>
-      )
-    },
-    {
-      id: 'order',
-      title: '수량 및 주문 정보',
-      icon: ShoppingCart,
-      children: (
-        <div className="space-y-8">
-          <QuantitySection product={product} quantity={quantity} setQuantity={setQuantity} />
-          <OrderTitleSection />
-          <FileUploadSection />
-        </div>
-      )
-    }
-  ];
+            <StepNavigation onNext={() => setCurrentStep(2)} onPrev={() => setCurrentStep(0)} isFirst={false} isLast={false} />
+          </motion.div>
+        )}
 
-  return (
-    <div className="space-y-8">
-      <CalculatorAccordion sections={sections} />
+        {currentStep === 2 && (
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="space-y-8"
+          >
+            <QuantitySection product={product} quantity={quantity} setQuantity={setQuantity} />
+            <OrderTitleSection />
+            <FileUploadSection />
+            <StepNavigation onPrev={() => setCurrentStep(1)} isFirst={false} isLast={true} />
+          </motion.div>
+        )}
+      </div>
 
       <SummarySection 
         product={product} 
