@@ -83,9 +83,9 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
     if (option.name.includes('용지') && option.name !== '용지 그룹') {
       return (
         <div className="space-y-4">
-          {!skipTabs && config && (product.id === 'stk-postcard-shape' ? config.groups.filter(g => g === '기본 대중형') : config.groups).length > 1 && (
+          {!skipTabs && config && config.groups.length > 1 && (
             <div className="flex flex-wrap gap-2 mb-2">
-              {(product.id === 'stk-postcard-shape' ? config.groups.filter(g => g === '기본 대중형') : config.groups).map(group => (
+              {config.groups.map(group => (
                 <button
                   key={group}
                   onClick={() => setSelectedPostcardGroup(group)}
@@ -105,9 +105,6 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
             {option.values?.filter((val: any) => {
               if (config?.allowedMaterials && !config.allowedMaterials.includes(val.label)) return false;
               const material = POSTCARD_MATERIALS.find(m => `${m.name} ${m.weight}` === val.label);
-              if (product.id === 'stk-postcard-shape') {
-                return material?.group === '기본 대중형';
-              }
               return material?.group === selectedPostcardGroup;
             }).map((val: any) => {
               const material = POSTCARD_MATERIALS.find(m => `${m.name} ${m.weight}` === val.label);
