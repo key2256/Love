@@ -186,7 +186,7 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
       name: '특수 효과', 
       icon: <Sparkles className="w-5 h-5" />, 
       active: selectedOptions['후가공 옵션'] !== '없음' && selectedOptions['후가공 옵션'] !== undefined, 
-      hidden: !config?.allowedPostProcessing?.includes('후가공 옵션') || isTemplate || product.id === 'stk-postcard-standard'
+      hidden: !config?.allowedPostProcessing?.includes('후가공 옵션') || isTemplate || product.id === 'stk-postcard-standard' || product.id === 'stk-postcard-shape'
     },
     { 
       id: 'case', 

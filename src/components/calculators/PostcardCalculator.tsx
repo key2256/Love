@@ -225,7 +225,13 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
         >
           {currentStep === 0 && (
             <div className="space-y-8">
-              {product.options.filter(opt => opt.name.includes('용지') && opt.name !== '용지 그룹').map((option, index) => {
+              {product.options.filter(opt => {
+                if (opt.name.includes('용지') && opt.name !== '용지 그룹') {
+                  if (product.id === 'stk-postcard-shape' && (opt.name === '상세 용지 (고급)' || opt.name === '상세 용지 (친환경)')) return false;
+                  return true;
+                }
+                return false;
+              }).map((option, index) => {
                 const content = renderOption(option);
                 if (!content) return null;
                 return (
