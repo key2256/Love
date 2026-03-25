@@ -355,9 +355,9 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                     if (!coatingOption) return null;
                     return (
                       <div className={`grid gap-2 ${coatingOption.values && coatingOption.values.length > 3 ? 'grid-cols-2' : 'grid-cols-3'}`}>
-                        {coatingOption.values?.map(v => (
+                        {coatingOption.values?.map((v, index) => (
                           <button
-                            key={v.label}
+                            key={v.label + index}
                             onClick={() => {
                               handleOptionChange('코팅', v.label);
                               if (v.label === '없음') handleOptionChange('코팅 면수', '단면');
@@ -381,9 +381,9 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                   })()}
                   {selectedOptions['코팅'] !== '없음' && product.options.some(o => o.name === '코팅 면수') && (
                     <div className="grid grid-cols-2 gap-2 animate-in fade-in slide-in-from-top-1">
-                      {product.options.find(o => o.name === '코팅 면수')?.values.map(side => (
+                      {product.options.find(o => o.name === '코팅 면수')?.values.map((side, index) => (
                         <button
-                          key={side.label}
+                          key={side.label + index}
                           onClick={() => handleOptionChange('코팅 면수', side.label)}
                           className={`py-3 rounded-xl text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-1 ${
                             selectedOptions['코팅 면수'] === side.label
@@ -421,9 +421,9 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                 </div>
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-2">
-                    {product.options.find(o => o.name === '귀돌이')?.values.map(v => (
+                    {product.options.find(o => o.name === '귀돌이')?.values.map((v, index) => (
                       <button
-                        key={v.label}
+                        key={v.label + index}
                         onClick={() => handleOptionChange('귀돌이', v.label)}
                         className={`py-3 rounded-xl text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-1 ${
                           selectedOptions['귀돌이'] === v.label
@@ -446,9 +446,9 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                         <div className="space-y-2">
                           <span className="text-[10px] font-bold text-zinc-400 uppercase">크기</span>
                           <div className="grid grid-cols-2 gap-2">
-                            {product.options.find(o => o.name === '귀돌이 크기')?.values.map(v => (
+                            {product.options.find(o => o.name === '귀돌이 크기')?.values.map((v, index) => (
                               <button
-                                key={v.label}
+                                key={v.label + index}
                                 onClick={() => handleOptionChange('귀돌이 크기', v.label)}
                                 className={`py-2 rounded-lg text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-0.5 ${
                                   selectedOptions['귀돌이 크기'] === v.label
@@ -467,9 +467,9 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                         <div className="space-y-2">
                           <span className="text-[10px] font-bold text-zinc-400 uppercase">면수</span>
                           <div className="grid grid-cols-2 gap-2">
-                            {product.options.find(o => o.name === '귀돌이 면수')?.values.map(v => (
+                            {product.options.find(o => o.name === '귀돌이 면수')?.values.map((v, index) => (
                               <button
-                                key={v.label}
+                                key={v.label + index}
                                 onClick={() => handleOptionChange('귀돌이 면수', v.label)}
                                 className={`py-2 rounded-lg text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-0.5 ${
                                   selectedOptions['귀돌이 면수'] === v.label
@@ -534,9 +534,9 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                 </div>
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-2">
-                    {product.options.find(o => o.name === '타공')?.values.map(v => (
+                    {product.options.find(o => o.name === '타공')?.values.map((v, index) => (
                       <button
-                        key={v.label}
+                        key={v.label + index}
                         onClick={() => handleOptionChange('타공', v.label)}
                         className={`py-3 rounded-xl text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-1 ${
                           selectedOptions['타공'] === v.label
@@ -558,9 +558,9 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                       <div className="space-y-2">
                         <span className="text-[10px] font-bold text-zinc-400 uppercase">타공 크기</span>
                         <div className="grid grid-cols-3 gap-2">
-                          {product.options.find(o => o.name === '타공 크기')?.values.map(v => (
+                          {product.options.find(o => o.name === '타공 크기')?.values.map((v, index) => (
                             <button
-                              key={v.label}
+                              key={v.label + index}
                               onClick={() => handleOptionChange('타공 크기', v.label)}
                               className={`py-2 rounded-lg text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-0.5 ${
                                 selectedOptions['타공 크기'] === v.label
@@ -608,9 +608,9 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                 </div>
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-2">
-                    {product.options.find(o => o.name === '오시')?.values.map(v => (
+                    {product.options.find(o => o.name === '오시')?.values.map((v, index) => (
                       <button
-                        key={v.label}
+                        key={v.label + index}
                         onClick={() => handleOptionChange('오시', v.label)}
                         className={`py-3 rounded-xl text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-1 ${
                           selectedOptions['오시'] === v.label
@@ -632,9 +632,9 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                       <div className="space-y-2">
                         <span className="text-[10px] font-bold text-zinc-400 uppercase">줄 수</span>
                         <div className="grid grid-cols-3 gap-2">
-                          {product.options.find(o => o.name === '오시 줄 수')?.values.map(v => (
+                          {product.options.find(o => o.name === '오시 줄 수')?.values.map((v, index) => (
                             <button
-                              key={v.label}
+                              key={v.label + index}
                               onClick={() => handleOptionChange('오시 줄 수', v.label)}
                               className={`py-2 rounded-lg text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-0.5 ${
                                 selectedOptions['오시 줄 수'] === v.label
@@ -682,9 +682,9 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                 </div>
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-2">
-                    {product.options.find(o => o.name === '미싱')?.values.map(v => (
+                    {product.options.find(o => o.name === '미싱')?.values.map((v, index) => (
                       <button
-                        key={v.label}
+                        key={v.label + index}
                         onClick={() => handleOptionChange('미싱', v.label)}
                         className={`py-3 rounded-xl text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-1 ${
                           selectedOptions['미싱'] === v.label
@@ -706,9 +706,9 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                       <div className="space-y-2">
                         <span className="text-[10px] font-bold text-zinc-400 uppercase">줄 수</span>
                         <div className="grid grid-cols-3 gap-2">
-                          {product.options.find(o => o.name === '미싱 줄 수')?.values.map(v => (
+                          {product.options.find(o => o.name === '미싱 줄 수')?.values.map((v, index) => (
                             <button
-                              key={v.label}
+                              key={v.label + index}
                               onClick={() => handleOptionChange('미싱 줄 수', v.label)}
                               className={`py-2 rounded-lg text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-0.5 ${
                                 selectedOptions['미싱 줄 수'] === v.label
@@ -756,9 +756,9 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                 </div>
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-2">
-                    {product.options.find(o => o.name === '접지')?.values.map(v => (
+                    {product.options.find(o => o.name === '접지')?.values.map((v, index) => (
                       <button
-                        key={v.label}
+                        key={v.label + index}
                         onClick={() => handleOptionChange('접지', v.label)}
                         className={`py-3 rounded-xl text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-1 ${
                           selectedOptions['접지'] === v.label
@@ -780,8 +780,8 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                       <div className="space-y-3">
                         <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">접지 방향</span>
                         <div className="flex gap-4">
-                          {product.options.find(o => o.name === '접지 방향')?.values.map(v => (
-                            <div key={v.label} className="flex flex-col items-center gap-2">
+                          {product.options.find(o => o.name === '접지 방향')?.values.map((v, index) => (
+                            <div key={v.label + index} className="flex flex-col items-center gap-2">
                               <button
                                 onClick={() => handleOptionChange('접지 방향', v.label)}
                                 className={`w-16 h-16 rounded-2xl border-2 flex items-center justify-center transition-all ${
@@ -807,8 +807,8 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                       <div className="space-y-3">
                         <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">접지 형태</span>
                         <div className="flex flex-wrap gap-x-2 gap-y-4 justify-start">
-                          {product.options.find(o => o.name === '접지 형태')?.values.map(v => (
-                            <div key={v.label} className="flex flex-col items-center gap-2 w-[calc(25%-8px)] min-w-[60px]">
+                          {product.options.find(o => o.name === '접지 형태')?.values.map((v, index) => (
+                            <div key={v.label + index} className="flex flex-col items-center gap-2 w-[calc(25%-8px)] min-w-[60px]">
                               <button
                                 onClick={() => handleOptionChange('접지 형태', v.label)}
                                 className={`w-14 h-14 rounded-2xl border-2 flex items-center justify-center transition-all ${
@@ -864,9 +864,9 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                 </div>
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-2">
-                    {product.options.find(o => o.name === '폴리백 개별포장')?.values.map(v => (
+                    {product.options.find(o => o.name === '폴리백 개별포장')?.values.map((v, index) => (
                       <button
-                        key={v.label}
+                        key={v.label + index}
                         onClick={() => handleOptionChange('폴리백 개별포장', v.label)}
                         className={`py-3 rounded-xl text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-1 ${
                           selectedOptions['폴리백 개별포장'] === v.label
@@ -888,9 +888,9 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                       <div className="space-y-2">
                         <span className="text-[10px] font-bold text-zinc-400 uppercase">폴리백 사이즈</span>
                         <div className="grid grid-cols-3 gap-2">
-                          {product.options.find(o => o.name === '폴리백 사이즈')?.values.map(v => (
+                          {product.options.find(o => o.name === '폴리백 사이즈')?.values.map((v, index) => (
                             <button
-                              key={v.label}
+                              key={v.label + index}
                               onClick={() => handleOptionChange('폴리백 사이즈', v.label)}
                               className={`py-2 rounded-lg text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-0.5 ${
                                 selectedOptions['폴리백 사이즈'] === v.label
@@ -928,9 +928,9 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                   <button onClick={() => setExpandedPostOption(null)} className="text-[10px] font-bold text-zinc-400 hover:text-zinc-600">닫기</button>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
-                  {product.options.find(o => o.name === '화이트 인쇄')?.values.map(v => (
+                  {product.options.find(o => o.name === '화이트 인쇄')?.values.map((v, index) => (
                     <button
-                      key={v.label}
+                      key={v.label + index}
                       onClick={() => handleOptionChange('화이트 인쇄', v.label)}
                       className={`py-3 rounded-xl text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-1 ${
                         selectedOptions['화이트 인쇄'] === v.label
@@ -970,9 +970,9 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                     if (!effectOption) return null;
                     return (
                       <div className="grid grid-cols-2 gap-2">
-                        {effectOption.values?.map(v => (
+                        {effectOption.values?.map((v, index) => (
                           <button
-                            key={v.label}
+                            key={v.label + index}
                             onClick={() => handleOptionChange('후가공 옵션', v.label)}
                             className={`py-3 rounded-xl text-[11px] font-bold border transition-all flex flex-col items-center justify-center gap-1 ${
                               selectedOptions['후가공 옵션'] === v.label
@@ -1010,9 +1010,9 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                   <button onClick={() => setExpandedPostOption(null)} className="text-[10px] font-bold text-zinc-400 hover:text-zinc-600">닫기</button>
                 </div>
                 <div className="grid grid-cols-1 gap-2">
-                  {product.options.find(o => o.name === '명함케이스')?.values.map(v => (
+                  {product.options.find(o => o.name === '명함케이스')?.values.map((v, index) => (
                     <button
-                      key={v.label}
+                      key={v.label + index}
                       onClick={() => handleOptionChange('명함케이스', v.label)}
                       className={`w-full py-3 px-4 rounded-xl text-[11px] font-bold border transition-all text-left flex items-center justify-between ${
                         selectedOptions['명함케이스'] === v.label

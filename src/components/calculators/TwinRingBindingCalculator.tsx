@@ -51,11 +51,11 @@ export const TwinRingBindingCalculator: React.FC<TwinRingBindingCalculatorProps>
     return (
       <OptionGroup key={option.name} label={option.name}>
         <div className={`grid grid-cols-2 md:grid-cols-${cols} gap-3`}>
-          {option.values?.map((val) => {
+          {option.values?.map((val, index) => {
             const Icon = getIconForOption(option.name, val.label);
             return (
               <button
-                key={val.label}
+                key={val.label + index}
                 onClick={() => handleOptionChange(option.name, val.label)}
                 className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden flex flex-col items-center justify-center gap-2 ${
                   selectedOptions[option.name] === val.label

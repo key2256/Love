@@ -177,9 +177,9 @@ export const BusinessCardCalculator: React.FC<BusinessCardCalculatorProps> = ({
 
     return (
       <div className="grid grid-cols-2 gap-3">
-        {option.values?.map((val: any) => (
+        {option.values?.map((val: any, index: number) => (
           <button
-            key={val.label}
+            key={val.label + index}
             onClick={() => handleOptionChange(option.name, val.label)}
             className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden ${
               selectedOptions[option.name] === val.label

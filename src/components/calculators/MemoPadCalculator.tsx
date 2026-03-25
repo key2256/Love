@@ -224,13 +224,13 @@ export const MemoPadCalculator: React.FC<MemoPadCalculatorProps> = ({
           {product.options.find(o => o.name === '두께') && (
             <OptionGroup label="두께 (매수)">
               <div className="grid grid-cols-1 gap-3">
-                {product.options.find(o => o.name === '두께')?.values?.map((val) => {
+                {product.options.find(o => o.name === '두께')?.values?.map((val, index) => {
                   const isSelected = selectedOptions['두께'] === val.label;
                   const [title, sheets] = val.label.split(' · ');
                   
                   return (
                     <button
-                      key={val.label}
+                      key={val.label + index}
                       onClick={() => handleOptionChange('두께', val.label)}
                       className={`group p-5 rounded-3xl border-2 transition-all flex items-center justify-between ${
                         isSelected
@@ -286,9 +286,9 @@ export const MemoPadCalculator: React.FC<MemoPadCalculatorProps> = ({
           }).map((option) => (
             <OptionGroup key={option.name} label={option.name}>
               <div className="grid grid-cols-2 gap-3">
-                {option.values?.map((val) => (
+                {option.values?.map((val, index) => (
                   <button
-                    key={val.label}
+                    key={val.label + index}
                     onClick={() => handleOptionChange(option.name, val.label)}
                     className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden ${
                       selectedOptions[option.name] === val.label

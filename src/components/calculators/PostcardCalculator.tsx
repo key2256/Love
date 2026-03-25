@@ -83,9 +83,9 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
     if (option.name.includes('용지') && option.name !== '용지 그룹') {
       return (
         <div className="space-y-4">
-          {config && config.groups.length > 1 && (
+          {config && (product.id === 'stk-postcard-shape' ? config.groups.filter(g => g === '기본 대중형') : config.groups).length > 1 && (
             <div className="flex flex-wrap gap-2 mb-2">
-              {config.groups.map(group => (
+              {(product.id === 'stk-postcard-shape' ? config.groups.filter(g => g === '기본 대중형') : config.groups).map(group => (
                 <button
                   key={group}
                   onClick={() => setSelectedPostcardGroup(group)}
@@ -100,11 +100,14 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
               ))}
             </div>
           )}
-
+          
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {option.values?.filter((val: any) => {
               if (config?.allowedMaterials && !config.allowedMaterials.includes(val.label)) return false;
               const material = POSTCARD_MATERIALS.find(m => `${m.name} ${m.weight}` === val.label);
+              if (product.id === 'stk-postcard-shape') {
+                return material?.group === '기본 대중형';
+              }
               return material?.group === selectedPostcardGroup;
             }).map((val: any) => {
               const material = POSTCARD_MATERIALS.find(m => `${m.name} ${m.weight}` === val.label);
@@ -148,12 +151,12 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
     if (option.name === '모양') {
       return (
         <div className="grid grid-cols-4 gap-3">
-          {option.values?.map((val: any) => {
+          {option.values?.map((val: any, index: number) => {
             const IconNode = SHAPE_ICONS[val.label] || <Layers className="w-6 h-6" />;
             const isSelected = selectedOptions[option.name] === val.label;
             return (
               <button
-                key={val.label}
+                key={val.label + index}
                 onClick={() => handleOptionChange(option.name, val.label)}
                 className={`flex flex-col items-center gap-3 p-4 rounded-2xl border transition-all ${
                   isSelected
@@ -186,9 +189,9 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
 
     return (
       <div className="grid grid-cols-2 gap-3">
-        {option.values?.map((val: any) => (
+        {option.values?.map((val: any, index: number) => (
           <button
-            key={val.label}
+            key={val.label + index}
             onClick={() => handleOptionChange(option.name, val.label)}
             className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden ${
               selectedOptions[option.name] === val.label
@@ -222,9 +225,9 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
         >
           {currentStep === 0 && (
             <div className="space-y-8">
-              {product.options.filter(opt => opt.name.includes('용지') && opt.name !== '용지 그룹').map((option) => (
+              {product.options.filter(opt => opt.name.includes('용지') && opt.name !== '용지 그룹').map((option, index) => (
                 <OptionGroup 
-                  key={option.name} 
+                  key={option.name + index} 
                   label={option.name} 
                   icon={Layers}
                   tooltip={POSTCARD_TERM_TOOLTIPS[option.name]}
@@ -233,9 +236,9 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
                 </OptionGroup>
               ))}
 
-              {product.options.filter(opt => opt.name === '모양').map((option) => (
+              {product.options.filter(opt => opt.name === '모양').map((option, index) => (
                 <OptionGroup 
-                  key={option.name} 
+                  key={option.name + index} 
                   label={option.name}
                   tooltip={POSTCARD_TERM_TOOLTIPS[option.name]}
                 >
@@ -265,6 +268,15 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
                   ];
                   if (hiddenForPostcard.includes(normalizedName)) return false;
                 }
+                if (product.id === 'stk-postcard-shape') {
+                  const hiddenForShapePostcard = [
+                    '화이트인쇄',
+                    '모양커팅',
+                    '모양선택',
+                    '모양커팅형태',
+                  ];
+                  if (hiddenForShapePostcard.includes(normalizedName)) return false;
+                }
                 
                 const handledByIconGrid = [
                   '코팅', '코팅종류', '코팅면수', '귀돌이', '귀돌이사용', '귀돌이크기', '귀돌이면수', '귀돌이방향', 
@@ -280,8 +292,8 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
                 }
 
                 return true;
-              }).map((option) => (
-                <OptionGroup key={option.name} label={option.name} tooltip={POSTCARD_TERM_TOOLTIPS[option.name]}>
+              }).map((option, index) => (
+                <OptionGroup key={option.name + index} label={option.name} tooltip={POSTCARD_TERM_TOOLTIPS[option.name]}>
                   {renderOption(option)}
                 </OptionGroup>
               ))}
