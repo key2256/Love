@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Box, Layers, Settings2, ShoppingCart } from 'lucide-react';
-import { Product, BUSINESS_CARD_MATERIALS } from '../../types';
+import { Product, BUSINESS_CARD_MATERIALS, DESIGN_CARD_TEMPLATES, Template } from '../../types';
 import { QuantitySection } from './shared/QuantitySection';
 import { SummarySection } from './shared/SummarySection';
 import { FileUploadSection } from './shared/FileUploadSection';
@@ -12,6 +12,7 @@ import { PostProcessingSection } from './shared/PostProcessingSection';
 import { OptionGroup } from './shared/OptionGroup';
 import { PRODUCT_CONFIG } from './shared/constants';
 import { CalculatorAccordion } from './shared/CalculatorAccordion';
+import { ChevronLeft, ChevronRight, X, Check, Search } from 'lucide-react';
 
 interface DesignCardCalculatorProps {
   product: Product;
@@ -44,7 +45,29 @@ export const DesignCardCalculator: React.FC<DesignCardCalculatorProps> = ({
 }) => {
   const [selectedBusinessCardGroup, setSelectedBusinessCardGroup] = useState<string>('기본 대중형');
   const [expandedPostOption, setExpandedPostOption] = useState<string | null>(null);
+  const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>('전체');
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null);
+  const carouselRef = React.useRef<HTMLDivElement>(null);
+  
   const config = PRODUCT_CONFIG[product.id];
+
+  const categories = ['전체', ...Array.from(new Set(DESIGN_CARD_TEMPLATES.map(t => t.category)))];
+  const filteredTemplates = selectedCategory === '전체' 
+    ? DESIGN_CARD_TEMPLATES 
+    : DESIGN_CARD_TEMPLATES.filter(t => t.category === selectedCategory);
+
+  const selectedTemplate = DESIGN_CARD_TEMPLATES.find(t => t.id === selectedTemplateId);
+
+  const scrollCarousel = (direction: 'left' | 'right') => {
+    if (carouselRef.current) {
+      const scrollAmount = 344; // w-320 + gap-6
+      carouselRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   useEffect(() => {
     if (config) {
@@ -58,6 +81,12 @@ export const DesignCardCalculator: React.FC<DesignCardCalculatorProps> = ({
       }
     }
   }, [product.id]);
+
+  const handleTemplateSelect = (template: Template) => {
+    setSelectedTemplateId(template.id);
+    handleOptionChange('선택된 템플릿', template.name);
+    setIsTemplateModalOpen(false);
+  };
 
   const renderOption = (option: any) => {
     if (option.name.includes('용지')) {
@@ -159,6 +188,59 @@ export const DesignCardCalculator: React.FC<DesignCardCalculatorProps> = ({
 
   const sections = [
     {
+      id: 'template',
+      title: '디자인 템플릿 선택',
+      icon: Layers,
+      children: (
+        <div className="space-y-4">
+          <div 
+            onClick={() => setIsTemplateModalOpen(true)}
+            className={`group relative p-6 rounded-2xl border-2 border-dashed transition-all cursor-pointer overflow-hidden ${
+              selectedTemplate 
+                ? 'border-emerald-500 bg-emerald-50/30' 
+                : 'border-zinc-200 hover:border-emerald-400 hover:bg-zinc-50'
+            }`}
+          >
+            {selectedTemplate ? (
+              <div className="flex items-center gap-6">
+                <div className="w-32 h-20 rounded-lg overflow-hidden shadow-md">
+                  <img 
+                    src={selectedTemplate.image} 
+                    alt={selectedTemplate.name}
+                    className="w-full h-full object-cover"
+                    referrerPolicy="no-referrer"
+                  />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-600 uppercase tracking-wider">
+                      {selectedTemplate.category}
+                    </span>
+                    <span className="text-[10px] font-bold text-zinc-400">
+                      ID: {selectedTemplate.id}
+                    </span>
+                  </div>
+                  <h4 className="text-lg font-black text-zinc-900">{selectedTemplate.name}</h4>
+                  <p className="text-xs text-emerald-600 font-bold mt-1">템플릿이 선택되었습니다. 클릭하여 변경하세요.</p>
+                </div>
+                <div className="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
+                  <Check className="w-6 h-6" />
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-4 text-center">
+                <div className="w-14 h-14 rounded-full bg-zinc-100 flex items-center justify-center mb-4 group-hover:bg-emerald-100 group-hover:text-emerald-600 transition-colors">
+                  <Search className="w-7 h-7 text-zinc-400 group-hover:text-emerald-500" />
+                </div>
+                <h4 className="text-base font-black text-zinc-900 mb-1">템플릿 찾아보기</h4>
+                <p className="text-sm text-zinc-500">업종별 다양한 디자인 템플릿이 준비되어 있습니다.</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )
+    },
+    {
       id: 'basic',
       title: '용지 선택',
       icon: Box,
@@ -230,6 +312,140 @@ export const DesignCardCalculator: React.FC<DesignCardCalculatorProps> = ({
   return (
     <div className="space-y-8">
       <CalculatorAccordion sections={sections} />
+
+      {/* Template Selection Modal */}
+      {isTemplateModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsTemplateModalOpen(false)}
+            className="absolute inset-0 bg-zinc-900/60 backdrop-blur-sm"
+          />
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className="relative w-full max-w-5xl bg-white rounded-[32px] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+          >
+            {/* Modal Header */}
+            <div className="px-8 py-6 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/50">
+              <div>
+                <h3 className="text-2xl font-black text-zinc-900 tracking-tight">디자인 템플릿 선택</h3>
+                <p className="text-sm text-zinc-500 mt-1">원하는 디자인을 선택하고 정보만 입력하세요.</p>
+              </div>
+              <button 
+                onClick={() => setIsTemplateModalOpen(false)}
+                className="w-10 h-10 rounded-full bg-white border border-zinc-200 flex items-center justify-center text-zinc-400 hover:text-zinc-900 hover:border-zinc-900 transition-all"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Category Tabs */}
+            <div className="px-8 py-4 bg-white border-b border-zinc-100 overflow-x-auto no-scrollbar">
+              <div className="flex gap-2 min-w-max">
+                {categories.map(category => (
+                  <button
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                    className={`px-5 py-2.5 rounded-full text-xs font-black transition-all ${
+                      selectedCategory === category
+                        ? 'bg-zinc-900 text-white shadow-lg'
+                        : 'bg-zinc-100 text-zinc-500 hover:bg-zinc-200'
+                    }`}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Template Carousel/Grid */}
+            <div className="flex-1 overflow-y-auto p-8 bg-zinc-50/30">
+              <div className="relative group/carousel">
+                <div 
+                  ref={carouselRef}
+                  className="flex gap-6 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-8"
+                >
+                  {filteredTemplates.map((template) => (
+                    <motion.div
+                      key={template.id}
+                      whileHover={{ y: -8 }}
+                      onClick={() => handleTemplateSelect(template)}
+                      className={`flex-none w-[280px] sm:w-[320px] snap-start cursor-pointer group/item`}
+                    >
+                      <div className={`relative aspect-[1.6/1] rounded-2xl overflow-hidden border-2 transition-all shadow-sm ${
+                        selectedTemplateId === template.id 
+                          ? 'border-emerald-500 ring-4 ring-emerald-500/10' 
+                          : 'border-white group-hover/item:border-emerald-200 group-hover/item:shadow-xl group-hover/item:shadow-emerald-500/10'
+                      }`}>
+                        <img 
+                          src={template.image} 
+                          alt={template.name}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover/item:scale-110"
+                          referrerPolicy="no-referrer"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover/item:opacity-100 transition-opacity flex items-end p-4">
+                          <span className="text-white text-xs font-bold flex items-center gap-2">
+                            자세히 보기 <ChevronRight className="w-3 h-3" />
+                          </span>
+                        </div>
+                        {selectedTemplateId === template.id && (
+                          <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white shadow-lg">
+                            <Check className="w-5 h-5" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="mt-4 px-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-[10px] font-black text-emerald-600 uppercase tracking-wider">
+                            {template.category}
+                          </span>
+                        </div>
+                        <h5 className="text-sm font-black text-zinc-900 group-hover/item:text-emerald-600 transition-colors">
+                          {template.name}
+                        </h5>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* Carousel Navigation Buttons */}
+                <div className="absolute top-1/2 -translate-y-1/2 -left-4 opacity-0 group-hover/carousel:opacity-100 transition-opacity hidden lg:block">
+                  <button 
+                    onClick={() => scrollCarousel('left')}
+                    className="w-12 h-12 rounded-full bg-white shadow-xl flex items-center justify-center text-zinc-400 hover:text-zinc-900 transition-all border border-zinc-100"
+                  >
+                    <ChevronLeft className="w-6 h-6" />
+                  </button>
+                </div>
+                <div className="absolute top-1/2 -translate-y-1/2 -right-4 opacity-0 group-hover/carousel:opacity-100 transition-opacity hidden lg:block">
+                  <button 
+                    onClick={() => scrollCarousel('right')}
+                    className="w-12 h-12 rounded-full bg-white shadow-xl flex items-center justify-center text-zinc-400 hover:text-zinc-900 transition-all border border-zinc-100"
+                  >
+                    <ChevronRight className="w-6 h-6" />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-8 py-6 border-t border-zinc-100 flex items-center justify-between bg-white">
+              <div className="text-sm text-zinc-500">
+                총 <span className="font-bold text-zinc-900">{filteredTemplates.length}</span>개의 템플릿이 있습니다.
+              </div>
+              <button 
+                onClick={() => setIsTemplateModalOpen(false)}
+                className="px-8 py-3 bg-zinc-900 text-white rounded-xl text-sm font-black hover:bg-zinc-800 transition-all"
+              >
+                닫기
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
 
       <SummarySection 
         product={product} 

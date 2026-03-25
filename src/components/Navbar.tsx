@@ -16,7 +16,8 @@ import {
   ShoppingBag
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { CATEGORIES, SubCategoryGroup, PRODUCTS } from '../types';
+import { CATEGORIES, SubCategoryGroup, PRODUCTS, Template } from '../types';
+import { TemplateCategoryModal } from './TemplateCategoryModal';
 
 interface NavbarProps {
   onNavigate: (view: 'home' | 'detail' | 'category' | 'guide' | 'inquiry' | 'custom_inquiry' | 'portfolio' | 'location' | 'faq') => void;
@@ -58,6 +59,8 @@ export const Navbar = ({
   const [selectedSubGroup, setSelectedSubGroup] = useState<string | null>(null);
   const [selectedSubSubGroup, setSelectedSubSubGroup] = useState<string | null>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
+  const [selectedTemplateCategory, setSelectedTemplateCategory] = useState('');
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -269,8 +272,30 @@ export const Navbar = ({
     setSelectedSubSubGroup(null);
   };
 
+  const handleSubCategoryClick = (sub: string) => {
+    if (sub.includes('디자인') || sub.includes('템플릿')) {
+      setSelectedTemplateCategory(sub);
+      setIsTemplateModalOpen(true);
+    } else {
+      onSubCategorySelect(sub);
+    }
+  };
+
+  const handleTemplateSelect = (template: Template) => {
+    setIsTemplateModalOpen(false);
+    onSubCategorySelect(selectedTemplateCategory);
+    // In a real app, we might pass the template ID to the next view
+    console.log('Selected template:', template.id);
+  };
+
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-sm' : 'bg-white/80 backdrop-blur-md'}`}>
+      <TemplateCategoryModal 
+        isOpen={isTemplateModalOpen}
+        onClose={() => setIsTemplateModalOpen(false)}
+        onSelect={handleTemplateSelect}
+        categoryName={selectedTemplateCategory}
+      />
       {/* Main Navbar */}
       <div className="border-b border-zinc-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 md:h-20">
@@ -512,9 +537,9 @@ export const Navbar = ({
                         setSelectedSubSubGroup(null);
                         onCategorySelect(displayCategoryId);
                         if (typeof sub === 'string') {
-                          onSubCategorySelect(sub);
+                          handleSubCategoryClick(sub);
                         } else {
-                          onSubCategorySelect(sub.groupName);
+                          handleSubCategoryClick(sub.groupName);
                         }
                       }}
                       className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap relative ${
@@ -578,9 +603,9 @@ export const Navbar = ({
                                 }
                                 onCategorySelect(displayCategoryId);
                                 if (typeof item === 'string') {
-                                  onSubCategorySelect(item);
+                                  handleSubCategoryClick(item);
                                 } else {
-                                  onSubCategorySelect(item.groupName);
+                                  handleSubCategoryClick(item.groupName);
                                 }
                               }}
                               className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
@@ -637,9 +662,9 @@ export const Navbar = ({
                               onClick={() => {
                                 onCategorySelect(displayCategoryId);
                                 if (typeof item === 'string') {
-                                  onSubCategorySelect(item);
+                                  handleSubCategoryClick(item);
                                 } else {
-                                  onSubCategorySelect(item.groupName);
+                                  handleSubCategoryClick(item.groupName);
                                 }
                               }}
                               className={`px-4 py-1.5 rounded-full text-[11px] font-bold transition-all whitespace-nowrap ${
@@ -825,7 +850,7 @@ export const Navbar = ({
                                     key={i}
                                     onClick={() => {
                                       onCategorySelect(cat.id);
-                                      onSubCategorySelect(sub);
+                                      handleSubCategoryClick(sub);
                                       setIsMenuOpen(false);
                                     }}
                                     className={`w-full text-left p-3 text-sm font-bold rounded-xl transition-all ${
@@ -851,7 +876,7 @@ export const Navbar = ({
                                             key={`${i}-${j}`}
                                             onClick={() => {
                                               onCategorySelect(cat.id);
-                                              onSubCategorySelect(itemName);
+                                              handleSubCategoryClick(itemName);
                                               setIsMenuOpen(false);
                                             }}
                                             className={`p-3 rounded-xl text-xs font-bold text-center transition-all ${

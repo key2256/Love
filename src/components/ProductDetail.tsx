@@ -471,6 +471,80 @@ const ReviewSection: React.FC<{ productId: string }> = ({ productId }) => {
   );
 };
 
+const SpecificationsSection: React.FC<{ product: Product }> = ({ product }) => {
+  const materials = product.options.find(opt => opt.name.includes('재질') || opt.name.includes('용지'));
+  const printing = product.options.find(opt => opt.name.includes('인쇄'));
+  const finishing = product.options.filter(opt => 
+    ['코팅', '귀돌이', '박', '형압', '엠보싱', '타공', '오시', '미싱', '도입'].some(f => opt.name.includes(f))
+  );
+
+  const specItems = [
+    {
+      label: '주요 특징',
+      value: product.features.slice(0, 3).join(', '),
+      icon: Zap
+    },
+    {
+      label: '기본 재질',
+      value: materials?.values?.map(v => v.label).slice(0, 2).join(', ') + (materials?.values && materials.values.length > 2 ? ' 외' : '') || '상품 상세 옵션에서 선택 가능',
+      icon: Layers
+    },
+    {
+      label: '인쇄/가공',
+      value: [
+        printing?.values?.[0]?.label,
+        ...finishing.slice(0, 2).map(f => f.name)
+      ].filter(Boolean).join(', ') || '고품질 인쇄 및 후가공',
+      icon: Sparkles
+    },
+    {
+      label: '제작 기간',
+      value: product.leadTime,
+      icon: Clock
+    }
+  ];
+
+  return (
+    <section className="py-32 border-t border-zinc-100">
+      <div className="mb-16">
+        <h2 className="text-4xl font-black mb-4 tracking-tight">상세 사양</h2>
+        <p className="text-zinc-500 font-medium text-lg">상품의 재질, 인쇄 방식 및 제작 관련 상세 정보입니다.</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+        {specItems.map((item, i) => (
+          <div key={i} className="p-8 rounded-[40px] bg-zinc-50 border border-zinc-100 hover:bg-white hover:shadow-xl transition-all group">
+            <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-zinc-400 group-hover:text-emerald-500 group-hover:bg-emerald-50 transition-all mb-6 shadow-sm">
+              <item.icon size={24} />
+            </div>
+            <h4 className="font-black text-zinc-400 text-[10px] uppercase tracking-widest mb-2">{item.label}</h4>
+            <p className="text-zinc-900 font-bold leading-relaxed">{item.value}</p>
+          </div>
+        ))}
+      </div>
+
+      {product.warnings && product.warnings.length > 0 && (
+        <div className="p-10 rounded-[48px] bg-rose-50 border border-rose-100">
+          <div className="flex items-center gap-4 mb-8">
+            <div className="w-12 h-12 rounded-2xl bg-rose-500 flex items-center justify-center text-white shadow-lg shadow-rose-500/20">
+              <AlertTriangle size={24} />
+            </div>
+            <h3 className="text-2xl font-black text-rose-900">주의사항 및 안내</h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
+            {product.warnings.map((warning, i) => (
+              <div key={i} className="flex items-start gap-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-rose-400 mt-2 flex-shrink-0" />
+                <p className="text-rose-800/80 text-sm font-medium leading-relaxed">{warning}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </section>
+  );
+};
+
 interface ProductDetailProps {
   product: Product;
   onBack: () => void;
@@ -1230,6 +1304,9 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
                 </div>
               </section>
             )}
+
+            {/* Specifications Section */}
+            <SpecificationsSection product={product} />
 
             {/* Review Section */}
             <ReviewSection productId={product.id} />
