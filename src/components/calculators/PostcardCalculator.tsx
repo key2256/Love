@@ -79,11 +79,11 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
     }
   }, [product.id]);
 
-  const renderOption = (option: any) => {
+  const renderOption = (option: any, skipTabs: boolean = false) => {
     if (option.name.includes('용지') && option.name !== '용지 그룹') {
       return (
         <div className="space-y-4">
-          {config && (product.id === 'stk-postcard-shape' ? config.groups.filter(g => g === '기본 대중형') : config.groups).length > 1 && (
+          {!skipTabs && config && (product.id === 'stk-postcard-shape' ? config.groups.filter(g => g === '기본 대중형') : config.groups).length > 1 && (
             <div className="flex flex-wrap gap-2 mb-2">
               {(product.id === 'stk-postcard-shape' ? config.groups.filter(g => g === '기본 대중형') : config.groups).map(group => (
                 <button
@@ -225,26 +225,54 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
         >
           {currentStep === 0 && (
             <div className="space-y-8">
-              {product.options.filter(opt => {
-                if (opt.name.includes('용지') && opt.name !== '용지 그룹') {
-                  if (product.id === 'stk-postcard-shape' && (opt.name === '상세 용지 (고급)' || opt.name === '상세 용지 (친환경)')) return false;
-                  return true;
+              {(() => {
+                const paperOptions = product.options.filter(opt => opt.name.includes('용지') && opt.name !== '용지 그룹');
+                if (paperOptions.length === 0) return null;
+
+                if (paperOptions.length === 1) {
+                  const option = paperOptions[0];
+                  return (
+                    <OptionGroup label={option.name} icon={Layers} tooltip={POSTCARD_TERM_TOOLTIPS[option.name]}>
+                      {renderOption(option, true)}
+                    </OptionGroup>
+                  );
                 }
-                return false;
-              }).map((option, index) => {
-                const content = renderOption(option);
-                if (!content) return null;
+
+                // Consolidated UI
                 return (
-                  <OptionGroup 
-                    key={option.name + index} 
-                    label={option.name} 
-                    icon={Layers}
-                    tooltip={POSTCARD_TERM_TOOLTIPS[option.name]}
-                  >
-                    {content}
+                  <OptionGroup label="상세용지" icon={Layers}>
+                    {config && config.groups.length > 1 && (
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        {config.groups.map(group => (
+                          <button
+                            key={group}
+                            onClick={() => setSelectedPostcardGroup(group)}
+                            className={`px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all ${
+                              selectedPostcardGroup === group
+                                ? 'bg-zinc-900 text-white shadow-lg'
+                                : 'bg-zinc-100 text-zinc-500 hover:bg-zinc-200'
+                            }`}
+                          >
+                            {group}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                    {(() => {
+                      const groupToOptionName: Record<string, string> = {
+                        '기본 대중형': '상세 용지 (기본)',
+                        '고급 감성형': '상세 용지 (고급)',
+                        '친환경/내추럴형': '상세 용지 (친환경)',
+                        '컬러/특수지형': '상세 용지 (특수)'
+                      };
+                      const optionName = groupToOptionName[selectedPostcardGroup];
+                      const optionToRender = product.options.find(o => o.name === optionName);
+                      
+                      return optionToRender ? renderOption(optionToRender, true) : null;
+                    })()}
                   </OptionGroup>
                 );
-              })}
+              })()}
 
               {product.options.filter(opt => opt.name === '모양').map((option, index) => {
                 const content = renderOption(option);
