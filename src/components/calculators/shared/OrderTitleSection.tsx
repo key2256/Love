@@ -10,7 +10,7 @@ export const OrderTitleSection: React.FC = () => {
       <input 
         type="text" 
         placeholder="제목을 입력해 주세요."
-        className="w-full px-6 py-4 rounded-2xl bg-zinc-50 border border-zinc-100 focus:border-emerald-500 outline-none font-bold text-sm transition-colors"
+        className="w-full px-6 py-4 rounded-2xl bg-white border border-zinc-200 focus:border-emerald-500 outline-none font-bold text-sm transition-all shadow-sm focus:shadow-md"
       />
     </div>
   );

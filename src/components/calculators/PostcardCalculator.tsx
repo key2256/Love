@@ -162,8 +162,8 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
                 onClick={() => handleOptionChange(option.name, val.label)}
                 className={`flex flex-col items-center gap-3 p-4 rounded-2xl border transition-all ${
                   isSelected
-                    ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg'
-                    : 'bg-white border-zinc-100 text-zinc-400 hover:border-emerald-200'
+                    ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/20'
+                    : 'bg-white border-zinc-200 text-zinc-400 hover:border-zinc-300'
                 }`}
               >
                 <div className={`${isSelected ? 'text-white' : 'text-zinc-300'}`}>
@@ -189,7 +189,7 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
               className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden flex flex-col gap-1 ${
                 isSelected
                   ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/20'
-                  : 'bg-white border-zinc-200 text-zinc-600 hover:border-emerald-200'
+                  : 'bg-white border-zinc-200 text-zinc-600 hover:border-zinc-300'
               }`}
             >
               <span className="relative z-10">{val.label}</span>
