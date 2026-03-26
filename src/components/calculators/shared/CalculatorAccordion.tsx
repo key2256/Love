@@ -29,32 +29,30 @@ export const CalculatorAccordion: React.FC<CalculatorAccordionProps> = ({
         return (
           <div 
             key={section.id} 
-            className={`border rounded-[32px] transition-all duration-300 ${
+            className={`border rounded-3xl transition-all duration-300 ${
               isExpanded 
-                ? 'border-emerald-500 bg-white shadow-lg shadow-emerald-500/5' 
-                : 'border-zinc-100 bg-zinc-50/30 hover:bg-zinc-50'
+                ? 'border-emerald-500 bg-white shadow-xl shadow-emerald-500/5' 
+                : 'border-zinc-100 bg-white hover:border-zinc-200'
             }`}
           >
             <button
               onClick={() => setExpandedId(isExpanded ? null : section.id)}
-              className="w-full px-8 py-6 flex items-center justify-between group"
+              className="w-full px-6 py-6 flex items-center justify-between group"
             >
               <div className="flex items-center gap-4">
                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${
-                  isExpanded ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-white text-zinc-400 border border-zinc-100 group-hover:border-zinc-200'
+                  isExpanded ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-zinc-50 text-zinc-400 border border-zinc-100 group-hover:border-zinc-200'
                 }`}>
                   <Icon className="w-6 h-6" />
                 </div>
                 <div className="text-left">
                   <h4 className={`text-lg font-black tracking-tight transition-colors ${
-                    isExpanded ? 'text-zinc-900' : 'text-zinc-500'
+                    isExpanded ? 'text-zinc-900' : 'text-zinc-900'
                   }`}>
                     {section.title}
                   </h4>
                   {section.description && (
-                    <p className={`text-xs font-medium mt-0.5 transition-colors ${
-                      isExpanded ? 'text-zinc-500' : 'text-zinc-400'
-                    }`}>
+                    <p className="text-xs font-medium text-zinc-500 mt-0.5">
                       {section.description}
                     </p>
                   )}
@@ -66,7 +64,7 @@ export const CalculatorAccordion: React.FC<CalculatorAccordionProps> = ({
                 </div>
               </div>
               <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
-                isExpanded ? 'bg-emerald-50 text-emerald-500 rotate-180' : 'bg-white text-zinc-300 border border-zinc-100'
+                isExpanded ? 'bg-emerald-50 text-emerald-500 rotate-180' : 'bg-zinc-50 text-zinc-400 border border-zinc-100'
               }`}>
                 <ChevronDown className="w-4 h-4" />
               </div>
@@ -80,8 +78,8 @@ export const CalculatorAccordion: React.FC<CalculatorAccordionProps> = ({
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.3, ease: 'easeInOut' }}
                 >
-                  <div className="px-8 pb-8 pt-2 border-t border-zinc-50">
-                    <div className="space-y-10">
+                  <div className="px-6 pb-6 pt-0">
+                    <div className="space-y-8 pt-6 border-t border-zinc-100">
                       {section.children}
                     </div>
                   </div>
