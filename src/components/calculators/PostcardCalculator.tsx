@@ -218,22 +218,27 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
       children: (
         <div className="space-y-8">
           {(() => {
-            let basicOptions: string[] = [];
-            if (product.id === 'stk-postcard-standard') {
-              basicOptions = ['규격', '인쇄도수', '용지'];
-            } else if (product.id === 'stk-postcard-special') {
-              basicOptions = ['규격', '인쇄도수', '용지'];
-            } else if (product.id === 'stk-postcard-shape') {
-              basicOptions = ['사이즈', '용지', '모양'];
-            } else if (product.id === 'stk-postcard-premium') {
-              basicOptions = ['규격', '용지', '인쇄도수'];
-            } else {
-              // Default fallback
-              basicOptions = ['용지', '모양'];
-            }
+            // Define categories of options to show in Step 0
+            const isSize = (name: string) => ['사이즈', '규격', 'SIZE'].some(k => name.includes(k)) && !name.includes('폴리백');
+            const isPrint = (name: string) => ['인쇄도수', '인쇄 도수', 'PRINT_COLOR', '인쇄 방식'].some(k => name.includes(k));
+            const isPaper = (name: string) => name.includes('용지') && name !== '용지 그룹';
+            const isShape = (name: string) => name === '모양';
 
             return product.options
-              .filter(opt => basicOptions.includes(opt.name))
+              .filter(opt => {
+                const name = opt.name;
+                if (product.id === 'stk-postcard-standard') {
+                  return isSize(name) || isPrint(name);
+                } else if (product.id === 'stk-postcard-special') {
+                  return isSize(name) || isPrint(name);
+                } else if (product.id === 'stk-postcard-shape') {
+                  return isSize(name) || isShape(name) || isPrint(name);
+                } else if (product.id === 'stk-postcard-premium') {
+                  return isSize(name) || isPrint(name);
+                }
+                // Default fallback
+                return isPaper(name) || isShape(name);
+              })
               .map((option) => (
                 <OptionGroup key={option.name} label={option.name} tooltip={POSTCARD_TERM_TOOLTIPS[option.name]}>
                   {renderOption(option)}
