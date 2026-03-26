@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Box, Layers, Settings2, ShoppingCart, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Box, Layers, Settings2, ShoppingCart, Check, Search, X, ChevronLeft, ChevronRight, Palette } from 'lucide-react';
 import { Product, BUSINESS_CARD_MATERIALS, DESIGN_CARD_TEMPLATES, Template } from '../../types';
 import { QuantitySection } from './shared/QuantitySection';
 import { SummarySection } from './shared/SummarySection';
@@ -11,19 +11,7 @@ import { NotesSection } from './shared/NotesSection';
 import { PostProcessingSection } from './shared/PostProcessingSection';
 import { OptionGroup } from './shared/OptionGroup';
 import { PRODUCT_CONFIG } from './shared/constants';
-import { ChevronLeft, ChevronRight, X, Check, Search } from 'lucide-react';
-import { Stepper, StepNavigation, TermTooltip } from '../UXComponents';
-
-const DESIGN_CARD_TERM_TOOLTIPS: Record<string, { description: string; imageUrl?: string }> = {
-  '디자인 템플릿': {
-    description: '전문 디자이너가 제작한 다양한 업종별 템플릿을 선택할 수 있습니다. 텍스트만 수정하여 간편하게 명함을 제작하세요.',
-    imageUrl: 'https://picsum.photos/seed/design-template/400/250'
-  },
-  '용지': {
-    description: '명함 제작에 사용되는 종이의 재질과 두께를 선택합니다. 대중적인 스노우지부터 고급 수입지까지 다양하게 준비되어 있습니다.',
-    imageUrl: 'https://picsum.photos/seed/business-card-paper/400/250'
-  }
-};
+import { CalculatorAccordion } from './shared/CalculatorAccordion';
 
 interface DesignCardCalculatorProps {
   product: Product;
@@ -54,7 +42,6 @@ export const DesignCardCalculator: React.FC<DesignCardCalculatorProps> = ({
   onAddToCart,
   onSaveDraft
 }) => {
-  const [currentStep, setCurrentStep] = useState(0);
   const [selectedBusinessCardGroup, setSelectedBusinessCardGroup] = useState<string>('기본 대중형');
   const [expandedPostOption, setExpandedPostOption] = useState<string | null>(null);
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
@@ -63,12 +50,6 @@ export const DesignCardCalculator: React.FC<DesignCardCalculatorProps> = ({
   const carouselRef = React.useRef<HTMLDivElement>(null);
   
   const config = PRODUCT_CONFIG[product.id];
-
-  const steps = [
-    { title: '디자인 및 용지', icon: Layers },
-    { title: '상세 옵션', icon: Settings2 },
-    { title: '주문 정보', icon: ShoppingCart }
-  ];
 
   const categories = ['전체', ...Array.from(new Set(DESIGN_CARD_TEMPLATES.map(t => t.category)))];
   const filteredTemplates = selectedCategory === '전체' 
@@ -115,6 +96,7 @@ export const DesignCardCalculator: React.FC<DesignCardCalculatorProps> = ({
   };
 
   const renderOption = (option: any) => {
+    // [Rule 3] Selection UI Type Grammar - Card Style for Paper
     if (option.name.includes('용지')) {
       return (
         <div className="space-y-6">
@@ -163,9 +145,10 @@ export const DesignCardCalculator: React.FC<DesignCardCalculatorProps> = ({
                   <p className={`text-[11px] leading-relaxed mb-3 ${isSelected ? 'text-emerald-700/70' : 'text-zinc-400'}`}>
                     {material?.features}
                   </p>
+                  {/* [Rule 4] State Expression Wording Grammar */}
                   {val.priceModifier !== undefined && val.priceModifier !== 0 && (
                     <div className={`text-[10px] font-bold ${isSelected ? 'text-emerald-600' : 'text-zinc-400'}`}>
-                      {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
+                      추가 비용: {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
                     </div>
                   )}
                 </button>
@@ -188,166 +171,151 @@ export const DesignCardCalculator: React.FC<DesignCardCalculatorProps> = ({
       );
     }
 
+    // [Rule 3] Selection UI Type Grammar - 2-Column Buttons
     return (
       <div className="grid grid-cols-2 gap-3">
-        {option.values?.map((val: any) => (
-          <button
-            key={val.label}
-            onClick={() => handleOptionChange(option.name, val.label)}
-            className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden ${
-              selectedOptions[option.name] === val.label
-                ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/20'
-                : 'bg-white border-zinc-200 text-zinc-600 hover:border-emerald-200'
-            }`}
-          >
-            <span className="relative z-10">{val.label}</span>
-            {val.priceModifier !== undefined && val.priceModifier !== 0 && (
-              <span className={`block text-[10px] mt-1 opacity-70 ${selectedOptions[option.name] === val.label ? 'text-white' : 'text-zinc-400'}`}>
-                {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
-              </span>
-            )}
-          </button>
-        ))}
+        {option.values?.map((val: any) => {
+          const isSelected = selectedOptions[option.name] === val.label;
+          return (
+            <button
+              key={val.label}
+              onClick={() => handleOptionChange(option.name, val.label)}
+              className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden ${
+                isSelected
+                  ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/20'
+                  : 'bg-white border-zinc-200 text-zinc-600 hover:border-emerald-200'
+              }`}
+            >
+              <span className="relative z-10">{val.label}</span>
+              {/* [Rule 4] State Expression Wording Grammar */}
+              {val.priceModifier !== undefined && val.priceModifier !== 0 && (
+                <span className={`block text-[10px] mt-1 opacity-70 ${isSelected ? 'text-white' : 'text-zinc-400'}`}>
+                  추가 비용: {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
     );
   };
 
+  // [Rule 1] Section Order Grammar
+  const sections = [
+    {
+      id: 'basic',
+      title: '기본 사양',
+      description: '디자인 템플릿과 명함의 기본 규격을 선택해주세요.',
+      icon: Box,
+      children: (
+        <div className="space-y-8">
+          <OptionGroup 
+            label="디자인 템플릿 선택" 
+            icon={Layers}
+          >
+            <div 
+              onClick={() => setIsTemplateModalOpen(true)}
+              className={`group relative p-6 rounded-2xl border-2 border-dashed transition-all cursor-pointer overflow-hidden ${
+                selectedTemplate 
+                  ? 'border-emerald-500 bg-emerald-50/30' 
+                  : 'border-zinc-200 hover:border-emerald-400 hover:bg-zinc-50'
+              }`}
+            >
+              {selectedTemplate ? (
+                <div className="flex items-center gap-6">
+                  <div className="w-32 h-20 rounded-lg overflow-hidden shadow-md">
+                    <img 
+                      src={selectedTemplate.image} 
+                      alt={selectedTemplate.name}
+                      className="w-full h-full object-cover"
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-600 uppercase tracking-wider">
+                        {selectedTemplate.category}
+                      </span>
+                      <span className="text-[10px] font-bold text-zinc-400">
+                        ID: {selectedTemplate.id}
+                      </span>
+                    </div>
+                    <h4 className="text-lg font-black text-zinc-900">{selectedTemplate.name}</h4>
+                    <p className="text-xs text-emerald-600 font-bold mt-1">템플릿이 선택되었습니다. 클릭하여 변경하세요.</p>
+                  </div>
+                  <div className="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
+                    <Check className="w-6 h-6" />
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-4 text-center">
+                  <div className="w-14 h-14 rounded-full bg-zinc-100 flex items-center justify-center mb-4 group-hover:bg-emerald-100 group-hover:text-emerald-600 transition-colors">
+                    <Search className="w-7 h-7 text-zinc-400 group-hover:text-emerald-500" />
+                  </div>
+                  <h4 className="text-base font-black text-zinc-900 mb-1">템플릿 찾아보기</h4>
+                  <p className="text-sm text-zinc-500">업종별 다양한 디자인 템플릿이 준비되어 있습니다.</p>
+                </div>
+              )}
+            </div>
+          </OptionGroup>
+
+          {product.options.filter(opt => !opt.name.includes('용지') && opt.name !== '선택된 템플릿' && !opt.name.includes('코팅') && !['귀돌이', '타공', '명함케이스', '오시', '미싱', '접지'].some(n => opt.name.includes(n))).map((option) => (
+            <OptionGroup key={option.name} label={option.name}>
+              {renderOption(option)}
+            </OptionGroup>
+          ))}
+        </div>
+      )
+    },
+    {
+      id: 'material',
+      title: '재질 및 옵션',
+      description: '명함의 재질과 인쇄 옵션을 설정합니다.',
+      icon: Palette,
+      children: (
+        <div className="space-y-8">
+          {product.options.filter(opt => opt.name.includes('용지')).map((option) => (
+            <OptionGroup key={option.name} label={option.name}>
+              {renderOption(option)}
+            </OptionGroup>
+          ))}
+        </div>
+      )
+    },
+    {
+      id: 'postprocess',
+      title: '후가공',
+      description: '코팅, 귀돌이 등 명함의 완성도를 높이는 옵션입니다.',
+      icon: Settings2,
+      children: (
+        <PostProcessingSection 
+          product={product} 
+          selectedOptions={selectedOptions} 
+          handleOptionChange={handleOptionChange} 
+          pattern="DESIGN_CARD"
+          expandedPostOption={expandedPostOption}
+          setExpandedPostOption={setExpandedPostOption}
+        />
+      )
+    },
+    {
+      id: 'order',
+      title: '주문 정보',
+      description: '제작 수량과 주문 제목을 입력해주세요.',
+      icon: ShoppingCart,
+      children: (
+        <div className="space-y-8">
+          <QuantitySection product={product} quantity={quantity} setQuantity={setQuantity} />
+          <OrderTitleSection />
+          <FileUploadSection />
+        </div>
+      )
+    }
+  ];
+
   return (
     <div className="space-y-8">
-      <Stepper steps={steps} currentStep={currentStep} onStepClick={setCurrentStep} />
-
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentStep}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.3 }}
-        >
-          {currentStep === 0 && (
-            <div className="space-y-8">
-              <OptionGroup 
-                label="디자인 템플릿 선택" 
-                icon={Layers}
-                tooltip={DESIGN_CARD_TERM_TOOLTIPS['디자인 템플릿']}
-              >
-                <div 
-                  onClick={() => setIsTemplateModalOpen(true)}
-                  className={`group relative p-6 rounded-2xl border-2 border-dashed transition-all cursor-pointer overflow-hidden ${
-                    selectedTemplate 
-                      ? 'border-emerald-500 bg-emerald-50/30' 
-                      : 'border-zinc-200 hover:border-emerald-400 hover:bg-zinc-50'
-                  }`}
-                >
-                  {selectedTemplate ? (
-                    <div className="flex items-center gap-6">
-                      <div className="w-32 h-20 rounded-lg overflow-hidden shadow-md">
-                        <img 
-                          src={selectedTemplate.image} 
-                          alt={selectedTemplate.name}
-                          className="w-full h-full object-cover"
-                          referrerPolicy="no-referrer"
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-600 uppercase tracking-wider">
-                            {selectedTemplate.category}
-                          </span>
-                          <span className="text-[10px] font-bold text-zinc-400">
-                            ID: {selectedTemplate.id}
-                          </span>
-                        </div>
-                        <h4 className="text-lg font-black text-zinc-900">{selectedTemplate.name}</h4>
-                        <p className="text-xs text-emerald-600 font-bold mt-1">템플릿이 선택되었습니다. 클릭하여 변경하세요.</p>
-                      </div>
-                      <div className="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
-                        <Check className="w-6 h-6" />
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center justify-center py-4 text-center">
-                      <div className="w-14 h-14 rounded-full bg-zinc-100 flex items-center justify-center mb-4 group-hover:bg-emerald-100 group-hover:text-emerald-600 transition-colors">
-                        <Search className="w-7 h-7 text-zinc-400 group-hover:text-emerald-500" />
-                      </div>
-                      <h4 className="text-base font-black text-zinc-900 mb-1">템플릿 찾아보기</h4>
-                      <p className="text-sm text-zinc-500">업종별 다양한 디자인 템플릿이 준비되어 있습니다.</p>
-                    </div>
-                  )}
-                </div>
-              </OptionGroup>
-
-              {product.options.filter(opt => opt.name.includes('용지')).map((option) => (
-                <OptionGroup 
-                  key={option.name} 
-                  label={option.name} 
-                  icon={Layers}
-                  tooltip={DESIGN_CARD_TERM_TOOLTIPS['용지']}
-                >
-                  {renderOption(option)}
-                </OptionGroup>
-              ))}
-              <StepNavigation 
-                onNext={() => setCurrentStep(1)} 
-                nextLabel="상세 옵션 선택하기"
-              />
-            </div>
-          )}
-
-          {currentStep === 1 && (
-            <div className="space-y-8">
-              {product.options.filter(opt => {
-                const normalizedName = opt.name.replace(/\s/g, '');
-                if (opt.name.includes('용지') || opt.name === '선택된 템플릿') return false;
-                
-                const handledByIconGrid = [
-                  '코팅', '코팅종류', '코팅면수', '귀돌이', '귀돌이사용', '귀돌이크기', '귀돌이면수', '귀돌이방향', 
-                  '타공', '타공사용', '구멍크기', '타공크기', '타공설명', '명함케이스',
-                  '오시', '오시줄수', '오시설명', '미싱', '미싱줄수', '미싱설명', '접지', '접지방향', '접지형태', 
-                  '폴리백개별포장', '폴리백사이즈', '제작수량', '수량', '주문수량'
-                ].includes(normalizedName);
-                if (handledByIconGrid) return false;
-
-                if (opt.visibleIf) {
-                  const parentVal = selectedOptions[opt.visibleIf.optionName];
-                  if (parentVal !== opt.visibleIf.value) return false;
-                }
-
-                return true;
-              }).map((option) => (
-                <OptionGroup key={option.name} label={option.name}>
-                  {renderOption(option)}
-                </OptionGroup>
-              ))}
-
-              <PostProcessingSection 
-                product={product} 
-                selectedOptions={selectedOptions} 
-                handleOptionChange={handleOptionChange} 
-                pattern="DESIGN_CARD"
-                expandedPostOption={expandedPostOption}
-                setExpandedPostOption={setExpandedPostOption}
-              />
-              <StepNavigation 
-                onPrev={() => setCurrentStep(0)} 
-                onNext={() => setCurrentStep(2)} 
-                nextLabel="주문 정보 입력하기"
-              />
-            </div>
-          )}
-
-          {currentStep === 2 && (
-            <div className="space-y-8">
-              <QuantitySection product={product} quantity={quantity} setQuantity={setQuantity} />
-              <OrderTitleSection />
-              <FileUploadSection />
-              <StepNavigation 
-                onPrev={() => setCurrentStep(1)} 
-              />
-            </div>
-          )}
-        </motion.div>
-      </AnimatePresence>
+      <CalculatorAccordion sections={sections} />
 
       {/* Template Selection Modal */}
       {isTemplateModalOpen && (

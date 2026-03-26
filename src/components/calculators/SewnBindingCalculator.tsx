@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Layers, Settings2, ShoppingCart } from 'lucide-react';
+import { Layers, Settings2, ShoppingCart, FileText, Scissors, CheckCircle2, BookOpen } from 'lucide-react';
 import { Product } from '../../types';
 import { getIconForOption } from '../../lib/optionIcons';
 import { QuantitySection } from './shared/QuantitySection';
@@ -44,30 +44,65 @@ export const SewnBindingCalculator: React.FC<SewnBindingCalculatorProps> = ({
 }) => {
   const getOption = (name: string) => product.options.find(o => o.name === name);
   
-  const renderOption = (optionName: string, cols: number = 2) => {
+  const renderOption = (optionName: string, type: 'card' | 'button' | 'swatch' = 'button') => {
     const option = getOption(optionName);
     if (!option) return null;
 
+    if (type === 'card') {
+      return (
+        <OptionGroup key={option.name} label={option.name}>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {option.values?.map((val) => {
+              const Icon = getIconForOption(option.name, val.label);
+              const isSelected = selectedOptions[option.name] === val.label;
+              return (
+                <button
+                  key={val.label}
+                  onClick={() => handleOptionChange(option.name, val.label)}
+                  className={`flex flex-col items-center gap-3 p-4 rounded-2xl border transition-all ${
+                    isSelected
+                      ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg'
+                      : 'bg-white border-zinc-100 text-zinc-400 hover:border-emerald-200'
+                  }`}
+                >
+                  <div className={`${isSelected ? 'text-white' : 'text-zinc-300'}`}>
+                    {Icon ? <Icon className="w-6 h-6" /> : <BookOpen className="w-6 h-6" />}
+                  </div>
+                  <span className="text-[11px] font-black uppercase tracking-tight">{val.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </OptionGroup>
+      );
+    }
+
     return (
-      <OptionGroup key={option.name} label={optionName}>
-        <div className={`grid grid-cols-2 md:grid-cols-${cols} gap-3`}>
+      <OptionGroup key={option.name} label={option.name}>
+        <div className="grid grid-cols-2 gap-3">
           {option.values?.map((val) => {
-            const Icon = getIconForOption(option.name, val.label);
+            const isSelected = selectedOptions[option.name] === val.label;
             return (
               <button
                 key={val.label}
                 onClick={() => handleOptionChange(option.name, val.label)}
-                className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden flex flex-col items-center justify-center gap-2 ${
-                  selectedOptions[option.name] === val.label
+                className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden flex flex-col gap-1 ${
+                  isSelected
                     ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/20'
                     : 'bg-white border-zinc-200 text-zinc-600 hover:border-emerald-200'
                 }`}
               >
-                {Icon && <Icon className="w-6 h-6" />}
-                <span className="relative z-10">{val.label}</span>
-                {val.priceModifier !== undefined && val.priceModifier !== 0 && (
-                  <span className={`block text-[10px] mt-1 opacity-70 ${selectedOptions[option.name] === val.label ? 'text-white' : 'text-zinc-400'}`}>
-                    {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
+                <div className="flex justify-between items-center">
+                  <span className="relative z-10">{val.label}</span>
+                  {isSelected && <CheckCircle2 className="w-3 h-3 text-white/70" />}
+                </div>
+                {val.priceModifier !== undefined && val.priceModifier !== 0 ? (
+                  <span className={`block text-[10px] opacity-70 ${isSelected ? 'text-white' : 'text-zinc-400'}`}>
+                    추가 비용: {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
+                  </span>
+                ) : (
+                  <span className={`block text-[10px] opacity-70 ${isSelected ? 'text-white' : 'text-zinc-400'}`}>
+                    기본 포함
                   </span>
                 )}
               </button>
@@ -81,40 +116,48 @@ export const SewnBindingCalculator: React.FC<SewnBindingCalculatorProps> = ({
   const sections = [
     {
       id: 'basic',
-      title: '기본 사양 및 용지',
-      icon: Box,
+      title: '기본 사양',
+      description: '책의 규격과 제본 방향, 페이지 수를 선택하세요.',
+      icon: FileText,
       children: (
         <div className="space-y-8">
           <InfoCard 
-            title="작업 규격 안내"
-            content={[
-              "A4 (210x297mm) 고정",
-              "별도 크기 선택 없음"
-            ]}
+            content="본 상품은 A4 (210x297mm) 규격 전용 상품입니다."
           />
-          {renderOption('표지 용지', 3)}
-          {renderOption('내지 용지', 3)}
-          {renderOption('페이지 수', 2)}
+          {renderOption('제본 방향', 'card')}
+          {renderOption('페이지 수', 'button')}
         </div>
       )
     },
     {
-      id: 'options',
-      title: '인쇄 및 제본 옵션',
-      icon: Settings2,
+      id: 'material',
+      title: '재질 및 옵션',
+      description: '표지와 내지의 용지 및 인쇄 방식을 선택하세요.',
+      icon: Layers,
       children: (
         <div className="space-y-8">
-          {renderOption('인쇄 색상', 2)}
-          {renderOption('표지 인쇄', 2)}
-          {renderOption('내지 인쇄', 2)}
-          {renderOption('제본 방향', 2)}
-          {renderOption('표지 코팅', 3)}
+          {renderOption('표지 용지', 'button')}
+          {renderOption('내지 용지', 'button')}
+          {renderOption('인쇄 색상', 'button')}
+          {renderOption('표지 인쇄', 'button')}
+          {renderOption('내지 인쇄', 'button')}
+        </div>
+      )
+    },
+    {
+      id: 'post',
+      title: '후가공',
+      description: '표지 코팅 등 완성도를 높이는 옵션을 선택하세요.',
+      icon: Scissors,
+      children: (
+        <div className="space-y-8">
+          {renderOption('표지 코팅', 'button')}
           <InfoCard 
             title="실제본 안내"
             content={[
-              "실제본: 실로 묶는 방식",
-              "감성 자료집 / 보관용 책자 / 정성스러운 제작물에 적합",
-              "일반 제본보다 제작 공정이 섬세한 편입니다"
+              "실로 묶는 전통적인 방식의 제본입니다.",
+              "감성적인 자료집, 보관용 책자, 정성스러운 제작물에 가장 적합합니다.",
+              "일반 제본보다 제작 공정이 섬세하며 완성도가 높습니다."
             ]}
           />
         </div>
@@ -122,7 +165,8 @@ export const SewnBindingCalculator: React.FC<SewnBindingCalculatorProps> = ({
     },
     {
       id: 'order',
-      title: '수량 및 주문 정보',
+      title: '주문 정보',
+      description: '수량 확인 및 제작에 필요한 정보를 입력하세요.',
       icon: ShoppingCart,
       children: (
         <div className="space-y-8">

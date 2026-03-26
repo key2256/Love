@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { Box, Layers, Settings2, ShoppingCart, ChevronDown, ChevronUp, Info, Sparkles, ArrowRight, ArrowLeft } from 'lucide-react';
+import { motion } from 'motion/react';
+import { Box, Layers, Settings2, ShoppingCart, ChevronDown, ChevronUp, Info, Palette } from 'lucide-react';
 import { Product, PAPER_MATERIALS } from '../../types';
 import { QuantitySection } from './shared/QuantitySection';
 import { SummarySection } from './shared/SummarySection';
@@ -12,18 +12,7 @@ import { PostProcessingSection } from './shared/PostProcessingSection';
 import { OptionGroup } from './shared/OptionGroup';
 import { SHAPE_ICONS, PRODUCT_CONFIG } from './shared/constants';
 import { StickerPreview } from './shared/StickerPreview';
-import { Stepper, StepNavigation, TermTooltip } from '../UXComponents';
-
-const STICKER_TERM_TOOLTIPS: Record<string, { description: string; imageUrl?: string }> = {
-  '모양': {
-    description: '스티커의 전체적인 형태를 선택합니다. 사각형, 원형 이외에도 원하는 모양대로 제작이 가능합니다.',
-    imageUrl: 'https://picsum.photos/seed/sticker-shape/400/250'
-  },
-  '재질': {
-    description: '스티커가 인쇄될 종이의 종류입니다. 사용 용도에 따라 일반지, 방수지, 투명지 등을 선택할 수 있습니다.',
-    imageUrl: 'https://picsum.photos/seed/sticker-material/400/250'
-  }
-};
+import { CalculatorAccordion } from './shared/CalculatorAccordion';
 
 interface StickerCalculatorProps {
   product: Product;
@@ -54,18 +43,11 @@ export const StickerCalculator: React.FC<StickerCalculatorProps> = ({
   onAddToCart,
   onSaveDraft
 }) => {
-  const [currentStep, setCurrentStep] = useState(0);
   const [expandedGroup, setExpandedGroup] = useState<string | null>('일반/기본 용지');
   const [expandedPostOption, setExpandedPostOption] = useState<string | null>(null);
   const config = PRODUCT_CONFIG[product.id];
   const materialOption = product.options.find(opt => opt.name.includes('재질') || opt.name.includes('용지'));
   const materialOptionName = materialOption?.name;
-
-  const steps = [
-    { title: '용지 및 모양', icon: Box },
-    { title: '상세 옵션', icon: Settings2 },
-    { title: '주문 정보', icon: ShoppingCart }
-  ];
 
   useEffect(() => {
     if (config) {
@@ -81,6 +63,7 @@ export const StickerCalculator: React.FC<StickerCalculatorProps> = ({
   }, [product.id]);
 
   const renderOption = (option: any) => {
+    // [Rule 3] Selection UI Type Grammar - Accordion + Card Style for Material
     if (option.name.includes('재질') || option.name.includes('용지')) {
       return (
         <div className="space-y-3">
@@ -148,6 +131,7 @@ export const StickerCalculator: React.FC<StickerCalculatorProps> = ({
       );
     }
 
+    // [Rule 3] Selection UI Type Grammar - Icon Card Style for Shape
     if (option.name === '모양') {
       return (
         <div className="grid grid-cols-4 gap-3">
@@ -187,122 +171,113 @@ export const StickerCalculator: React.FC<StickerCalculatorProps> = ({
       );
     }
 
+    // [Rule 3] Selection UI Type Grammar - 2-Column Buttons
     return (
       <div className="grid grid-cols-2 gap-3">
-        {option.values?.map((val: any) => (
-          <button
-            key={val.label}
-            onClick={() => handleOptionChange(option.name, val.label)}
-            className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden ${
-              selectedOptions[option.name] === val.label
-                ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/20'
-                : 'bg-white border-zinc-200 text-zinc-600 hover:border-emerald-200'
-            }`}
-          >
-            <span className="relative z-10">{val.label}</span>
-            {val.priceModifier !== undefined && val.priceModifier !== 0 && (
-              <span className={`block text-[10px] mt-1 opacity-70 ${selectedOptions[option.name] === val.label ? 'text-white' : 'text-zinc-400'}`}>
-                {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
-              </span>
-            )}
-          </button>
-        ))}
+        {option.values?.map((val: any) => {
+          const isSelected = selectedOptions[option.name] === val.label;
+          return (
+            <button
+              key={val.label}
+              onClick={() => handleOptionChange(option.name, val.label)}
+              className={`py-4 px-5 rounded-2xl text-sm font-bold border transition-all text-left relative overflow-hidden ${
+                isSelected
+                  ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/20'
+                  : 'bg-white border-zinc-200 text-zinc-600 hover:border-emerald-200'
+              }`}
+            >
+              <span className="relative z-10">{val.label}</span>
+              {/* [Rule 4] State Expression Wording Grammar */}
+              {val.priceModifier !== undefined && val.priceModifier !== 0 && (
+                <span className={`block text-[10px] mt-1 opacity-70 ${isSelected ? 'text-white' : 'text-zinc-400'}`}>
+                  추가 비용: {val.priceModifier > 0 ? `+${val.priceModifier.toLocaleString()}원` : `${val.priceModifier.toLocaleString()}원`}
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
     );
   };
 
+  // [Rule 1] Section Order Grammar
+  const sections = [
+    {
+      id: 'basic',
+      title: '기본 사양',
+      description: '스티커의 모양과 규격을 선택해주세요.',
+      icon: Box,
+      children: (
+        <div className="space-y-8">
+          <StickerPreview selectedOptions={selectedOptions} />
+          {product.options.filter(opt => opt.name === '모양' || (!opt.name.includes('재질') && !opt.name.includes('용지') && !['코팅', '귀돌이', '타공', '오시', '미싱', '접지'].some(n => opt.name.includes(n)) && !opt.visibleIf)).map((option) => (
+            <OptionGroup key={option.name} label={option.name}>
+              {renderOption(option)}
+            </OptionGroup>
+          ))}
+        </div>
+      )
+    },
+    {
+      id: 'material',
+      title: '재질 및 옵션',
+      description: '스티커가 제작될 용지 재질을 선택합니다.',
+      icon: Palette,
+      children: (
+        <div className="space-y-8">
+          {product.options.filter(opt => opt.name.includes('재질') || opt.name.includes('용지')).map((option) => (
+            <OptionGroup key={option.name} label={option.name} icon={Layers}>
+              {renderOption(option)}
+            </OptionGroup>
+          ))}
+          {/* Dependent options */}
+          {product.options.filter(opt => opt.visibleIf).map((option) => {
+            const parentVal = selectedOptions[option.visibleIf!.optionName];
+            if (parentVal !== option.visibleIf!.value) return null;
+            return (
+              <OptionGroup key={option.name} label={option.name}>
+                {renderOption(option)}
+              </OptionGroup>
+            );
+          })}
+        </div>
+      )
+    },
+    {
+      id: 'postprocess',
+      title: '후가공',
+      description: '코팅 등 스티커의 완성도를 높이는 옵션입니다.',
+      icon: Settings2,
+      children: (
+        <PostProcessingSection 
+          product={product} 
+          selectedOptions={selectedOptions} 
+          handleOptionChange={handleOptionChange} 
+          pattern="STICKER"
+          expandedPostOption={expandedPostOption}
+          setExpandedPostOption={setExpandedPostOption}
+          materialOptionName={materialOptionName}
+        />
+      )
+    },
+    {
+      id: 'order',
+      title: '주문 정보',
+      description: '제작 수량과 주문 제목을 입력해주세요.',
+      icon: ShoppingCart,
+      children: (
+        <div className="space-y-8">
+          <QuantitySection product={product} quantity={quantity} setQuantity={setQuantity} />
+          <OrderTitleSection />
+          <FileUploadSection />
+        </div>
+      )
+    }
+  ];
+
   return (
     <div className="space-y-8">
-      <Stepper steps={steps} currentStep={currentStep} onStepClick={setCurrentStep} />
-
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentStep}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.3 }}
-        >
-          {currentStep === 0 && (
-            <div className="space-y-8">
-              <StickerPreview selectedOptions={selectedOptions} />
-              {product.options.filter(opt => opt.name.includes('재질') || opt.name.includes('용지') || opt.name === '모양').map((option) => (
-                <OptionGroup 
-                  key={option.name} 
-                  label={option.name} 
-                  icon={option.name === '모양' ? undefined : Layers}
-                  tooltip={STICKER_TERM_TOOLTIPS[option.name]}
-                >
-                  {renderOption(option)}
-                </OptionGroup>
-              ))}
-              <StepNavigation 
-                onNext={() => setCurrentStep(1)} 
-                nextLabel="상세 옵션 선택하기"
-              />
-            </div>
-          )}
-
-          {currentStep === 1 && (
-            <div className="space-y-8">
-              {product.options.filter(opt => {
-                const normalizedName = opt.name.replace(/\s/g, '');
-                if (opt.name.includes('재질') || opt.name.includes('용지') || opt.name === '모양') return false;
-                
-                if (['접지방향', '접지형태'].includes(normalizedName)) {
-                  return selectedOptions['접지'] === '있음';
-                }
-
-                const handledByIconGrid = [
-                  '코팅', '코팅종류', '코팅면수', '귀돌이', '귀돌이사용', '귀돌이크기', '귀돌이면수', '귀돌이방향', 
-                  '타공', '타공사용', '구멍크기', '타공크기', '타공설명', '명함케이스',
-                  '오시', '오시줄수', '오시설명', '미싱', '미싱줄수', '미싱설명', '접지', 
-                  '폴리백개별포장', '폴리백사이즈', '제작수량', '수량', '주문수량'
-                ].includes(normalizedName);
-                if (handledByIconGrid) return false;
-
-                if (opt.visibleIf) {
-                  const parentVal = selectedOptions[opt.visibleIf.optionName];
-                  if (parentVal !== opt.visibleIf.value) return false;
-                }
-
-                return true;
-              }).map((option) => (
-                <OptionGroup key={option.name} label={option.name} tooltip={STICKER_TERM_TOOLTIPS[option.name]}>
-                  {renderOption(option)}
-                </OptionGroup>
-              ))}
-
-              <PostProcessingSection 
-                product={product} 
-                selectedOptions={selectedOptions} 
-                handleOptionChange={handleOptionChange} 
-                pattern="STICKER"
-                expandedPostOption={expandedPostOption}
-                setExpandedPostOption={setExpandedPostOption}
-                materialOptionName={materialOptionName}
-              />
-
-              <StepNavigation 
-                onPrev={() => setCurrentStep(0)} 
-                onNext={() => setCurrentStep(2)} 
-                nextLabel="주문 정보 입력하기"
-              />
-            </div>
-          )}
-
-          {currentStep === 2 && (
-            <div className="space-y-8">
-              <QuantitySection product={product} quantity={quantity} setQuantity={setQuantity} />
-              <OrderTitleSection />
-              <FileUploadSection />
-              <StepNavigation 
-                onPrev={() => setCurrentStep(1)} 
-              />
-            </div>
-          )}
-        </motion.div>
-      </AnimatePresence>
+      <CalculatorAccordion sections={sections} />
 
       <SummarySection 
         product={product} 
@@ -321,3 +296,4 @@ export const StickerCalculator: React.FC<StickerCalculatorProps> = ({
     </div>
   );
 };
+

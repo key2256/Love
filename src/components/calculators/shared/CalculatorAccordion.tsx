@@ -6,6 +6,7 @@ interface CalculatorAccordionProps {
   sections: {
     id: string;
     title: string;
+    description?: string;
     icon: LucideIcon;
     children: React.ReactNode;
     badge?: string;
@@ -50,8 +51,15 @@ export const CalculatorAccordion: React.FC<CalculatorAccordionProps> = ({
                   }`}>
                     {section.title}
                   </h4>
+                  {section.description && (
+                    <p className={`text-xs font-medium mt-0.5 transition-colors ${
+                      isExpanded ? 'text-zinc-500' : 'text-zinc-400'
+                    }`}>
+                      {section.description}
+                    </p>
+                  )}
                   {section.badge && (
-                    <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">
+                    <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mt-1 block">
                       {section.badge}
                     </span>
                   )}

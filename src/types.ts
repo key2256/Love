@@ -1733,15 +1733,18 @@ export const CATEGORIES: Category[] = [
     subCategories: [
       {
         groupName: '떡메모지',
-        items: ['일반 떡메모지']
+        items: ['일반 떡메모지'],
+        isLocked: true
       },
       {
         groupName: '노트',
-        items: ['스프링 노트', '레더 노트', '중철 노트']
+        items: ['스프링 노트', '레더 노트', '중철 노트'],
+        isLocked: true
       },
       {
         groupName: '드로잉북',
-        items: ['전문가용 드로잉북', '학생용 드로잉북', '세로형 종합장']
+        items: ['전문가용 드로잉북', '학생용 드로잉북', '세로형 종합장'],
+        isLocked: true
       }
     ]
   },
