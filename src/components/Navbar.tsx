@@ -7,6 +7,7 @@ import {
   X,
   ChevronDown,
   ChevronRight,
+  Lock,
   FileText,
   MessageSquare,
   Briefcase,
@@ -554,13 +555,16 @@ export const Navbar = ({
                           onSubCategorySelect(sub.groupName);
                         }
                       }}
-                      className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap relative ${
+                      className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap relative flex items-center gap-1.5 ${
                         isActive
                           ? 'bg-emerald-600 text-white shadow-md shadow-emerald-100'
                           : 'text-zinc-500 hover:bg-zinc-100'
                       }`}
                     >
                       {groupName}
+                      {typeof sub !== 'string' && sub.isLocked && (
+                        <Lock size={10} className={isActive ? 'text-white' : 'text-emerald-500'} />
+                      )}
                       {isActuallyActive && !isActive && (
                         <span className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-500 rounded-full border-2 border-white" />
                       )}
@@ -910,6 +914,7 @@ export const Navbar = ({
                                     <div key={i} className="py-4 space-y-3">
                                       <div className="px-4 text-xs font-black text-zinc-400 uppercase tracking-wider flex items-center gap-2">
                                         {sub.groupName}
+                                        {sub.isLocked && <Lock size={10} className="text-emerald-500" />}
                                         <div className="h-[1px] flex-1 bg-zinc-200/50" />
                                       </div>
                                       <div className="grid grid-cols-2 gap-2">

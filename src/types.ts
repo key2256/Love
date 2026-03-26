@@ -71,6 +71,7 @@ export interface Order {
 export interface SubCategoryGroup {
   groupName: string;
   items: (string | SubCategoryGroup)[];
+  isLocked?: boolean;
 }
 
 export interface Review {
@@ -1709,11 +1710,13 @@ export const CATEGORIES: Category[] = [
     subCategories: [
       {
         groupName: '명함',
-        items: ['일반 명함', '고급지 명함', '접지 명함', '디자인 템플릿 명함']
+        items: ['일반 명함', '고급지 명함', '접지 명함', '디자인 템플릿 명함'],
+        isLocked: true
       },
       {
         groupName: '엽서',
-        items: ['일반 엽서', '특가 엽서', '모양 엽서', '고급지 엽서', '후가공 엽서']
+        items: ['일반 엽서', '특가 엽서', '모양 엽서', '고급지 엽서', '후가공 엽서'],
+        isLocked: true
       },
       {
         groupName: '포토카드',
@@ -1730,7 +1733,7 @@ export const CATEGORIES: Category[] = [
     subCategories: [
       {
         groupName: '떡메모지',
-        items: ['일반 떡메모지', '디자인 떡메모지']
+        items: ['일반 떡메모지']
       },
       {
         groupName: '노트',
