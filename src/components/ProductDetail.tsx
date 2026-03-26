@@ -893,7 +893,10 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
 
               {/* Right: Quotation Calculator */}
               <div className="flex flex-col sticky top-24">
-                <ProductIntroSection product={product} />
+                <ProductIntroSection 
+                  product={product} 
+                  isLocked={product.id === 'memo-standard' || product.category === 'sticker'} 
+                />
 
                 <div className="flex gap-1 p-1.5 bg-zinc-100 rounded-[20px] my-10 w-fit">
                   <button 

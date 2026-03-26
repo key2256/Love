@@ -1737,7 +1737,7 @@ export const CATEGORIES: Category[] = [
       },
       {
         groupName: '노트',
-        items: ['스프링 노트', '레더 노트', '중철 노트', '하드커버 노트']
+        items: ['스프링 노트', '레더 노트', '중철 노트']
       },
       {
         groupName: '드로잉북',

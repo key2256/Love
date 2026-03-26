@@ -138,12 +138,25 @@ export const NoteCalculator: React.FC<NoteCalculatorProps> = ({
       );
     }
 
-    if (option.name === '내지 색상') {
+    if (option.name === '내지 색상' || option.name === '스프링 색상' || option.name === '커버 스타일') {
       return (
         <div className="grid grid-cols-2 gap-3">
           {option.values?.map((val: any) => {
             const isSelected = selectedOptions[option.name] === val.label;
-            const colorHex = val.label === '백색' ? '#FFFFFF' : '#F5F5DC';
+            let colorHex = '#FFFFFF';
+            if (option.name === '내지 색상') {
+              colorHex = val.label === '백색' ? '#FFFFFF' : '#F5F5DC';
+            } else if (option.name === '스프링 색상') {
+              if (val.label === '실버') colorHex = '#C0C0C0';
+              if (val.label === '블랙') colorHex = '#000000';
+              if (val.label === '화이트') colorHex = '#FFFFFF';
+            } else if (option.name === '커버 스타일') {
+              if (val.label.includes('블랙')) colorHex = '#1A1A1A';
+              if (val.label.includes('브라운')) colorHex = '#5D4037';
+              if (val.label.includes('네이비')) colorHex = '#1A237E';
+              if (val.label.includes('그린')) colorHex = '#1B5E20';
+            }
+
             return (
               <button
                 key={val.label}

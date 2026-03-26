@@ -85,7 +85,16 @@ export const MemoPadCalculator: React.FC<MemoPadCalculatorProps> = ({
     };
   };
 
+  const handleSizeChange = (val: string) => {
+    handleOptionChange('사이즈', val);
+    // Auto-set natural orientation
+    if (val === '90 x 60 mm') setOrientation('landscape');
+    else if (val === '40 x 90 mm') setOrientation('portrait');
+  };
+
   const dims = getPreviewDimensions();
+  const isSquare = selectedOptions['사이즈'] === '90 x 90 mm' || 
+                  (selectedOptions['사이즈'] === '직접입력' && customSize.width === customSize.height && customSize.width !== '');
 
   const sections = [
     {
@@ -128,21 +137,21 @@ export const MemoPadCalculator: React.FC<MemoPadCalculatorProps> = ({
           )}
 
           {product.options.find(o => o.name === '사이즈') && (
-            <OptionGroup label="사이즈">
+            <OptionGroup label="사이즈 선택">
               <div className="space-y-6">
                 <div className="grid grid-cols-2 gap-3">
                   {product.options.find(o => o.name === '사이즈')?.values?.map((val) => {
                     const isSelected = selectedOptions['사이즈'] === val.label;
                     const [sizeText, unit] = val.label.split(' mm');
                     const subLabel = val.label === '90 x 90 mm' ? '정사각형' :
-                                   val.label === '90 x 60 mm' ? '가로형' :
-                                   val.label === '40 x 90 mm' ? '세로형' :
+                                   val.label === '90 x 60 mm' ? '와이드형' :
+                                   val.label === '40 x 90 mm' ? '슬림형' :
                                    val.label === '직접입력' ? '커스텀' : '';
 
                     return (
                       <button
                         key={val.label}
-                        onClick={() => handleOptionChange('사이즈', val.label)}
+                        onClick={() => handleSizeChange(val.label)}
                         className={`group p-4 rounded-[28px] border-2 transition-all flex flex-col items-center gap-3 ${
                           isSelected
                             ? 'bg-emerald-50 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.1)]'
@@ -182,28 +191,41 @@ export const MemoPadCalculator: React.FC<MemoPadCalculatorProps> = ({
                   })}
                 </div>
 
-                {/* Orientation Toggle - Simplified */}
-                <div className="flex items-center gap-4 p-4 rounded-2xl bg-zinc-50 border border-zinc-100">
-                  <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">방향 선택</span>
-                  <div className="flex-1 flex p-1 bg-zinc-200/50 rounded-xl">
-                    <button
-                      onClick={() => setOrientation('landscape')}
-                      className={`flex-1 py-1.5 rounded-lg text-[10px] font-bold transition-all ${
-                        orientation === 'landscape' ? 'bg-white text-emerald-600 shadow-sm' : 'text-zinc-500'
-                      }`}
+                {/* Orientation Toggle - Only show if not square */}
+                <AnimatePresence mode="wait">
+                  {!isSquare && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="flex items-center gap-4 p-4 rounded-2xl bg-zinc-50 border border-zinc-100"
                     >
-                      가로형
-                    </button>
-                    <button
-                      onClick={() => setOrientation('portrait')}
-                      className={`flex-1 py-1.5 rounded-lg text-[10px] font-bold transition-all ${
-                        orientation === 'portrait' ? 'bg-white text-emerald-600 shadow-sm' : 'text-zinc-500'
-                      }`}
-                    >
-                      세로형
-                    </button>
-                  </div>
-                </div>
+                      <div className="flex flex-col">
+                        <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">방향 전환</span>
+                        <span className="text-[8px] text-zinc-400 font-bold">가로/세로 비율 변경</span>
+                      </div>
+                      <div className="flex-1 flex p-1 bg-zinc-200/50 rounded-xl">
+                        <button
+                          onClick={() => setOrientation('landscape')}
+                          className={`flex-1 py-1.5 rounded-lg text-[10px] font-bold transition-all ${
+                            orientation === 'landscape' ? 'bg-white text-emerald-600 shadow-sm border border-zinc-200/50' : 'text-zinc-500'
+                          }`}
+                        >
+                          가로형
+                        </button>
+                        <button
+                          onClick={() => setOrientation('portrait')}
+                          className={`flex-1 py-1.5 rounded-lg text-[10px] font-bold transition-all ${
+                            orientation === 'portrait' ? 'bg-white text-emerald-600 shadow-sm border border-zinc-200/50' : 'text-zinc-500'
+                          }`}
+                        >
+                          세로형
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
 
                 {selectedOptions['사이즈'] === '직접입력' && (
                   <motion.div

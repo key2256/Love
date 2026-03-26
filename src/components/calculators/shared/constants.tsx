@@ -22,6 +22,15 @@ export const FOLDING_DIRECTION_ICONS: Record<string, React.ReactNode> = {
       <rect x="10" y="10" width="20" height="20" />
       <line x1="20" y1="10" x2="20" y2="30" />
     </svg>
+  ),
+  '세로형 (상철)': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-current fill-none" strokeWidth="1.5">
+      <rect x="10" y="10" width="20" height="20" rx="1" />
+      <line x1="10" y1="14" x2="30" y2="14" strokeDasharray="2 2" />
+      <circle cx="15" cy="12" r="1" fill="currentColor" />
+      <circle cx="20" cy="12" r="1" fill="currentColor" />
+      <circle cx="25" cy="12" r="1" fill="currentColor" />
+    </svg>
   )
 };
 
@@ -127,6 +136,11 @@ export const MEMO_SIZE_ICONS: Record<string, React.ReactNode> = {
 };
 
 export const NOTE_SIZE_ICONS: Record<string, React.ReactNode> = {
+  'B6 (128x182)': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 fill-current">
+      <rect x="14" y="10" width="12" height="20" rx="1" />
+    </svg>
+  ),
   'A5 (148x210)': (
     <svg viewBox="0 0 40 40" className="w-8 h-8 fill-current">
       <rect x="12" y="8" width="16" height="24" rx="1" />
@@ -140,6 +154,11 @@ export const NOTE_SIZE_ICONS: Record<string, React.ReactNode> = {
   'A4 (210x297)': (
     <svg viewBox="0 0 40 40" className="w-8 h-8 fill-current">
       <rect x="8" y="6" width="24" height="28" rx="1" />
+    </svg>
+  ),
+  'A3 (297x420)': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 fill-current">
+      <rect x="6" y="4" width="28" height="32" rx="1" />
     </svg>
   )
 };
@@ -189,6 +208,69 @@ export const NOTE_GROUPS = {
   '후가공 선택': ['표지 코팅', '커버 인쇄', '엣지 마감'],
   '내부 구성': ['내지 종류', '내지 색상', '내지 장수', '페이지 수'],
   '제본/마감': ['스프링 방향', '스프링 색상', '제본 안내']
+};
+
+export const DRAWING_SIZE_ICONS: Record<string, React.ReactNode> = {
+  'B6 (128x182)': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 fill-current">
+      <rect x="14" y="10" width="12" height="20" rx="1" />
+    </svg>
+  ),
+  'A5 (148x210)': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 fill-current">
+      <rect x="12" y="8" width="16" height="24" rx="1" />
+    </svg>
+  ),
+  'B5 (182x257)': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 fill-current">
+      <rect x="10" y="7" width="20" height="26" rx="1" />
+    </svg>
+  ),
+  'A4 (210x297)': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 fill-current">
+      <rect x="8" y="6" width="24" height="28" rx="1" />
+    </svg>
+  ),
+  'A3 (297x420)': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 fill-current">
+      <rect x="6" y="4" width="28" height="32" rx="1" />
+    </svg>
+  )
+};
+
+export const DRAWING_COVER_ICONS: Record<string, React.ReactNode> = {
+  '소프트커버': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-current fill-none" strokeWidth="1.5">
+      <path d="M10 10 Q10 8 12 8 L28 8 Q30 8 30 10 L30 30 Q30 32 28 32 L12 32 Q10 32 10 30 Z" />
+      <path d="M14 8 L14 32" />
+    </svg>
+  ),
+  '하드커버 (2mm 보드)': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 stroke-current fill-none" strokeWidth="2.5">
+      <rect x="10" y="8" width="20" height="24" rx="1" />
+      <line x1="14" y1="8" x2="14" y2="32" />
+    </svg>
+  )
+};
+
+export const DRAWING_PAPER_ICONS: Record<string, React.ReactNode> = {
+  '백색 모조 80g': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 fill-current opacity-40">
+      <rect x="10" y="18" width="20" height="4" rx="0.5" />
+    </svg>
+  ),
+  '드로잉용지 300g': (
+    <svg viewBox="0 0 40 40" className="w-8 h-8 fill-current">
+      <rect x="10" y="15" width="20" height="10" rx="1" />
+      <rect x="10" y="15" width="20" height="2" className="opacity-30" />
+    </svg>
+  )
+};
+
+export const DRAWING_GROUPS = {
+  '기본 구성': ['규격', '제본 방향', '커버 종류'],
+  '용지 및 마감': ['용지', '표지 코팅', '스프링 색상'],
+  '주문 정보': ['수량 및 주문 정보']
 };
 
 export const getNoteGroup = (optionName: string) => {

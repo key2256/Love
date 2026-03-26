@@ -88,7 +88,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({
     if (product.id === 'memo-standard') return 'MEMO_PAD';
     if (product.id === 'note-spring' || product.id === 'note-leather' || product.id === 'note-saddle') return 'NOTE';
     if (product.id === 'poster-standard') return 'POSTER';
-    if (product.id === 'drawing-pro' || product.id === 'drawing-student') return 'DRAWING_BOOK';
+    if (product.id === 'drawing-pro' || product.id === 'drawing-student' || product.id === 'drawing-general') return 'DRAWING_BOOK';
     if (product.category === 'card-paper') return 'PAPER_GOODS';
     if (product.category === 'binding-booklet' || product.id === 'note-spring') return 'BINDING_GOODS';
     if (product.category === 'poster-promo') return 'LARGE_FORMAT';
