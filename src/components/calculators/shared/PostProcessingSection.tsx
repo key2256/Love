@@ -169,7 +169,7 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
       id: 'folding', 
       name: '접지', 
       icon: <FileUp className="w-5 h-5" />, 
-      active: true, 
+      active: pattern === 'FOLDED_BUSINESS_CARD' || selectedOptions['접지'] === '있음', 
       hidden: !config?.allowedPostProcessing?.includes('접지') || isTemplate || product.id === 'stk-postcard-standard',
       isBasicInclusion: pattern === 'FOLDED_BUSINESS_CARD'
     },
@@ -788,7 +788,7 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                 </div>
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-2">
-                    {product.options.find(o => o.name === '접지')?.values.filter(v => v.label !== '없음').map((v, index) => (
+                    {product.options.find(o => o.name === '접지')?.values.filter(v => pattern === 'FOLDED_BUSINESS_CARD' ? v.label !== '없음' : true).map((v, index) => (
                       <button
                         key={v.label + index}
                         onClick={() => handleOptionChange('접지', v.label)}

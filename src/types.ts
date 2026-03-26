@@ -377,6 +377,7 @@ export const BUSINESS_CARD_COMMON_OPTIONS = {
     name: '명함케이스',
     type: 'select' as const,
     values: [
+      { label: '없음', priceModifier: 0 },
       { label: '기본 종이케이스', priceModifier: 0 },
       { label: '플라스틱 케이스', priceModifier: 500 },
       { label: '고급 가죽 케이스', priceModifier: 5000 },
@@ -2219,6 +2220,7 @@ export const STICKER_COMMON_OPTIONS = {
     name: '명함케이스',
     type: 'select' as const,
     values: [
+      { label: '없음', priceModifier: 0 },
       { label: '기본 종이케이스', priceModifier: 0 },
       { label: '플라스틱 케이스', priceModifier: 500 },
       { label: '고급 가죽 케이스', priceModifier: 5000 },
@@ -3907,7 +3909,6 @@ export const PRODUCTS: Product[] = [
       POSTCARD_COMMON_OPTIONS.PAPER_SELECT_SPECIAL,
       POSTCARD_COMMON_OPTIONS.PRINT_COLOR,
       POSTCARD_COMMON_OPTIONS.WHITE_INK,
-      ...POSTCARD_COMMON_OPTIONS.COATING,
       ...POSTCARD_COMMON_OPTIONS.ROUNDING,
       ...POSTCARD_COMMON_OPTIONS.PUNCHING,
       ...POSTCARD_COMMON_OPTIONS.SHAPE_CUTTING,
@@ -4046,7 +4047,6 @@ export const PRODUCTS: Product[] = [
       ...BUSINESS_CARD_COMMON_OPTIONS.SHAPE_CUTTING,
       ...BUSINESS_CARD_COMMON_OPTIONS.CREASING,
       ...BUSINESS_CARD_COMMON_OPTIONS.PERFORATION,
-      ...BUSINESS_CARD_COMMON_OPTIONS.FOLDING,
       ...BUSINESS_CARD_COMMON_OPTIONS.PACKAGING,
       BUSINESS_CARD_COMMON_OPTIONS.POST_PROCESSING,
       BUSINESS_CARD_COMMON_OPTIONS.CASE
@@ -4073,9 +4073,9 @@ export const PRODUCTS: Product[] = [
         name: '용지',
         type: 'select',
         values: [
-          ...BUSINESS_CARD_MATERIALS.filter(m => m.group === '기본 대중형').map(m => ({
+          ...BUSINESS_CARD_MATERIALS.filter(m => ['기본 대중형', '고급 감성형'].includes(m.group)).map(m => ({
             label: `${m.name} ${m.weight}`,
-            priceModifier: 0
+            priceModifier: m.group === '고급 감성형' ? 2000 : 0
           }))
         ]
       },
@@ -4093,7 +4093,8 @@ export const PRODUCTS: Product[] = [
       ...BUSINESS_CARD_COMMON_OPTIONS.ROUNDING,
       ...BUSINESS_CARD_COMMON_OPTIONS.PUNCHING,
       ...BUSINESS_CARD_COMMON_OPTIONS.SHAPE_CUTTING,
-      ...BUSINESS_CARD_COMMON_OPTIONS.CREASING.filter(opt => opt.name !== '접지 형태'),
+      ...BUSINESS_CARD_COMMON_OPTIONS.FOLDING.filter(opt => opt.name !== '접지 형태'),
+      ...BUSINESS_CARD_COMMON_OPTIONS.CREASING,
       ...BUSINESS_CARD_COMMON_OPTIONS.PERFORATION,
       ...BUSINESS_CARD_COMMON_OPTIONS.PACKAGING,
       BUSINESS_CARD_COMMON_OPTIONS.POST_PROCESSING,

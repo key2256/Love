@@ -87,6 +87,14 @@ export const DesignTemplateCardCalculator: React.FC<DesignTemplateCardCalculator
         handleOptionChange(materialOption.name, `${defaultMaterial.name} ${defaultMaterial.weight}`);
       }
     }
+
+    // Set default values for case and folding
+    if (!selectedOptions['명함케이스']) {
+      handleOptionChange('명함케이스', '없음');
+    }
+    if (!selectedOptions['접지']) {
+      handleOptionChange('접지', '없음');
+    }
   }, []);
 
   const handleTemplateSelect = (template: Template) => {

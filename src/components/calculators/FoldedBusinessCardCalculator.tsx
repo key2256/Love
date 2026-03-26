@@ -71,6 +71,11 @@ export const FoldedBusinessCardCalculator: React.FC<FoldedBusinessCardCalculator
         }
       }
       
+      // Set default values for case and folding
+      if (!selectedOptions['명함케이스']) {
+        handleOptionChange('명함케이스', '없음');
+      }
+
       // Auto-select '있음' for 접지
       if (product.id.includes('folded')) {
         handleOptionChange('접지', '있음');

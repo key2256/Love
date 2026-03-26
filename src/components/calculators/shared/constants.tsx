@@ -225,7 +225,7 @@ export const PRODUCT_CONFIG: Record<string, {
   'stk-postcard-premium': {
     defaultGroup: '고급 감성형',
     groups: ['고급 감성형', '친환경/내추럴형', '컬러/특수지형'],
-    allowedPostProcessing: ['인쇄 도수', '코팅', '귀돌이', '타공', '오시', '미싱', '접지', '폴리백 개별포장'],
+    allowedPostProcessing: ['인쇄 도수', '귀돌이', '타공', '오시', '미싱', '접지', '폴리백 개별포장'],
   },
   'stk-postcard-effect': {
     defaultGroup: '기본 대중형',
@@ -277,7 +277,7 @@ export const PRODUCT_CONFIG: Record<string, {
   'bc-premium': {
     defaultGroup: '고급 감성형',
     groups: ['고급 감성형', '내추럴/친환경형', '특수지/프리미엄형'],
-    allowedPostProcessing: ['귀돌이', '타공', '오시', '미싱', '접지', '폴리백 개별포장', '후가공 옵션', '명함케이스'],
+    allowedPostProcessing: ['귀돌이', '타공', '오시', '미싱', '폴리백 개별포장', '후가공 옵션', '명함케이스'],
   },
   'bc-template': {
     defaultGroup: '기본 대중형',
@@ -286,7 +286,7 @@ export const PRODUCT_CONFIG: Record<string, {
   },
   'bc-folded': {
     defaultGroup: '기본 대중형',
-    groups: ['기본 대중형'],
-    allowedPostProcessing: ['코팅', '귀돌이', '타공', '오시', '미싱', '폴리백 개별포장', '후가공 옵션', '명함케이스'],
+    groups: ['기본 대중형', '고급 감성형'],
+    allowedPostProcessing: ['코팅', '귀돌이', '타공', '오시', '미싱', '접지', '폴리백 개별포장', '후가공 옵션', '명함케이스'],
   }
 };
