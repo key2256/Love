@@ -97,15 +97,19 @@ export const MemoPadCalculator: React.FC<MemoPadCalculatorProps> = ({
           {/* Integrated Preview Section */}
           <div className="relative aspect-square bg-zinc-100 rounded-[40px] overflow-hidden flex items-center justify-center p-12 border border-zinc-200/50 shadow-inner">
             {/* Scale Reference: Smartphone (Detailed) */}
-            <div className="absolute left-8 bottom-8 opacity-25 transform -rotate-6 pointer-events-none transition-all duration-500">
-              <div className="w-24 h-48 bg-zinc-800 rounded-[28px] border-[3px] border-zinc-700 relative shadow-2xl">
+            <div className="absolute left-8 bottom-8 opacity-40 transform -rotate-6 pointer-events-none transition-all duration-500">
+              <div className="w-24 h-48 bg-zinc-800 rounded-[28px] border-[3px] border-zinc-700 relative shadow-2xl ring-1 ring-white/10">
                 {/* Screen */}
                 <div className="absolute inset-1 bg-zinc-900 rounded-[24px] overflow-hidden">
+                  {/* Screen Glow */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/5 to-blue-500/5" />
                   {/* Dynamic Island */}
                   <div className="absolute top-2 left-1/2 -translate-x-1/2 w-8 h-2.5 bg-zinc-800 rounded-full" />
                   {/* Faint UI elements */}
                   <div className="absolute top-10 left-4 right-4 h-4 bg-zinc-800/50 rounded-full" />
                   <div className="absolute top-16 left-4 right-8 h-2 bg-zinc-800/30 rounded-full" />
+                  {/* Bottom Bar */}
+                  <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-12 h-1 bg-zinc-700/50 rounded-full" />
                 </div>
                 {/* Side Buttons */}
                 <div className="absolute -left-[4px] top-12 w-[2px] h-6 bg-zinc-700 rounded-l-sm" />
@@ -113,8 +117,11 @@ export const MemoPadCalculator: React.FC<MemoPadCalculatorProps> = ({
                 <div className="absolute -right-[4px] top-16 w-[2px] h-8 bg-zinc-700 rounded-r-sm" />
               </div>
               <div className="mt-3 text-center">
-                <p className="text-[8px] font-black text-zinc-500 uppercase tracking-widest">Smartphone Scale</p>
-                <p className="text-[6px] font-bold text-zinc-400 mt-0.5">70.6 x 146.6 mm</p>
+                <div className="flex items-center justify-center gap-1 mb-0.5">
+                  <Smartphone className="w-2 h-2 text-zinc-500" />
+                  <p className="text-[8px] font-black text-zinc-500 uppercase tracking-widest">Phone Scale</p>
+                </div>
+                <p className="text-[6px] font-bold text-zinc-400">70.6 x 146.6 mm</p>
               </div>
             </div>
 
@@ -145,15 +152,16 @@ export const MemoPadCalculator: React.FC<MemoPadCalculatorProps> = ({
               </div>
 
               {/* Stack Layers (Thickness) */}
-              {[...Array(Math.max(1, Math.floor(mmThickness / 2)))].map((_, i) => (
+              {[...Array(Math.max(1, Math.floor(mmThickness)))].map((_, i) => (
                 <div 
                   key={i}
-                  className="absolute inset-0 bg-zinc-200 border-b border-zinc-300 rounded-lg shadow-sm"
+                  className="absolute inset-0 bg-white border-b border-zinc-200 rounded-lg shadow-sm"
                   style={{ 
-                    transform: `translateY(${i * 3}px) translateZ(${-i * 3}px)`,
+                    transform: `translateY(${i * 1.5}px) translateZ(${-i * 1.5}px)`,
                     zIndex: -i,
                     width: dims.width,
-                    height: dims.height
+                    height: dims.height,
+                    opacity: 1 - (i * 0.05)
                   }}
                 />
               ))}
