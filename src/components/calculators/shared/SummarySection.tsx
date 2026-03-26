@@ -25,10 +25,49 @@ export const SummarySection: React.FC<SummarySectionProps> = ({
 }) => {
   return (
     <div className="pt-8 border-t border-zinc-100">
-      <div className="bg-white border border-zinc-100 rounded-3xl p-8 space-y-6 shadow-xl shadow-zinc-500/5">
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-zinc-500 font-bold text-xs uppercase tracking-widest">선택 옵션 요약</span>
-          <div className="flex flex-wrap justify-end gap-2">
+      <div className="bg-white border border-zinc-200 rounded-3xl p-8 space-y-8 shadow-sm">
+        {/* Total Price (Emphasized at top) */}
+        <div className="flex items-end justify-between">
+          <div>
+            <p className="text-[10px] text-zinc-400 font-black uppercase tracking-widest mb-1">최종 예상 견적</p>
+            <p className="text-4xl font-black text-zinc-900 tracking-tighter">
+              {totalPrice.toLocaleString()}<span className="text-lg font-medium ml-1">원</span>
+            </p>
+          </div>
+          <p className="text-[10px] text-emerald-600 font-black bg-emerald-50 px-3 py-1.5 rounded-full uppercase tracking-widest">
+            VAT 포함
+          </p>
+        </div>
+
+        {/* Details */}
+        <div className="space-y-4 pt-6 border-t border-zinc-100">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-zinc-400">
+              <ShoppingCart className="w-4 h-4" />
+              <span className="text-xs font-bold uppercase tracking-widest">개당 단가</span>
+            </div>
+            <div className="text-right">
+              <span className="text-sm font-black text-zinc-900">{unitPrice.toLocaleString()}원</span>
+              {discountRate > 0 && (
+                <span className="block text-[10px] text-emerald-600 font-bold">
+                  (수량 할인 {Math.round(discountRate * 100)}% 적용됨)
+                </span>
+              )}
+            </div>
+          </div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-zinc-400">
+              <Clock className="w-4 h-4" />
+              <span className="text-xs font-bold uppercase tracking-widest">예상 수령일</span>
+            </div>
+            <span className="text-sm font-black text-zinc-900">{estimatedDeliveryDate}</span>
+          </div>
+        </div>
+
+        {/* Options Summary */}
+        <div className="pt-6 border-t border-zinc-100">
+          <span className="text-zinc-500 font-bold text-xs uppercase tracking-widest mb-3 block">선택 옵션 요약</span>
+          <div className="flex flex-wrap gap-2">
             {Object.entries(selectedOptions)
               .filter(([key, val]) => {
                 if (!val || val === '없음' || String(val).trim() === '') return false;
@@ -67,38 +106,6 @@ export const SummarySection: React.FC<SummarySectionProps> = ({
                 );
               })}
           </div>
-        </div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-zinc-400">
-            <ShoppingCart className="w-4 h-4" />
-            <span className="text-xs font-bold uppercase tracking-widest">개당 단가</span>
-          </div>
-          <div className="text-right">
-            <span className="text-sm font-black text-zinc-900">{unitPrice.toLocaleString()}원</span>
-            {discountRate > 0 && (
-              <span className="block text-[10px] text-emerald-600 font-bold">
-                (수량 할인 {Math.round(discountRate * 100)}% 적용됨)
-              </span>
-            )}
-          </div>
-        </div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-zinc-400">
-            <Clock className="w-4 h-4" />
-            <span className="text-xs font-bold uppercase tracking-widest">예상 수령일</span>
-          </div>
-          <span className="text-sm font-black text-zinc-900">{estimatedDeliveryDate}</span>
-        </div>
-        <div className="pt-6 border-t border-zinc-100 flex items-end justify-between">
-          <div>
-            <p className="text-[10px] text-zinc-400 font-black uppercase tracking-widest mb-1">최종 예상 견적</p>
-            <p className="text-4xl font-black text-zinc-900 tracking-tighter">
-              {totalPrice.toLocaleString()}<span className="text-lg font-medium ml-1">원</span>
-            </p>
-          </div>
-          <p className="text-[10px] text-emerald-600 font-black bg-emerald-50 px-3 py-1.5 rounded-full uppercase tracking-widest">
-            VAT 포함
-          </p>
         </div>
       </div>
     </div>

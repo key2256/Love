@@ -19,13 +19,13 @@ export const StickerPreview: React.FC<StickerPreviewProps> = ({ selectedOptions 
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-6 bg-zinc-100 rounded-2xl border border-zinc-200">
-      <div className="mb-4">
-        <div className={`w-32 h-32 bg-white shadow-lg border border-zinc-300 flex items-center justify-center text-zinc-400 text-[10px] font-mono ${getShapeClass()}`}>
+    <div className="flex flex-col items-center justify-center p-8 bg-white rounded-3xl border border-zinc-200 shadow-sm">
+      <div className="mb-6">
+        <div className={`w-32 h-32 bg-white shadow-xl shadow-zinc-200 border border-zinc-200 flex items-center justify-center text-zinc-400 text-[10px] font-black tracking-widest ${getShapeClass()}`}>
           {size}
         </div>
       </div>
-      <div className="text-sm font-medium text-zinc-600 text-center">
+      <div className="text-xs font-black text-zinc-900 uppercase tracking-widest bg-zinc-50 px-4 py-2 rounded-full border border-zinc-100">
         {shape} / {size} / {material}
       </div>
     </div>
