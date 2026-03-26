@@ -217,11 +217,29 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
       icon: FileText,
       children: (
         <div className="space-y-8">
-          {product.options.filter(opt => ['사이즈', '인쇄도수', '인쇄 방식'].includes(opt.name)).map((option) => (
-            <OptionGroup key={option.name} label={option.name} tooltip={POSTCARD_TERM_TOOLTIPS[option.name]}>
-              {renderOption(option)}
-            </OptionGroup>
-          ))}
+          {(() => {
+            let basicOptions: string[] = [];
+            if (product.id === 'stk-postcard-standard') {
+              basicOptions = ['규격', '인쇄도수', '용지'];
+            } else if (product.id === 'stk-postcard-special') {
+              basicOptions = ['규격', '인쇄도수', '용지'];
+            } else if (product.id === 'stk-postcard-shape') {
+              basicOptions = ['사이즈', '용지', '모양'];
+            } else if (product.id === 'stk-postcard-premium') {
+              basicOptions = ['규격', '용지', '인쇄도수'];
+            } else {
+              // Default fallback
+              basicOptions = ['용지', '모양'];
+            }
+
+            return product.options
+              .filter(opt => basicOptions.includes(opt.name))
+              .map((option) => (
+                <OptionGroup key={option.name} label={option.name} tooltip={POSTCARD_TERM_TOOLTIPS[option.name]}>
+                  {renderOption(option)}
+                </OptionGroup>
+              ));
+          })()}
         </div>
       )
     },
