@@ -191,11 +191,11 @@ export const BusinessCardCalculator: React.FC<BusinessCardCalculatorProps> = ({
     {
       id: 'material',
       title: '재질 및 옵션',
-      description: '명함의 인상을 결정하는 용지와 케이스를 선택하세요.',
+      description: '명함의 인상을 결정하는 용지를 선택하세요.',
       icon: Layers,
       children: (
         <div className="space-y-8">
-          {product.options.filter(opt => opt.name.includes('용지') || opt.name === '명함케이스').map((option) => (
+          {product.options.filter(opt => opt.name.includes('용지')).map((option) => (
             <OptionGroup key={option.name} label={option.name}>
               {renderOption(option)}
             </OptionGroup>

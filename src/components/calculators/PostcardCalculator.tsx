@@ -21,6 +21,14 @@ const POSTCARD_TERM_TOOLTIPS: Record<string, { description: string; imageUrl?: s
   '모양': {
     description: '엽서의 전체적인 형태를 선택합니다. 일반적인 직사각형 외에도 라운드형이나 자유로운 모양으로 제작이 가능합니다.',
     imageUrl: 'https://picsum.photos/seed/postcard-shape/400/250'
+  },
+  '규격': {
+    description: '엽서의 가로, 세로 사이즈를 선택합니다.',
+    imageUrl: 'https://picsum.photos/seed/postcard-size/400/250'
+  },
+  '인쇄 방식': {
+    description: '엽서의 인쇄 방식을 선택합니다.',
+    imageUrl: 'https://picsum.photos/seed/postcard-print/400/250'
   }
 };
 
@@ -74,7 +82,8 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
 
   const renderOption = (option: any, skipTabs: boolean = false) => {
     const optionName = option.name;
-
+    console.log('Rendering option:', optionName, option.values);
+    
     // 1. Paper Options (Swatch/Card Style)
     if (optionName.includes('용지') && optionName !== '용지 그룹') {
       return (
@@ -208,7 +217,7 @@ export const PostcardCalculator: React.FC<PostcardCalculatorProps> = ({
       icon: FileText,
       children: (
         <div className="space-y-8">
-          {product.options.filter(opt => ['규격(mm)', '모양', '인쇄도수'].includes(opt.name)).map((option) => (
+          {product.options.filter(opt => ['사이즈', '인쇄도수', '인쇄 방식'].includes(opt.name)).map((option) => (
             <OptionGroup key={option.name} label={option.name} tooltip={POSTCARD_TERM_TOOLTIPS[option.name]}>
               {renderOption(option)}
             </OptionGroup>
