@@ -1787,23 +1787,6 @@ export const CATEGORIES: Category[] = [
     ]
   },
   { 
-    id: 'package-supply', 
-    name: '패키지 · 부자재', 
-    icon: 'Package', 
-    description: '브랜드의 가치를 높이는 패키지와 다양한 부자재',
-    entryPhrase: '브랜드의 완성, 고품격 패키지',
-    subCategories: [
-      {
-        groupName: '패키지',
-        items: ['쇼핑백', '봉투', '포장지', '박스']
-      },
-      {
-        groupName: '부자재',
-        items: ['택(Tag)', '헤더택', '띠지', '라벨']
-      }
-    ]
-  },
-  { 
     id: 'custom', 
     name: '맞춤제작', 
     icon: 'Settings', 
@@ -1813,19 +1796,6 @@ export const CATEGORIES: Category[] = [
       {
         groupName: '상담 제작',
         items: ['별도 상담 제작', '대량 제작 문의', '샘플 제작']
-      }
-    ]
-  },
-  { 
-    id: 'poster', 
-    name: '포스터', 
-    icon: 'Image', 
-    description: '공간을 채우는 선명한 포스터 제작',
-    entryPhrase: '공간의 분위기를 바꾸는 포스터',
-    subCategories: [
-      {
-        groupName: '일반 포스터',
-        items: ['일반 포스터']
       }
     ]
   }
