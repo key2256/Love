@@ -71,8 +71,14 @@ const PromotionalCalculator: React.FC<PromotionalCalculatorProps> = ({ product }
                     <label key={v.label} className="flex items-center gap-2">
                       <input
                         type="checkbox"
-                        value={v.label}
-                        onChange={(e) => handleOptionChange(option.name, e.target.checked ? [...(selectedOptions[option.name] || []), v.label] : (selectedOptions[option.name] || []).filter((i: string) => i !== v.label))}
+                        checked={(selectedOptions[option.name] || []).includes(v.label)}
+                        onChange={(e) => {
+                          const current = selectedOptions[option.name] || [];
+                          const next = e.target.checked 
+                            ? [...current, v.label] 
+                            : current.filter((i: string) => i !== v.label);
+                          handleOptionChange(option.name, next);
+                        }}
                       />
                       {v.label}
                     </label>
