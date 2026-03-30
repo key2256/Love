@@ -1778,7 +1778,7 @@ export const CATEGORIES: Category[] = [
     subCategories: [
       {
         groupName: '포스터',
-        items: ['일반 포스터', '대형 포스터', '패브릭 포스터', '디자인 포스터']
+        items: ['종이포스터', '대형 종이포스터', '특가 포스터', '특가 규격 포스터']
       },
       {
         groupName: '홍보물',
@@ -1956,9 +1956,21 @@ export const SUBCATEGORY_METADATA: Record<string, SubCategoryMetadata> = {
     tagline: '가볍고 실용적인 중철 제본 책자.',
     description: '카탈로그나 팜플렛 제작에 적합한 제본 방식입니다.'
   },
-  '일반 포스터': {
-    tagline: '공간을 채우는 선명한 포스터.',
-    description: '다양한 사이즈로 제작 가능한 표준 포스터입니다.'
+  '종이포스터': {
+    tagline: '가장 범용적인 포스터, 선명한 인쇄.',
+    description: '다양한 사이즈와 용지로 제작하는 가장 기본적인 포스터입니다.'
+  },
+  '대형 종이포스터': {
+    tagline: '시선을 압도하는 대형 포스터.',
+    description: '대형 규격으로 제작되어 홍보 효과가 뛰어난 포스터입니다.'
+  },
+  '특가 포스터': {
+    tagline: '빠르고 저렴한 실속형 포스터.',
+    description: '정해진 규격으로 빠르게 제작하는 가성비 포스터입니다.'
+  },
+  '특가 규격 포스터': {
+    tagline: '고민 없는 가격표형 포스터.',
+    description: '가장 단순한 규격으로 빠르게 주문하는 포스터입니다.'
   },
   '쇼핑백': {
     tagline: '브랜드의 가치를 담는 쇼핑백.',
@@ -3664,7 +3676,7 @@ export const PRODUCTS: Product[] = [
     id: 'poster-paper',
     name: '종이포스터',
     category: 'poster-promo',
-    subCategory: '포스터',
+    subCategory: '종이포스터',
     tagline: '가장 범용적인 포스터, 선명한 인쇄.',
     description: '다양한 사이즈와 용지로 제작하는 가장 기본적인 포스터입니다.',
     image: 'https://picsum.photos/seed/poster-paper/800/800',
@@ -3676,7 +3688,7 @@ export const PRODUCTS: Product[] = [
       { name: '평량', type: 'select', values: [{ label: '150g' }, { label: '180g' }, { label: '200g' }, { label: '250g' }] },
       { name: '인쇄면', type: 'radio', values: [{ label: '단면' }, { label: '양면' }] },
       { name: '인쇄도수', type: 'radio', values: [{ label: '컬러' }, { label: '흑백' }] },
-      { name: '후가공', type: 'radio', values: [{ label: '코팅 없음' }, { label: '유광코팅' }, { label: '무광코팅' }] }
+      { name: '후가공', type: 'radio', values: [{ label: '유광코팅' }, { label: '무광코팅' }] }
     ],
     features: ['범용성', '다양한 옵션', '선명한 인쇄'],
     leadTime: '2~3 영업일',
@@ -3686,7 +3698,7 @@ export const PRODUCTS: Product[] = [
     id: 'poster-large',
     name: '대형 종이포스터',
     category: 'poster-promo',
-    subCategory: '포스터',
+    subCategory: '대형 종이포스터',
     tagline: '시선을 압도하는 대형 포스터.',
     description: '대형 규격으로 제작되어 홍보 효과가 뛰어난 포스터입니다.',
     image: 'https://picsum.photos/seed/poster-large/800/800',
@@ -3697,7 +3709,7 @@ export const PRODUCTS: Product[] = [
       { name: '용지', type: 'select', values: [{ label: '아트지' }, { label: '스노우' }, { label: '인화지' }] },
       { name: '평량', type: 'select', values: [{ label: '120g' }, { label: '150g' }, { label: '180g' }] },
       { name: '인쇄도수', type: 'radio', values: [{ label: '컬러' }, { label: '흑백' }] },
-      { name: '후가공', type: 'radio', values: [{ label: '코팅 없음' }, { label: '유광코팅' }, { label: '무광코팅' }] }
+      { name: '후가공', type: 'radio', values: [{ label: '유광코팅' }, { label: '무광코팅' }] }
     ],
     features: ['대형 사이즈', '홍보 효과', '선명한 인쇄'],
     leadTime: '3~4 영업일',
@@ -3707,14 +3719,15 @@ export const PRODUCTS: Product[] = [
     id: 'poster-budget',
     name: '특가 포스터',
     category: 'poster-promo',
-    subCategory: '포스터',
+    subCategory: '특가 포스터',
     tagline: '빠르고 저렴한 실속형 포스터.',
     description: '정해진 규격으로 빠르게 제작하는 가성비 포스터입니다.',
     image: 'https://picsum.photos/seed/poster-budget/800/800',
     minQuantity: 10,
     basePrice: 2000,
     options: [
-      { name: '사이즈', type: 'select', values: [{ label: 'A3' }, { label: 'A2' }] }
+      { name: '사이즈', type: 'select', values: [{ label: 'A3' }, { label: 'A2' }] },
+      { name: '수량', type: 'number' }
     ],
     features: ['가성비', '빠른 제작', '실속형'],
     leadTime: '1~2 영업일',
@@ -3724,14 +3737,15 @@ export const PRODUCTS: Product[] = [
     id: 'poster-fixed',
     name: '특가 규격 포스터',
     category: 'poster-promo',
-    subCategory: '포스터',
+    subCategory: '특가 규격 포스터',
     tagline: '고민 없는 가격표형 포스터.',
     description: '가장 단순한 규격으로 빠르게 주문하는 포스터입니다.',
     image: 'https://picsum.photos/seed/poster-fixed/800/800',
     minQuantity: 10,
     basePrice: 1500,
     options: [
-      { name: '규격', type: 'select', values: [{ label: 'A3' }, { label: 'A2' }] }
+      { name: '규격', type: 'select', values: [{ label: 'A3' }, { label: 'A2' }] },
+      { name: '수량', type: 'number' }
     ],
     features: ['초간단 주문', '가격 메리트', '고정 규격'],
     leadTime: '1~2 영업일',
