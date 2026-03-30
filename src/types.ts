@@ -1782,7 +1782,7 @@ export const CATEGORIES: Category[] = [
       },
       {
         groupName: '홍보물',
-        items: ['리플렛', '전단지', '티켓', '홀더']
+        items: ['리플렛', '전단지', '캘린더', '현수막', '티켓']
       }
     ]
   },
@@ -1920,25 +1920,25 @@ export const SUBCATEGORY_METADATA: Record<string, SubCategoryMetadata> = {
   '일반 명함': BUSINESS_CARD_METADATA['일반 명함'],
   '고급지 명함': BUSINESS_CARD_METADATA['고급지 명함'],
   '접지 명함': BUSINESS_CARD_METADATA['접지 명함'],
-  '일반 엽서': {
-    tagline: '소중한 마음을 담는 클래식 엽서.',
-    description: '표준 규격 및 다양한 사이즈로 제작 가능한 고품질 엽서입니다.'
+  '리플렛': {
+    tagline: '접지 방식에 따라 달라지는 홍보 효과.',
+    description: '2단, 3단 등 다양한 접지 방식으로 정보를 효과적으로 전달합니다.'
   },
-  '특가 엽서': {
-    tagline: '가장 합리적인 선택, 빠른 주문.',
-    description: '선택지를 줄여 가격을 낮춘 가성비 중심의 빠른 제작 엽서입니다.'
+  '전단지': {
+    tagline: '빠르고 경제적인 대중 홍보물.',
+    description: '다양한 사이즈와 용지로 빠르게 제작하는 가성비 전단지입니다.'
   },
-  '모양 엽서': {
-    tagline: '평범함을 거부하는 특별한 디자인.',
-    description: '라운드, 티켓형, 자유형 칼선 등 독특한 모양의 엽서입니다.'
+  '캘린더': {
+    tagline: '1년 내내 함께하는 브랜드 캘린더.',
+    description: '탁상, 벽걸이 등 다양한 형태로 제작하는 브랜드 캘린더입니다.'
   },
-  '고급지 엽서': {
-    tagline: '종이 본연의 질감이 전하는 깊은 감동.',
-    description: '엄선된 수입지와 프리미엄 용지로 제작하는 품격 있는 엽서입니다.'
+  '현수막': {
+    tagline: '멀리서도 눈에 띄는 실사 출력물.',
+    description: '다양한 마감 방식으로 제작하는 고내구성 실사 현수막입니다.'
   },
-  '후가공 엽서': {
-    tagline: '빛나는 디테일로 완성하는 프리미엄.',
-    description: '박, 형압, 스코딕스 등 화려한 효과를 더한 특별한 엽서입니다.'
+  '티켓': {
+    tagline: '행사의 가치를 높이는 특별한 티켓.',
+    description: '넘버링, 미싱 등 티켓 전용 후가공이 가능한 특별한 티켓입니다.'
   },
   '기본 포토카드': {
     tagline: '한 손에 쏙, 나만의 굿즈.',
@@ -3716,40 +3716,101 @@ export const PRODUCTS: Product[] = [
     badges: ['대형', '홍보용']
   },
   {
-    id: 'poster-budget',
-    name: '특가 포스터',
+    id: 'leaflet',
+    name: '리플렛',
     category: 'poster-promo',
-    subCategory: '특가 포스터',
-    tagline: '빠르고 저렴한 실속형 포스터.',
-    description: '정해진 규격으로 빠르게 제작하는 가성비 포스터입니다.',
-    image: 'https://picsum.photos/seed/poster-budget/800/800',
-    minQuantity: 10,
-    basePrice: 2000,
+    subCategory: '리플렛',
+    tagline: '접지 방식에 따라 달라지는 홍보 효과.',
+    description: '2단, 3단 등 다양한 접지 방식으로 정보를 효과적으로 전달합니다.',
+    image: 'https://picsum.photos/seed/leaflet/800/800',
+    minQuantity: 50,
+    basePrice: 30000,
     options: [
-      { name: '사이즈', type: 'select', values: [{ label: 'A3' }, { label: 'A2' }] },
-      { name: '수량', type: 'number' }
+      { name: '접지 방식', type: 'select', values: [{ label: '2단' }, { label: '3단' }, { label: '대문' }, { label: '병풍' }] },
+      { name: '펼침 규격', type: 'select', values: [{ label: 'A4' }, { label: 'A3' }] },
+      { name: '용지', type: 'select', values: [{ label: '아트지' }, { label: '스노우' }, { label: '랑데뷰' }] },
+      { name: '인쇄', type: 'radio', values: [{ label: '단면 컬러' }, { label: '양면 컬러' }] },
+      { name: '코팅', type: 'radio', values: [{ label: '무광' }, { label: '유광' }] }
     ],
-    features: ['가성비', '빠른 제작', '실속형'],
-    leadTime: '1~2 영업일',
-    badges: ['특가', '실속형']
+    features: ['다양한 접지', '효과적 정보 전달', '고품질 인쇄'],
+    leadTime: '3~4 영업일',
+    badges: ['접지형', '홍보용']
   },
   {
-    id: 'poster-fixed',
-    name: '특가 규격 포스터',
+    id: 'flyer',
+    name: '전단지',
     category: 'poster-promo',
-    subCategory: '특가 규격 포스터',
-    tagline: '고민 없는 가격표형 포스터.',
-    description: '가장 단순한 규격으로 빠르게 주문하는 포스터입니다.',
-    image: 'https://picsum.photos/seed/poster-fixed/800/800',
-    minQuantity: 10,
-    basePrice: 1500,
+    subCategory: '전단지',
+    tagline: '빠르고 경제적인 대중 홍보물.',
+    description: '다양한 사이즈와 용지로 빠르게 제작하는 가성비 전단지입니다.',
+    image: 'https://picsum.photos/seed/flyer/800/800',
+    minQuantity: 100,
+    basePrice: 10000,
     options: [
-      { name: '규격', type: 'select', values: [{ label: 'A3' }, { label: 'A2' }] },
-      { name: '수량', type: 'number' }
+      { name: '사이즈', type: 'select', values: [{ label: 'A5' }, { label: 'A4' }, { label: 'A3' }, { label: 'B5' }] },
+      { name: '용지', type: 'select', values: [{ label: '아트지 90g' }, { label: '아트지 120g' }, { label: '아트지 150g' }, { label: '스노우 100g' }, { label: '스노우 120g' }] },
+      { name: '인쇄', type: 'radio', values: [{ label: '단면 컬러' }, { label: '양면 컬러' }, { label: '흑백' }] },
+      { name: '코팅', type: 'radio', values: [{ label: '없음' }, { label: '무광' }, { label: '유광' }] }
     ],
-    features: ['초간단 주문', '가격 메리트', '고정 규격'],
+    features: ['가성비', '빠른 제작', '대량 홍보'],
     leadTime: '1~2 영업일',
-    badges: ['특가', '고정형']
+    badges: ['대중형', '가성비']
+  },
+  {
+    id: 'calendar',
+    name: '캘린더',
+    category: 'poster-promo',
+    subCategory: '캘린더',
+    tagline: '1년 내내 함께하는 브랜드 캘린더.',
+    description: '탁상, 벽걸이 등 다양한 형태로 제작하는 브랜드 캘린더입니다.',
+    image: 'https://picsum.photos/seed/calendar/800/800',
+    minQuantity: 10,
+    basePrice: 50000,
+    options: [
+      { name: '형태', type: 'select', values: [{ label: '탁상' }, { label: '벽걸이' }, { label: '포스터형' }] },
+      { name: '구성', type: 'select', values: [{ label: '12개월' }, { label: '13매' }] },
+      { name: '제본', type: 'radio', values: [{ label: '트윈링' }, { label: '스프링' }, { label: '고리형' }] }
+    ],
+    features: ['브랜드 홍보', '다양한 형태', '실용성'],
+    leadTime: '5~7 영업일',
+    badges: ['구성형', '연말 필수']
+  },
+  {
+    id: 'banner',
+    name: '현수막',
+    category: 'poster-promo',
+    subCategory: '현수막',
+    tagline: '멀리서도 눈에 띄는 실사 출력물.',
+    description: '다양한 마감 방식으로 제작하는 고내구성 실사 현수막입니다.',
+    image: 'https://picsum.photos/seed/banner/800/800',
+    minQuantity: 1,
+    basePrice: 20000,
+    options: [
+      { name: '재질', type: 'select', values: [{ label: '일반천' }, { label: 'PET' }, { label: '메쉬' }] },
+      { name: '마감', type: 'select', values: [{ label: '열재단' }, { label: '줄미싱' }, { label: '아일렛' }, { label: '봉미싱' }] },
+      { name: '추가 옵션', type: 'checkbox', values: [{ label: '끈 포함' }] }
+    ],
+    features: ['고내구성', '실외용', '맞춤 마감'],
+    leadTime: '2~3 영업일',
+    badges: ['실사출력', '대형']
+  },
+  {
+    id: 'ticket',
+    name: '티켓',
+    category: 'poster-promo',
+    subCategory: '티켓',
+    tagline: '행사의 가치를 높이는 특별한 티켓.',
+    description: '넘버링, 미싱 등 티켓 전용 후가공이 가능한 특별한 티켓입니다.',
+    image: 'https://picsum.photos/seed/ticket/800/800',
+    minQuantity: 50,
+    basePrice: 15000,
+    options: [
+      { name: '용지', type: 'select', values: [{ label: '아트지' }, { label: '스노우' }, { label: '랑데뷰' }] },
+      { name: '후가공', type: 'checkbox', values: [{ label: '넘버링' }, { label: '미싱' }, { label: '귀돌이' }, { label: '타공' }] }
+    ],
+    features: ['티켓 전용 후가공', '특별한 디자인', '행사 필수품'],
+    leadTime: '3~4 영업일',
+    badges: ['행사', '쿠폰']
   },
   {
     id: 'stk-postcard-standard',
