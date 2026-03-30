@@ -113,6 +113,8 @@ export const PosterCalculator: React.FC<PosterCalculatorProps> = ({
     );
   };
 
+  const hasOption = (name: string) => product.options.some(o => o.name === name);
+  
   const sections = [
     {
       id: 'basic',
@@ -121,7 +123,8 @@ export const PosterCalculator: React.FC<PosterCalculatorProps> = ({
       icon: FileText,
       children: (
         <div className="space-y-8">
-          {renderOption('사이즈', 'card')}
+          {hasOption('사이즈') && renderOption('사이즈', 'card')}
+          {hasOption('규격') && renderOption('규격', 'card')}
           <div className="pt-4">
             <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-4">실시간 미리보기</p>
             <PosterPreview selectedOptions={selectedOptions} />
@@ -136,7 +139,10 @@ export const PosterCalculator: React.FC<PosterCalculatorProps> = ({
       icon: Layers,
       children: (
         <div className="space-y-8">
-          {renderOption('용지 종류', 'button')}
+          {hasOption('용지') && renderOption('용지', 'button')}
+          {hasOption('평량') && renderOption('평량', 'button')}
+          {hasOption('인쇄면') && renderOption('인쇄면', 'button')}
+          {hasOption('인쇄도수') && renderOption('인쇄도수', 'button')}
         </div>
       )
     },
@@ -147,7 +153,7 @@ export const PosterCalculator: React.FC<PosterCalculatorProps> = ({
       icon: Scissors,
       children: (
         <div className="space-y-8">
-          {renderOption('코팅', 'button')}
+          {hasOption('후가공') && renderOption('후가공', 'button')}
         </div>
       )
     },

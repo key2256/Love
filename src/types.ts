@@ -3661,56 +3661,81 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
-    id: 'poster-standard',
-    name: '일반 포스터',
+    id: 'poster-paper',
+    name: '종이포스터',
     category: 'poster-promo',
-    subCategory: '일반 포스터',
-    tagline: '공간을 채우는 선명한 포스터.',
-    description: '다양한 사이즈로 제작 가능한 표준 포스터입니다. 이벤트 홍보나 인테리어용으로 좋습니다.',
-    image: 'https://picsum.photos/seed/poster/800/800',
+    subCategory: '포스터',
+    tagline: '가장 범용적인 포스터, 선명한 인쇄.',
+    description: '다양한 사이즈와 용지로 제작하는 가장 기본적인 포스터입니다.',
+    image: 'https://picsum.photos/seed/poster-paper/800/800',
     minQuantity: 1,
-    basePrice: 12000,
+    basePrice: 5000,
     options: [
-      {
-        name: '사이즈',
-        type: 'select',
-        values: [
-          { label: 'A3 (297x420)', priceModifier: 0 },
-          { label: 'A2 (420x594)', priceModifier: 5000 },
-          { label: 'A1 (594x841)', priceModifier: 15000 },
-        ]
-      },
-      {
-        name: '용지 종류',
-        type: 'select',
-        values: [
-          { label: '아트지 150g', priceModifier: 0 },
-          { label: '스노우지 150g', priceModifier: 1000 },
-          { label: '랑데뷰 190g', priceModifier: 3000 },
-        ]
-      },
-      {
-        name: '코팅',
-        type: 'radio',
-        values: [
-          { label: '코팅 없음', priceModifier: 0 },
-          { label: '무광 코팅', priceModifier: 2000 },
-          { label: '유광 코팅', priceModifier: 2000 },
-        ]
-      }
+      { name: '사이즈', type: 'select', values: [{ label: 'A4' }, { label: 'A3' }, { label: 'A2' }, { label: 'A1' }] },
+      { name: '용지', type: 'select', values: [{ label: '아트지' }, { label: '스노우' }, { label: '인화지' }] },
+      { name: '평량', type: 'select', values: [{ label: '150g' }, { label: '180g' }, { label: '200g' }, { label: '250g' }] },
+      { name: '인쇄면', type: 'radio', values: [{ label: '단면' }, { label: '양면' }] },
+      { name: '인쇄도수', type: 'radio', values: [{ label: '컬러' }, { label: '흑백' }] },
+      { name: '후가공', type: 'radio', values: [{ label: '코팅 없음' }, { label: '유광코팅' }, { label: '무광코팅' }] }
     ],
-    features: ['고해상도 인쇄', '다양한 용지 선택', '소량 제작 가능'],
+    features: ['범용성', '다양한 옵션', '선명한 인쇄'],
     leadTime: '2~3 영업일',
-    badges: ['이벤트용', '고화질', '소량가능'],
-    recommendation: '가장 표준적인 홍보용 포스터는 "A2" 사이즈입니다. 시인성이 좋고 게시하기 편리합니다.',
-    warnings: [
-      '대형 출력 특성상 해상도가 낮은 이미지는 깨져 보일 수 있습니다.',
-      '말아서 배송되므로 수령 후 평평하게 펴서 보관해 주세요.'
+    badges: ['일반형', '범용형']
+  },
+  {
+    id: 'poster-large',
+    name: '대형 종이포스터',
+    category: 'poster-promo',
+    subCategory: '포스터',
+    tagline: '시선을 압도하는 대형 포스터.',
+    description: '대형 규격으로 제작되어 홍보 효과가 뛰어난 포스터입니다.',
+    image: 'https://picsum.photos/seed/poster-large/800/800',
+    minQuantity: 1,
+    basePrice: 15000,
+    options: [
+      { name: '사이즈', type: 'select', values: [{ label: 'A1' }, { label: 'A0' }, { label: '대형 규격' }] },
+      { name: '용지', type: 'select', values: [{ label: '아트지' }, { label: '스노우' }, { label: '인화지' }] },
+      { name: '평량', type: 'select', values: [{ label: '120g' }, { label: '150g' }, { label: '180g' }] },
+      { name: '인쇄도수', type: 'radio', values: [{ label: '컬러' }, { label: '흑백' }] },
+      { name: '후가공', type: 'radio', values: [{ label: '코팅 없음' }, { label: '유광코팅' }, { label: '무광코팅' }] }
     ],
-    notes: [
-      '실외 게시용은 유포지나 합성지 재질을 추천드립니다.',
-      '대량 인쇄(옵셋)는 별도 문의 바랍니다.'
-    ]
+    features: ['대형 사이즈', '홍보 효과', '선명한 인쇄'],
+    leadTime: '3~4 영업일',
+    badges: ['대형', '홍보용']
+  },
+  {
+    id: 'poster-budget',
+    name: '특가 포스터',
+    category: 'poster-promo',
+    subCategory: '포스터',
+    tagline: '빠르고 저렴한 실속형 포스터.',
+    description: '정해진 규격으로 빠르게 제작하는 가성비 포스터입니다.',
+    image: 'https://picsum.photos/seed/poster-budget/800/800',
+    minQuantity: 10,
+    basePrice: 2000,
+    options: [
+      { name: '사이즈', type: 'select', values: [{ label: 'A3' }, { label: 'A2' }] }
+    ],
+    features: ['가성비', '빠른 제작', '실속형'],
+    leadTime: '1~2 영업일',
+    badges: ['특가', '실속형']
+  },
+  {
+    id: 'poster-fixed',
+    name: '특가 규격 포스터',
+    category: 'poster-promo',
+    subCategory: '포스터',
+    tagline: '고민 없는 가격표형 포스터.',
+    description: '가장 단순한 규격으로 빠르게 주문하는 포스터입니다.',
+    image: 'https://picsum.photos/seed/poster-fixed/800/800',
+    minQuantity: 10,
+    basePrice: 1500,
+    options: [
+      { name: '규격', type: 'select', values: [{ label: 'A3' }, { label: 'A2' }] }
+    ],
+    features: ['초간단 주문', '가격 메리트', '고정 규격'],
+    leadTime: '1~2 영업일',
+    badges: ['특가', '고정형']
   },
   {
     id: 'stk-postcard-standard',
