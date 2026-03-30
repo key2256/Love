@@ -3771,7 +3771,7 @@ export const PRODUCTS: Product[] = [
       { name: '규격', type: 'select', values: [{ label: '소형' }, { label: '중형' }, { label: '대형' }] },
       { name: '구성', type: 'select', values: [{ label: '12개월' }, { label: '13매' }] },
       { name: '시작 월', type: 'select', values: [{ label: '1월' }, { label: '3월' }, { label: '기타' }] },
-      { name: '제본', type: 'radio', values: [{ label: '트윈링' }, { label: '스프링' }, { label: '고리형' }] }
+      { name: '제본 방식', type: 'radio', values: [{ label: '트윈링' }, { label: '스프링' }, { label: '고리형' }] }
     ],
     features: ['브랜드 홍보', '다양한 형태', '실용성'],
     leadTime: '5~7 영업일',

@@ -43,12 +43,28 @@ export const PromoProductPreview: React.FC<PromoProductPreviewProps> = ({ produc
         );
       case '캘린더':
         const type = selectedOptions['형태'];
+        const binding = selectedOptions['제본 방식'] || '트윈링';
         return (
-          <svg viewBox="0 0 200 200" className="w-full h-auto border border-gray-300 bg-white">
-            {type === '탁상' && <rect x="40" y="40" width="120" height="80" fill="#f3f4f6" stroke="#374151" strokeWidth="2" />}
+          <svg viewBox="0 0 210 150" className="w-full h-auto border border-gray-300 bg-white">
+            {/* 탁상형 본체 */}
+            {type === '탁상' && (
+              <>
+                <rect x="20" y="30" width="170" height="100" fill="#f3f4f6" stroke="#374151" strokeWidth="1" />
+                {/* 트윈링 */}
+                {binding === '트윈링' && (
+                  <g stroke="#9ca3af" strokeWidth="2">
+                    {[...Array(10)].map((_, i) => (
+                      <line key={i} x1={30 + i * 15} y1="25" x2={30 + i * 15} y2="35" />
+                    ))}
+                  </g>
+                )}
+                {/* 삼각대 */}
+                <path d="M20 130 L190 130 L105 150 Z" fill="#e5e7eb" stroke="#374151" strokeWidth="1" />
+              </>
+            )}
             {type === '벽걸이' && <rect x="50" y="20" width="100" height="140" fill="#f3f4f6" stroke="#374151" strokeWidth="2" />}
             {type === '포스터형' && <rect x="30" y="20" width="140" height="160" fill="#f3f4f6" stroke="#374151" strokeWidth="2" />}
-            <text x="50%" y="90%" textAnchor="middle" className="text-[10px] fill-gray-500">{type || '형태 선택'}</text>
+            <text x="50%" y="90%" textAnchor="middle" className="text-[10px] fill-gray-500">{type || '형태 선택'} | {binding}</text>
           </svg>
         );
       case '현수막':
