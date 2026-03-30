@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { BookOpen, FileText, Calendar, Flag, Ticket } from 'lucide-react';
 import { Product } from '../../types';
+import { PromoProductPreview } from './PromoProductPreview';
 
 interface PromotionalCalculatorProps {
   product: Product;
 }
 
 const PromotionalCalculator: React.FC<PromotionalCalculatorProps> = ({ product }) => {
-  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
+  const [selectedOptions, setSelectedOptions] = useState<Record<string, any>>({});
 
-  const handleOptionChange = (name: string, value: string) => {
+  const handleOptionChange = (name: string, value: any) => {
     setSelectedOptions(prev => ({ ...prev, [name]: value }));
   };
 
@@ -71,7 +72,7 @@ const PromotionalCalculator: React.FC<PromotionalCalculatorProps> = ({ product }
                       <input
                         type="checkbox"
                         value={v.label}
-                        onChange={(e) => handleOptionChange(option.name, e.target.checked ? v.label : '')}
+                        onChange={(e) => handleOptionChange(option.name, e.target.checked ? [...(selectedOptions[option.name] || []), v.label] : (selectedOptions[option.name] || []).filter((i: string) => i !== v.label))}
                       />
                       {v.label}
                     </label>
@@ -92,10 +93,8 @@ const PromotionalCalculator: React.FC<PromotionalCalculatorProps> = ({ product }
 
         <div className="bg-gray-50 p-6 rounded-lg">
           <h3 className="text-lg font-semibold mb-4">미리보기 및 정보</h3>
-          <div className="aspect-video bg-gray-200 rounded mb-4 flex items-center justify-center text-gray-500">
-            {product.name} 미리보기
-          </div>
-          <div className="space-y-2">
+          <PromoProductPreview product={product} selectedOptions={selectedOptions} />
+          <div className="space-y-2 mt-6">
             <p><strong>특징:</strong> {product.features.join(', ')}</p>
             <p><strong>제작 기간:</strong> {product.leadTime}</p>
           </div>
