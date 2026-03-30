@@ -83,13 +83,14 @@ export const PromoProductPreview: React.FC<PromoProductPreviewProps> = ({ produc
           </svg>
         );
       case '티켓':
-        const finishing = selectedOptions['후가공'] || [];
+        const rawFinishing = selectedOptions['후가공'];
+        const finishing = Array.isArray(rawFinishing) ? rawFinishing : (rawFinishing ? [rawFinishing] : []);
         return (
           <svg viewBox="0 0 200 80" className="w-full h-auto border border-gray-300 bg-white">
             <rect x="10" y="10" width="180" height="60" rx="5" fill="#ffffff" stroke="#374151" strokeWidth="2" />
             {finishing.includes('미싱') && <line x1="50" y1="10" x2="50" y2="70" stroke="#374151" strokeWidth="1" strokeDasharray="2" />}
             {finishing.includes('타공') && <circle cx="170" cy="40" r="5" fill="white" stroke="black" />}
-            <text x="50%" y="90%" textAnchor="middle" className="text-[10px] fill-gray-500">{finishing.join(', ') || '후가공 선택'}</text>
+            <text x="50%" y="90%" textAnchor="middle" className="text-[10px] fill-gray-500">{finishing.length > 0 ? finishing.join(', ') : '후가공 선택'}</text>
           </svg>
         );
       default:

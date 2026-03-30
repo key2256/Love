@@ -149,7 +149,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({
       case 'NOTE':
         return <NoteCalculator {...calculatorProps} subPattern={noteSubPattern} />;
       case 'PROMO':
-        return <PromotionalCalculator {...calculatorProps} />;
+        return <PromotionalCalculator {...calculatorProps} pattern={pattern} />;
       case 'DRAWING_BOOK':
         return <DrawingBookCalculator {...calculatorProps} />;
       case 'FOLDED_BUSINESS_CARD':
