@@ -3728,7 +3728,7 @@ export const PRODUCTS: Product[] = [
     options: [
       { name: '접지 방식', type: 'select', values: [{ label: '2단' }, { label: '3단' }, { label: '대문' }, { label: '병풍' }] },
       { name: '펼침 규격', type: 'select', values: [{ label: 'A4' }, { label: 'A3' }] },
-      { name: '용지', type: 'select', values: [{ label: '아트지' }, { label: '스노우' }, { label: '랑데뷰' }] },
+      { name: '용지', type: 'select', values: [{ label: '아트지 150g' }, { label: '아트지 180g' }, { label: '스노우 150g' }, { label: '스노우 180g' }, { label: '랑데뷰 190g' }] },
       { name: '인쇄', type: 'radio', values: [{ label: '단면 컬러' }, { label: '양면 컬러' }] },
       { name: '코팅', type: 'radio', values: [{ label: '무광' }, { label: '유광' }] }
     ],
@@ -3768,7 +3768,9 @@ export const PRODUCTS: Product[] = [
     basePrice: 50000,
     options: [
       { name: '형태', type: 'select', values: [{ label: '탁상' }, { label: '벽걸이' }, { label: '포스터형' }] },
+      { name: '규격', type: 'select', values: [{ label: '소형' }, { label: '중형' }, { label: '대형' }] },
       { name: '구성', type: 'select', values: [{ label: '12개월' }, { label: '13매' }] },
+      { name: '시작 월', type: 'select', values: [{ label: '1월' }, { label: '3월' }, { label: '기타' }] },
       { name: '제본', type: 'radio', values: [{ label: '트윈링' }, { label: '스프링' }, { label: '고리형' }] }
     ],
     features: ['브랜드 홍보', '다양한 형태', '실용성'],
@@ -3786,6 +3788,7 @@ export const PRODUCTS: Product[] = [
     minQuantity: 1,
     basePrice: 20000,
     options: [
+      { name: '사이즈', type: 'text', placeholder: '가로 x 세로 (cm)' },
       { name: '재질', type: 'select', values: [{ label: '일반천' }, { label: 'PET' }, { label: '메쉬' }] },
       { name: '마감', type: 'select', values: [{ label: '열재단' }, { label: '줄미싱' }, { label: '아일렛' }, { label: '봉미싱' }] },
       { name: '추가 옵션', type: 'checkbox', values: [{ label: '끈 포함' }] }
@@ -3805,7 +3808,10 @@ export const PRODUCTS: Product[] = [
     minQuantity: 50,
     basePrice: 15000,
     options: [
+      { name: '규격', type: 'select', values: [{ label: '기본형' }, { label: '미니형' }, { label: '와이드형' }] },
       { name: '용지', type: 'select', values: [{ label: '아트지' }, { label: '스노우' }, { label: '랑데뷰' }] },
+      { name: '인쇄', type: 'radio', values: [{ label: '단면' }, { label: '양면' }] },
+      { name: '코팅', type: 'radio', values: [{ label: '없음' }, { label: '무광' }, { label: '유광' }] },
       { name: '후가공', type: 'checkbox', values: [{ label: '넘버링' }, { label: '미싱' }, { label: '귀돌이' }, { label: '타공' }] }
     ],
     features: ['티켓 전용 후가공', '특별한 디자인', '행사 필수품'],
