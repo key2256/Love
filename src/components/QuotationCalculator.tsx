@@ -14,6 +14,7 @@ import { DesignCardCalculator } from './calculators/DesignCardCalculator';
 import { DesignTemplateCardCalculator } from './calculators/DesignTemplateCardCalculator';
 import { MemoPadCalculator } from './calculators/MemoPadCalculator';
 import { NoteCalculator } from './calculators/NoteCalculator';
+import { PromotionalCalculator } from './calculators/PromotionalCalculator';
 import { PosterCalculator } from './calculators/PosterCalculator';
 import { DrawingBookCalculator } from './calculators/DrawingBookCalculator';
 import { FoldedBusinessCardCalculator } from './calculators/FoldedBusinessCardCalculator';
@@ -87,11 +88,11 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({
     if (product.id === 'binding-wireless-budget' || product.id === 'binding-spring-budget' || product.id === 'binding-twinring-budget') return 'BUDGET_BINDING';
     if (product.id === 'memo-standard') return 'MEMO_PAD';
     if (product.id === 'note-spring' || product.id === 'note-leather' || product.id === 'note-saddle') return 'NOTE';
-    if (product.id === 'poster-standard') return 'POSTER';
+    if (product.id === 'poster-paper' || product.id === 'poster-large' || product.id === 'poster-budget' || product.id === 'poster-fixed') return 'PROMO';
     if (product.id === 'drawing-pro' || product.id === 'drawing-student' || product.id === 'drawing-general') return 'DRAWING_BOOK';
     if (product.category === 'card-paper') return 'PAPER_GOODS';
     if (product.category === 'binding-booklet' || product.id === 'note-spring') return 'BINDING_GOODS';
-    if (product.category === 'poster-promo') return 'LARGE_FORMAT';
+    if (product.category === 'poster-promo') return 'PROMO';
     if (product.category === 'package-supply') return 'PACKAGE';
     return 'DEFAULT';
   };
@@ -147,8 +148,8 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({
         return <MemoPadCalculator {...calculatorProps} />;
       case 'NOTE':
         return <NoteCalculator {...calculatorProps} subPattern={noteSubPattern} />;
-      case 'POSTER':
-        return <PosterCalculator {...calculatorProps} pattern={pattern} />;
+      case 'PROMO':
+        return <PromotionalCalculator {...calculatorProps} />;
       case 'DRAWING_BOOK':
         return <DrawingBookCalculator {...calculatorProps} />;
       case 'FOLDED_BUSINESS_CARD':
