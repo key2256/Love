@@ -185,10 +185,14 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({
           <ShareQuoteButton options={selectedOptions} quantity={quantity} productId={product.id} />
         </div>
 
-        <div className="p-8">
+        <div className="p-8 pb-32 lg:pb-8">
           {renderCalculator()}
         </div>
       </div>
+
+      {/* Safe Area Spacer for Mobile Sticky Bar & BottomNav */}
+      {/* This ensures that content following the calculator (like delivery info) is not obscured */}
+      <div className="h-32 lg:hidden" />
 
       {/* 1. Sticky Price Bar */}
       <AnimatePresence>

@@ -914,7 +914,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
                 </div>
 
                 {activeTab === 'calc' ? (
-                  <div className="space-y-8">
+                  <div className="space-y-8 pb-48 lg:pb-0">
                     <QuotationCalculator 
                       product={product} 
                       onGenerateQuotation={onQuotationGenerated} 
@@ -938,7 +938,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
                     </div>
                   </div>
                 ) : (
-                  <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-48 lg:pb-0">
                     <div className="p-8 rounded-[32px] bg-emerald-50 border border-emerald-100">
                       <h3 className="font-black text-emerald-900 mb-4 flex items-center gap-2 uppercase tracking-tight">
                         <Sparkles className="w-5 h-5" />
