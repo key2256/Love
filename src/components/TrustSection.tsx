@@ -39,9 +39,9 @@ export const TrustSection = ({ onNavigate }: TrustSectionProps) => {
   ];
 
   return (
-    <section className="py-24 bg-white border-t border-zinc-100">
+    <section className="py-12 lg:py-24 bg-white border-t border-zinc-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8">
           {trustItems.map((item, idx) => (
             <motion.div
               key={idx}
@@ -50,16 +50,18 @@ export const TrustSection = ({ onNavigate }: TrustSectionProps) => {
               transition={{ delay: idx * 0.1 }}
               viewport={{ once: true }}
               onClick={() => onNavigate(item.view)}
-              className="p-8 rounded-2xl border border-zinc-100 hover:border-emerald-200 hover:shadow-xl hover:shadow-emerald-500/5 transition-all group cursor-pointer"
+              className="p-5 lg:p-8 rounded-2xl border border-zinc-100 hover:border-emerald-200 hover:shadow-xl hover:shadow-emerald-500/5 transition-all group cursor-pointer"
             >
-              <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                {item.icon}
+              <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4 lg:mb-6 group-hover:scale-110 transition-transform">
+                <div className="scale-75 lg:scale-100">
+                  {item.icon}
+                </div>
               </div>
-              <h3 className="text-lg font-bold text-zinc-900 mb-3">{item.title}</h3>
-              <p className="text-sm text-zinc-500 mb-8 leading-loose tracking-wide">
+              <h3 className="text-sm lg:text-lg font-bold text-zinc-900 mb-2 lg:mb-3">{item.title}</h3>
+              <p className="text-[11px] lg:text-sm text-zinc-500 mb-4 lg:mb-8 leading-relaxed lg:leading-loose tracking-tight lg:tracking-wide line-clamp-2 lg:line-clamp-none">
                 {item.description}
               </p>
-              <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest group-hover:underline">
+              <span className="text-[10px] lg:text-xs font-bold text-emerald-600 uppercase tracking-widest group-hover:underline">
                 {item.link} →
               </span>
             </motion.div>

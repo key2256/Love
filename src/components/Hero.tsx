@@ -9,7 +9,7 @@ interface HeroProps {
 
 export const Hero: React.FC<HeroProps> = ({ onExplore, onNavigate }) => {
   return (
-    <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-zinc-900">
+    <section className="relative pt-24 pb-12 lg:pt-48 lg:pb-32 overflow-hidden bg-zinc-900">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute inset-0 bg-[radial-gradient(#333_1px,transparent_1px)] [background-size:40px_40px]" />
@@ -22,44 +22,46 @@ export const Hero: React.FC<HeroProps> = ({ onExplore, onNavigate }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 text-sm font-bold mb-6 border border-emerald-500/20">
+            <span className="inline-block px-3 py-1 lg:px-4 lg:py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] lg:text-sm font-bold mb-4 lg:mb-6 border border-emerald-500/20">
               1장부터 주문 가능한 소량 굿즈 제작
             </span>
-            <h1 className="text-5xl lg:text-7xl font-black text-white mb-8 leading-[1.1] tracking-tight">
-              내 디자인으로 <br />
+            <h1 className="text-3xl sm:text-4xl lg:text-7xl font-black text-white mb-4 lg:mb-8 leading-[1.2] lg:leading-[1.1] tracking-tight">
+              내 디자인으로 <br className="hidden sm:block" />
               <span className="text-emerald-400">세상에 하나뿐인</span> <br />
               굿즈를 만드세요
             </h1>
-            <p className="text-xl text-zinc-400 mb-12 leading-relaxed font-medium">
-              스티커, 지류, 아크릴 굿즈부터 패키지까지. <br />
+            <p className="text-sm sm:text-base lg:text-xl text-zinc-400 mb-8 lg:mb-12 leading-relaxed font-medium max-w-md">
+              스티커, 지류, 아크릴 굿즈부터 패키지까지. <br className="hidden lg:block" />
               전문 디자이너가 아니어도 괜찮습니다. 완두프린트가 도와드릴게요.
             </p>
 
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-col sm:flex-row gap-3 lg:gap-4">
               <button
                 onClick={onExplore}
-                className="px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-zinc-900 font-bold rounded-xl transition-all flex items-center gap-2 shadow-lg shadow-emerald-500/20 group"
+                className="w-full sm:w-auto px-6 lg:px-8 py-3.5 lg:py-4 bg-emerald-500 hover:bg-emerald-400 text-zinc-900 font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 group"
               >
-                <ShoppingBag className="w-5 h-5" />
+                <ShoppingBag className="w-4 h-4 lg:w-5 lg:h-5" />
                 상품 보러가기
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-4 h-4 lg:w-5 lg:h-5 group-hover:translate-x-1 transition-transform" />
               </button>
               
-              <button 
-                onClick={() => onNavigate('usage_ordering')}
-                className="px-8 py-4 bg-white hover:bg-zinc-100 text-zinc-900 font-bold rounded-xl transition-all flex items-center gap-2"
-              >
-                <BookOpen className="w-5 h-5" />
-                용도별 주문
-              </button>
+              <div className="flex gap-2 w-full sm:w-auto">
+                <button 
+                  onClick={() => onNavigate('usage_ordering')}
+                  className="flex-1 sm:flex-none px-4 lg:px-8 py-3.5 lg:py-4 bg-white hover:bg-zinc-100 text-zinc-900 font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-sm lg:text-base"
+                >
+                  <BookOpen className="w-4 h-4 lg:w-5 lg:h-5" />
+                  용도별
+                </button>
 
-              <button 
-                onClick={() => onNavigate('inquiry')}
-                className="px-8 py-4 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-xl transition-all flex items-center gap-2 border border-zinc-700"
-              >
-                <MessageSquare className="w-5 h-5" />
-                견적 문의
-              </button>
+                <button 
+                  onClick={() => onNavigate('inquiry')}
+                  className="flex-1 sm:flex-none px-4 lg:px-8 py-3.5 lg:py-4 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 border border-zinc-700 text-sm lg:text-base"
+                >
+                  <MessageSquare className="w-4 h-4 lg:w-5 lg:h-5" />
+                  견적문의
+                </button>
+              </div>
             </div>
           </motion.div>
         </div>
