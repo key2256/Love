@@ -283,8 +283,9 @@ export const Navbar = ({
   };
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-sm' : 'bg-white/80 backdrop-blur-md'}`}>
-      {/* Main Navbar */}
+    <>
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isMenuOpen ? 'bg-white' : (isScrolled ? 'bg-white shadow-sm' : 'bg-white/80 backdrop-blur-md')}`}>
+        {/* Main Navbar */}
       <div className="border-b border-zinc-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 md:h-20">
           <div className="flex items-center gap-4 xl:gap-12">
@@ -702,37 +703,38 @@ export const Navbar = ({
           </motion.div>
         )}
       </AnimatePresence>
+    </nav>
 
-      {/* Mobile Menu Backdrop */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setIsMenuOpen(false)}
-            className="fixed inset-0 bg-zinc-900/60 backdrop-blur-md z-[60] lg:hidden"
-            aria-hidden="true"
-          />
-        )}
-      </AnimatePresence>
+    {/* Mobile Menu Backdrop */}
+    <AnimatePresence mode="wait">
+      {isMenuOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={() => setIsMenuOpen(false)}
+          className="fixed inset-0 bg-zinc-900/60 backdrop-blur-md z-[60] lg:hidden"
+          aria-hidden="true"
+        />
+      )}
+    </AnimatePresence>
 
-      {/* Mobile Menu Drawer */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div 
-            ref={drawerRef}
-            id="mobile-menu"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="mobile-menu-title"
-            onKeyDown={handleKeyDown}
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className="fixed top-0 right-0 bottom-0 w-full max-w-sm bg-white z-[70] shadow-2xl lg:hidden flex flex-col overflow-hidden"
-          >
+    {/* Mobile Menu Drawer */}
+    <AnimatePresence mode="wait">
+      {isMenuOpen && (
+        <motion.div 
+          ref={drawerRef}
+          id="mobile-menu"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="mobile-menu-title"
+          onKeyDown={handleKeyDown}
+          initial={{ x: '100%' }}
+          animate={{ x: 0 }}
+          exit={{ x: '100%' }}
+          transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+          className="fixed top-0 right-0 bottom-0 w-full max-w-sm bg-white z-[70] shadow-2xl lg:hidden flex flex-col overflow-hidden"
+        >
             <div className="p-6 border-b border-zinc-100 flex items-center justify-between bg-white sticky top-0 z-10">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-emerald-600 flex items-center justify-center text-white">
@@ -985,6 +987,6 @@ export const Navbar = ({
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </>
   );
 };
