@@ -193,46 +193,81 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({
       {/* 1. Sticky Price Bar */}
       <AnimatePresence>
         {showStickyBar && (
-          <motion.div 
-            initial={{ y: 100 }}
-            animate={{ y: 0 }}
-            exit={{ y: 100 }}
-            className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-4xl bg-zinc-900/95 backdrop-blur-xl text-white p-4 rounded-3xl shadow-2xl z-50 border border-white/10 flex items-center justify-between px-8"
-          >
-            <div className="flex items-center gap-6">
-              <div>
-                <div className="text-[10px] text-zinc-400 uppercase font-bold tracking-widest mb-0.5">최종 견적 금액</div>
-                <div className="text-2xl font-black text-emerald-400">
-                  {totalPrice.toLocaleString()}
-                  <span className="text-sm font-normal text-white ml-1">원</span>
+          <>
+            {/* Desktop Sticky Bar */}
+            <motion.div 
+              initial={{ y: 100, x: '-50%' }}
+              animate={{ y: 0, x: '-50%' }}
+              exit={{ y: 100, x: '-50%' }}
+              className="fixed bottom-6 left-1/2 w-[90%] max-w-4xl bg-zinc-900/95 backdrop-blur-xl text-white p-4 rounded-3xl shadow-2xl z-50 border border-white/10 hidden md:flex items-center justify-between px-8"
+            >
+              <div className="flex items-center gap-6">
+                <div>
+                  <div className="text-[10px] text-zinc-400 uppercase font-bold tracking-widest mb-0.5">최종 견적 금액</div>
+                  <div className="text-2xl font-black text-emerald-400">
+                    {totalPrice.toLocaleString()}
+                    <span className="text-sm font-normal text-white ml-1">원</span>
+                  </div>
+                </div>
+                <div className="h-8 w-px bg-white/10" />
+                <div>
+                  <div className="text-[10px] text-zinc-400 uppercase font-bold tracking-widest mb-0.5">수량 / 단가</div>
+                  <div className="text-sm font-medium">
+                    {quantity.toLocaleString()}매 / {unitPrice.toLocaleString()}원
+                  </div>
                 </div>
               </div>
-              <div className="hidden md:block h-8 w-px bg-white/10" />
-              <div className="hidden md:block">
-                <div className="text-[10px] text-zinc-400 uppercase font-bold tracking-widest mb-0.5">수량 / 단가</div>
-                <div className="text-sm font-medium">
-                  {quantity.toLocaleString()}매 / {unitPrice.toLocaleString()}원
-                </div>
-              </div>
-            </div>
 
-            <div className="flex items-center gap-3">
-              <button 
-                onClick={handleAddToCart}
-                className="flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-2xl font-bold transition-all"
-              >
-                <ShoppingCart className="w-4 h-4" />
-                장바구니
-              </button>
-              <button 
-                onClick={() => generateQuotation()}
-                className="flex items-center gap-2 px-8 py-3 bg-emerald-500 hover:bg-emerald-400 text-zinc-900 rounded-2xl font-black transition-all shadow-lg shadow-emerald-500/20"
-              >
-                <FileText className="w-4 h-4" />
-                견적서 발행
-              </button>
-            </div>
-          </motion.div>
+              <div className="flex items-center gap-3">
+                <button 
+                  onClick={handleAddToCart}
+                  className="flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-2xl font-bold transition-all"
+                >
+                  <ShoppingCart className="w-4 h-4" />
+                  장바구니
+                </button>
+                <button 
+                  onClick={() => generateQuotation()}
+                  className="flex items-center gap-2 px-8 py-3 bg-emerald-500 hover:bg-emerald-400 text-zinc-900 rounded-2xl font-black transition-all shadow-lg shadow-emerald-500/20"
+                >
+                  <FileText className="w-4 h-4" />
+                  견적서 발행
+                </button>
+              </div>
+            </motion.div>
+
+            {/* Mobile Compact Sticky Bar */}
+            <motion.div 
+              initial={{ y: 100 }}
+              animate={{ y: 0 }}
+              exit={{ y: 100 }}
+              className="fixed bottom-20 left-4 right-4 bg-zinc-900/95 backdrop-blur-xl text-white p-3 rounded-2xl shadow-2xl z-50 border border-white/10 flex md:hidden items-center justify-between px-4"
+            >
+              <div className="flex flex-col">
+                <div className="text-[8px] text-zinc-400 uppercase font-bold tracking-widest">최종 견적</div>
+                <div className="text-lg font-black text-emerald-400 leading-tight">
+                  {totalPrice.toLocaleString()}
+                  <span className="text-xs font-normal text-white ml-0.5">원</span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={handleAddToCart}
+                  className="p-2.5 bg-white/10 text-white rounded-xl transition-all"
+                  aria-label="장바구니 담기"
+                >
+                  <ShoppingCart className="w-4 h-4" />
+                </button>
+                <button 
+                  onClick={() => generateQuotation()}
+                  className="px-4 py-2.5 bg-emerald-500 text-zinc-900 rounded-xl font-black text-xs transition-all shadow-lg shadow-emerald-500/20"
+                >
+                  견적서 발행
+                </button>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </div>
