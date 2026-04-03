@@ -97,12 +97,32 @@ export const Stepper: React.FC<{ steps: Step[]; currentStep: number; onStepClick
   currentStep,
   onStepClick
 }) => {
+  const stepperRef = React.useRef<HTMLDivElement>(null);
+
+  const handleStepClick = (index: number) => {
+    onStepClick(index);
+    
+    // Smooth scroll to the top of the stepper area
+    if (stepperRef.current) {
+      requestAnimationFrame(() => {
+        const navbarHeight = 80;
+        const elementPosition = stepperRef.current!.getBoundingClientRect().top + window.pageYOffset;
+        const offsetPosition = elementPosition - navbarHeight - 20;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      });
+    }
+  };
+
   return (
-    <div className="flex items-center justify-between mb-8 bg-zinc-50 p-2 rounded-2xl border border-zinc-100">
+    <div ref={stepperRef} className="flex items-center justify-between mb-8 bg-zinc-50 p-2 rounded-2xl border border-zinc-100">
       {steps.map((step, index) => (
         <button
           key={step.id || index}
-          onClick={() => onStepClick(index)}
+          onClick={() => handleStepClick(index)}
           className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl transition-all ${
             currentStep === index
               ? 'bg-white text-zinc-900 shadow-sm font-bold border border-zinc-200'

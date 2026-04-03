@@ -231,8 +231,8 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
         </span>
       </div>
 
-      <div className="bg-zinc-50/50 rounded-[32px] p-6 border border-zinc-100 space-y-6">
-        <div className="grid grid-cols-4 gap-3">
+      <div className="bg-zinc-50/50 rounded-[32px] p-4 sm:p-6 border border-zinc-100 space-y-6">
+        <div className="grid grid-cols-3 sm:grid-cols-4 gap-x-2 gap-y-6 sm:gap-4">
           {postOptions.map(item => {
             const isExpanded = expandedPostOption === item.id;
             const isDisabled = (item as any).disabled;
@@ -249,11 +249,11 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                 }}
                 role="button"
                 tabIndex={isDisabled ? -1 : 0}
-                className={`flex flex-col items-center gap-2 group transition-all outline-none ${
-                  isDisabled ? 'opacity-40 cursor-not-allowed' : isExpanded ? 'scale-110 cursor-pointer' : 'hover:scale-105 cursor-pointer'
+                className={`flex flex-col items-center gap-2.5 group transition-all outline-none min-w-0 ${
+                  isDisabled ? 'opacity-40 cursor-not-allowed' : isExpanded ? 'scale-105 cursor-pointer' : 'hover:scale-105 cursor-pointer'
                 }`}
               >
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all shadow-sm ${
+                <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center transition-all shadow-sm shrink-0 ${
                   isDisabled
                     ? 'bg-zinc-100 text-zinc-300 border border-zinc-200'
                     : isExpanded 
@@ -264,27 +264,31 @@ export const PostProcessingSection: React.FC<PostProcessingSectionProps> = ({
                 }`}>
                   {item.icon}
                 </div>
-                <div className="flex items-center gap-1">
-                  <span className={`text-[10px] font-black whitespace-nowrap transition-colors ${
-                    isExpanded ? 'text-emerald-600' : item.active ? 'text-zinc-900' : 'text-zinc-400'
-                  }`}>
-                    {item.name}
-                  </span>
-                  {(item as any).required && (
-                    <span className="text-[10px] font-black text-red-500 ml-0.5">*</span>
-                  )}
-                  {POST_TERM_TOOLTIPS[item.name] && (
-                    <TermTooltip 
-                      term={item.name} 
-                      description={POST_TERM_TOOLTIPS[item.name].description} 
-                      imageUrl={POST_TERM_TOOLTIPS[item.name].imageUrl}
-                    >
-                      <span className="sr-only">정보</span>
-                    </TermTooltip>
-                  )}
+                <div className="flex flex-col items-center gap-1 w-full min-w-0">
+                  <div className="flex items-center justify-center gap-1 w-full px-1">
+                    <span className={`text-[10px] sm:text-[11px] font-black truncate transition-colors ${
+                      isExpanded ? 'text-emerald-600' : item.active ? 'text-zinc-900' : 'text-zinc-400'
+                    }`}>
+                      {item.name}
+                    </span>
+                    {(item as any).required && (
+                      <span className="text-[10px] font-black text-red-500 shrink-0">*</span>
+                    )}
+                    {POST_TERM_TOOLTIPS[item.name] && (
+                      <div className="shrink-0">
+                        <TermTooltip 
+                          term={item.name} 
+                          description={POST_TERM_TOOLTIPS[item.name].description} 
+                          imageUrl={POST_TERM_TOOLTIPS[item.name].imageUrl}
+                        >
+                          <span className="sr-only">정보</span>
+                        </TermTooltip>
+                      </div>
+                    )}
+                  </div>
                 </div>
                 {(item as any).warningMessage && (
-                  <span className="text-[9px] text-red-500 font-bold mt-1 text-center">
+                  <span className="text-[8px] text-red-500 font-bold mt-0.5 text-center leading-tight px-1">
                     { (item as any).warningMessage }
                   </span>
                 )}

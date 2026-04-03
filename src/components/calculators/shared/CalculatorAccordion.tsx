@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronDown, LucideIcon } from 'lucide-react';
 
@@ -19,6 +19,33 @@ export const CalculatorAccordion: React.FC<CalculatorAccordionProps> = ({
   defaultExpanded 
 }) => {
   const [expandedId, setExpandedId] = useState<string | null>(defaultExpanded || sections[0]?.id);
+  const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  const scrollToSection = (id: string) => {
+    const element = sectionRefs.current[id];
+    if (element) {
+      // Small delay to allow the animation to start and layout to shift
+      requestAnimationFrame(() => {
+        const navbarHeight = 80; // Approximate height of fixed navbar
+        const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+        const offsetPosition = elementPosition - navbarHeight - 20; // 20px extra padding
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      });
+    }
+  };
+
+  const handleToggle = (id: string) => {
+    const isExpanding = expandedId !== id;
+    setExpandedId(isExpanding ? id : null);
+    
+    if (isExpanding) {
+      scrollToSection(id);
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -29,6 +56,7 @@ export const CalculatorAccordion: React.FC<CalculatorAccordionProps> = ({
         return (
           <div 
             key={section.id} 
+            ref={el => { sectionRefs.current[section.id] = el; }}
             className={`border rounded-3xl transition-all duration-300 ${
               isExpanded 
                 ? 'border-emerald-500 bg-white shadow-xl shadow-emerald-500/5' 
@@ -36,7 +64,7 @@ export const CalculatorAccordion: React.FC<CalculatorAccordionProps> = ({
             }`}
           >
             <button
-              onClick={() => setExpandedId(isExpanded ? null : section.id)}
+              onClick={() => handleToggle(section.id)}
               className="w-full px-6 py-6 flex items-center justify-between group"
             >
               <div className="flex items-center gap-4">
