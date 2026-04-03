@@ -199,7 +199,7 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({
               initial={{ y: 100, x: '-50%' }}
               animate={{ y: 0, x: '-50%' }}
               exit={{ y: 100, x: '-50%' }}
-              className="fixed bottom-6 left-1/2 w-[90%] max-w-4xl bg-zinc-900/95 backdrop-blur-xl text-white p-4 rounded-3xl shadow-2xl z-50 border border-white/10 hidden md:flex items-center justify-between px-8"
+              className="fixed bottom-6 left-1/2 w-[90%] max-w-4xl bg-zinc-900/95 backdrop-blur-xl text-white p-4 rounded-3xl shadow-2xl z-50 border border-white/10 hidden lg:flex items-center justify-between px-8"
             >
               <div className="flex items-center gap-6">
                 <div>
@@ -236,12 +236,12 @@ export const QuotationCalculator: React.FC<QuotationCalculatorProps> = ({
               </div>
             </motion.div>
 
-            {/* Mobile Compact Sticky Bar */}
+            {/* Mobile/Tablet Compact Sticky Bar */}
             <motion.div 
               initial={{ y: 100 }}
               animate={{ y: 0 }}
               exit={{ y: 100 }}
-              className="fixed bottom-20 left-4 right-4 bg-zinc-900/95 backdrop-blur-xl text-white p-3 rounded-2xl shadow-2xl z-50 border border-white/10 flex md:hidden items-center justify-between px-4"
+              className="fixed bottom-20 left-4 right-4 bg-zinc-900/95 backdrop-blur-xl text-white p-3 rounded-2xl shadow-2xl z-50 border border-white/10 flex lg:hidden items-center justify-between px-4"
             >
               <div className="flex flex-col">
                 <div className="text-[8px] text-zinc-400 uppercase font-bold tracking-widest">최종 견적</div>
