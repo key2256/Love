@@ -287,22 +287,22 @@ export const Navbar = ({
       {/* Main Navbar */}
       <div className="border-b border-zinc-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 md:h-20">
-          <div className="flex items-center gap-12">
+          <div className="flex items-center gap-4 xl:gap-12">
             <button 
               onClick={onLogoClick}
-              className="text-2xl font-black tracking-tighter cursor-pointer text-emerald-600"
+              className="text-2xl font-black tracking-tighter cursor-pointer text-emerald-600 shrink-0"
             >
               WANDOO<span className="text-zinc-900">PRINT</span>
             </button>
             
-            <div className="hidden lg:flex items-center gap-8">
+            <div className="hidden lg:flex items-center gap-2 xl:gap-8 shrink-0 overflow-x-auto no-scrollbar max-w-[40%] xl:max-w-none">
               {CATEGORIES.map((cat) => (
                 <button 
                   key={cat.id}
                   onMouseEnter={() => handleHoverCategory(cat.id)}
                   onMouseLeave={() => handleHoverCategory(null)}
                   onClick={() => onCategorySelect(cat.id)}
-                  className={`text-sm font-bold transition-all relative py-2 ${
+                  className={`text-sm font-bold transition-all relative py-2 whitespace-nowrap shrink-0 ${
                     activeCategory === cat.id ? 'text-emerald-600' : 'text-zinc-500 hover:text-zinc-900'
                   }`}
                 >
@@ -318,9 +318,9 @@ export const Navbar = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="hidden xl:flex items-center gap-6 mr-6 border-r border-zinc-100 pr-6">
-              <div className="relative group">
+          <div className="flex items-center gap-2 xl:gap-4 shrink-0">
+            <div className="hidden xl:flex items-center gap-3 xl:gap-6 mr-2 xl:mr-6 border-r border-zinc-100 pr-2 xl:pr-6 shrink-0">
+              <div className="relative group shrink-0">
                 <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-emerald-500 transition-colors" />
                 <input 
                   type="text" 
@@ -332,7 +332,7 @@ export const Navbar = ({
                   }}
                   onFocus={() => setShowSuggestions(true)}
                   onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                  className="pl-9 pr-10 py-1.5 bg-zinc-50 border border-zinc-100 rounded-full text-xs font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all w-40 focus:w-64"
+                  className="pl-9 pr-10 py-1.5 bg-zinc-50 border border-zinc-100 rounded-full text-xs font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all w-24 lg:w-28 xl:w-32 focus:w-64"
                 />
                 {showSuggestions && suggestions.length > 0 && (
                   <div className="absolute top-full left-0 mt-2 w-64 bg-white border border-zinc-100 rounded-xl shadow-lg z-50 overflow-hidden">
@@ -358,28 +358,28 @@ export const Navbar = ({
               </div>
               <button 
                 onClick={() => onNavigate('guide')} 
-                className={`text-xs font-bold transition-colors flex items-center gap-2 ${currentView === 'guide' ? 'text-emerald-600' : 'text-zinc-400 hover:text-zinc-900'}`}
+                className={`text-xs font-bold transition-colors flex items-center gap-2 whitespace-nowrap shrink-0 ${currentView === 'guide' ? 'text-emerald-600' : 'text-zinc-400 hover:text-zinc-900'}`}
               >
                 {React.createElement(getIconForCategory('calendar'), { size: 16 })}
                 파일 가이드
               </button>
               <button 
                 onClick={() => onNavigate('inquiry')} 
-                className={`text-xs font-bold transition-colors flex items-center gap-2 ${currentView === 'inquiry' ? 'text-emerald-600' : 'text-zinc-400 hover:text-zinc-900'}`}
+                className={`text-xs font-bold transition-colors flex items-center gap-2 whitespace-nowrap shrink-0 ${currentView === 'inquiry' ? 'text-emerald-600' : 'text-zinc-400 hover:text-zinc-900'}`}
               >
                 {React.createElement(getIconForCategory('pricing'), { size: 16 })}
                 견적 문의
               </button>
               <button 
                 onClick={() => onNavigate('portfolio')} 
-                className={`text-xs font-bold transition-colors flex items-center gap-2 ${currentView === 'portfolio' ? 'text-emerald-600' : 'text-zinc-400 hover:text-zinc-900'}`}
+                className={`text-xs font-bold transition-colors flex items-center gap-2 whitespace-nowrap shrink-0 ${currentView === 'portfolio' ? 'text-emerald-600' : 'text-zinc-400 hover:text-zinc-900'}`}
               >
                 {React.createElement(getIconForCategory('logo'), { size: 16 })}
                 제작 사례
               </button>
               <button 
                 onClick={() => onNavigate('faq')} 
-                className={`text-xs font-bold transition-colors flex items-center gap-2 ${currentView === 'faq' ? 'text-emerald-600' : 'text-zinc-400 hover:text-zinc-900'}`}
+                className={`text-xs font-bold transition-colors flex items-center gap-2 whitespace-nowrap shrink-0 ${currentView === 'faq' ? 'text-emerald-600' : 'text-zinc-400 hover:text-zinc-900'}`}
               >
                 {React.createElement(getIconForCategory('settings'), { size: 16 })}
                 자주 묻는 질문
